@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ResidenciAPP Integrada · Sprints + Métodos</title>
+  <title>ResidenciAPP Definitiva · Retención Avanzada</title>
   <meta name="description" content="ResidenciAPP: plataforma de estudio activo por temario, sprints y métodos de repaso." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +52,38 @@
     .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
     .markdown-lite ul { list-style: disc; padding-left: 1.2rem; }
     .markdown-lite li { margin: .25rem 0; }
+
+    .trigger-word { font-weight: 900; color: #1260ad; background: rgba(24,119,214,.10); border-radius: .45rem; padding: .05rem .28rem; }
+    .dark .trigger-word { color: #8ed3ff; background: rgba(89,184,251,.18); }
+    .error-required { box-shadow: 0 0 0 2px rgba(244,63,94,.18); }
+    .performance-chip { transition: transform .15s ease, box-shadow .15s ease; }
+    .performance-chip:hover { transform: translateY(-1px); }
+
+
+    /* === ResidenciAPP Advanced Retention Layer === */
+    .native-tap { transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease, border-color .16s ease; }
+    .native-tap:active { transform: scale(.985); }
+    .retention-pill { transition: transform .16s ease, filter .16s ease; }
+    .retention-pill:hover { transform: translateY(-1px); filter: brightness(1.02); }
+    .flip-card-3d { perspective: 1400px; min-height: 320px; }
+    .flip-card-3d-inner { transform-style: preserve-3d; transition: transform .58s cubic-bezier(.2,.85,.25,1); min-height: 320px; }
+    .flip-card-3d[data-flipped="true"] .flip-card-3d-inner { transform: rotateY(180deg); }
+    .flip-card-3d-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .flip-card-3d-back { transform: rotateY(180deg); }
+    .bottom-sheet-enter { animation: sheetUp .24s ease-out both; }
+    @keyframes sheetUp { from { opacity:0; transform: translateY(18px) scale(.985); } to { opacity:1; transform: translateY(0) scale(1); } }
+    .soft-selected { box-shadow: 0 18px 60px rgba(24,119,214,.14); }
+    .micro-pop { animation: microPop .18s ease-out both; }
+    @keyframes microPop { 0% { transform: scale(.98); opacity:.72; } 100% { transform: scale(1); opacity:1; } }
+    @media (max-width: 640px) {
+      body { background: rgb(248 250 252); }
+      .dark body { background: rgb(2 6 23); }
+      #questionCard { border-radius: 1.5rem; padding: 1rem; }
+      #performancePanel { border-radius: 1.5rem; padding: 1rem; }
+      .flip-card-3d, .flip-card-3d-inner { min-height: 390px; }
+      #feynmanModal > div, #methodModal > div { max-height: 92vh; border-radius: 1.8rem 1.8rem 0 0; }
+    }
+
   </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50">
@@ -130,6 +162,7 @@
               <button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView('methods')">Ver métodos</button>
               <button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView('review')">Repasar vencidos</button>
             </div>
+            <div id="dueTodayHero" class="mt-5"></div>
           </div>
         </div>
 
@@ -204,6 +237,8 @@
             <p id="sessionProgress" class="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400"></p>
           </div>
 
+          <section id="performancePanel" class="mb-4 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"></section>
+
           <article id="questionCard" class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-premium animate-fadeUp dark:border-slate-800 dark:bg-slate-900"></article>
         </div>
 
@@ -238,6 +273,7 @@
         </div>
       </div>
       <div id="reviewPanels" class="grid gap-5 lg:grid-cols-3"></div>
+      <section id="advancedFlashcards" class="mt-6"></section>
     </section>
 
     <section id="methodsView" class="view hidden px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -311,6 +347,28 @@
     </div>
   </div>
 
+
+
+  <div id="feynmanModal" class="fixed inset-0 z-[60] hidden items-end justify-center bg-slate-950/60 p-0 sm:items-center sm:p-5">
+    <div class="bottom-sheet-enter max-h-[92vh] w-full max-w-4xl overflow-auto rounded-t-[2rem] bg-white p-5 shadow-2xl sm:rounded-[2rem] dark:bg-slate-900">
+      <div class="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p id="feynmanKicker" class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Modo Feynman</p>
+          <h3 class="font-display text-2xl font-extrabold">¿Podés explicarlo?</h3>
+          <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Escribí tu explicación sin mirar. Después comparala con la explicación oficial de la app.</p>
+        </div>
+        <button class="rounded-2xl border border-slate-200 px-3 py-2 font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="closeFeynmanModal()">✕</button>
+      </div>
+      <div id="feynmanQuestion" class="rounded-3xl bg-slate-50 p-4 text-sm font-semibold leading-6 dark:bg-slate-950/60"></div>
+      <textarea id="feynmanText" class="mt-4 min-h-56 w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 text-base leading-7 outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Explicalo con tus palabras: qué dato clave viste, por qué elegís esa respuesta y por qué descartás las demás…"></textarea>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button id="feynmanCompareBtn" class="native-tap rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="finishFeynmanCompare()">Terminar y comparar</button>
+        <button class="native-tap rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openGoogleForQuestion(window.__feynmanQid)">Consultar IA / Google</button>
+      </div>
+      <div id="feynmanOfficial" class="mt-5 hidden"></div>
+    </div>
+  </div>
+
   <script>
     const DATA = JSON.parse(document.getElementById('appdata').textContent);
     const QUESTIONS = DATA.questions;
@@ -324,6 +382,25 @@
       {id:'errorlog', name:'Error log', icon:'🧾', tag:'Corrección', desc:'Clasificar por qué fallaste: lectura, concepto, razonamiento o trampa.'},
       {id:'repaso', name:'Repaso espaciado', icon:'🔁', tag:'Consolidación', desc:'Programar D1-D3-D7-D21 según dificultad.'},
     ];
+    const ERROR_REASONS = [
+      {id:'no_sabia', label:'No sabía el tema'},
+      {id:'lei_mal', label:'Leí mal el enunciado'},
+      {id:'dude_entre_dos', label:'Dudé entre dos opciones'},
+      {id:'confundi_diagnosticos', label:'Confundí diagnósticos o conductas'},
+      {id:'dato_clave', label:'No detecté el dato clave'},
+      {id:'dato_duro', label:'Olvidé un dato duro / criterio'},
+      {id:'trampa', label:'Caí en un distractor'},
+      {id:'pregunta_dudosa', label:'La pregunta me parece dudosa'}
+    ];
+    const TRIGGER_WORDS = [
+      'súbito','subito','brusca','brusco','postmenopáusica','postmenopausica','embarazo','gestante','puérpera','puerpera','lactante','neonato','recién nacido','recien nacido','adolescente',
+      'fiebre','febril','hipotensión','hipotension','taquicardia','bradicardia','disnea','dolor torácico','dolor toracico','opresivo','irradiado','saturación','saturacion',
+      'hipokalemia','hipopotasemia','hiperkalemia','hiperpotasemia','microalbuminuria','proteinuria','hematuria','cilindros','plaquetas','anemia','pancitopenia',
+      'microcalcificaciones','agrupadas','birads','asc-us','asc-h','hsil','lsil','vph','pap','sangrado','metrorragia','amenorrea','prurito','flujo',
+      'irreductible','peritonitis','rebote','blumberg','lactato','acidosis','vómitos biliosos','vomitos biliosos','hematoquecia','melena','ictericia','ascitis',
+      'ecg','st','supradesnivel','fibrilación auricular','fibrilacion auricular','soplo','yugular','pulso paradójico','pulso paradojico','taponamiento','tep','tvp',
+      'sibilancias','tiraje','estridor','babeo','cianosis','exantema','petequias','púrpura','purpura','convulsión','convulsion','oliguria','deshidratación','deshidratacion'
+    ];
     const $ = (s, root=document) => root.querySelector(s);
     const $$ = (s, root=document) => [...root.querySelectorAll(s)];
     const esc = (v='') => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -333,7 +410,7 @@
     const addDays = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
 
     function defaultState(){
-      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0} };
+      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0}, timing:{totalMs:0, timedAnswers:0, questionTimes:{}} };
     }
     let state = loadState();
     let session = null;
@@ -346,6 +423,94 @@
       const [eje, tema, sprint] = key.split('||');
       return {id:btoa(unescape(encodeURIComponent(key))).replace(/=+$/,''), key, eje, tema, sprint, total:qs.length, questions:qs};
     }).sort((a,b)=> a.eje.localeCompare(b.eje) || a.tema.localeCompare(b.tema) || a.sprint.localeCompare(b.sprint));
+
+    const SOURCE_LABELS = { clinica:'Clínica', cirugia:'Cirugía', gineco:'Gineco-Obstetricia', pediatria:'Pediatría' };
+    const SOURCE_ORDER = ['clinica','cirugia','gineco','pediatria'];
+    function sourceLabel(src){ return SOURCE_LABELS[src] || label(src || 'Sin fuente'); }
+    function areaLightClasses(acc, answered){
+      if(!answered) return 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300';
+      if(acc > 85) return 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300';
+      if(acc >= 60) return 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300';
+      return 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300';
+    }
+    function areaBarClasses(acc, answered){
+      if(!answered) return 'bg-slate-300 dark:bg-slate-700';
+      if(acc > 85) return 'bg-emerald-500';
+      if(acc >= 60) return 'bg-amber-500';
+      return 'bg-rose-500';
+    }
+    function areaStatusText(acc, answered){
+      if(!answered) return 'Sin datos';
+      if(acc > 85) return 'Verde';
+      if(acc >= 60) return 'Amarillo';
+      return 'Rojo';
+    }
+    function formatDuration(ms){
+      if(!ms || !isFinite(ms)) return '—';
+      const sec = Math.round(ms/1000);
+      if(sec < 60) return sec+' s';
+      const m = Math.floor(sec/60); const s = sec%60;
+      return m+' min '+String(s).padStart(2,'0')+' s';
+    }
+    function globalAnsweredQuestions(){ return QUESTIONS.filter(q=>answerFor(q)); }
+    function globalCorrectCount(){ return QUESTIONS.filter(q=>isCorrect(q)).length; }
+    function globalAccuracy(){ const answered=globalAnsweredQuestions().length; return answered ? Math.round(globalCorrectCount()/answered*100) : 0; }
+    function averageQuestionTime(){ const t=state.timing || {}; return t.timedAnswers ? Math.round(t.totalMs/t.timedAnswers) : 0; }
+    function getPerformanceAreas(){
+      const sources = [...new Set(QUESTIONS.map(q=>q.source || 'sin_fuente'))];
+      const ordered = [...SOURCE_ORDER.filter(s=>sources.includes(s)), ...sources.filter(s=>!SOURCE_ORDER.includes(s)).sort()];
+      return ordered.map(src=>{
+        const qs = QUESTIONS.filter(q=> (q.source || 'sin_fuente') === src);
+        const answered = qs.filter(q=>answerFor(q)).length;
+        const correct = qs.filter(q=>isCorrect(q)).length;
+        const acc = answered ? Math.round(correct/answered*100) : 0;
+        return {src, label:sourceLabel(src), total:qs.length, answered, correct, acc};
+      });
+    }
+    function recordQuestionTiming(qid){
+      if(!session || !qid) return;
+      const start = session.questionStartedAt || Date.now();
+      let elapsed = Date.now() - start;
+      if(!isFinite(elapsed) || elapsed < 1000) elapsed = 1000;
+      elapsed = Math.min(elapsed, 15 * 60 * 1000);
+      state.timing ||= {totalMs:0, timedAnswers:0, questionTimes:{}};
+      state.timing.totalMs = (state.timing.totalMs || 0) + elapsed;
+      state.timing.timedAnswers = (state.timing.timedAnswers || 0) + 1;
+      state.timing.questionTimes ||= {};
+      (state.timing.questionTimes[qid] ||= []).push(elapsed);
+    }
+    function startQuestionTimer(q){
+      if(!session || !q) return;
+      const selected = session.selected?.[q.id] || answerFor(q)?.selected || '';
+      if(selected) return;
+      if(session.activeQuestionId !== q.id){
+        session.activeQuestionId = q.id;
+        session.questionStartedAt = Date.now();
+        state.session = session;
+        saveState();
+      }
+    }
+    function renderPerformancePanel(){
+      const panel = $('#performancePanel');
+      if(!panel) return;
+      const answered = globalAnsweredQuestions().length;
+      const correct = globalCorrectCount();
+      const acc = globalAccuracy();
+      const avg = averageQuestionTime();
+      const areas = getPerformanceAreas();
+      panel.innerHTML = '<div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">'
+        + '<div class="min-w-0"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Panel de rendimiento</p><h3 class="mt-1 font-display text-2xl font-extrabold">Semáforo + métricas en tiempo real</h3><p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Las estadísticas quedan guardadas en este navegador con localStorage.</p></div>'
+        + '<div class="grid gap-3 sm:grid-cols-2 xl:w-[420px]">'
+        + '<div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Acierto global</p><p class="mt-1 font-display text-4xl font-extrabold">'+acc+'%</p><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+correct+' / '+answered+' respondidas</p></div>'
+        + '<div class="rounded-3xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Tiempo promedio</p><p class="mt-1 font-display text-4xl font-extrabold">'+formatDuration(avg)+'</p><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+((state.timing&&state.timing.timedAnswers)||0)+' respuestas medidas</p></div>'
+        + '</div></div>'
+        + '<div class="mt-5 grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">'+areas.map(a=>{
+            const width = a.answered ? a.acc : 0;
+            const chip = areaLightClasses(a.acc, a.answered);
+            const bar = areaBarClasses(a.acc, a.answered);
+            return '<div class="performance-chip rounded-3xl border p-4 '+chip+'"><div class="flex items-start justify-between gap-3"><div><p class="text-xs font-black uppercase tracking-[.14em] opacity-70">'+areaStatusText(a.acc,a.answered)+'</p><h4 class="mt-1 font-display text-lg font-extrabold">'+esc(a.label)+'</h4></div><p class="font-display text-3xl font-extrabold">'+(a.answered?a.acc+'%':'—')+'</p></div><div class="mt-3 h-2 overflow-hidden rounded-full bg-white/70 dark:bg-slate-950/60"><div class="h-full rounded-full '+bar+'" style="width:'+width+'%"></div></div><p class="mt-2 text-xs font-bold opacity-80">'+a.correct+' correctas · '+a.answered+' respondidas de '+a.total+'</p></div>';
+          }).join('')+'</div>';
+    }
 
     function answerFor(q){ return state.answers[q.id]; }
     function isCorrect(q){ return answerFor(q)?.selected === q.ans && !!q.ans; }
@@ -445,7 +610,9 @@
       $('#sessionProgress').textContent = 'Pregunta '+(session.idx+1)+' de '+arr.length+' · Método: '+methodById(session.method).name;
       const selected = session.selected[q.id] || answerFor(q)?.selected || '';
       const answered = !!selected;
-      const showExplanation = answered && session.method !== 'simulacro';
+      const showExplanation = answered;
+      startQuestionTimer(q);
+      renderPerformancePanel();
       $('#questionCard').innerHTML = questionTemplate(q, selected, showExplanation);
       renderMethodDock(q);
     }
@@ -463,12 +630,11 @@
         return '<label class="choice block cursor-pointer"><input class="sr-only" name="choice" type="radio" value="'+k+'" '+(isSel?'checked':'')+' '+(answered?'disabled':'')+' onchange="selectAnswer(\''+q.id+'\',\''+k+'\')"><div class="rounded-3xl border '+cls+' p-4 transition"><div class="flex gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-slate-100 text-sm font-black uppercase dark:bg-slate-800">'+k+'</span><p class="text-sm font-semibold leading-6">'+esc(txt)+'</p></div></div></label>';
       }).join('');
       return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(q.eje)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(q.tema)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(year)+'</span></div><span class="text-xs font-black uppercase tracking-[.16em] '+(status==='fallada'?'text-rose-500':status==='correcta'?'text-emerald-500':'text-slate-400')+'">'+status+'</span></div>'
-        + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+esc(q.q)+'</h3>'
+        + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+highlightTriggerWords(q.q)+'</h3>'
         + (q.image_reference ? '<div class="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">⚠️ Esta pregunta menciona una imagen/ECG/radiografía. Para uso final conviene adjuntar la imagen original.</div>' : '')
         + '<div class="mt-6 grid gap-3">'+options+'</div>'
         + (selected ? '' : methodInlinePrompt(q))
         + (showExplanation ? explanationTemplate(q, selected) : '')
-        + (session.method === 'simulacro' && selected ? '<div class="mt-5 rounded-3xl bg-slate-50 p-4 text-sm font-bold text-slate-600 dark:bg-slate-950 dark:text-slate-300">Modo simulacro: la explicación se reserva para el final.</div>' : '')
         + '<div class="mt-6 flex flex-wrap justify-between gap-3"><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-slate-800" '+(session.idx===0?'disabled':'')+' onclick="prevQuestion()">← Anterior</button><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white hover:bg-medical-700" onclick="nextQuestion()">'+(session.idx===getSessionQuestions().length-1?'Terminar':'Siguiente →')+'</button></div>';
     }
     function methodInlinePrompt(q){
@@ -484,9 +650,16 @@
     function explanationTemplate(q, selected){
       const ok = selected===q.ans;
       const correct = q.ans ? q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'') : 'Sin clave cargada';
+      const selectedTxt = selected ? selected.toUpperCase()+') '+(q.opts?.[selected]||'') : 'Sin responder';
       return '<section class="mt-6 rounded-[1.75rem] border '+(ok?'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20':'border-rose-200 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20')+' p-5 animate-fadeUp">'
-        + '<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] '+(ok?'text-emerald-700 dark:text-emerald-300':'text-rose-700 dark:text-rose-300')+'">'+(ok?'Correcta':'Incorrecta')+'</p><h4 class="mt-1 text-xl font-black">Respuesta: '+esc(correct)+'</h4></div><button class="rounded-2xl bg-white/80 px-4 py-2 text-xs font-black shadow-sm hover:bg-white dark:bg-slate-900 dark:hover:bg-slate-800" onclick="openGoogleForQuestion(\''+q.id+'\')">Consultar a IA / Google ↗</button></div>'
-        + '<div class="mt-4 grid gap-3 md:grid-cols-2"><div class="rounded-2xl bg-white/70 p-4 dark:bg-slate-900/70"><p class="text-sm font-black">Cómo razonarla</p><p class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(reasoningHint(q))+'</p></div><div class="rounded-2xl bg-white/70 p-4 dark:bg-slate-900/70"><p class="text-sm font-black">Palabras clave</p><p class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(keywordHint(q))+'</p></div></div>'
+        + '<div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] '+(ok?'text-emerald-700 dark:text-emerald-300':'text-rose-700 dark:text-rose-300')+'">'+(ok?'Correcta':'Incorrecta')+'</p><h4 class="mt-1 text-xl font-black">Experiencia de aprendizaje</h4><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">Tu respuesta: '+esc(selectedTxt)+'</p></div><button class="rounded-2xl bg-white/80 px-4 py-2 text-xs font-black shadow-sm hover:bg-white dark:bg-slate-900 dark:hover:bg-slate-800" onclick="openGoogleForQuestion(\''+q.id+'\')">Consultar IA / Google ↗</button></div>'
+        + '<div class="mt-5 grid gap-3">'
+        + learningPanelItem('Respuesta correcta', esc(correct), 'emerald')
+        + learningPanelItem('Por qué es correcta', whyCorrectHint(q), 'medical')
+        + learningPanelItem('Dato clave del enunciado', keyDataHint(q), 'amber')
+        + learningPanelItem('Por qué las otras son incorrectas', wrongOptionsHint(q), 'rose')
+        + '</div>'
+        + (!ok ? errorLogRequiredTemplate(q, selected) : '')
         + '<div class="mt-4 flex flex-wrap gap-2">'+METHODS.filter(m=>['feynman','flashcard','mapa','nemotecnia','errorlog','repaso'].includes(m.id)).map(m => '<button class="rounded-2xl border border-white/70 bg-white/70 px-3 py-2 text-xs font-black hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="openMethodForQuestion(\''+m.id+'\',\''+q.id+'\')">'+m.icon+' '+m.name+'</button>').join('')+'</div>'
         + (session.method==='repaso' ? '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7)">Fácil · +7 días</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3)">Dudosa · +3 días</button><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1)">Difícil · mañana</button></div>' : '')
         + '</section>';
@@ -506,16 +679,100 @@
       return useful.length ? useful.join(' · ') : 'Edad, síntoma principal, tiempo de evolución, signos de gravedad, laboratorio e imagen.';
     }
 
+    function escapeRegExp(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+    function highlightTriggerWords(text){
+      let out = esc(text || '');
+      const words = [...TRIGGER_WORDS].sort((a,b)=>b.length-a.length);
+      words.forEach(w => {
+        const safe = esc(w);
+        const re = new RegExp('(^|[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9])('+escapeRegExp(safe)+')(?=[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9]|$)', 'gi');
+        out = out.replace(re, (m, pre, term) => pre+'<strong class="trigger-word">'+term+'</strong>');
+      });
+      return out;
+    }
+    function learningPanelItem(title, body, color){
+      const palette = {
+        emerald:'border-emerald-200 bg-white/80 dark:border-emerald-900/60 dark:bg-slate-900/75',
+        medical:'border-medical-200 bg-white/80 dark:border-medical-900/60 dark:bg-slate-900/75',
+        amber:'border-amber-200 bg-white/80 dark:border-amber-900/60 dark:bg-slate-900/75',
+        rose:'border-rose-200 bg-white/80 dark:border-rose-900/60 dark:bg-slate-900/75'
+      };
+      return '<div class="rounded-2xl border '+(palette[color]||palette.medical)+' p-4"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-500 dark:text-slate-400">'+esc(title)+'</p><div class="mt-2 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-300">'+body+'</div></div>';
+    }
+    function keyDataHint(q){
+      const hits = triggerHits(q);
+      const base = hits.length ? hits.map(esc).join(' · ') : esc(keywordHint(q));
+      return '<p>'+base+'</p><p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Usá este dato como “bisagra”: primero identificá qué cambia la conducta o el diagnóstico, después mirá las opciones.</p>';
+    }
+    function triggerHits(q){
+      const nq = norm(q.q || '');
+      return TRIGGER_WORDS.filter(w => nq.includes(norm(w))).slice(0,12);
+    }
+    function whyCorrectHint(q){
+      if(!q.ans) return '<p>Esta pregunta no tiene clave cargada. Marcala para revisar antes de usarla como pregunta de examen.</p>';
+      const type = /conducta|tratamiento|manejo|indica|solicita|realizar|conducta a seguir/i.test(q.q) ? 'conducta' : /diagn[oó]stico|sospecha|presuntivo/i.test(q.q) ? 'diagnóstico' : /criterio|definici[oó]n|prevalencia|edad|factor/i.test(q.q) ? 'dato duro' : 'razonamiento clínico';
+      const txt = q.opts?.[q.ans] || '';
+      return '<p>La clave cargada en el banco es <strong>'+esc(q.ans.toUpperCase()+') '+txt)+'</strong>.</p><p class="mt-2">Tipo de pregunta: <strong>'+type+'</strong>. Para consolidarla, verificá que esta opción sea la que mejor integra el dato clave del enunciado con el tema <strong>'+esc(q.tema)+'</strong> / <strong>'+esc(q.sprint)+'</strong>.</p>';
+    }
+    function wrongOptionsHint(q){
+      const keys = ['a','b','c','d'].filter(k => q.opts?.[k] && k !== q.ans);
+      if(!keys.length) return '<p>No hay distractores cargados para analizar.</p>';
+      return '<ul class="list-disc space-y-2 pl-5">'+keys.map(k => '<li><strong>'+esc(k.toUpperCase()+')')+'</strong> '+esc(q.opts[k])+'<br><span class="text-xs text-slate-500 dark:text-slate-400">Distractor: no coincide con la clave cargada. Revisá si falla por diagnóstico, conducta, timing, gravedad o por omitir el dato clave.</span></li>').join('')+'</ul>';
+    }
+    function errorLogRequiredTemplate(q, selected){
+      const current = state.mistakes?.[q.id] || {};
+      const done = !!current.errorType;
+      const options = '<option value="">Seleccioná una razón antes de seguir</option>'+ERROR_REASONS.map(r=>'<option value="'+r.id+'" '+(current.errorType===r.id?'selected':'')+'>'+esc(r.label)+'</option>').join('');
+      return '<div id="requiredErrorLog" class="mt-5 rounded-[1.5rem] border border-rose-300 bg-white/85 p-4 error-required dark:border-rose-800 dark:bg-slate-900/85">'
+        + '<div class="flex items-start gap-3"><div class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300">🧾</div><div class="min-w-0 flex-1"><p class="text-sm font-black text-rose-700 dark:text-rose-300">Error log obligatorio</p><p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Para avanzar, clasificá por qué fallaste. Esto convierte el error en una regla de estudio.</p></div></div>'
+        + '<select id="requiredErrorType" class="mt-3 w-full rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-bold outline-none dark:border-rose-800 dark:bg-slate-950">'+options+'</select>'
+        + '<textarea id="requiredErrorNote" class="mt-3 min-h-24 w-full rounded-2xl border border-rose-200 bg-white p-3 text-sm outline-none dark:border-rose-800 dark:bg-slate-950" placeholder="Opcional: ¿qué dato te confundió? ¿qué regla querés recordar?">'+esc(current.note||'')+'</textarea>'
+        + '<div class="mt-3 flex flex-wrap items-center gap-2"><button class="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white hover:bg-rose-700" onclick="saveRequiredErrorLog(\''+q.id+'\')">Guardar error log</button>'
+        + '<span class="text-xs font-bold '+(done?'text-emerald-600 dark:text-emerald-300':'text-rose-600 dark:text-rose-300')+'">'+(done?'✓ Error clasificado. Ya podés seguir.':'Bloquea “Siguiente” hasta completarlo.')+'</span></div></div>';
+    }
+    function saveRequiredErrorLog(id){
+      const q=QUESTIONS.find(x=>x.id===id); if(!q) return;
+      const type=$('#requiredErrorType')?.value || '';
+      const note=$('#requiredErrorNote')?.value.trim() || '';
+      if(!type) return alert('Elegí una razón del error antes de seguir.');
+      const reason = ERROR_REASONS.find(r=>r.id===type)?.label || type;
+      state.mistakes[id] = Object.assign(state.mistakes[id]||{id, correct:q.ans, selected:answerFor(q)?.selected||'', at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint}, {errorType:type, errorLabel:reason, note});
+      addLibrary({type:'error', topic:q.sprint, text:reason+' — '+(note||'Sin nota'), qid:id});
+      scheduleQuestion(id, 3, false);
+      saveState(); renderQuestion(); renderReview(); renderLibrary();
+    }
+    function currentNeedsErrorLog(){
+      const q=currentQuestion(); if(!q) return false;
+      const selected = session?.selected?.[q.id] || answerFor(q)?.selected;
+      if(!selected || !q.ans || selected===q.ans) return false;
+      return !state.mistakes?.[q.id]?.errorType;
+    }
+
     function selectAnswer(id, selected){
       const q = QUESTIONS.find(x=>x.id===id); if(!q || !session) return;
+      const hadStoredAnswer = !!state.answers[id];
+      if(!hadStoredAnswer) recordQuestionTiming(id);
       session.selected[id] = selected;
-      state.answers[id] = { selected, correct:q.ans, at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint, method:session.method };
-      if(q.ans && selected !== q.ans){ state.mistakes[id] = { id, selected, correct:q.ans, at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint, note:'' }; if(!session.failed.includes(id)) session.failed.push(id); }
+      state.answers[id] = { selected, correct:q.ans, at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint, source:q.source, method:session.method };
+      if(q.ans && selected !== q.ans){
+        const previous = state.mistakes[id] || {};
+        state.mistakes[id] = Object.assign({ id, at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint }, previous, { selected, correct:q.ans });
+        if(!session.failed.includes(id)) session.failed.push(id);
+      }
       else { delete state.mistakes[id]; }
-      saveState(); renderQuestion(); renderStats();
+      saveState(); renderQuestion(); renderStats(); renderPerformancePanel(); renderReview();
     }
     function prevQuestion(){ if(session && session.idx>0){ session.idx--; state.session=session; saveState(); renderQuestion(); } }
-    function nextQuestion(){ if(!session) return; if(session.idx >= getSessionQuestions().length-1){ finishSession(); } else { session.idx++; state.session=session; saveState(); renderQuestion(); } }
+    function nextQuestion(){
+      if(!session) return;
+      if(currentNeedsErrorLog()){
+        alert('Antes de seguir, clasificá el error en el Error Log obligatorio.');
+        $('#requiredErrorLog')?.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      if(session.idx >= getSessionQuestions().length-1){ finishSession(); }
+      else { session.idx++; state.session=session; saveState(); renderQuestion(); }
+    }
     function finishSession(){
       if(!session){ showView('dashboard'); return; }
       const qs = getSessionQuestions();
@@ -541,7 +798,10 @@
 
     function openGoogleForQuestion(id){ const q=QUESTIONS.find(x=>x.id===id); if(q) window.open(googleUrl(q), '_blank', 'noopener'); }
     function openGoogleForCurrent(){ const q=currentQuestion(); if(q) openGoogleForQuestion(q.id); }
-    function googleUrl(q){ const opts = ['a','b','c','d'].map(k => q.opts?.[k] ? k+') '+q.opts[k] : '').filter(Boolean).join(' '); const query = 'Modo IA medicina residencia: '+q.q+' Opciones: '+opts+' Respuesta correcta: '+(q.ans?q.ans+') '+q.opts[q.ans]:'sin clave')+'. Tema: '+q.tema+' / '+q.sprint; return 'https://www.google.com/search?q='+encodeURIComponent(query); }
+    function googleUrl(q){
+      const query = [q.tema, q.sprint, q.q].filter(Boolean).join(' ');
+      return 'https://www.google.com/search?q='+encodeURIComponent(query);
+    }
 
     function openMethodForCurrent(method){ const q=currentQuestion(); if(q) openMethodForQuestion(method,q.id); }
     function openMethodForQuestion(method, id){ const q=QUESTIONS.find(x=>x.id===id); if(!q) return; openMethodModal(method, q); }
@@ -564,7 +824,7 @@
 
     function saveMethodNote(type, id){ const q=QUESTIONS.find(x=>x.id===id); const text=$('#methodNote').value.trim(); if(!text) return; addLibrary({type, topic:q.sprint, text, qid:id}); closeMethodModal(); renderLibrary(); }
     function saveInlineNote(type){ const q=currentQuestion(); const el = type==='feynman'?$('#inlineFeynman'):type==='mapa'?$('#inlineMap'):$('#inlineMnemonic'); const text=el?.value.trim(); if(!q||!text) return; addLibrary({type, topic:q.sprint, text, qid:q.id}); el.value=''; alert('Guardado en tu biblioteca.'); }
-    function saveErrorLog(id){ const q=QUESTIONS.find(x=>x.id===id); const type=$('#errorType').value; const note=$('#errorNote').value.trim(); state.mistakes[id] = Object.assign(state.mistakes[id]||{id, correct:q.ans, selected:answerFor(q)?.selected||'', at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint}, {errorType:type, note}); addLibrary({type:'error', topic:q.sprint, text:type+' — '+(note||'Sin nota'), qid:id}); scheduleQuestion(id, 3, false); saveState(); closeMethodModal(); renderReview(); renderLibrary(); alert('Error guardado y programado para repaso.'); }
+    function saveErrorLog(id){ const q=QUESTIONS.find(x=>x.id===id); const type=$('#errorType').value; const note=$('#errorNote').value.trim(); const reason = ERROR_REASONS.find(r=>r.id===type)?.label || type; state.mistakes[id] = Object.assign(state.mistakes[id]||{id, correct:q.ans, selected:answerFor(q)?.selected||'', at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint}, {errorType:type, errorLabel:reason, note}); addLibrary({type:'error', topic:q.sprint, text:reason+' — '+(note||'Sin nota'), qid:id}); scheduleQuestion(id, 3, false); saveState(); closeMethodModal(); renderReview(); renderLibrary(); renderQuestion(); alert('Error guardado y programado para repaso.'); }
     function addLibrary(item){ state.library.unshift(Object.assign({createdAt:Date.now()}, item)); state.library = state.library.slice(0,300); saveState(); }
     function saveLibraryItem(){ const type=$('#libraryType').value; const topic=$('#libraryTopic').value.trim(); const text=$('#libraryText').value.trim(); if(!topic||!text) return alert('Completá tema y texto.'); addLibrary({type, topic, text}); $('#libraryTopic').value=''; $('#libraryText').value=''; renderLibrary(); }
     function renderLibrary(){ const q=norm($('#librarySearch')?.value||''); const list=(state.library||[]).filter(x => !q || norm([x.type,x.topic,x.text].join(' ')).includes(q)); $('#libraryList').innerHTML = list.map((it,i)=>'<article class="rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><div class="flex items-start justify-between gap-3"><div><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(it.type)+'</span><h4 class="mt-2 font-display text-lg font-extrabold">'+esc(it.topic)+'</h4></div><button class="text-rose-500 font-black" onclick="deleteLibraryItem('+i+')">×</button></div><p class="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(it.text)+'</p></article>').join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">Todavía no hay recursos guardados.</div>'; }
@@ -628,7 +888,7 @@
     }
 
     function saveStateAndAll(){ saveState(); renderAll(); }
-    function renderAll(){ renderStats(); updateTemaFilter(); renderSprints(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
+    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
 
     function showView(name){
       $$('.view').forEach(v=>v.classList.add('hidden'));
@@ -643,6 +903,164 @@
     function openMobileMenu(){ $('#sidebar').classList.remove('-translate-x-full'); $('#overlay').classList.remove('hidden'); }
     function closeMobileMenu(){ $('#sidebar').classList.add('-translate-x-full'); $('#overlay').classList.add('hidden'); }
     function applyTheme(theme){ const dark=theme==='dark'; document.documentElement.classList.toggle('dark', dark); document.documentElement.classList.toggle('light', !dark); $('#themeIcon').textContent=dark?'☀️':'🌙'; $('#themeLabel').textContent=dark?'Claro':'Oscuro'; state.theme=theme; saveState(); }
+
+
+
+    /* === Advanced Retention, Dynamic Flashcards & Feynman Layer === */
+    function ensureAdvancedState(){
+      state.retention ||= {};
+      state.feynmanNotes ||= {};
+      state.mnemonics ||= {};
+      state.scheduled ||= {};
+      state.library ||= [];
+    }
+    function difficultyConfig(difficulty){
+      const d = String(difficulty||'medium');
+      if(['hard','dificil','difícil'].includes(d)) return {days:1, label:'Difícil', color:'rose', ease:1.3};
+      if(['easy','facil','fácil'].includes(d)) return {days:7, label:'Fácil', color:'emerald', ease:2.5};
+      return {days:3, label:'Dudosa', color:'amber', ease:1.8};
+    }
+    function markDifficulty(id, difficulty='medium', announce=true){
+      ensureAdvancedState();
+      const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      const cfg = difficultyConfig(difficulty);
+      const prev = state.retention[id] || {reps:0};
+      state.retention[id] = {
+        id, difficulty, label:cfg.label, ease:cfg.ease,
+        reps:(prev.reps||0)+1,
+        due:addDays(cfg.days), intervalDays:cfg.days,
+        updatedAt:Date.now(), tema:q.tema, sprint:q.sprint, eje:q.eje, source:q.source
+      };
+      state.scheduled[id] = {id, due:addDays(cfg.days), days:cfg.days, difficulty, label:cfg.label, at:Date.now(), tema:q.tema, sprint:q.sprint, eje:q.eje};
+      saveState(); renderReview(); renderDueTodayHero(); renderAdvancedFlashcards();
+      if(announce) alert('Repaso programado: '+cfg.label+' → '+state.scheduled[id].due);
+    }
+    function dueReviewItems(){
+      ensureAdvancedState();
+      const t=todayKey();
+      const byId = {};
+      Object.values(state.scheduled||{}).forEach(x=>{ if(x && x.due<=t) byId[x.id]=x; });
+      Object.values(state.retention||{}).forEach(x=>{ if(x && x.due<=t) byId[x.id]=Object.assign(byId[x.id]||{}, x); });
+      return Object.values(byId).map(x=>({meta:x, q:QUESTIONS.find(q=>q.id===x.id)})).filter(x=>x.q);
+    }
+    function dueTopicCount(){ return new Set(dueReviewItems().map(x=>x.q.sprint || x.q.tema)).size; }
+    function renderDueTodayHero(){
+      ensureAdvancedState();
+      const el = $('#dueTodayHero'); if(!el) return;
+      const due = dueReviewItems(); const topics = dueTopicCount();
+      const label = topics===1 ? 'tema' : 'temas';
+      el.innerHTML = '<div class="micro-pop rounded-[1.75rem] border border-medical-200 bg-medical-50/90 p-4 dark:border-medical-900/60 dark:bg-medical-950/30">'
+        + '<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:text-medical-300">Repaso espaciado de hoy</p><h4 class="mt-1 font-display text-2xl font-extrabold">Tenés '+topics+' '+label+' para repasar hoy</h4><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">'+due.length+' preguntas vencidas o programadas según dificultad.</p></div>'
+        + '<button class="native-tap rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="startDueSession()">Repasar ahora</button></div></div>';
+    }
+    function getPersonalMnemonic(q){
+      ensureAdvancedState();
+      if(state.mnemonics?.[q.id]) return state.mnemonics[q.id];
+      const item = (state.library||[]).find(x=>x.qid===q.id && x.type==='nemotecnia');
+      return item?.text || '';
+    }
+    function saveMnemonicForQuestion(id){
+      ensureAdvancedState();
+      const input = $('#mnemonic_'+id); if(!input) return;
+      const text = input.value.trim(); if(!text) return alert('Escribí una nemotecnia primero.');
+      const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      state.mnemonics[id] = text;
+      addLibrary({type:'nemotecnia', topic:q.sprint, text, qid:id});
+      saveState(); renderAdvancedFlashcards(); renderLibrary();
+    }
+    function officialKeyData(q){
+      const hits = triggerHits(q);
+      const correct = q.ans ? q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'') : 'Sin clave cargada';
+      return {hits, correct, hint: reasoningHint(q)};
+    }
+    function dynamicFlashcard(q, tag='Repaso'){
+      const kd = officialKeyData(q);
+      const mnemonic = getPersonalMnemonic(q);
+      const backMnemonic = mnemonic ? '<div class="mt-3 rounded-2xl bg-white/80 p-3 dark:bg-slate-900/80"><p class="text-xs font-black uppercase tracking-[.14em] text-amber-600 dark:text-amber-300">Nemotecnia personal</p><p class="mt-1 whitespace-pre-wrap text-sm font-semibold leading-6">'+esc(mnemonic)+'</p></div>' : '<div class="mt-3 rounded-2xl border border-dashed border-amber-300 p-3 dark:border-amber-800"><p class="text-xs font-black uppercase tracking-[.14em] text-amber-600 dark:text-amber-300">Nemotecnia personal</p><textarea id="mnemonic_'+q.id+'" class="mt-2 min-h-20 w-full rounded-2xl border border-amber-200 bg-white p-3 text-sm outline-none dark:border-amber-800 dark:bg-slate-950" placeholder="Ej: regla, frase absurda o imagen mental para recordar esta pregunta…"></textarea><button class="mt-2 rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); saveMnemonicForQuestion(\''+q.id+'\')">Guardar nemotecnia</button></div>';
+      return '<div class="flip-card-3d native-tap" data-flipped="false" onclick="this.dataset.flipped=this.dataset.flipped===\'true\'?\'false\':\'true\'">'
+        + '<div class="flip-card-3d-inner relative"><div class="flip-card-3d-face absolute inset-0 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">'
+        + '<div class="mb-3 flex items-center justify-between gap-2"><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(tag)+'</span><span class="text-xs font-bold text-slate-400">Tocar para girar</span></div>'
+        + '<h4 class="text-base font-black leading-6 sm:text-lg">'+highlightTriggerWords(q.q)+'</h4><p class="mt-4 text-xs font-bold text-slate-500">'+esc(q.tema+' · '+q.sprint)+'</p></div>'
+        + '<div class="flip-card-3d-face flip-card-3d-back absolute inset-0 overflow-auto rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5 shadow-soft dark:border-emerald-900/60 dark:bg-emerald-950/25">'
+        + '<p class="text-xs font-black uppercase tracking-[.16em] text-emerald-700 dark:text-emerald-300">Dato clave</p><p class="mt-2 text-sm font-bold leading-6">'+esc(kd.hits.length?kd.hits.join(' · '):keywordHint(q))+'</p>'
+        + '<p class="mt-3 text-xs font-black uppercase tracking-[.16em] text-emerald-700 dark:text-emerald-300">Respuesta</p><p class="mt-1 text-base font-black leading-6">'+esc(kd.correct)+'</p>'+backMnemonic
+        + '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +3 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +7 días</button></div>'
+        + '</div></div></div>';
+    }
+    function renderAdvancedFlashcards(){
+      ensureAdvancedState();
+      const el = $('#advancedFlashcards'); if(!el) return;
+      const due = dueReviewItems().map(x=>x.q);
+      const mistakeQs = Object.keys(state.mistakes||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const favQs = Object.keys(state.favorites||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const map = new Map();
+      [...due, ...mistakeQs, ...favQs].forEach(q=>{ if(q) map.set(q.id,q); });
+      const cards = [...map.values()].slice(0,12);
+      el.innerHTML = '<div class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Flashcards dinámicas</p><h3 class="font-display text-2xl font-extrabold">Flip 3D: pregunta → dato clave + nemotecnia</h3><p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Se alimenta con vencidas, errores y favoritas. Guardá tu nemotecnia personal en el dorso.</p></div><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView(\'session\'); startDueSession();">Modo repaso</button></div>'
+        + (cards.length ? '<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">'+cards.map((q,i)=>dynamicFlashcard(q, due.some(d=>d.id===q.id)?'Vencida':state.mistakes[q.id]?'Error':'Favorita')).join('')+'</div>' : '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">Todavía no hay flashcards dinámicas. Respondé preguntas, marcá favoritas o programá repasos.</div>')
+        + '</div>';
+    }
+    function openFeynmanModalForQuestion(id){
+      ensureAdvancedState();
+      const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      window.__feynmanQid = id;
+      $('#feynmanKicker').textContent = q.tema+' · '+q.sprint;
+      $('#feynmanQuestion').innerHTML = '<p class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Pregunta</p><p class="mt-2">'+highlightTriggerWords(q.q)+'</p>';
+      $('#feynmanText').value = state.feynmanNotes[id]?.text || '';
+      $('#feynmanOfficial').classList.add('hidden');
+      $('#feynmanOfficial').innerHTML = '';
+      $('#feynmanModal').classList.remove('hidden'); $('#feynmanModal').classList.add('flex');
+      setTimeout(()=>$('#feynmanText')?.focus(), 80);
+    }
+    function closeFeynmanModal(){ $('#feynmanModal').classList.add('hidden'); $('#feynmanModal').classList.remove('flex'); }
+    function finishFeynmanCompare(){
+      ensureAdvancedState();
+      const id = window.__feynmanQid; const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      const text = $('#feynmanText').value.trim();
+      if(!text) return alert('Primero escribí tu explicación. La idea es recuperar sin mirar.');
+      state.feynmanNotes[id] = {id, text, at:Date.now(), tema:q.tema, sprint:q.sprint};
+      addLibrary({type:'feynman', topic:q.sprint, text, qid:id});
+      saveState(); renderLibrary();
+      const correct = q.ans ? q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'') : 'Sin clave cargada';
+      $('#feynmanOfficial').innerHTML = '<div class="rounded-[1.75rem] border border-medical-200 bg-medical-50 p-5 animate-fadeUp dark:border-medical-900/60 dark:bg-medical-950/30"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:text-medical-300">Explicación oficial para comparar</p><div class="mt-4 grid gap-3">'+learningPanelItem('Respuesta correcta', esc(correct), 'emerald')+learningPanelItem('Dato clave', keyDataHint(q), 'amber')+learningPanelItem('Por qué es correcta', whyCorrectHint(q), 'medical')+'</div><div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Me costó · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Regular · +3 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Lo expliqué bien · +7 días</button></div></div>';
+      $('#feynmanOfficial').classList.remove('hidden');
+      $('#feynmanOfficial').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    const __oldScheduleQuestion = scheduleQuestion;
+    scheduleQuestion = function(id, days=3, announce=true){
+      let difficulty = days<=1 ? 'hard' : days>=7 ? 'easy' : 'medium';
+      ensureAdvancedState();
+      const q=QUESTIONS.find(x=>x.id===id);
+      if(q){
+        state.retention[id] = Object.assign(state.retention[id]||{id,reps:0}, {id, difficulty, label:difficultyConfig(difficulty).label, due:addDays(days), intervalDays:days, updatedAt:Date.now(), tema:q.tema, sprint:q.sprint, eje:q.eje, source:q.source, reps:((state.retention[id]?.reps)||0)+1});
+      }
+      __oldScheduleQuestion(id, days, false);
+      renderDueTodayHero(); renderAdvancedFlashcards(); renderReview();
+      if(announce && state.scheduled?.[id]) alert('Repaso programado para '+state.scheduled[id].due);
+    };
+    const __oldDueQuestions = dueQuestions;
+    dueQuestions = function(){ return dueReviewItems().map(x=>x.q); };
+    const __oldExplanationTemplate = explanationTemplate;
+    explanationTemplate = function(q, selected){
+      const base = __oldExplanationTemplate(q, selected);
+      const extra = '<div class="mt-5 rounded-[1.5rem] border border-slate-200 bg-white/75 p-4 dark:border-slate-700 dark:bg-slate-950/50"><div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Retención avanzada</p><h5 class="mt-1 font-display text-xl font-extrabold">¿Qué tan difícil se sintió?</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">La dificultad programa el próximo repaso: Difícil mañana, Fácil en 7 días.</p></div><button class="native-tap rounded-2xl border border-medical-200 bg-medical-50 px-4 py-3 text-sm font-black text-medical-700 hover:bg-medical-100 dark:border-medical-800 dark:bg-medical-950/30 dark:text-medical-300" onclick="openFeynmanModalForQuestion(\''+q.id+'\')">🎙️ ¿Podés explicarlo?</button></div><div class="mt-4 flex flex-wrap gap-2"><button class="retention-pill rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="retention-pill rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +3 días</button><button class="retention-pill rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +7 días</button></div></div>';
+      return base.replace('</section>', extra+'</section>');
+    };
+    const __oldQuestionTemplate = questionTemplate;
+    questionTemplate = function(q, selected, showExplanation){
+      let html = __oldQuestionTemplate(q, selected, showExplanation);
+      if(!selected){
+        html = html.replace('<div class="mt-6 flex flex-wrap justify-between gap-3">', '<div class="mt-5 flex flex-wrap gap-2"><button class="native-tap rounded-2xl border border-medical-200 bg-medical-50 px-4 py-3 text-sm font-black text-medical-700 hover:bg-medical-100 dark:border-medical-800 dark:bg-medical-950/30 dark:text-medical-300" onclick="openFeynmanModalForQuestion(\''+q.id+'\')">🎙️ ¿Podés explicarlo?</button><button class="native-tap rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openMethodForQuestion(\'flashcard\',\''+q.id+'\')">🃏 Ver como flashcard</button></div><div class="mt-6 flex flex-wrap justify-between gap-3">');
+      }
+      return html;
+    };
+    const __oldRenderStats = renderStats;
+    renderStats = function(){ __oldRenderStats(); renderDueTodayHero(); };
+    const __oldRenderReview = renderReview;
+    renderReview = function(){ __oldRenderReview(); renderAdvancedFlashcards(); };
+    const __oldRenderAll = renderAll;
+    renderAll = function(){ __oldRenderAll(); renderDueTodayHero(); renderAdvancedFlashcards(); };
 
     function init(){
       initSelects();
