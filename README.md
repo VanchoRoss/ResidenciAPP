@@ -13,6 +13,8 @@ Plataforma de estudio activo para residencia médica: banco de preguntas por tem
 - Modo Feynman.
 - Panel colaborativo por pregunta.
 - Envío de aportes a Google Sheets mediante Apps Script.
+- Endpoint de Google Apps Script ya configurado.
+- Sección para subir imágenes en preguntas que requieren ECG, Rx, mamografía, colposcopía u otra imagen.
 - Backup manual en JSON.
 
 ## Estructura
@@ -57,33 +59,20 @@ Plataforma de estudio activo para residencia médica: banco de preguntas por tem
 
 La app no pide GitHub a los usuarios. Para recibir aportes en una Google Sheet:
 
-1. Crear una Google Sheet.
+1. Crear o abrir la Google Sheet de aportes.
 2. Ir a **Extensiones → Apps Script**.
-3. Pegar el contenido de `scripts/google-apps-script.gs`.
+3. Pegar el contenido actualizado de `scripts/google-apps-script.gs`.
 4. Desplegar como **Aplicación web**.
-5. Copiar la URL `/exec`.
-6. Pegarla en `assets/js/config.js` dentro de:
+5. Autorizar permisos de Sheets y Drive.
 
-```js
-window.RESIDENCIAPP_CONFIG = {
-  contributions: {
-    endpoint: 'PEGAR_ACA_LA_URL_DEL_WEB_APP'
-  }
-};
-```
+El endpoint ya quedó cargado en `assets/js/config.js`.
 
 Ver detalles en `docs/CONFIGURACION_APORTES.md`.
 
-## SEO
+## Imágenes
 
-En `index.html` reemplazar los placeholders:
-
-```txt
-https://TU_USUARIO.github.io/TU_REPOSITORIO/
-```
-
-por la URL real de tu GitHub Pages.
+Cuando una pregunta menciona imagen, ECG, radiografía o similar, en el modo colaboración aparece un bloque para subir imagen. La imagen se envía a Apps Script, se guarda en Google Drive y la URL queda registrada en la Google Sheet.
 
 ## Backup manual
 
-Si no configurás Google Apps Script, los aportes quedan en el navegador del usuario y se pueden descargar con el botón **Exportar aportes JSON**.
+Si Google Apps Script no está disponible, los aportes quedan en el navegador del usuario y se pueden descargar con el botón **Exportar aportes JSON**.
