@@ -1,10 +1,23 @@
 # ResidenciAPP
 
-Plataforma de estudio activo para residencia médica: banco de preguntas por temario, sprints, repaso espaciado, flashcards, error log, modo Feynman y colaboración por GitHub Issues.
+Plataforma de estudio activo para residencia médica: banco de preguntas por temario, sprints, repaso espaciado, flashcards, error log, modo Feynman y colaboración sin GitHub para usuarios comunes.
+
+## Qué trae esta versión
+
+- Banco de preguntas separado en `assets/data/questions.json` y `assets/data/questions.js`.
+- Estilos separados en `assets/css/styles.css`.
+- Lógica principal en `assets/js/main.js`.
+- Panel de rendimiento con métricas persistentes.
+- Repaso espaciado tipo Anki.
+- Flashcards dinámicas.
+- Modo Feynman.
+- Panel colaborativo por pregunta.
+- Envío de aportes a Google Sheets mediante Apps Script.
+- Backup manual en JSON.
 
 ## Estructura
 
-```text
+```txt
 .
 ├── index.html
 ├── assets/
@@ -13,59 +26,64 @@ Plataforma de estudio activo para residencia médica: banco de preguntas por tem
 │   ├── data/questions.js
 │   ├── data/collabdata.json
 │   ├── data/collabdata.js
-│   ├── img/icon.svg
-│   ├── img/og-image.svg
-│   └── js/main.js
-├── .github/workflows/merge-approved-analysis.yml
-├── scripts/apply-issue-analysis.mjs
+│   ├── img/
+│   └── js/
+│       ├── main.js
+│       ├── config.js
+│       ├── storage.service.js
+│       ├── retention.service.js
+│       ├── dom.js
+│       └── shuffle.js
+├── docs/
+│   ├── ARQUITECTURA.md
+│   └── CONFIGURACION_APORTES.md
+├── scripts/
+│   └── google-apps-script.gs
 ├── manifest.webmanifest
-└── docs/
+├── package.json
+└── .nojekyll
 ```
 
 ## Cómo subir a GitHub Pages
 
-1. Creá un repositorio en GitHub.
-2. Subí todos estos archivos respetando la estructura.
-3. En GitHub: **Settings → Pages**.
-4. En **Build and deployment**, elegí **Deploy from a branch**.
-5. Branch: `main`; folder: `/root`.
-6. Guardá.
+1. Subir todos los archivos y carpetas a la raíz del repositorio.
+2. En GitHub: **Settings → Pages**.
+3. Source: **Deploy from a branch**.
+4. Branch: `main`.
+5. Folder: `/root`.
+6. Guardar.
 
-## Configurar metadatos
+## Configurar aportes sin GitHub para usuarios
 
-Editá en `index.html` estos placeholders:
+La app no pide GitHub a los usuarios. Para recibir aportes en una Google Sheet:
 
-```html
+1. Crear una Google Sheet.
+2. Ir a **Extensiones → Apps Script**.
+3. Pegar el contenido de `scripts/google-apps-script.gs`.
+4. Desplegar como **Aplicación web**.
+5. Copiar la URL `/exec`.
+6. Pegarla en `assets/js/config.js` dentro de:
+
+```js
+window.RESIDENCIAPP_CONFIG = {
+  contributions: {
+    endpoint: 'PEGAR_ACA_LA_URL_DEL_WEB_APP'
+  }
+};
+```
+
+Ver detalles en `docs/CONFIGURACION_APORTES.md`.
+
+## SEO
+
+En `index.html` reemplazar los placeholders:
+
+```txt
 https://TU_USUARIO.github.io/TU_REPOSITORIO/
 ```
 
-Reemplazalos por la URL real de tu GitHub Pages.
+por la URL real de tu GitHub Pages.
 
-## Colaboración por GitHub Issues
+## Backup manual
 
-La app puede crear Issues con sugerencias de explicación. Para eso necesitás configurar owner, repo y token desde la UI o desde el código.
-
-⚠️ **Seguridad:** no es recomendable dejar un Personal Access Token en un repositorio público ni en un HTML servido por GitHub Pages. Para uso personal puede servir, pero lo profesional es usar una función serverless como intermediaria.
-
-### Permisos mínimos del token
-
-Usá un fine-grained token con acceso solo al repositorio de ResidenciAPP y permiso:
-
-- **Issues: Read and write**
-
-## Integración automática de sugerencias aprobadas
-
-La GitHub Action incluida se activa cuando etiquetás un issue con:
-
-```text
-aprobado-residenciapp
-```
-
-El workflow extrae el payload JSON del issue y actualiza:
-
-- `assets/data/collabdata.json`
-- `assets/data/collabdata.js`
-
-## Desarrollo futuro recomendado
-
-La app ya está separada en archivos principales. El próximo salto sería migrar `assets/js/main.js` a módulos reales con Vite + TypeScript. Dejé servicios ejemplo en `assets/js/*.service.js` para esa transición.
+Si no configurás Google Apps Script, los aportes quedan en el navegador del usuario y se pueden descargar con el botón **Exportar aportes JSON**.

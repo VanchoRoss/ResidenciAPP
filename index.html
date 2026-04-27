@@ -9,18 +9,18 @@
   <meta name="keywords" content="residencia médica, examen único, medicina, preguntas médicas, repaso espaciado, flashcards, Argentina" />
   <meta name="author" content="ResidenciAPP" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://TU_USUARIO.github.io/TU_REPOSITORIO/" />
+  <link rel="canonical" href="https://vanchoross.github.io/ResidenciAPP/" />
   <meta property="og:title" content="ResidenciAPP · Estudio activo para residencia médica" />
   <meta property="og:description" content="Entrená con preguntas por temario, sprints, flashcards, error log, repaso espaciado y colaboración." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://TU_USUARIO.github.io/TU_REPOSITORIO/" />
-  <meta property="og:image" content="https://TU_USUARIO.github.io/TU_REPOSITORIO/assets/img/og-image.svg" />
+  <meta property="og:url" content="https://vanchoross.github.io/ResidenciAPP/" />
+  <meta property="og:image" content="https://vanchoross.github.io/ResidenciAPP/assets/img/og-image.svg" />
   <meta property="og:locale" content="es_AR" />
   <meta property="og:site_name" content="ResidenciAPP" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ResidenciAPP · Estudio activo para residencia médica" />
   <meta name="twitter:description" content="Preguntas, sprints, flashcards, error log y repaso espaciado para preparar el examen." />
-  <meta name="twitter:image" content="https://TU_USUARIO.github.io/TU_REPOSITORIO/assets/img/og-image.svg" />
+  <meta name="twitter:image" content="https://vanchoross.github.io/ResidenciAPP/assets/img/og-image.svg" />
   <meta name="theme-color" content="#1877d6" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="./assets/img/icon.svg" />
@@ -355,45 +355,47 @@
     </div>
   </div>
 
-    <script src="./assets/data/questions.js"></script>
+    <script src="./assets/js/config.js"></script>
+  <script src="./assets/data/questions.js"></script>
   <script src="./assets/data/collabdata.js"></script>
   <script src="./assets/js/main.js"></script>
 <!--
-======================== RESIDENCIAPP · CONFIGURACIÓN COLABORATIVA ========================
+======================== RESIDENCIAPP · APORTES COLABORATIVOS SIN GITHUB ========================
 
-A) Token de GitHub con permisos mínimos
-1. GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens.
-2. Generate new token.
-3. Repository access: Only select repositories → elegí solo el repo de ResidenciAPP.
-4. Repository permissions: Issues → Read and write.
-5. Copiá el token.
-6. En la app: Activar Colaboración → Configurar GitHub → pegá owner, repo y token.
+Objetivo de esta versión:
+- El usuario común NO necesita entrar a GitHub.
+- Completa “Por qué es correcta”, “Datos clave”, “Distractores”, “Regla de Oro” y “Bibliografía”.
+- Toca “Enviar aporte”.
+- El aporte llega a una Google Sheet tuya para revisión.
 
-⚠️ Seguridad: si pegás el PAT directamente en código público, queda expuesto. Para uso público,
-lo profesional es reemplazar el envío directo por una función serverless que guarde el token como secreto.
+A) Configurar Google Sheet + Apps Script
+1. Creá una Google Sheet vacía llamada, por ejemplo: ResidenciAPP Aportes.
+2. En esa Sheet: Extensiones → Apps Script.
+3. Pegá el código incluido en: scripts/google-apps-script.gs
+4. Guardá el proyecto.
+5. Apps Script → Implementar → Nueva implementación.
+6. Tipo: Aplicación web.
+7. Ejecutar como: Yo.
+8. Quién tiene acceso: Cualquier usuario.
+9. Implementar y copiá la URL que termina en /exec.
+10. Pegá esa URL en: assets/js/config.js, campo:
+    window.RESIDENCIAPP_CONFIG.contributions.endpoint
 
-B) Integración automática de sugerencias aprobadas
-Este paquete ya incluye:
-- .github/workflows/merge-approved-analysis.yml
-- scripts/apply-issue-analysis.mjs
+B) Flujo de revisión
+1. Cada aporte queda como fila en Google Sheets.
+2. Vos revisás la fila.
+3. Marcás Estado: aprobado / rechazado / pendiente.
+4. Cuando quieras integrar, exportás los aprobados a JSON y actualizás assets/data/collabdata.json.
 
-Flujo:
-1. La app crea un Issue con un payload JSON.
-2. Revisás el Issue manualmente.
-3. Si está bien, agregás la etiqueta: aprobado-residenciapp
-4. La Action integra el análisis en:
-   - assets/data/collabdata.json
-   - assets/data/collabdata.js
-5. GitHub Pages publica la versión actualizada.
+C) Backup manual
+Si no configurás endpoint, los aportes quedan en localStorage del navegador.
+Usá “Exportar aportes JSON” desde la app para descargar el backup.
 
-C) Exportación manual
-Si no querés usar la API, usá “Exportar Base de Datos (JSON)” desde la app.
-Luego podés copiar los análisis aprobados manualmente a assets/data/collabdata.json y regenerar
-assets/data/collabdata.js con:
+D) Seguridad
+Esta versión no usa Personal Access Token de GitHub en el navegador.
+El usuario común solo usa la app y envía aportes a la bandeja externa configurada.
 
-node -e "const fs=require('fs');const db=require('./assets/data/collabdata.json');fs.writeFileSync('./assets/data/collabdata.js','window.RESIDENCIAPP_COLLABDATA = '+JSON.stringify(db)+';\n')"
-
-===========================================================================================
+===============================================================================================
 -->
 
 </body>
