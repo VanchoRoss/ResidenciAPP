@@ -1,0 +1,18 @@
+{
+  "name": "ResidenciAPP",
+  "short_name": "ResidenciAPP",
+  "description": "Plataforma de estudio activo para residencia médica.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1877d6",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "./assets/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
