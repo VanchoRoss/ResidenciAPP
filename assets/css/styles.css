@@ -1,0 +1,192 @@
+html { scroll-behavior: smooth; }
+    body { font-feature-settings: "ss01" on, "ss02" on; }
+    .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+    .choice input:checked + div { border-color: #1877d6; background: linear-gradient(135deg, rgba(24,119,214,.10), rgba(51,153,240,.05)); }
+    .dark .choice input:checked + div { border-color: #59b8fb; background: linear-gradient(135deg, rgba(89,184,251,.18), rgba(51,153,240,.08)); }
+    .card-flip { perspective: 1000px; }
+    .card-flip-inner { transform-style: preserve-3d; transition: transform .45s ease; }
+    .card-flip[data-flipped="true"] .card-flip-inner { transform: rotateY(180deg); }
+    .card-face { backface-visibility: hidden; }
+    .card-back { transform: rotateY(180deg); }
+    .no-scrollbar::-webkit-scrollbar { display:none; }
+    .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+    .markdown-lite ul { list-style: disc; padding-left: 1.2rem; }
+    .markdown-lite li { margin: .25rem 0; }
+
+
+    /* === Estética tipográfica definitiva === */
+    :root {
+      --title-font: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --question-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: var(--title-font) !important;
+      letter-spacing: -0.035em;
+    }
+    #viewTitle {
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .ai-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .ai-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .trigger-word { font-weight: 900; color: #1260ad; background: rgba(24,119,214,.10); border-radius: .45rem; padding: .05rem .28rem; }
+    .dark .trigger-word { color: #8ed3ff; background: rgba(89,184,251,.18); }
+    .error-required { box-shadow: 0 0 0 2px rgba(244,63,94,.18); }
+    .performance-chip { transition: transform .15s ease, box-shadow .15s ease; }
+    .performance-chip:hover { transform: translateY(-1px); }
+
+
+    /* === ResidenciAPP Advanced Retention Layer === */
+    .native-tap { transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease, border-color .16s ease; }
+    .native-tap:active { transform: scale(.985); }
+    .retention-pill { transition: transform .16s ease, filter .16s ease; }
+    .retention-pill:hover { transform: translateY(-1px); filter: brightness(1.02); }
+    .flip-card-3d { perspective: 1400px; min-height: 320px; }
+    .flip-card-3d-inner { transform-style: preserve-3d; transition: transform .58s cubic-bezier(.2,.85,.25,1); min-height: 320px; }
+    .flip-card-3d[data-flipped="true"] .flip-card-3d-inner { transform: rotateY(180deg); }
+    .flip-card-3d-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .flip-card-3d-back { transform: rotateY(180deg); }
+    .bottom-sheet-enter { animation: sheetUp .24s ease-out both; }
+    @keyframes sheetUp { from { opacity:0; transform: translateY(18px) scale(.985); } to { opacity:1; transform: translateY(0) scale(1); } }
+    .soft-selected { box-shadow: 0 18px 60px rgba(24,119,214,.14); }
+    .micro-pop { animation: microPop .18s ease-out both; }
+    @keyframes microPop { 0% { transform: scale(.98); opacity:.72; } 100% { transform: scale(1); opacity:1; } }
+    @media (max-width: 640px) {
+      body { background: rgb(248 250 252); }
+      .dark body { background: rgb(2 6 23); }
+      #questionCard { border-radius: 1.5rem; padding: 1rem; }
+      #performancePanel { border-radius: 1.5rem; padding: 1rem; }
+      .flip-card-3d, .flip-card-3d-inner { min-height: 390px; }
+      #feynmanModal > div, #methodModal > div { max-height: 92vh; border-radius: 1.8rem 1.8rem 0 0; }
+    }
+
+
+    /* === ResidenciAPP Collaboration Layer === */
+    .collab-panel textarea { min-height: 118px; }
+    .collab-panel textarea:focus { box-shadow: 0 0 0 4px rgba(24,119,214,.10); }
+    .collab-on { box-shadow: 0 0 0 2px rgba(16,185,129,.18), 0 14px 40px rgba(16,185,129,.12); }
+    .collab-pulse { animation: collabPulse .22s ease-out both; }
+    @keyframes collabPulse { 0% { transform: scale(.985); opacity:.8 } 100% { transform: scale(1); opacity:1 } }
+
+    /* === Ajuste tipográfico profesional para preguntas ===
+       Solo modifica lectura, jerarquía visual y armonía del enunciado/opciones.
+       No altera lógica, banco, estadísticas, colaboración ni almacenamiento.
+    */
+    #questionCard {
+      letter-spacing: -0.005em;
+    }
+    #questionCard h3 {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+      font-size: clamp(1.08rem, 2.6vw, 1.46rem) !important;
+      line-height: 1.58 !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.018em !important;
+      color: rgb(15 23 42);
+      text-wrap: pretty;
+      max-width: 72ch;
+    }
+    .dark #questionCard h3 {
+      color: rgb(248 250 252);
+    }
+    #questionCard .choice > div {
+      border-radius: 1.35rem !important;
+      padding: 1rem 1.05rem !important;
+    }
+    #questionCard .choice p {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+      font-size: clamp(.94rem, 2.2vw, 1.02rem) !important;
+      line-height: 1.62 !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.006em !important;
+      color: rgb(51 65 85);
+    }
+    .dark #questionCard .choice p {
+      color: rgb(226 232 240);
+    }
+    #questionCard .choice span {
+      font-family: 'Inter', system-ui, sans-serif !important;
+      font-size: .82rem !important;
+      font-weight: 900 !important;
+    }
+    #questionCard .trigger-word {
+      font-weight: 900;
+      padding: .08rem .36rem;
+      border-radius: .55rem;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    @media (max-width: 640px) {
+      #questionCard h3 {
+        font-size: 1.04rem !important;
+        line-height: 1.6 !important;
+        letter-spacing: -0.012em !important;
+      }
+      #questionCard .choice > div {
+        padding: .92rem !important;
+        border-radius: 1.15rem !important;
+      }
+      #questionCard .choice p {
+        font-size: .94rem !important;
+        line-height: 1.58 !important;
+        font-weight: 600 !important;
+      }
+    }
+
+
+    /* === Reestilizado final: títulos generales + enunciados clínicos === */
+    #questionCard h3 {
+      font-family: var(--question-font) !important;
+      font-size: clamp(1.12rem, 2.4vw, 1.42rem) !important;
+      line-height: 1.66 !important;
+      font-weight: 650 !important;
+      letter-spacing: -0.012em !important;
+      color: rgb(15 23 42);
+      max-width: 78ch;
+    }
+    .dark #questionCard h3 { color: rgb(241 245 249); }
+    #questionCard .choice > div {
+      border-radius: 1.25rem !important;
+      padding: 1rem 1.05rem !important;
+      box-shadow: 0 1px 0 rgba(15,23,42,.02);
+    }
+    #questionCard .choice p {
+      font-family: 'Inter', system-ui, sans-serif !important;
+      font-size: clamp(.93rem, 2vw, 1rem) !important;
+      line-height: 1.58 !important;
+      font-weight: 560 !important;
+      letter-spacing: -0.01em !important;
+    }
+    #questionCard .choice span {
+      font-family: var(--title-font) !important;
+      letter-spacing: -.02em !important;
+    }
+    #questionCard .trigger-word {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 850;
+      background: linear-gradient(180deg, rgba(24,119,214,.12), rgba(24,119,214,.06));
+      border: 1px solid rgba(24,119,214,.10);
+    }
+    .dark #questionCard .trigger-word {
+      background: linear-gradient(180deg, rgba(89,184,251,.20), rgba(89,184,251,.10));
+      border-color: rgba(89,184,251,.18);
+    }
+    @media (max-width: 640px) {
+      #questionCard h3 {
+        font-size: 1.03rem !important;
+        line-height: 1.66 !important;
+      }
+      #viewTitle { font-size: 1.08rem; }
+    }
