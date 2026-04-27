@@ -1,0 +1,13 @@
+{
+  "name": "residenciapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:js": "node --check assets/js/main.js && node --check scripts/apply-issue-analysis.mjs",
+    "serve": "npx http-server . -p 8080"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
