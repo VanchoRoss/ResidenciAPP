@@ -107,7 +107,7 @@
       <button id="themeToggle" class="flex w-full items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold hover:bg-slate-100 dark:border-slate-800 dark:hover:bg-slate-900">
         <span id="themeLabel">Oscuro</span><span id="themeIcon">🌙</span>
       </button>
-      <button id="resetProgressBtn" class="w-full rounded-2xl border border-rose-200 px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">Reiniciar progreso</button>
+      <button id="resetProgressBtn" class="w-full rounded-2xl border border-rose-200 px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">Reinicio global del progreso</button>
     </div>
   </aside>
 
@@ -163,7 +163,8 @@
             <button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="clearFilters()">Limpiar</button>
           </div>
           <label class="text-xs font-black uppercase tracking-[.15em] text-slate-400">Buscar sprint o tema</label>
-          <input id="searchInput" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Ej: HTA, bronquiolitis, cáncer de mama…" />
+          <input id="searchInput" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Ej: HTA, bronquiolitis, cáncer de mama…" autocomplete="off" />
+          <div id="searchLiveResults" class="mt-3"></div>
           <div class="mt-4 grid gap-3">
             <div>
               <label class="text-xs font-black uppercase tracking-[.15em] text-slate-400">Eje</label>

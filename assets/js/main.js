@@ -149,6 +149,49 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const acc = answered ? Math.round(correct/answered*100) : 0;
       return {answered, correct, pct, acc};
     }
+    function searchTokens(raw=''){
+      return norm(raw).split(/\s+/).map(t=>t.trim()).filter(Boolean);
+    }
+    function sprintSearchHaystack(sp){
+      const questionText = sp.questions.map(q => [q.q, q.year, q.source, q.image_reference, Object.values(q.opts||{}).join(' ')].join(' ')).join(' ');
+      return norm([sp.eje, sp.tema, sp.sprint, sp.total, questionText].join(' '));
+    }
+    function sprintMatchesSearch(sp, rawQuery){
+      const tokens = searchTokens(rawQuery);
+      if(!tokens.length) return true;
+      const haystack = sprintSearchHaystack(sp);
+      return tokens.every(token => haystack.includes(token));
+    }
+    function sprintMatchPreview(sp, rawQuery){
+      const tokens = searchTokens(rawQuery);
+      if(!tokens.length) return '';
+      const hit = sp.questions.find(q => {
+        const hay = norm([q.q, Object.values(q.opts||{}).join(' '), q.year, q.source].join(' '));
+        return tokens.every(token => hay.includes(token));
+      });
+      if(!hit) return '';
+      const text = String(hit.q || '');
+      return text.length > 135 ? text.slice(0,132).trim()+'…' : text;
+    }
+    function highlightSearchPreview(text, rawQuery){
+      let safe = esc(text);
+      const tokens = searchTokens(rawQuery).filter(t=>t.length>=3).slice(0,4);
+      tokens.forEach(token => {
+        const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('('+escaped+')','ig');
+        safe = safe.replace(re, '<mark class="rounded bg-yellow-200 px-1 font-black text-slate-900">$1</mark>');
+      });
+      return safe;
+    }
+    function renderSearchStatus(list, rawQuery){
+      const box = $('#searchLiveResults');
+      if(!box) return;
+      const query = String(rawQuery||'').trim();
+      if(!query){ box.innerHTML=''; return; }
+      const top = list.slice(0,4).map(sp => '<button class="rounded-full border border-medical-100 bg-white px-3 py-1 text-[11px] font-black text-medical-700 shadow-sm hover:bg-medical-50 dark:border-medical-900/60 dark:bg-slate-900 dark:text-medical-300 dark:hover:bg-medical-950/30" onclick="startSprint(\''+sp.id+'\', state.method||\'preguntas\')">'+esc(sp.sprint)+'</button>').join('');
+      box.innerHTML = '<div class="rounded-2xl border border-medical-100 bg-medical-50/70 p-3 text-xs font-bold leading-5 text-medical-800 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-200"><div class="flex flex-wrap items-center gap-2"><span>🔎 '+list.length+' resultado'+(list.length===1?'':'s')+' para “'+esc(query)+'”</span>'+top+'</div><p class="mt-1 text-[11px] font-semibold opacity-80">Busca en eje, tema, sprint, enunciados y opciones. Los resultados se actualizan mientras escribís.</p></div>';
+    }
+
     function questionStatus(q){
       const a = answerFor(q); if(!a) return 'pendiente'; if(a.selected === q.ans) return 'correcta'; return 'fallada';
     }
@@ -191,19 +234,23 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function renderSprints(){
-      const q = norm($('#searchInput').value||'');
+      const rawQuery = $('#searchInput').value || '';
       const eje = $('#ejeFilter').value;
       const tema = $('#temaFilter').value;
       let list = SPRINTS.filter(s => (!eje || s.eje===eje) && (!tema || s.tema===tema));
-      if(q) list = list.filter(s => norm([s.eje,s.tema,s.sprint].join(' ')).includes(q));
+      if(rawQuery.trim()) list = list.filter(s => sprintMatchesSearch(s, rawQuery));
       $('#sprintCount').textContent = list.length+' sprints';
+      renderSearchStatus(list, rawQuery);
       $('#sprintGrid').innerHTML = list.map(sp => {
         const st = sprintStats(sp);
         const method = $('#methodFilter').value || state.method || 'preguntas';
+        const preview = sprintMatchPreview(sp, rawQuery);
+        const previewHtml = preview ? '<div class="mt-3 rounded-2xl bg-medical-50/70 p-3 text-xs font-semibold leading-5 text-medical-800 dark:bg-medical-950/20 dark:text-medical-200"><span class="font-black">Coincidencia:</span> '+highlightSearchPreview(preview, rawQuery)+'</div>' : '';
         return '<article class="rounded-3xl border border-slate-200 p-4 transition hover:border-medical-300 hover:shadow-soft dark:border-slate-800 dark:hover:border-medical-800">\n'
           + '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="truncate text-xs font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+esc(sp.eje)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-6">'+esc(sp.sprint)+'</h4><p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">'+esc(sp.tema)+' · '+sp.total+' preguntas</p></div><div class="rounded-2xl bg-slate-100 px-3 py-2 text-center dark:bg-slate-800"><p class="text-lg font-black">'+st.pct+'%</p><p class="text-[10px] font-black uppercase text-slate-400">avance</p></div></div>'
           + '<div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-medical-600" style="width:'+st.pct+'%"></div></div>'
-          + '<div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+st.answered+'/'+sp.total+' respondidas · '+st.acc+'% acierto</p><div class="flex gap-2"><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openTopicMethods(\''+sp.id+'\')">Métodos</button><button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white hover:bg-medical-700" onclick="startSprint(\''+sp.id+'\', \''+method+'\')">Iniciar</button></div></div>'
+          + previewHtml
+          + '<div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+st.answered+'/'+sp.total+' respondidas · '+st.acc+'% acierto</p><div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openTopicMethods(\''+sp.id+'\')">Métodos</button><button class="rounded-2xl border border-rose-200 px-3 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30" onclick="resetSprintProgress(\''+sp.id+'\')">Reiniciar</button><button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white hover:bg-medical-700" onclick="startSprint(\''+sp.id+'\', \''+method+'\')">Iniciar</button></div></div>'
           + '</article>';
       }).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">No encontré sprints con esos filtros.</div>';
     }
@@ -1098,6 +1145,48 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const __collabRenderAll = renderAll;
     renderAll = function(){ __collabRenderAll(); renderCollaborationControls(); };
 
+    function clearProgressForQuestionIds(ids){
+      const idSet = ids instanceof Set ? ids : new Set(ids);
+      Object.keys(state.answers||{}).forEach(id => { if(idSet.has(id)) delete state.answers[id]; });
+      Object.keys(state.mistakes||{}).forEach(id => { if(idSet.has(id)) delete state.mistakes[id]; });
+      Object.keys(state.favorites||{}).forEach(id => { if(idSet.has(id)) delete state.favorites[id]; });
+      Object.keys(state.scheduled||{}).forEach(id => { if(idSet.has(id)) delete state.scheduled[id]; });
+      Object.keys(state.retention||{}).forEach(id => { if(idSet.has(id)) delete state.retention[id]; });
+      Object.keys(state.feynmanNotes||{}).forEach(id => { if(idSet.has(id)) delete state.feynmanNotes[id]; });
+      if(state.timing?.questionTimes){ Object.keys(state.timing.questionTimes).forEach(id => { if(idSet.has(id)) delete state.timing.questionTimes[id]; }); }
+    }
+    function rebuildTimingFromRemainingAnswers(){
+      const times = state.timing?.questionTimes || {};
+      let totalMs = 0, timedAnswers = 0;
+      Object.values(times).forEach(list => (Array.isArray(list)?list:[]).forEach(ms => { if(isFinite(ms)){ totalMs += ms; timedAnswers += 1; } }));
+      state.timing = {totalMs, timedAnswers, questionTimes: times};
+    }
+    function resetGlobalProgress(){
+      const ok = confirm('¿Reiniciar TODO el progreso? Se borran respuestas, errores, favoritos, repasos programados, retención, tiempos y sesión activa. No se borran aportes colaborativos ni imágenes guardadas.');
+      if(!ok) return;
+      const keep = { theme: state.theme, method: state.method, collaboration: state.collaboration, library: state.library || [] };
+      state = Object.assign(defaultState(), keep);
+      session = null;
+      saveState();
+      renderAll();
+      showView('dashboard');
+      alert('Progreso global reiniciado. Los aportes colaborativos se conservaron.');
+    }
+    function resetSprintProgress(id){
+      const sp = SPRINTS.find(s=>s.id===id);
+      if(!sp) return alert('No encontré ese sprint.');
+      const st = sprintStats(sp);
+      const ok = confirm('¿Reiniciar el progreso de este sprint?\n\n'+sp.sprint+'\n'+sp.tema+'\n\nSe borran '+st.answered+' respuestas, errores, favoritos y repasos de sus '+sp.total+' preguntas. No se borran aportes colaborativos.');
+      if(!ok) return;
+      const ids = new Set(sp.questions.map(q=>q.id));
+      clearProgressForQuestionIds(ids);
+      rebuildTimingFromRemainingAnswers();
+      if(session && (session.questions||[]).some(qid => ids.has(qid))){ session = null; state.session = null; }
+      saveState();
+      renderAll();
+      alert('Sprint reiniciado: '+sp.sprint);
+    }
+
     function init(){
       initSelects();
       session = state.session || null;
@@ -1111,6 +1200,6 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#themeToggle').addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#themeToggleTop')?.addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#mobileMenuBtn').addEventListener('click',openMobileMenu); $('#closeMenuBtn').addEventListener('click',closeMobileMenu); $('#overlay').addEventListener('click',closeMobileMenu);
-      $('#resetProgressBtn').addEventListener('click',()=>{ if(confirm('¿Reiniciar progreso, errores, biblioteca y repasos?')){ state=defaultState(); session=null; saveState(); renderAll(); showView('dashboard'); } });
+      $('#resetProgressBtn').addEventListener('click', resetGlobalProgress);
     }
     init();
