@@ -39,6 +39,17 @@ window.RESIDENCIAPP_LESSONS = [
       "colposcopia",
       "conizacion",
       "lletz"
+    ],
+    "explicitQuestionIds": [
+      "Q0141",
+      "Q0595",
+      "Q0608",
+      "Q0599",
+      "Q0613",
+      "Q0632",
+      "Q0625",
+      "Q0664",
+      "Q0665"
     ]
   },
   {
@@ -79,6 +90,11 @@ window.RESIDENCIAPP_LESSONS = [
       "histeroscopia",
       "histeroscopía",
       "tamoxifeno"
+    ],
+    "explicitQuestionIds": [
+      "Q0607",
+      "Q0684",
+      "Q0605"
     ]
   },
   {
@@ -120,6 +136,15 @@ window.RESIDENCIAPP_LESSONS = [
       "tnm",
       "adenopatias axilares",
       "adenopatías axilares"
+    ],
+    "explicitQuestionIds": [
+      "Q0592",
+      "Q0526",
+      "Q0621",
+      "Q0616",
+      "Q0667",
+      "Q0641",
+      "Q0600"
     ]
   },
   {
@@ -161,6 +186,10 @@ window.RESIDENCIAPP_LESSONS = [
       "krukenberg",
       "disgerminoma",
       "endometrioma"
+    ],
+    "explicitQuestionIds": [
+      "Q0598",
+      "Q0655"
     ]
   },
   {
@@ -199,6 +228,10 @@ window.RESIDENCIAPP_LESSONS = [
       "dolor pélvico",
       "quiste de chocolate",
       "ca-125"
+    ],
+    "explicitQuestionIds": [
+      "Q0614",
+      "Q0593"
     ]
   },
   {
@@ -235,6 +268,9 @@ window.RESIDENCIAPP_LESSONS = [
       "amniorrexis",
       "liquido amniotico",
       "líquido amniótico"
+    ],
+    "explicitQuestionIds": [
+      "Q0714"
     ]
   }
 ];

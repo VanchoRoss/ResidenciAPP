@@ -1,5 +1,6 @@
 const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summary_by_tema:[], summary_by_sprint:[], questions:[]};
     const QUESTIONS = DATA.questions || [];
+    const LESSONS = window.RESIDENCIAPP_LESSONS || [];
     const METHODS = [
       {id:'preguntas', name:'Preguntas ABCD', icon:'✅', tag:'Aplicación', desc:'Responder y justificar. Ideal para entrenar toma de decisiones.'},
       {id:'simulacro', name:'Simulacro', icon:'⏱️', tag:'Presión', desc:'Sin explicación inmediata. Sirve para entrenar rendimiento real.'},
@@ -38,7 +39,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const addDays = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
 
     function defaultState(){
-      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0}, timing:{totalMs:0, timedAnswers:0, questionTimes:{}} };
+      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0}, timing:{totalMs:0, timedAnswers:0, questionTimes:{}}, lessonProgress:{}, currentLessonId:'' };
     }
     let state = loadState();
     let session = null;
@@ -149,6 +150,49 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const acc = answered ? Math.round(correct/answered*100) : 0;
       return {answered, correct, pct, acc};
     }
+    function searchTokens(raw=''){
+      return norm(raw).split(/\s+/).map(t=>t.trim()).filter(Boolean);
+    }
+    function sprintSearchHaystack(sp){
+      const questionText = sp.questions.map(q => [q.q, q.year, q.source, q.image_reference, Object.values(q.opts||{}).join(' ')].join(' ')).join(' ');
+      return norm([sp.eje, sp.tema, sp.sprint, sp.total, questionText].join(' '));
+    }
+    function sprintMatchesSearch(sp, rawQuery){
+      const tokens = searchTokens(rawQuery);
+      if(!tokens.length) return true;
+      const haystack = sprintSearchHaystack(sp);
+      return tokens.every(token => haystack.includes(token));
+    }
+    function sprintMatchPreview(sp, rawQuery){
+      const tokens = searchTokens(rawQuery);
+      if(!tokens.length) return '';
+      const hit = sp.questions.find(q => {
+        const hay = norm([q.q, Object.values(q.opts||{}).join(' '), q.year, q.source].join(' '));
+        return tokens.every(token => hay.includes(token));
+      });
+      if(!hit) return '';
+      const text = String(hit.q || '');
+      return text.length > 135 ? text.slice(0,132).trim()+'…' : text;
+    }
+    function highlightSearchPreview(text, rawQuery){
+      let safe = esc(text);
+      const tokens = searchTokens(rawQuery).filter(t=>t.length>=3).slice(0,4);
+      tokens.forEach(token => {
+        const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('('+escaped+')','ig');
+        safe = safe.replace(re, '<mark class="rounded bg-yellow-200 px-1 font-black text-slate-900">$1</mark>');
+      });
+      return safe;
+    }
+    function renderSearchStatus(list, rawQuery){
+      const box = $('#searchLiveResults');
+      if(!box) return;
+      const query = String(rawQuery||'').trim();
+      if(!query){ box.innerHTML=''; return; }
+      const top = list.slice(0,4).map(sp => '<button class="rounded-full border border-medical-100 bg-white px-3 py-1 text-[11px] font-black text-medical-700 shadow-sm hover:bg-medical-50 dark:border-medical-900/60 dark:bg-slate-900 dark:text-medical-300 dark:hover:bg-medical-950/30" onclick="startSprint(\''+sp.id+'\', state.method||\'preguntas\')">'+esc(sp.sprint)+'</button>').join('');
+      box.innerHTML = '<div class="rounded-2xl border border-medical-100 bg-medical-50/70 p-3 text-xs font-bold leading-5 text-medical-800 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-200"><div class="flex flex-wrap items-center gap-2"><span>🔎 '+list.length+' resultado'+(list.length===1?'':'s')+' para “'+esc(query)+'”</span>'+top+'</div><p class="mt-1 text-[11px] font-semibold opacity-80">Busca en eje, tema, sprint, enunciados y opciones. Los resultados se actualizan mientras escribís.</p></div>';
+    }
+
     function questionStatus(q){
       const a = answerFor(q); if(!a) return 'pendiente'; if(a.selected === q.ans) return 'correcta'; return 'fallada';
     }
@@ -168,6 +212,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#temaFilter').addEventListener('change', renderSprints);
       $('#searchInput').addEventListener('input', renderSprints);
       $('#librarySearch').addEventListener('input', renderLibrary);
+      if($('#lessonSearch')) $('#lessonSearch').addEventListener('input', renderLearn);
     }
     function updateTemaFilter(){
       const eje = $('#ejeFilter').value;
@@ -191,19 +236,23 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function renderSprints(){
-      const q = norm($('#searchInput').value||'');
+      const rawQuery = $('#searchInput').value || '';
       const eje = $('#ejeFilter').value;
       const tema = $('#temaFilter').value;
       let list = SPRINTS.filter(s => (!eje || s.eje===eje) && (!tema || s.tema===tema));
-      if(q) list = list.filter(s => norm([s.eje,s.tema,s.sprint].join(' ')).includes(q));
+      if(rawQuery.trim()) list = list.filter(s => sprintMatchesSearch(s, rawQuery));
       $('#sprintCount').textContent = list.length+' sprints';
+      renderSearchStatus(list, rawQuery);
       $('#sprintGrid').innerHTML = list.map(sp => {
         const st = sprintStats(sp);
         const method = $('#methodFilter').value || state.method || 'preguntas';
+        const preview = sprintMatchPreview(sp, rawQuery);
+        const previewHtml = preview ? '<div class="mt-3 rounded-2xl bg-medical-50/70 p-3 text-xs font-semibold leading-5 text-medical-800 dark:bg-medical-950/20 dark:text-medical-200"><span class="font-black">Coincidencia:</span> '+highlightSearchPreview(preview, rawQuery)+'</div>' : '';
         return '<article class="rounded-3xl border border-slate-200 p-4 transition hover:border-medical-300 hover:shadow-soft dark:border-slate-800 dark:hover:border-medical-800">\n'
           + '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="truncate text-xs font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+esc(sp.eje)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-6">'+esc(sp.sprint)+'</h4><p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">'+esc(sp.tema)+' · '+sp.total+' preguntas</p></div><div class="rounded-2xl bg-slate-100 px-3 py-2 text-center dark:bg-slate-800"><p class="text-lg font-black">'+st.pct+'%</p><p class="text-[10px] font-black uppercase text-slate-400">avance</p></div></div>'
           + '<div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-medical-600" style="width:'+st.pct+'%"></div></div>'
-          + '<div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+st.answered+'/'+sp.total+' respondidas · '+st.acc+'% acierto</p><div class="flex gap-2"><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openTopicMethods(\''+sp.id+'\')">Métodos</button><button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white hover:bg-medical-700" onclick="startSprint(\''+sp.id+'\', \''+method+'\')">Iniciar</button></div></div>'
+          + previewHtml
+          + '<div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+st.answered+'/'+sp.total+' respondidas · '+st.acc+'% acierto</p><div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openTopicMethods(\''+sp.id+'\')">Métodos</button><button class="rounded-2xl border border-rose-200 px-3 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30" onclick="resetSprintProgress(\''+sp.id+'\')">Reiniciar</button><button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white hover:bg-medical-700" onclick="startSprint(\''+sp.id+'\', \''+method+'\')">Iniciar</button></div></div>'
           + '</article>';
       }).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">No encontré sprints con esos filtros.</div>';
     }
@@ -558,6 +607,109 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function toggleDaily(i){ const t=todayKey(); state.daily[t] ||= {}; state.daily[t][i] = !state.daily[t][i]; saveState(); renderDailyChecklist(); }
     function resetDailyChecklist(){ state.daily[todayKey()]={}; saveState(); renderDailyChecklist(); }
 
+
+    function lessonById(id){ return LESSONS.find(l => l.id === id); }
+    function lessonProgress(id){ state.lessonProgress ||= {}; return state.lessonProgress[id] || {}; }
+    function lessonIsDone(id){ return lessonProgress(id).status === 'done'; }
+    function lessonIsSaved(id){ return lessonProgress(id).status === 'saved'; }
+    function lessonAccentClasses(accent){
+      const map = {blue:'border-medical-200 bg-medical-50 text-medical-700 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-300',rose:'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300',purple:'border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-900/60 dark:bg-purple-950/30 dark:text-purple-300',teal:'border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-900/60 dark:bg-teal-950/30 dark:text-teal-300',amber:'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300',indigo:'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-300'};
+      return map[accent] || map.blue;
+    }
+    function lessonMatches(lesson, query){
+      const tokens = searchTokens(query);
+      if(!tokens.length) return true;
+      const hay = norm([lesson.title, lesson.eje, lesson.tema, lesson.subtitle, lesson.description, (lesson.badges||[]).join(' '), (lesson.sections||[]).join(' '), (lesson.terms||[]).join(' ')].join(' '));
+      return tokens.every(t => hay.includes(t));
+    }
+    function lessonRelatedQuestions(lesson){
+      const terms = (lesson?.terms || []).map(norm).filter(Boolean);
+      if(!terms.length) return [];
+      return QUESTIONS.filter(q => {
+        const hay = norm([q.eje, q.tema, q.sprint, q.q, q.source, q.year, Object.values(q.opts||{}).join(' ')].join(' '));
+        return terms.some(t => t.length > 2 && hay.includes(t));
+      });
+    }
+    function lessonCard(lesson){
+      const prog = lessonProgress(lesson.id);
+      const done = prog.status === 'done';
+      const saved = prog.status === 'saved';
+      const current = state.currentLessonId === lesson.id;
+      const related = lessonRelatedQuestions(lesson).length;
+      const status = done ? 'Vista' : saved ? 'Para repasar' : 'Pendiente';
+      const statusClass = done ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' : saved ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300';
+      return '<button class="w-full rounded-3xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-soft '+(current?'border-medical-400 bg-medical-50/80 dark:border-medical-700 dark:bg-medical-950/20':'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950/50')+'" onclick="openLesson(\''+lesson.id+'\')">'
+        + '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+esc(lesson.eje)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-6">'+esc(lesson.title)+'</h4><p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400">'+esc(lesson.subtitle)+'</p></div><span class="rounded-full px-2 py-1 text-[10px] font-black '+statusClass+'">'+status+'</span></div>'
+        + '<p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">'+esc(lesson.description)+'</p>'
+        + '<div class="mt-3 flex flex-wrap gap-2">'+(lesson.badges||[]).map(b=>'<span class="rounded-full border px-2 py-1 text-[10px] font-black '+lessonAccentClasses(lesson.accent)+'">'+esc(b)+'</span>').join('')+'</div>'
+        + '<p class="mt-3 text-xs font-bold text-slate-500 dark:text-slate-400">'+related+' preguntas relacionadas · '+(lesson.sections||[]).length+' secciones</p>'
+        + '</button>';
+    }
+    function renderLessonStats(){
+      if(!$('#lessonStats')) return;
+      const total = LESSONS.length;
+      const done = LESSONS.filter(l => lessonIsDone(l.id)).length;
+      const saved = LESSONS.filter(l => lessonIsSaved(l.id)).length;
+      const pct = total ? Math.round(done/total*100) : 0;
+      $('#lessonStats').innerHTML = [['Nodos', total, 'disponibles'],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
+    }
+    function renderLearn(){
+      if(!$('#learnView')) return;
+      renderLessonStats();
+      const q = $('#lessonSearch')?.value || '';
+      const list = LESSONS.filter(l => lessonMatches(l, q));
+      if($('#lessonGrid')) $('#lessonGrid').innerHTML = list.map(lessonCard).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>';
+      if(state.currentLessonId && lessonById(state.currentLessonId)) openLesson(state.currentLessonId, true);
+    }
+    function resetLessonFilter(){ if($('#lessonSearch')) $('#lessonSearch').value=''; renderLearn(); }
+    function openLesson(id, silent=false){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      state.currentLessonId = id;
+      saveState();
+      if($('#lessonEmpty')) $('#lessonEmpty').classList.add('hidden');
+      if($('#lessonViewer')) $('#lessonViewer').classList.remove('hidden');
+      if($('#lessonViewerTitle')) $('#lessonViewerTitle').textContent = lesson.title;
+      if($('#lessonViewerMeta')) $('#lessonViewerMeta').textContent = lesson.tema+' · '+lesson.eje;
+      if($('#lessonViewerSub')) $('#lessonViewerSub').textContent = lesson.subtitle;
+      const frame = $('#lessonFrame');
+      if(frame && frame.getAttribute('src') !== lesson.file) frame.setAttribute('src', lesson.file);
+      const related = lessonRelatedQuestions(lesson);
+      const done = lessonIsDone(id);
+      if($('#lessonCompleteBtn')) $('#lessonCompleteBtn').textContent = done ? '✓ Vista' : 'Marcar vista';
+      if($('#lessonQuickMap')) $('#lessonQuickMap').innerHTML = '<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Ruta del nodo</p><div class="mt-2 flex flex-wrap gap-2">'+(lesson.sections||[]).map((s,i)=>'<span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+(i+1)+'. '+esc(s)+'</span>').join('')+'</div></div><div class="shrink-0 rounded-2xl border border-slate-200 px-4 py-3 text-center dark:border-slate-700"><p class="font-display text-2xl font-extrabold">'+related.length+'</p><p class="text-[10px] font-black uppercase tracking-[.16em] text-slate-400">preguntas relacionadas</p></div></div>';
+      renderLessonStats();
+      if(!silent) renderLearn();
+    }
+    function markCurrentLessonDone(){
+      const id = state.currentLessonId;
+      if(!id) return;
+      state.lessonProgress ||= {};
+      state.lessonProgress[id] = Object.assign({}, state.lessonProgress[id]||{}, {status:'done', completedAt:Date.now()});
+      saveState(); renderLearn();
+    }
+    function saveCurrentLessonForReview(){
+      const id = state.currentLessonId;
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      state.lessonProgress ||= {};
+      state.lessonProgress[id] = Object.assign({}, state.lessonProgress[id]||{}, {status:'saved', savedAt:Date.now(), nextReview:addDays(3)});
+      addLibrary({type:'tema', topic:lesson.title, text:'Nodo tutor guardado para repasar: '+lesson.subtitle, qid:''});
+      saveState(); renderLearn(); alert('Nodo guardado para repasar luego.');
+    }
+    function startCurrentLessonPractice(){
+      const lesson = lessonById(state.currentLessonId);
+      if(!lesson) return alert('Elegí primero un nodo.');
+      startLessonPractice(lesson.id);
+    }
+    function startLessonPractice(id){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      const qs = lessonRelatedQuestions(lesson);
+      if(!qs.length) return alert('Todavía no encontré preguntas vinculadas a este nodo.');
+      setSession(qs, 'Tutor · '+lesson.title, lesson.tema+' · '+qs.length+' preguntas relacionadas', state.method || 'preguntas', true);
+    }
+
     function renderMethods(){
       $('#methodGuide').innerHTML = METHODS.map(m=>'<div class="rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><p class="text-2xl">'+m.icon+'</p><h4 class="mt-2 font-display text-lg font-extrabold">'+m.name+'</h4><p class="text-xs font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+m.tag+'</p><p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">'+m.desc+'</p></div>').join('');
       const techniques = [
@@ -580,17 +732,17 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function saveStateAndAll(){ saveState(); renderAll(); }
-    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
+    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderLearn(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
 
     function showView(name){
       $$('.view').forEach(v=>v.classList.add('hidden'));
       $('#'+name+'View')?.classList.remove('hidden');
       $$('.navBtn').forEach(b=> b.classList.toggle('bg-medical-50', b.dataset.nav===name));
       $$('.navBtn').forEach(b=> b.classList.toggle('text-medical-700', b.dataset.nav===name));
-      const titles={dashboard:'Panel principal',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
+      const titles={dashboard:'Panel principal',learn:'Aprender desde cero',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
       $('#viewTitle').textContent = titles[name] || 'ResidenciAPP';
       closeMobileMenu(); window.scrollTo({top:0, behavior:'smooth'});
-      if(name==='session') renderQuestion(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
+      if(name==='session') renderQuestion(); if(name==='learn') renderLearn(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
     }
     function openMobileMenu(){ $('#sidebar').classList.remove('-translate-x-full'); $('#overlay').classList.remove('hidden'); }
     function closeMobileMenu(){ $('#sidebar').classList.add('-translate-x-full'); $('#overlay').classList.add('hidden'); }
@@ -1098,6 +1250,303 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const __collabRenderAll = renderAll;
     renderAll = function(){ __collabRenderAll(); renderCollaborationControls(); };
 
+    function clearProgressForQuestionIds(ids){
+      const idSet = ids instanceof Set ? ids : new Set(ids);
+      Object.keys(state.answers||{}).forEach(id => { if(idSet.has(id)) delete state.answers[id]; });
+      Object.keys(state.mistakes||{}).forEach(id => { if(idSet.has(id)) delete state.mistakes[id]; });
+      Object.keys(state.favorites||{}).forEach(id => { if(idSet.has(id)) delete state.favorites[id]; });
+      Object.keys(state.scheduled||{}).forEach(id => { if(idSet.has(id)) delete state.scheduled[id]; });
+      Object.keys(state.retention||{}).forEach(id => { if(idSet.has(id)) delete state.retention[id]; });
+      Object.keys(state.feynmanNotes||{}).forEach(id => { if(idSet.has(id)) delete state.feynmanNotes[id]; });
+      if(state.timing?.questionTimes){ Object.keys(state.timing.questionTimes).forEach(id => { if(idSet.has(id)) delete state.timing.questionTimes[id]; }); }
+    }
+    function rebuildTimingFromRemainingAnswers(){
+      const times = state.timing?.questionTimes || {};
+      let totalMs = 0, timedAnswers = 0;
+      Object.values(times).forEach(list => (Array.isArray(list)?list:[]).forEach(ms => { if(isFinite(ms)){ totalMs += ms; timedAnswers += 1; } }));
+      state.timing = {totalMs, timedAnswers, questionTimes: times};
+    }
+    function resetGlobalProgress(){
+      const ok = confirm('¿Reiniciar TODO el progreso? Se borran respuestas, errores, favoritos, repasos programados, retención, tiempos y sesión activa. No se borran aportes colaborativos ni imágenes guardadas.');
+      if(!ok) return;
+      const keep = { theme: state.theme, method: state.method, collaboration: state.collaboration, library: state.library || [] };
+      state = Object.assign(defaultState(), keep);
+      session = null;
+      saveState();
+      renderAll();
+      showView('dashboard');
+      alert('Progreso global reiniciado. Los aportes colaborativos se conservaron.');
+    }
+    function resetSprintProgress(id){
+      const sp = SPRINTS.find(s=>s.id===id);
+      if(!sp) return alert('No encontré ese sprint.');
+      const st = sprintStats(sp);
+      const ok = confirm('¿Reiniciar el progreso de este sprint?\n\n'+sp.sprint+'\n'+sp.tema+'\n\nSe borran '+st.answered+' respuestas, errores, favoritos y repasos de sus '+sp.total+' preguntas. No se borran aportes colaborativos.');
+      if(!ok) return;
+      const ids = new Set(sp.questions.map(q=>q.id));
+      clearProgressForQuestionIds(ids);
+      rebuildTimingFromRemainingAnswers();
+      if(session && (session.questions||[]).some(qid => ids.has(qid))){ session = null; state.session = null; }
+      saveState();
+      renderAll();
+      alert('Sprint reiniciado: '+sp.sprint);
+    }
+
+
+    /* === ResidenciAPP Tutor v2: estudio separado de entrenamiento/simulacro === */
+    let examTimerInterval = null;
+
+    function selectedSimSeconds(){
+      const fromSelect = Number($('#simTimePerQuestion')?.value || 0);
+      return fromSelect || Number(state.simSeconds || 90) || 90;
+    }
+    function formatClock(total){
+      total = Math.max(0, Number(total||0));
+      const m = Math.floor(total/60);
+      const s = total % 60;
+      return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+    function modeLabel(){
+      if(!session) return '';
+      return session.mode === 'exam' ? 'Simulacro de examen' : 'Práctica libre';
+    }
+    function stopExamTimer(){
+      if(examTimerInterval){ clearInterval(examTimerInterval); examTimerInterval = null; }
+    }
+    function renderExamTimerPanel(){
+      const panel = $('#examTimerPanel');
+      if(!panel) return;
+      if(!session || session.mode !== 'exam'){
+        panel.classList.add('hidden');
+        panel.innerHTML = '';
+        stopExamTimer();
+        return;
+      }
+      panel.classList.remove('hidden');
+      const remaining = Math.max(0, Number(session.remainingSeconds || 0));
+      const total = Math.max(1, Number(session.totalSeconds || 1));
+      const pct = Math.max(0, Math.min(100, Math.round((remaining/total)*100)));
+      const urgent = remaining <= 60;
+      panel.innerHTML = '<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em]">Modo simulacro</p><p class="text-sm font-bold opacity-90">Sin explicación hasta finalizar · '+session.secondsPerQuestion+' segundos por pregunta</p></div><div class="font-display text-3xl font-extrabold '+(urgent?'exam-timer-pulse text-rose-600 dark:text-rose-300':'')+'">⏱ '+formatClock(remaining)+'</div></div><div class="mt-3 h-2 overflow-hidden rounded-full bg-white/70 dark:bg-slate-950/50"><div class="h-full rounded-full '+(urgent?'bg-rose-500':'bg-amber-500')+'" style="width:'+pct+'%"></div></div>';
+    }
+    function startExamTimerIfNeeded(){
+      if(!session || session.mode !== 'exam') { renderExamTimerPanel(); return; }
+      if(!session.lastTick) session.lastTick = Date.now();
+      renderExamTimerPanel();
+      if(examTimerInterval) return;
+      examTimerInterval = setInterval(() => {
+        if(!session || session.mode !== 'exam'){ renderExamTimerPanel(); return; }
+        const now = Date.now();
+        const delta = Math.floor((now - (session.lastTick || now))/1000);
+        if(delta > 0){
+          session.remainingSeconds = Math.max(0, Number(session.remainingSeconds||0) - delta);
+          session.lastTick = (session.lastTick || now) + delta*1000;
+          state.session = session;
+          saveState();
+        }
+        renderExamTimerPanel();
+        if(Number(session.remainingSeconds||0) <= 0){
+          stopExamTimer();
+          finishSession('time');
+        }
+      }, 1000);
+    }
+
+    const __v2OldInitSelects = initSelects;
+    initSelects = function(){
+      __v2OldInitSelects();
+      const sim = $('#simTimePerQuestion');
+      if(sim){
+        sim.value = String(state.simSeconds || 90);
+        sim.addEventListener('change', e => { state.simSeconds = Number(e.target.value || 90); saveState(); });
+      }
+      const lessonEje = $('#lessonEjeFilter');
+      if(lessonEje){
+        const ejes = [...new Set((LESSONS||[]).map(l=>l.eje).filter(Boolean))].sort();
+        lessonEje.innerHTML = '<option value="">Todos los ejes</option>' + ejes.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');
+        lessonEje.addEventListener('change', renderLearn);
+      }
+    };
+
+    const __v2BaseSetSession = setSession;
+    setSession = function(qs, title, meta, method='preguntas', shuffleQs=false, options={}){
+      const list = shuffleQs ? shuffle(qs) : [...qs];
+      const mode = options.mode || (method === 'simulacro' ? 'exam' : 'practice');
+      const secondsPerQuestion = Number(options.secondsPerQuestion || selectedSimSeconds() || 90);
+      const totalSeconds = mode === 'exam' ? list.length * secondsPerQuestion : 0;
+      session = {
+        questions:list.map(q=>q.id), idx:0, title, meta, method,
+        mode, secondsPerQuestion, totalSeconds, remainingSeconds: totalSeconds,
+        startedAt:Date.now(), lastTick: Date.now(), selected:{}, failed:[], correct:0, revealed:false
+      };
+      state.session = session;
+      saveState();
+      showView('session');
+      renderQuestion();
+    };
+
+    startSprintPractice = function(id){ const sp=SPRINTS.find(s=>s.id===id); if(sp) setSession(sp.questions, sp.sprint, sp.tema+' · '+sp.eje, state.method || 'preguntas', false, {mode:'practice'}); };
+    startSprintExam = function(id){ const sp=SPRINTS.find(s=>s.id===id); if(sp) setSession(sp.questions, 'Simulacro · '+sp.sprint, sp.tema+' · '+sp.eje+' · '+sp.total+' preguntas', 'simulacro', false, {mode:'exam', secondsPerQuestion:selectedSimSeconds()}); };
+    startSprint = function(id, method){ return method === 'simulacro' ? startSprintExam(id) : startSprintPractice(id); };
+    startGlobalSimulation = function(){ setSession(QUESTIONS, 'Simulacro global', 'Modo examen · banco completo', 'simulacro', true, {mode:'exam', secondsPerQuestion:selectedSimSeconds()}); };
+    startGlobalSession = function(){ setSession(QUESTIONS, 'Entrenamiento global', 'Práctica libre · banco completo', state.method || 'preguntas', true, {mode:'practice'}); };
+
+    const __v2BaseCurrentNeedsErrorLog = currentNeedsErrorLog;
+    currentNeedsErrorLog = function(){ if(session?.mode === 'exam') return false; return __v2BaseCurrentNeedsErrorLog(); };
+
+    const __v2BaseQuestionTemplate = questionTemplate;
+    function examQuestionTemplate(q, selected){
+      const status = questionStatus(q);
+      const year = q.year ? 'Año '+q.year : 'Año no detectado';
+      const options = ['a','b','c','d'].map(k => {
+        const txt = q.opts?.[k]; if(!txt) return '';
+        const isSel = selected===k;
+        const cls = isSel ? 'border-medical-400 bg-medical-50 dark:border-medical-700 dark:bg-medical-950/30' : 'border-slate-200 hover:border-medical-300 dark:border-slate-700 dark:hover:border-medical-700';
+        return '<label class="choice block cursor-pointer"><input class="sr-only" name="choice" type="radio" value="'+k+'" '+(isSel?'checked':'')+' onchange="selectAnswer(\''+q.id+'\',\''+k+'\')"><div class="rounded-3xl border '+cls+' p-4 transition"><div class="flex gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-slate-100 text-sm font-black uppercase dark:bg-slate-800">'+k+'</span><p class="text-sm font-semibold leading-6">'+esc(txt)+'</p></div></div></label>';
+      }).join('');
+      return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">Simulacro</span><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(q.eje)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(year)+'</span></div><span class="text-xs font-black uppercase tracking-[.16em] text-amber-500">sin corrección inmediata</span></div>'
+        + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+highlightTriggerWords(q.q)+'</h3>'
+        + (q.image_reference ? '<div class="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">⚠️ Esta pregunta menciona una imagen/ECG/radiografía.</div>' : '')
+        + '<div class="mt-5 grid gap-3">'+options+'</div>'
+        + '<div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">La corrección, explicación y distractores se muestran al finalizar el simulacro.</div>'
+        + '<div class="mt-6 flex flex-wrap justify-between gap-3"><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-slate-800" '+(session.idx===0?'disabled':'')+' onclick="prevQuestion()">← Anterior</button><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white hover:bg-medical-700" onclick="nextQuestion()">'+(session.idx===getSessionQuestions().length-1?'Terminar':'Siguiente →')+'</button></div>';
+    }
+    questionTemplate = function(q, selected, showExplanation){
+      if(session?.mode === 'exam') return examQuestionTemplate(q, selected);
+      return __v2BaseQuestionTemplate(q, selected, showExplanation);
+    };
+
+    renderQuestion = function(){
+      if(!session){ $('#emptySession').classList.remove('hidden'); $('#sessionContent').classList.add('hidden'); renderExamTimerPanel(); return; }
+      $('#emptySession').classList.add('hidden'); $('#sessionContent').classList.remove('hidden');
+      const arr=getSessionQuestions(); const q=arr[session.idx]; if(!q){ finishSession(); return; }
+      $('#sessionMethod').value = session.method;
+      $('#sessionTitle').textContent = session.title;
+      $('#sessionMeta').textContent = session.meta;
+      const pct = Math.round(((session.idx)/arr.length)*100);
+      $('#sessionBar').style.width = pct+'%';
+      const timingText = session.mode === 'exam' ? ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds) : ' · Sin tiempo';
+      $('#sessionProgress').textContent = 'Pregunta '+(session.idx+1)+' de '+arr.length+' · '+modeLabel()+timingText;
+      const selected = session.selected[q.id] || answerFor(q)?.selected || '';
+      const answered = !!selected;
+      const showExplanation = answered && session.mode !== 'exam';
+      startQuestionTimer(q);
+      renderPerformancePanel();
+      $('#questionCard').innerHTML = questionTemplate(q, selected, showExplanation);
+      renderMethodDock(q);
+      startExamTimerIfNeeded();
+    };
+
+    const __v2OldFinishSession = finishSession;
+    finishSession = function(reason='manual'){
+      stopExamTimer();
+      if(!session){ showView('dashboard'); return; }
+      const qs = getSessionQuestions();
+      const answered = qs.filter(q=>session.selected[q.id] || answerFor(q)).length;
+      const correct = qs.filter(q=>{ const s=session.selected[q.id] || answerFor(q)?.selected; return s && s===q.ans; }).length;
+      const failed = qs.filter(q=>{ const s=session.selected[q.id] || answerFor(q)?.selected; return s && q.ans && s!==q.ans; });
+      const skipped = qs.filter(q=>!(session.selected[q.id] || answerFor(q))).length;
+      const acc = answered ? Math.round(correct/answered*100) : 0;
+      const wasExam = session.mode === 'exam';
+      state.session = null; saveState(); const old=session; session=null;
+      const headline = reason === 'time' ? 'Tiempo finalizado' : 'Sesión finalizada';
+      $('#resultsContent').innerHTML = '<div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-premium dark:border-slate-800 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">'+headline+'</p><h3 class="mt-1 font-display text-4xl font-extrabold">'+acc+'% de precisión</h3><p class="mt-2 text-slate-600 dark:text-slate-400">'+correct+' correctas sobre '+answered+' respondidas · '+failed.length+' errores · '+skipped+' sin responder.</p><div class="mt-6 flex flex-wrap gap-3"><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white" onclick="showView(\'dashboard\')">Volver al panel</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startMistakesSession()">Repasar errores</button></div></div>'
+        + '<div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">'+failed.slice(0,24).map(q => flashcardMini(q)).join('')+'</div>'
+        + (wasExam ? '<div class="mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Corrección del simulacro</p><div class="mt-4 grid gap-3">'+qs.map(q=>{ const s=old.selected[q.id]||answerFor(q)?.selected||''; const ok=s&&s===q.ans; return '<div class="rounded-2xl border '+(ok?'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20':'border-rose-200 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20')+' p-4"><p class="text-sm font-black">'+esc(q.q)+'</p><p class="mt-2 text-xs font-bold">Tu respuesta: '+(s?esc(s.toUpperCase()+') '+(q.opts?.[s]||'')):'Sin responder')+'</p><p class="text-xs font-bold">Correcta: '+(q.ans?esc(q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'')):'Sin clave')+'</p></div>'; }).join('')+'</div></div>' : '');
+      showView('results');
+    };
+
+    // Re-render de sprints: separar práctica libre de simulacro cronometrado.
+    renderSprints = function(){
+      const rawQuery = $('#searchInput').value || '';
+      const eje = $('#ejeFilter').value;
+      const tema = $('#temaFilter').value;
+      let list = SPRINTS.filter(s => (!eje || s.eje===eje) && (!tema || s.tema===tema));
+      if(rawQuery.trim()) list = list.filter(s => sprintMatchesSearch(s, rawQuery));
+      $('#sprintCount').textContent = list.length+' sprints';
+      renderSearchStatus(list, rawQuery);
+      const seconds = selectedSimSeconds();
+      $('#sprintGrid').innerHTML = list.map(sp => {
+        const st = sprintStats(sp);
+        const preview = sprintMatchPreview(sp, rawQuery);
+        const previewHtml = preview ? '<div class="mt-3 rounded-2xl bg-medical-50/70 p-3 text-xs font-semibold leading-5 text-medical-800 dark:bg-medical-950/20 dark:text-medical-200"><span class="font-black">Coincidencia:</span> '+highlightSearchPreview(preview, rawQuery)+'</div>' : '';
+        return '<article class="rounded-3xl border border-slate-200 p-4 transition hover:border-medical-300 hover:shadow-soft dark:border-slate-800 dark:hover:border-medical-800">'
+          + '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="truncate text-xs font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+esc(sp.eje)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-6">'+esc(sp.sprint)+'</h4><p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">'+esc(sp.tema)+' · '+sp.total+' preguntas</p></div><div class="rounded-2xl bg-slate-100 px-3 py-2 text-center dark:bg-slate-800"><p class="text-lg font-black">'+st.pct+'%</p><p class="text-[10px] font-black uppercase text-slate-400">avance</p></div></div>'
+          + '<div class="mt-4 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-medical-600" style="width:'+st.pct+'%"></div></div>'
+          + previewHtml
+          + '<div class="mt-3 rounded-2xl bg-slate-50 p-3 text-[11px] font-bold text-slate-500 dark:bg-slate-950/50 dark:text-slate-400">Simulacro: '+sp.total+' × '+seconds+' s = '+formatClock(sp.total*seconds)+'</div>'
+          + '<div class="mt-3 flex flex-wrap items-center justify-between gap-2"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">'+st.answered+'/'+sp.total+' respondidas · '+st.acc+'% acierto</p><div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openTopicMethods(\''+sp.id+'\')">Métodos</button><button class="rounded-2xl border border-rose-200 px-3 py-2 text-xs font-black text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30" onclick="resetSprintProgress(\''+sp.id+'\')">Reiniciar</button><button class="rounded-2xl border border-medical-200 bg-medical-50 px-3 py-2 text-xs font-black text-medical-700 hover:bg-medical-100 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-300" onclick="startSprintPractice(\''+sp.id+'\')">Práctica libre</button><button class="rounded-2xl bg-slate-950 px-3 py-2 text-xs font-black text-white hover:opacity-90 dark:bg-white dark:text-slate-950" onclick="startSprintExam(\''+sp.id+'\')">Simulacro</button></div></div>'
+          + '</article>';
+      }).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">No encontré sprints con esos filtros.</div>';
+    };
+
+    // Nodos: usar preguntas explícitas del nodo, no matching amplio del banco.
+    lessonRelatedQuestions = function(lesson){
+      const ids = Array.isArray(lesson?.explicitQuestionIds) ? lesson.explicitQuestionIds : [];
+      if(ids.length) return ids.map(id => QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      // Fallback conservador: si un nodo futuro no trae preguntas explícitas, no inventar 60+ coincidencias.
+      return [];
+    };
+    function lessonMatchesV2(lesson, raw){
+      const q = norm(raw || '');
+      const ejeSelected = $('#lessonEjeFilter')?.value || '';
+      if(ejeSelected && lesson.eje !== ejeSelected) return false;
+      if(!q) return true;
+      const hay = norm([lesson.title, lesson.eje, lesson.tema, lesson.subtitle, lesson.description, (lesson.badges||[]).join(' '), (lesson.sections||[]).join(' '), (lesson.terms||[]).join(' ')].join(' '));
+      return q.split(/\s+/).every(t => hay.includes(t));
+    }
+    renderLearn = function(){
+      if(!$('#learnView')) return;
+      renderLessonStats();
+      const raw = $('#lessonSearch')?.value || '';
+      const list = LESSONS.filter(l => lessonMatchesV2(l, raw));
+      if($('#lessonGrid')){
+        const byEje = groupBy(list, l => l.eje || 'Otros');
+        $('#lessonGrid').innerHTML = Object.entries(byEje).map(([eje, items]) =>
+          '<div class="space-y-3"><div class="lesson-eje-title rounded-2xl bg-white/85 px-3 py-2 text-xs font-black uppercase tracking-[.18em] text-medical-700 shadow-sm dark:bg-slate-900/85 dark:text-medical-300">'+esc(eje)+' · '+items.length+' nodos</div>'+items.map(lessonCard).join('')+'</div>'
+        ).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>';
+      }
+      if(state.currentLessonId && lessonById(state.currentLessonId)) openLesson(state.currentLessonId, true);
+    };
+    resetLessonFilter = function(){ if($('#lessonSearch')) $('#lessonSearch').value=''; if($('#lessonEjeFilter')) $('#lessonEjeFilter').value=''; renderLearn(); };
+    openLesson = function(id, silent=false){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      state.currentLessonId = id;
+      saveState();
+      if($('#lessonEmpty')) $('#lessonEmpty').classList.add('hidden');
+      if($('#lessonViewer')) $('#lessonViewer').classList.remove('hidden');
+      if($('#lessonViewerTitle')) $('#lessonViewerTitle').textContent = lesson.title;
+      if($('#lessonViewerMeta')) $('#lessonViewerMeta').textContent = lesson.tema+' · '+lesson.eje;
+      if($('#lessonViewerSub')) $('#lessonViewerSub').textContent = lesson.subtitle;
+      const frame = $('#lessonFrame');
+      if(frame && frame.getAttribute('src') !== lesson.file) frame.setAttribute('src', lesson.file);
+      const related = lessonRelatedQuestions(lesson);
+      const done = lessonIsDone(id);
+      if($('#lessonCompleteBtn')) $('#lessonCompleteBtn').textContent = done ? '✓ Vista' : 'Marcar vista';
+      if($('#lessonQuickMap')) $('#lessonQuickMap').innerHTML = '<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Ruta del nodo</p><div class="mt-2 flex flex-wrap gap-2">'+(lesson.sections||[]).map((s,i)=>'<span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+(i+1)+'. '+esc(s)+'</span>').join('')+'</div><p class="mt-2 text-[11px] font-bold text-slate-500 dark:text-slate-400">Las preguntas del nodo respetan la sección “Preguntas reales” del material cargado. No se mezclan con sprints por coincidencia automática.</p></div><div class="shrink-0 rounded-2xl border border-slate-200 px-4 py-3 text-center dark:border-slate-700"><p class="font-display text-2xl font-extrabold">'+related.length+'</p><p class="text-[10px] font-black uppercase tracking-[.16em] text-slate-400">preguntas del nodo</p></div></div>';
+      renderLessonStats();
+      if(!silent) renderLearn();
+    };
+    startLessonPractice = function(id){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      const qs = lessonRelatedQuestions(lesson);
+      if(!qs.length) return alert('Este nodo todavía no tiene preguntas del banco vinculadas de forma explícita. Podés practicar desde la sección “Preguntas reales” dentro del nodo.');
+      setSession(qs, 'Nodo · '+lesson.title, 'Práctica libre · preguntas reales del nodo', state.method || 'preguntas', false, {mode:'practice'});
+    };
+    startLessonExam = function(id){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      const qs = lessonRelatedQuestions(lesson);
+      if(!qs.length) return alert('Este nodo todavía no tiene preguntas del banco vinculadas de forma explícita.');
+      setSession(qs, 'Simulacro nodo · '+lesson.title, qs.length+' preguntas reales del nodo', 'simulacro', false, {mode:'exam', secondsPerQuestion:selectedSimSeconds()});
+    };
+    startCurrentLessonPractice = function(){ const lesson=lessonById(state.currentLessonId); if(!lesson) return alert('Elegí primero un nodo.'); startLessonPractice(lesson.id); };
+    toggleLessonFocus = function(){ document.body.classList.toggle('lesson-focus'); };
+    toggleSessionFocus = function(){ document.body.classList.toggle('session-focus'); const b=$('#sessionFocusBtn'); if(b) b.textContent = document.body.classList.contains('session-focus') ? 'Vista normal' : 'Expandir'; };
+
+
     function init(){
       initSelects();
       session = state.session || null;
@@ -1111,6 +1560,6 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#themeToggle').addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#themeToggleTop')?.addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#mobileMenuBtn').addEventListener('click',openMobileMenu); $('#closeMenuBtn').addEventListener('click',closeMobileMenu); $('#overlay').addEventListener('click',closeMobileMenu);
-      $('#resetProgressBtn').addEventListener('click',()=>{ if(confirm('¿Reiniciar progreso, errores, biblioteca y repasos?')){ state=defaultState(); session=null; saveState(); renderAll(); showView('dashboard'); } });
+      $('#resetProgressBtn').addEventListener('click', resetGlobalProgress);
     }
     init();

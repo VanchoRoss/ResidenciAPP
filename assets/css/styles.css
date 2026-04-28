@@ -190,3 +190,26 @@ html { scroll-behavior: smooth; }
       }
       #viewTitle { font-size: 1.08rem; }
     }
+
+
+/* === ResidenciAPP Tutor v2: separación estudio/entrenamiento === */
+#sidebar::-webkit-scrollbar { width: 8px; }
+#sidebar::-webkit-scrollbar-thumb { background: rgba(100,116,139,.35); border-radius: 999px; }
+.session-focus #sessionContent { grid-template-columns: minmax(0, 1fr) !important; max-width: 1180px; margin-inline: auto; }
+.session-focus #sessionContent > aside { display: none; }
+.session-focus #questionCard { padding: clamp(1.25rem, 3vw, 2.25rem); }
+.lesson-focus #learnView > div { grid-template-columns: minmax(0,1fr) !important; max-width: 1280px; margin-inline:auto; }
+.lesson-focus #learnView aside { display: none; }
+.lesson-focus #lessonFrame { height: calc(100vh - 190px) !important; min-height: 760px !important; }
+.lesson-eje-title { position: sticky; top: 0; z-index: 1; backdrop-filter: blur(10px); }
+.exam-timer-pulse { animation: timerPulse 1s ease-in-out infinite; }
+@keyframes timerPulse { 0%,100% { opacity:1; } 50% { opacity:.68; } }
+@media (max-width: 1024px) {
+  #sessionContent { grid-template-columns: 1fr !important; }
+  #sessionContent > aside { order: 2; }
+  #lessonFrame { min-height: 70vh !important; height: 74vh !important; }
+}
+@media (max-width: 640px) {
+  #loading img { width: 12rem; height: 12rem; }
+  .lesson-focus #lessonFrame { height: calc(100vh - 150px) !important; min-height: 620px !important; }
+}
