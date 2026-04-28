@@ -76,3 +76,18 @@ Cuando una pregunta menciona imagen, ECG, radiografía o similar, en el modo col
 ## Backup manual
 
 Si Google Apps Script no está disponible, los aportes quedan en el navegador del usuario y se pueden descargar con el botón **Exportar aportes JSON**.
+
+
+## ResidenciAPP Tutor
+
+Esta versión agrega la sección **Aprender desde cero**, con nodos de aprendizaje guiado para estudiar por tema antes de practicar preguntas. Los nodos están en `assets/lessons/` y se cargan desde `assets/data/lessons.js`.
+
+Nodos incluidos:
+- Cáncer de cérvix
+- Cáncer de endometrio
+- Cáncer de mama
+- Cáncer de ovario
+- Endometriosis
+- Rotura prematura de membranas
+
+Cada nodo combina explicación narrativa, algoritmos, trampas de examen y preguntas reales.

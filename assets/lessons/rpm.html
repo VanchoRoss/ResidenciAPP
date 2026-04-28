@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-info:#185fa5;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;}
+@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-info:#b5d4f4;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary,#ffffff);padding:0 0 16px 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0 10px 0;border-bottom:1px solid var(--color-border-tertiary)}
+.tab{padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--color-border-secondary);color:var(--color-text-secondary);background:var(--color-background-primary,#ffffff);transition:all .15s}
+.tab.active{background:var(--color-background-info,#e6f1fb);color:var(--color-text-info,#185fa5);border-color:var(--color-border-info,#85b7eb)}
+.panel{display:none;padding:14px 2px 0 2px}
+.panel.active{display:block}
+h2{font-size:15px;font-weight:500;margin-bottom:10px;color:var(--color-text-primary)}
+h3{font-size:13px;font-weight:500;margin:12px 0 6px 0;color:var(--color-text-secondary)}
+p{font-size:13px;line-height:1.6;margin-bottom:8px;color:var(--color-text-primary)}
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:500;margin:2px 3px 2px 0}
+.pill-red{background:#fcebeb;color:#791f1f}
+.pill-blue{background:#e6f1fb;color:#0c447c}
+.pill-green{background:#eaf3de;color:#27500a}
+.pill-amber{background:#faeeda;color:#633806}
+.pill-purple{background:#eeedfe;color:#3c3489}
+.pill-gray{background:#f1efe8;color:#444441}
+@media(prefers-color-scheme:dark){
+.pill-red{background:#501313;color:#f7c1c1}
+.pill-blue{background:#042c53;color:#b5d4f4}
+.pill-green{background:#173404;color:#c0dd97}
+.pill-amber{background:#412402;color:#fac775}
+.pill-purple{background:#26215c;color:#cecbf6}
+.pill-gray{background:#2c2c2a;color:#d3d1c7}
+}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;font-size:12px;border-bottom:1px solid var(--color-border-secondary)}
+td{padding:6px 10px;border-bottom:1px solid var(--color-border-tertiary);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+.row-term{background:#eaf3de22}
+.row-tardio{background:#e6f1fb22}
+.row-preterm{background:#faeeda22}
+.row-periviab{background:#fbeaf022}
+.algo-box{border:1px solid var(--color-border-secondary);border-radius:8px;padding:12px;margin:8px 0;font-size:13px}
+.algo-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.step-num{min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.sn-blue{background:#e6f1fb;color:#0c447c}
+.sn-red{background:#fcebeb;color:#791f1f}
+.sn-amber{background:#faeeda;color:#633806}
+.trap-card{border-left:3px solid #e24b4a;background:var(--color-background-secondary);border-radius:0 8px 8px 0;padding:10px 12px;margin:8px 0;font-size:13px}
+.trap-q{font-weight:500;margin-bottom:4px;color:var(--color-text-primary)}
+.trap-wrong{color:#a32d2d;font-size:12px;margin-bottom:3px}
+.trap-right{color:#3b6d11;font-size:12px}
+@media(prefers-color-scheme:dark){
+.trap-wrong{color:#f7c1c1}
+.trap-right{color:#c0dd97}
+}
+.frase{border:1px solid var(--color-border-secondary);border-radius:8px;padding:10px 14px;background:var(--color-background-secondary);font-size:13px;font-style:italic;text-align:center;margin:10px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}}
+.mini-card{border:1px solid var(--color-border-tertiary);border-radius:8px;padding:10px;font-size:12.5px}
+.mini-title{font-weight:500;font-size:12px;margin-bottom:5px;color:var(--color-text-secondary)}
+.q-card{border:1px solid var(--color-border-secondary);border-radius:8px;padding:12px;margin:8px 0;font-size:13px;cursor:pointer}
+.q-card:hover{background:var(--color-background-secondary)}
+.q-text{margin-bottom:8px;font-weight:500}
+.q-opt{padding:4px 0;color:var(--color-text-secondary);font-size:12px}
+.q-opt.correct{color:#3b6d11;font-weight:500}
+@media(prefers-color-scheme:dark){.q-opt.correct{color:#c0dd97}}
+.q-exp{margin-top:8px;padding-top:8px;border-top:1px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary);display:none}
+.q-card.revealed .q-exp{display:block}
+</style>
+</head>
+<body>
+<div class="tabs">
+  <button class="tab active" onclick="show('id')">Identidad del nodo</button>
+  <button class="tab" onclick="show('dx')">Diagnóstico</button>
+  <button class="tab" onclick="show('conducta')">Conducta por EG</button>
+  <button class="tab" onclick="show('corio')">Corioamnionitis</button>
+  <button class="tab" onclick="show('trampas')">Trampas del examen</button>
+  <button class="tab" onclick="show('preguntas')">Preguntas reales</button>
+</div>
+
+<!-- PANEL 1: IDENTIDAD -->
+<div id="panel-id" class="panel active">
+<h2>RPM — Nodo madre</h2>
+<p><span class="pill pill-blue">Eje</span> Salud integral de las mujeres <span class="pill pill-blue">Subnodo de</span> Parto prematuro <span class="pill pill-amber">Frecuencia examen</span> Media-alta</p>
+
+<h3>Definición operativa</h3>
+<p>Rotura espontánea de membranas ovulares <strong>al menos 2 horas antes del inicio del trabajo de parto</strong>. Puede ocurrir en embarazo de término (≥37 sem) o pretérmino (&lt;37 sem).</p>
+
+<h3>Por qué importa: el nudo fisiopatológico</h3>
+<p>El riesgo materno-perinatal es <strong>inversamente proporcional a la EG</strong> e <strong>inversamente proporcional al volumen residual de líquido</strong>, y <strong>directamente proporcional al tiempo de latencia</strong>. Todo el manejo gira sobre ese triángulo.</p>
+<div class="frase">RPM = tensión entre infección y prematurez. La edad gestacional decide cuál amenaza pesa más.</div>
+
+<h3>Síndrome clínico</h3>
+<p>Pérdida brusca de líquido claro por vagina (a veces escasa e intermitente). El diagnóstico es clínico en la mayoría: observación directa del líquido o especuloscopía.</p>
+<p><span class="pill pill-green">Epidemiología</span> 10% de todos los nacimientos · ⅓ de los nacimientos pretérmino · 8% a término · 3% pretérmino · &lt;1% previos a viabilidad</p>
+
+<h3>Factores de riesgo clave</h3>
+<div class="grid2">
+<div class="mini-card"><div class="mini-title">Más importantes</div>RPM previa (RR 3,3) · Infección genital/vaginosis bacteriana · Hemorragia 1er/2do trimestre (RR 3–7) · Tabaquismo (RR 3–4)</div>
+<div class="mini-card"><div class="mini-title">Otros</div>Polihidramnios · Embarazo múltiple · Acortamiento cervical · DPPNI · Colagenopatías · Bajo NSE · Trauma abdominal</div>
+</div>
+
+<h3>Complicaciones nucleares</h3>
+<p>Prematurez (SDR, HIV, ECN, sepsis) · Muerte fetal · Corioamnionitis · DPPNI · Procidencia de cordón (2–5%) · Hipoplasia pulmonar (30% si &lt;23 sem, mortalidad &gt;70%) · Deformidades posicionales (artrogrifosis, pie bot)</p>
+
+<h3>Conexiones a otros nodos</h3>
+<p><span class="pill pill-purple">→</span> Parto prematuro / APP <span class="pill pill-purple">→</span> Corticoides prenatales <span class="pill pill-purple">→</span> Sulfato de magnesio (neuroprotección) <span class="pill pill-purple">→</span> EGB / profilaxis ATB <span class="pill pill-purple">→</span> Corioamnionitis <span class="pill pill-purple">→</span> Hemorragia postparto</p>
+</div>
+
+<!-- PANEL 2: DIAGNÓSTICO -->
+<div id="panel-dx" class="panel">
+<h2>Diagnóstico de RPM</h2>
+<div class="frase">Regla de oro: el diagnóstico es clínico. El tacto vaginal está CONTRAINDICADO si no hay trabajo de parto.</div>
+
+<h3>Jerarquía diagnóstica</h3>
+<div class="algo-box">
+<div class="algo-step"><span class="step-num sn-blue">1</span><div><strong>Observación directa</strong> del líquido saliendo por vagina → suficiente para confirmar. Es el primer paso.</div></div>
+<div class="algo-step"><span class="step-num sn-blue">2</span><div><strong>Especuloscopía estéril</strong> → ver líquido en fondo de saco posterior o en OCE, espontáneo o con Valsalva / maniobra de Tarnier (elevar presentación). Evita el tacto.</div></div>
+<div class="algo-step"><span class="step-num sn-blue">3</span><div><strong>Tests complementarios</strong> si no se confirmó clínicamente:</div></div>
+</div>
+
+<table>
+<tr><th>Test</th><th>Fundamento</th><th>Falsos</th><th>Costo</th></tr>
+<tr><td><strong>Cristalización</strong> (helecho)</td><td>LA se cristaliza en porta → imagen en hoja de helecho</td><td>FN: semen, sangre, flujo</td><td>Bajo</td></tr>
+<tr><td><strong>Nitrazina</strong> (pH)</td><td>LA: pH 7,0–7,3; flujo/orina &lt;6,0</td><td>FP: semen, sangre</td><td>Bajo</td></tr>
+<tr><td><strong>Inmunocromatografía</strong> (IGFBP-1, PAMG-1)</td><td>Proteínas deciduales en LA</td><td>Pocos</td><td>Alto → usar solo si los anteriores fallan</td></tr>
+<tr><td><strong>Ecografía</strong></td><td>Oligoamnios complementa el diagnóstico</td><td>Oligoamnios ≠ diagnóstico per se → descartar causas fetales/placentarias</td><td>Intermedio</td></tr>
+</table>
+
+<h3>Diagnóstico diferencial</h3>
+<p>Orina (incontinencia) · Flujo vaginal abundante · Semen. Los tests y el criterio clínico resuelven la mayoría.</p>
+
+<h3>Qué NO hacer al diagnosticar</h3>
+<p><span class="pill pill-red">✗ Tacto vaginal</span> Acorta el período de latencia y aumenta el riesgo infeccioso. Evitarlo mientras no haya trabajo de parto activo.</p>
+
+<h3>Al internar: estudios iniciales obligatorios</h3>
+<p>Hemograma (blancos y fórmula) · Hisopado vaginal y rectal para EGB · Urocultivo (pretérmino) · Ecografía obstétrica (EG, volumen LA, presentación, vitalidad) · Monitoreo fetal si &gt;32 sem · Control de signos vitales cada 6–8 hs</p>
+</div>
+
+<!-- PANEL 3: CONDUCTA POR EG -->
+<div id="panel-conducta" class="panel">
+<h2>Conducta según edad gestacional</h2>
+<div class="frase">La semana gestacional es la clave de toda pregunta de RPM en el examen.</div>
+
+<h3>Indicaciones de interrupción INDEPENDIENTE de la EG</h3>
+<p><span class="pill pill-red">Corioamnionitis clínica</span> <span class="pill pill-red">DPPNI</span> <span class="pill pill-red">Muerte fetal / malformación letal</span> <span class="pill pill-red">Compromiso materno o fetal grave</span></p>
+
+<table>
+<tr><th style="width:18%">EG</th><th>Conducta</th><th>ATB</th><th>Corticoides</th><th>Tocolisis / MgSO4</th></tr>
+<tr class="row-term">
+<td><strong>≥37 sem</strong><br>Término</td>
+<td>Interrumpir dentro de las <strong>12 hs</strong>. &gt;80% entran en trabajo de parto en 24 hs. Si paciente elige expectante: máx 24–36 hs internada.</td>
+<td>Profilaxis EGB si hisopado sin resultado negativo: Penicilina 5M UI luego 2,5M c/4h EV (o Ampicilina 2g luego 1g c/4h). Alergia: Clindamicina 900 mg c/8h.</td>
+<td>Sin indicación. No hay beneficio demostrado de macrólidos a término.</td>
+<td>No indicada.</td>
+</tr>
+<tr class="row-tardio">
+<td><strong>34–36,6 sem</strong><br>Pretérmino tardío</td>
+<td>Interrumpir dentro de las <strong>24 hs</strong>. Reducción de corioamnionitis, pero aumenta SDR neonatal y mortalidad neonatal vs. expectante.</td>
+<td>Igual esquema que término.</td>
+<td>Considerar betametasona si no la recibió previamente (ALPS), sin demorar la terminación.</td>
+<td>No indicada.</td>
+</tr>
+<tr class="row-preterm">
+<td><strong>24–33,6 sem</strong><br>Pretérmino</td>
+<td><strong>Conducta expectante</strong>. Internar en centro con UTIN neonatal. Controles diarios clínicos; lab c/72 hs; eco/CTG c/7 días. Interrumpir a las 34 sem o ante complicación.</td>
+<td><strong>ATB profiláctica obligatoria</strong> desde el diagnóstico. Esquema: Azitromicina 500 mg VO c/24h x2 dosis + Ampicilina 2g IV luego 1g IV c/6h por 48 hs → luego Amoxicilina 500 mg VO c/8h hasta 7 días. <span style="color:#a32d2d;font-size:12px">⚠ Amoxicilina-clavulánico: contraindicado (ECN neonatal)</span></td>
+<td>Betametasona 12 mg IM c/24h x2 O Dexametasona 4 mg IM c/8h x3. Indicar entre 24–34 sem (considerar 23–23,6 sem). No contraindicado en RPM.</td>
+<td>Tocolisis: <strong>NO rutinaria</strong>. Solo si contracciones + traslado o para completar corticoides (máx 48 hs). <strong>MgSO4 neuroprotector</strong>: si parto prematuro inminente entre 24–32 sem → dosis ataque 5g IV en 30 min + mantenimiento 1g/h.</td>
+</tr>
+<tr class="row-periviab">
+<td><strong>&lt;24 sem</strong><br>Periviabilidad</td>
+<td>Informar pronóstico a padres. ATB igual que pretérmino. Internación. Manejo domiciliario solo en casos seleccionados tras 7 días internada, sin signos de infección ni sangrado.</td>
+<td>Mismo esquema pretérmino.</td>
+<td>Considerar si se decide manejo activo del RN.</td>
+<td>Igual criterio que pretérmino.</td>
+</tr>
+</table>
+
+<h3>Profilaxis EGB intraparto (todos los casos &gt;34 sem)</h3>
+<p>Independientemente de ATB previo → repetir profilaxis EGB parenteral intraparto con el mismo esquema.</p>
+<p>La colonización por EGB es intermitente → repetir cultivo c/4 semanas en casos pretérmino con cultivo negativo previo.</p>
+</div>
+
+<!-- PANEL 4: CORIOAMNIONITIS -->
+<div id="panel-corio" class="panel">
+<h2>Corioamnionitis — subnodo crítico</h2>
+<div class="frase">El diagnóstico de corioamnionitis es CLÍNICO. El laboratorio tiene pobre VPP.</div>
+
+<h3>Definición</h3>
+<p>Proceso inflamatorio agudo de membranas ovulares y/o cavidad amniótica. Complica 2–11% de todos los embarazos. Más frecuente a menor EG. Vía más frecuente: ascendente.</p>
+
+<h3>Criterios diagnósticos clínicos (Gibbs / FASGO)</h3>
+<table>
+<tr><th>Criterio</th><th>Valor</th></tr>
+<tr><td>Temperatura axilar</td><td>≥38°C (signo de mayor sensibilidad: 95–100%)</td></tr>
+<tr><td>Taquicardia materna</td><td>&gt;100 lpm</td></tr>
+<tr><td>Taquicardia fetal</td><td>FCF &gt;160 lpm</td></tr>
+<tr><td>Leucocitosis</td><td>&gt;15.000–20.000/mm³</td></tr>
+<tr><td>Irritabilidad uterina</td><td>Dolor a palpación y/o dinámica uterina</td></tr>
+<tr><td>Líquido amniótico</td><td>Purulento o fétido</td></tr>
+</table>
+<p style="margin-top:8px;font-size:12px;color:var(--color-text-secondary)">Nota clave: los corticoides provocan leucocitosis transitoria hasta 24 hs post-dosis → retorna a normal en 3 días. No confundir con infección.</p>
+
+<h3>Conducta ante corioamnionitis</h3>
+<div class="algo-box">
+<div class="algo-step"><span class="step-num sn-red">1</span><div><strong>Indicación absoluta de interrupción</strong> — no es mandatorio cesárea de urgencia, se prefiere vía vaginal dentro de 6–12 hs si no hay contraindicación.</div></div>
+<div class="algo-step"><span class="step-num sn-red">2</span><div><strong>ATB EV inmediata</strong>. Esquemas: Clindamicina 600 mg c/8h + Gentamicina 500 mg c/24h · O Ceftriaxona 2g c/24h + Metronidazol 500 mg c/8h · O Ampicilina-sulbactam 1,5g c/8h + Gentamicina</div></div>
+<div class="algo-step"><span class="step-num sn-red">3</span><div>Mantener esquema EV hasta 48 hs posparto. Luego completar con Amoxicilina-clavulánico VO 500 mg c/8h. Tiempo total: 48 hs después de puerperio normal.</div></div>
+<div class="algo-step"><span class="step-num sn-red">4</span><div>Tomar cultivos placentarios (cara materna y fetal) y enviar placenta a histopatología.</div></div>
+</div>
+
+<h3>Prevención</h3>
+<p>Primaria: detección y tto de infecciones cérvico-vaginales. Secundaria: apósitos estériles, evitar tactos vaginales reiterados (especialmente en RPM pretérmino).</p>
+</div>
+
+<!-- PANEL 5: TRAMPAS -->
+<div id="panel-trampas" class="panel">
+<h2>Trampas del examen — RPM</h2>
+<p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">Basadas en el banco histórico 2016–2025 y lógica del examinador CABA/Integrador.</p>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 1: Confundir el manejo de término con pretérmino tardío</div>
+<div class="trap-wrong">✗ "RPM a las 35 sem → misma conducta que a término" → FALSO</div>
+<div class="trap-right">✓ A 34–36,6 sem: interrumpir en 24 hs (no 12 hs). La clave que cambia: la ventana temporal y que hay más morbilidad neonatal que a término → pesa más en la decisión.</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 2: Indicar tacto vaginal para confirmar diagnóstico</div>
+<div class="trap-wrong">✗ "Hago tacto para evaluar cuello" → CONTRAINDICADO en RPM sin trabajo de parto activo</div>
+<div class="trap-right">✓ Siempre especuloscopía primero. El tacto acorta el período de latencia y sube riesgo infeccioso.</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 3: Usar Amoxicilina-clavulánico en RPM pretérmino</div>
+<div class="trap-wrong">✗ "Para cubrir anaerobios uso amoxicilina-clavulánico" → CONTRAINDICADO</div>
+<div class="trap-right">✓ Asociado a ECN neonatal. El esquema correcto usa Ampicilina + Azitromicina (o Eritromicina) en la fase IV, luego Amoxicilina sola (sin clavulánico).</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 4: Indicar tocolisis de rutina en RPM</div>
+<div class="trap-wrong">✗ "Hay contracciones en RPM pretérmino → doy tocolíticos" → NO es conducta de rutina</div>
+<div class="trap-right">✓ Solo si se necesita tiempo para trasladar o completar corticoides, máximo 48 hs. En presencia de corioamnionitis → suspender tocolisis de inmediato.</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 5: Interpretar la leucocitosis post-corticoides como infección</div>
+<div class="trap-wrong">✗ "Leucocitos 18.000 a las 12 hs de betametasona → corioamnionitis" → puede ser efecto del corticoide</div>
+<div class="trap-right">✓ Los corticoides elevan leucocitos en las 24 hs y retornan a normal en 3 días. Evaluar en conjunto con otros criterios clínicos.</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 6: Creer que la ecografía con oligoamnios confirma RPM</div>
+<div class="trap-wrong">✗ "Oligoamnios en eco → diagnostico RPM" → INSUFICIENTE solo</div>
+<div class="trap-right">✓ El oligoamnios complementa pero no diagnóstica per se. Siempre descartar causas fetales y placentarias. Diagnóstico es clínico.</div>
+</div>
+
+<div class="trap-card">
+<div class="trap-q">Trampa 7: No conocer el límite de la conducta expectante</div>
+<div class="trap-wrong">✗ "En RPM pretérmino mantengo conducta expectante hasta que la paciente lo decida" → hay un límite</div>
+<div class="trap-right">✓ En RPM pretérmino (&lt;37 sem) la conducta expectante no debe extenderse más allá de las 37 sem. A las 34 sem es el corte clásico para interrumpir.</div>
+</div>
+
+<div class="frase">Regla del examen: si te preguntan conducta, la respuesta cambia con la EG. Si te preguntan diagnóstico, la clave es especuloscopía antes que tacto. Si te preguntan ATB, recordá: sin clavulánico en pretérmino.</div>
+</div>
+
+<!-- PANEL 6: PREGUNTAS REALES -->
+<div id="panel-preguntas" class="panel">
+<h2>Preguntas reales del banco — RPM</h2>
+<p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px">Hacé click en cada pregunta para revelar la respuesta y el análisis.</p>
+
+<div class="q-card" onclick="this.classList.toggle('revealed')">
+<div class="q-text">Examen 2022 / 2025 (pregunta idéntica en ambos). Sabrina / Lorena cursa 32 semanas, fiebre, FC materna 120 lpm, FCF 165 lpm, Tº 38°C, dinámica 2/10'/30'', especuloscopía: cuello sano, líquido amniótico claro no fétido, tacto: borrado 20%, permeable al dedo. ¿Cuál es la conducta?</div>
+<div class="q-opt">A) Betametasona 12mg IM + Ampicilina-sulbactam 2g c/6h + Metronidazol + conducta expectante</div>
+<div class="q-opt">B) Betametasona 12mg IM + Ampicilina 2g c/6h + Gentamicina 3-5mg/kg/d + finalización del embarazo</div>
+<div class="q-opt">C) Dexametasona 12mg IM + Ampicilina 2g c/6h + conducta expectante</div>
+<div class="q-opt">D) Betametasona 12mg IM + Ampicilina-sulbactam + finalización del embarazo</div>
+<div class="q-opt correct">✓ Correcta: B</div>
+<div class="q-exp">Análisis: 32 sem = pretérmino. Tiene criterios de corioamnionitis (fiebre ≥38°C + taquicardia materna + taquicardia fetal + cuello permeable con liquido). Corioamnionitis = indicación de interrumpir + ATB EV. Esquema correcto: Betametasona (porque es pretérmino, aunque con corioamnionitis igual se da), Ampicilina + Gentamicina + interrumpir. El ATB correcto para corioamnionitis es Clinda+Genta o Ampicilina+Genta, no sulbactam + Metronidazol rutinariamente.</div>
+</div>
+
+<div class="q-card" onclick="this.classList.toggle('revealed')">
+<div class="q-text">Examen 2022 (pregunta 27). ¿Cuál es el porcentaje de incidencia del nacimiento asociado a RPM pretérmino?</div>
+<div class="q-opt">A) Entre el 20% y el 25%</div>
+<div class="q-opt">B) Entre el 25% y el 30%</div>
+<div class="q-opt">C) Entre el 40% y el 45%</div>
+<div class="q-opt">D) Entre el 45 y el 50%</div>
+<div class="q-opt correct">✓ Correcta: ninguna de las anteriores según FASGO (RPM pretérmino ~3% de todos los nacimientos, ⅓ de los pretérmino). Esta pregunta mal formulada apunta a reconocer que RPM se asocia a ~30% de los nacimientos pretérmino. Probablemente la opción esperada era B.</div>
+<div class="q-exp">Dato clave FASGO 2022: RPM se presenta en ~10% de los nacimientos totales y se asocia a un tercio de los nacimientos pretérmino. RPM pretérmino = 3% de todos los nacimientos.</div>
+</div>
+
+<div class="q-card" onclick="this.classList.toggle('revealed')">
+<div class="q-text">Caso integrador (tipo examen). Paciente de 29 años, 31 semanas, ingresa por salida de líquido claro por vagina hace 4 horas. Sin contracciones. Hisopado EGB: no disponible. Sin fiebre, FC 88 lpm, FCF 140 lpm. ¿Cuál es la conducta inicial correcta?</div>
+<div class="q-opt">A) Tacto vaginal para evaluar condiciones cervicales e iniciar conducta</div>
+<div class="q-opt">B) Especuloscopía, confirmar diagnóstico, internar, iniciar ATB profiláctica y corticoides</div>
+<div class="q-opt">C) Ecografía transvaginal para confirmar oligoamnios y decidir conducta</div>
+<div class="q-opt">D) Iniciar tocolisis y derivar a centro de mayor complejidad sin estudios previos</div>
+<div class="q-opt correct">✓ Correcta: B</div>
+<div class="q-exp">31 semanas = pretérmino (24–33,6 sem) → conducta expectante con ATB profiláctica obligatoria desde el diagnóstico + corticoides (betametasona 12mg IM c/24h x2). La especuloscopía es el paso diagnóstico correcto, NO el tacto. La ecografía complementa pero no es el primer paso.</div>
+</div>
+
+<div class="frase">Patrón dominante del examen en RPM: te dan EG + datos clínicos → elegís ATB correcto + corticoides si corresponde + decisión expectante vs. interrumpir. La trampa siempre está en el esquema ATB o en el tacto.</div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const ids=['id','dx','conducta','corio','trampas','preguntas'];
+  const idx=ids.indexOf(id);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+</script>
+</body>
+</html>

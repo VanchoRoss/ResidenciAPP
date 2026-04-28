@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cáncer de Mama — Nodo Residencia 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg: #0f1117;
+  --bg2: #161b25;
+  --bg3: #1e2433;
+  --border: #2a3347;
+  --border2: #364055;
+  --text: #e2e8f4;
+  --text2: #8b9ab8;
+  --text3: #5c6a85;
+  --accent: #4f8ef7;
+  --accent2: #3d7ae8;
+  --green: #3ecf8e;
+  --green2: #0d3d27;
+  --red: #f56565;
+  --red2: #3d1515;
+  --orange: #f6a623;
+  --orange2: #3d2a0d;
+  --purple: #a78bfa;
+  --purple2: #2d1f5e;
+  --teal: #2dd4bf;
+  --teal2: #0d3330;
+  --yellow: #fbbf24;
+  --font: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #0f1117 0%, #161b25 50%, #1a1f30 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.header-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  font-family: var(--mono);
+}
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.2px;
+}
+.header-sub {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+.nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.nb {
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  background: transparent;
+  font-family: var(--font);
+  transition: all .15s;
+  white-space: nowrap;
+}
+.nb:hover { border-color: var(--border2); color: var(--text); }
+.nb.on {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* LAYOUT */
+.container { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+.sec { display: none; }
+.sec.on { display: block; }
+
+/* TYPOGRAPHY */
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -.3px;
+}
+.sec-sub {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin: 20px 0 8px;
+}
+p, li { font-size: 13.5px; line-height: 1.7; margin-bottom: 8px; color: var(--text); }
+ul { padding-left: 18px; margin-bottom: 10px; }
+
+/* CALLOUTS */
+.callout {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  margin: 12px 0;
+  line-height: 1.6;
+  border-left: 3px solid;
+}
+.callout-blue { background: #0d1929; border-color: var(--accent); color: #a8c4f0; }
+.callout-green { background: var(--green2); border-color: var(--green); color: #7ee8b8; }
+.callout-red { background: var(--red2); border-color: var(--red); color: #fca5a5; }
+.callout-orange { background: var(--orange2); border-color: var(--orange); color: #fcd38a; }
+.callout-purple { background: var(--purple2); border-color: var(--purple); color: #c4b5fd; }
+.callout strong { color: inherit; }
+
+/* FRASE */
+.frase {
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: var(--bg2);
+  font-size: 13.5px;
+  font-style: italic;
+  text-align: center;
+  margin: 16px 0;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+/* TABLES */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 10px 0 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg3);
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border2);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.55;
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #ffffff05; }
+
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
+@media(max-width: 600px) { .g2, .g3 { grid-template-columns: 1fr; } }
+
+/* CARD */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+}
+.card-t {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+}
+.card p { margin-bottom: 4px; }
+
+/* ALGO */
+.algo {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 12px 0;
+}
+.step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.step:last-child { margin-bottom: 0; }
+.sn {
+  min-width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0; margin-top: 1px;
+  font-family: var(--mono);
+}
+.sb { background: #0d1929; color: var(--accent); border: 1px solid var(--accent); }
+.sg { background: var(--green2); color: var(--green); border: 1px solid var(--green); }
+.sr { background: var(--red2); color: var(--red); border: 1px solid var(--red); }
+.sa { background: var(--orange2); color: var(--orange); border: 1px solid var(--orange); }
+.sp { background: var(--purple2); color: var(--purple); border: 1px solid var(--purple); }
+.stxt { font-size: 13px; line-height: 1.6; }
+
+/* TRAP */
+.trap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+.tq { font-weight: 600; margin-bottom: 6px; color: var(--text); }
+.tw { color: #fca5a5; font-size: 12px; margin-bottom: 4px; }
+.tr { color: var(--green); font-size: 12px; }
+
+/* BIRADS */
+.birads-row {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.birads-box {
+  flex: 1;
+  min-width: 80px;
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid;
+  font-size: 12px;
+}
+.b0 { background: #1a1f30; border-color: var(--text3); }
+.b1 { background: #0d3d27; border-color: var(--green); }
+.b2 { background: #0d3d27; border-color: #22c55e; }
+.b3 { background: #1a2d0d; border-color: #84cc16; }
+.b4 { background: #3d2a0d; border-color: var(--orange); }
+.b5 { background: var(--red2); border-color: var(--red); }
+.b6 { background: #2d1f5e; border-color: var(--purple); }
+.birads-num { font-size: 20px; font-weight: 600; margin-bottom: 4px; font-family: var(--mono); }
+.b0 .birads-num { color: var(--text2); }
+.b1 .birads-num, .b2 .birads-num { color: var(--green); }
+.b3 .birads-num { color: #a3e635; }
+.b4 .birads-num { color: var(--orange); }
+.b5 .birads-num { color: var(--red); }
+.b6 .birads-num { color: var(--purple); }
+.birads-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+.birads-mal { font-size: 10.5px; font-weight: 600; }
+.b0 .birads-mal, .b1 .birads-mal { color: var(--text2); }
+.b2 .birads-mal { color: var(--green); }
+.b3 .birads-mal { color: #a3e635; }
+.b4 .birads-mal { color: var(--orange); }
+.b5 .birads-mal { color: var(--red); }
+.b6 .birads-mal { color: var(--purple); }
+.birads-cond { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* Q CARDS */
+.qcard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.qcard:hover { border-color: var(--border2); }
+.qtag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-bottom: 7px;
+}
+.qtxt { font-weight: 600; font-size: 13.5px; line-height: 1.55; margin-bottom: 10px; }
+.qopt { padding: 3px 0; color: var(--text2); font-size: 13px; }
+.qopt.ok { color: var(--green); font-weight: 600; }
+.qexp {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text2);
+  display: none;
+  line-height: 1.65;
+}
+.qcard.revealed .qexp { display: block; }
+.reveal-hint { font-size: 11px; color: var(--text3); margin-top: 8px; font-family: var(--mono); }
+
+/* DIV */
+.div {
+  display: flex; align-items: center; gap: 10px;
+  margin: 18px 0 10px;
+  color: var(--text3); font-size: 11.5px;
+  font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.div::before, .div::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* TNM */
+.tnm-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+@media(max-width:500px){.tnm-grid{grid-template-columns:1fr 1fr}}
+.tnm-box { border-radius: 8px; padding: 10px 8px; text-align: center; font-size: 12px; border: 1px solid; }
+.tnm-I { background: #0d3d27; border-color: var(--green); }
+.tnm-II { background: #1a2d0d; border-color: #84cc16; }
+.tnm-III { background: var(--orange2); border-color: var(--orange); }
+.tnm-IV { background: var(--red2); border-color: var(--red); }
+.tnm-num { font-size: 22px; font-weight: 600; margin-bottom: 3px; font-family: var(--mono); }
+.tnm-I .tnm-num { color: var(--green); }
+.tnm-II .tnm-num { color: #a3e635; }
+.tnm-III .tnm-num { color: var(--orange); }
+.tnm-IV .tnm-num { color: var(--red); }
+
+/* PILL */
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
+  margin: 2px 2px 2px 0;
+  vertical-align: middle;
+}
+.pr { background: var(--red2); color: #fca5a5; }
+.pg { background: var(--green2); color: var(--green); }
+.pb { background: #0d1929; color: var(--accent); }
+.pa { background: var(--orange2); color: var(--orange); }
+.pp { background: var(--purple2); color: var(--purple); }
+.pt { background: var(--teal2); color: var(--teal); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="header-badge">Residencia 2026</span>
+    <div>
+      <div class="header-title">Cáncer de Mama</div>
+      <div class="header-sub">Consenso Tamizaje 2021 · Gori 3ª ed. · Banco 2016–2025</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nb on" onclick="show('intro')">① Concepto</button>
+    <button class="nb" onclick="show('epid')">② Epidemiología</button>
+    <button class="nb" onclick="show('riesgo')">③ Factores de riesgo</button>
+    <button class="nb" onclick="show('clin')">④ Clínica</button>
+    <button class="nb" onclick="show('dx')">⑤ Diagnóstico e imagen</button>
+    <button class="nb" onclick="show('birads')">⑥ BIRADS</button>
+    <button class="nb" onclick="show('stad')">⑦ Estadificación TNM</button>
+    <button class="nb" onclick="show('tto')">⑧ Tratamiento</button>
+    <button class="nb" onclick="show('trap')">⑨ Trampas</button>
+    <button class="nb" onclick="show('preg')">⑩ Preguntas reales</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ① CONCEPTO -->
+<div id="sec-intro" class="sec on">
+<h2>① Concepto — por qué es el tema más rentable del eje mamario</h2>
+<div class="sec-sub">Bibliografía oficial: Consenso Nacional Inter-Sociedades Tamizaje Cáncer de Mama 2021 · Gori 3ª ed. · Guía Cáncer de Mama en 8 Palabras (Integrador 2026)</div>
+
+<div class="frase">"El cáncer de mama es el tumor más prevalente en Argentina y la primera causa de muerte por cáncer en mujeres. Su clave: screening con mamografía reduce mortalidad. El examen mide tres cosas: reconocer el nódulo sospechoso, interpretar BIRADS y conocer el tamizaje."</div>
+
+<p>El cáncer de mama es el paradigma del tumor que mejora su pronóstico con detección temprana. A diferencia del ovario (silencioso, tardío), el cáncer de mama puede ser detectado en estadio I–II por mamografía, antes de dar síntomas, y en ese estadio la sobrevida a 5 años supera el 90%.</p>
+
+<h3>El eje fisiopatológico central</h3>
+<p>La mayoría de los carcinomas mamarios son hormono-dependientes: se originan en el epitelio ductal o lobulillar bajo estimulación estrogénica prolongada. Eso explica por qué la menarquia temprana, la menopausia tardía, la nuliparidad, la TRH prolongada y la obesidad posmenopáusica (que genera estrógenos periféricos) son factores de riesgo — todos ellos aumentan la exposición estrogénica acumulada.</p>
+<p>Las mutaciones BRCA1 y BRCA2 producen un fenotipo de inestabilidad genómica que independiza al tumor de la estimulación hormonal — por eso los carcinomas BRCA+ son con frecuencia triple negativos (RE−, RP−, HER2−) y de peor pronóstico.</p>
+
+<h3>Lo que el examen mide en este tema</h3>
+<div class="g2">
+  <div class="card">
+    <div class="card-t">Formato más frecuente</div>
+    <p>Te dan la clínica + mamografía/ecografía → te piden el diagnóstico presuntivo. La clave es distinguir nódulo benigno vs. maligno por las características semiológicas y radiológicas.</p>
+  </div>
+  <div class="card">
+    <div class="card-t">Segunda familia de preguntas</div>
+    <p>Conducta ante resultado BIRADS (especialmente BIRADS-3 y BIRADS-4). El banco 2025 preguntó directamente BIRADS-3 → control en 6 meses.</p>
+  </div>
+</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-t">Tercera familia</div>
+    <p>Tamizaje: edad de inicio de mamografía, frecuencia, discrepancias entre guías argentinas y otras (INC vs. FASGO). Preguntas sobre reducción de mortalidad.</p>
+  </div>
+  <div class="card">
+    <div class="card-t">Cuarta familia</div>
+    <p>TNM: clasificar un caso con tamaño del tumor + ganglios + metástasis. El banco 2022 preguntó TNM de un caso con nódulo 2,5 cm + adenopatías axilares fijas.</p>
+  </div>
+</div>
+
+<h3>Conexiones a otros nodos</h3>
+<p>
+<span class="pill pb">→</span> Cáncer de ovario (BRCA1/2, screening, mortalidad)
+<span class="pill pb">→</span> Menopausia y TRH (factor de riesgo)
+<span class="pill pb">→</span> Epidemiología de cáncer en Argentina (más prevalente)
+<span class="pill pb">→</span> Lactancia (factor protector)
+<span class="pill pb">→</span> ACO (discutido como leve factor de riesgo)
+<span class="pill pb">→</span> Cuidados paliativos (estadio IV)
+</p>
+</div>
+
+<!-- ② EPIDEMIOLOGÍA -->
+<div id="sec-epid" class="sec">
+<h2>② Epidemiología — los datos que el banco pregunta</h2>
+<div class="sec-sub">Fuente: Consenso Tamizaje 2021 · INC Argentina</div>
+
+<div class="callout callout-blue">
+  <strong>Dato clave del banco (Examen 2025, pregunta 14):</strong> el cáncer de mama es el tipo de cáncer con más prevalencia en Argentina. Correcta: D (mama). Las opciones distractoras fueron pulmón, próstata y colon.
+</div>
+
+<h3>Números para el examen</h3>
+<table>
+  <tr><th>Indicador</th><th>Dato Argentina</th></tr>
+  <tr><td>Casos nuevos por año</td><td>~21.000</td></tr>
+  <tr><td>Muertes por año</td><td>~6.000</td></tr>
+  <tr><td>Posición en incidencia (mujeres)</td><td><strong>1°</strong></td></tr>
+  <tr><td>Posición en mortalidad por cáncer (mujeres)</td><td><strong>1°</strong> en términos absolutos</td></tr>
+  <tr><td>Posición en incidencia general (todos)</td><td><strong>1°</strong> (supera a próstata y colorrectal)</td></tr>
+  <tr><td>Sobrevida a 5 años estadio I</td><td>&gt;95%</td></tr>
+  <tr><td>Sobrevida a 5 años estadio IV</td><td>~28%</td></tr>
+  <tr><td>% diagnosticados en estadio temprano (I–II) con screening</td><td>~60–70%</td></tr>
+</table>
+
+<h3>¿Por qué es 1° en prevalencia pero el pulmón mata más?</h3>
+<p>La prevalencia mide casos acumulados vivos — el cáncer de mama tiene alta incidencia Y muchas sobrevivientes (buen pronóstico relativo, screening efectivo). El pulmón tiene menor incidencia pero casi no tiene sobrevivientes: la tasa mortalidad/incidencia del pulmón es ~85%, mientras que la del mama es ~28%. Alta prevalencia + baja tasa de mortalidad proporcional = cáncer con buen pronóstico relativo.</p>
+
+<h3>Edad de presentación</h3>
+<p>La incidencia aumenta progresivamente con la edad. Dos picos: uno entre los 45–55 años (perimenopausia) y otro después de los 65 años. El 75% de los casos se diagnostica después de los 50 años. Carcinomas en mujeres jóvenes (&lt;40 años) representan el 5–7% — muchos asociados a BRCA.</p>
+
+<h3>Tipos histológicos — lo esencial</h3>
+<table>
+  <tr><th>Tipo</th><th>Frecuencia</th><th>Característica clave</th></tr>
+  <tr><td><strong>Carcinoma ductal infiltrante (CDI)</strong></td><td>70–80%</td><td>Más frecuente. Nódulo duro, espiculado. Microcalcificaciones en mamografía.</td></tr>
+  <tr><td>Carcinoma lobulillar infiltrante (CLI)</td><td>10–15%</td><td>Bilateral con mayor frecuencia. Difícil de palpar (no forma nódulo discreto).</td></tr>
+  <tr><td>Carcinoma ductal in situ (CDIS)</td><td>15–20% de diagnósticos por screening</td><td>No invasor. Microcalcificaciones como única presentación posible.</td></tr>
+  <tr><td>Enfermedad de Paget del pezón</td><td>Raro (~1–3%)</td><td>Eczema del pezón que no responde a tratamiento → siempre biopsia.</td></tr>
+  <tr><td>Carcinoma inflamatorio</td><td>Raro (~1–5%)</td><td>Eritema, calor, edema en piel de naranja sin nódulo. Mal pronóstico. Diagnóstico clínico.</td></tr>
+</table>
+</div>
+
+<!-- ③ FACTORES DE RIESGO -->
+<div id="sec-riesgo" class="sec">
+<h2>③ Factores de riesgo y protectores</h2>
+<div class="sec-sub">Organizados por mecanismo para fijarlos en red</div>
+
+<div class="frase">"Todo lo que aumenta la exposición estrogénica acumulada = riesgo. Todo lo que la interrumpe o reduce = protección. Las mutaciones BRCA rompen esta lógica: son riesgo independientemente de los estrógenos."</div>
+
+<h3>Factores de riesgo — clasificados</h3>
+<table>
+  <tr><th>Factor</th><th>Mecanismo</th><th>Magnitud</th></tr>
+  <tr><td><strong>Mutación BRCA1</strong></td><td>Inestabilidad genómica, independiente de estrógenos</td><td>Riesgo de por vida 55–72%</td></tr>
+  <tr><td><strong>Mutación BRCA2</strong></td><td>Ídem</td><td>Riesgo de por vida 45–69%</td></tr>
+  <tr><td>Historia familiar 1er grado (madre/hermana)</td><td>Predisposición genética + compartida</td><td>RR 2–3</td></tr>
+  <tr><td>Historia personal de cáncer de mama</td><td>Riesgo en mama contralateral</td><td>RR 3–4</td></tr>
+  <tr><td>Menarquia temprana (&lt;12 años)</td><td>Más años de exposición estrogénica</td><td>RR 1.3</td></tr>
+  <tr><td>Menopausia tardía (&gt;55 años)</td><td>Más años de exposición</td><td>RR 1.2–1.4</td></tr>
+  <tr><td>Nuliparidad</td><td>Sin interrupción de ciclos por embarazo</td><td>RR 1.3–1.5</td></tr>
+  <tr><td>Primer embarazo tardío (&gt;30 años)</td><td>Diferenciación tardía del tejido mamario</td><td>RR 1.3–1.9</td></tr>
+  <tr><td>TRH combinada posmenopáusica &gt;5 años</td><td>Estimulación estrogénica-progestínica continua</td><td>RR 1.2–1.5</td></tr>
+  <tr><td>Obesidad posmenopáusica</td><td>Conversión periférica de andrógenos → estrógenos</td><td>RR 1.3–1.5</td></tr>
+  <tr><td>Densidad mamaria alta (tipo C–D en mamografía)</td><td>Mayor tejido glandular → más células susceptibles</td><td>RR hasta 4–6</td></tr>
+  <tr><td>Consumo de alcohol (&gt;1 copa/día)</td><td>Aumenta niveles de estrógenos circulantes</td><td>RR 1.1 por copa/día</td></tr>
+  <tr><td>Radioterapia torácica previa (ej. linfoma)</td><td>Daño genotóxico directo</td><td>RR 3–8 según dosis y edad</td></tr>
+  <tr><td>Hiperplasia ductal atípica en biopsia</td><td>Lesión precursora documentada</td><td>RR 4–5</td></tr>
+</table>
+
+<h3>Factores protectores — los más preguntados</h3>
+<table>
+  <tr><th>Factor</th><th>Mecanismo</th><th>Magnitud</th></tr>
+  <tr><td><strong>Lactancia materna</strong></td><td>Suprime ciclos ovulatorios. Diferenciación terminal del tejido. Por cada 12 meses de lactancia: RR −4,3%</td><td>Significativo con &gt;12 meses totales</td></tr>
+  <tr><td>Multiparidad</td><td>Diferenciación del tejido mamario durante el embarazo</td><td>Reducción leve por cada parto</td></tr>
+  <tr><td>Actividad física regular</td><td>Reduce estrógenos circulantes, mejora inmunidad</td><td>RR 0.7–0.8</td></tr>
+  <tr><td>Salpingooforectomía bilateral profiláctica (BRCA+)</td><td>Elimina producción ovárica de estrógenos</td><td>Reduce riesgo ~50% en BRCA+</td></tr>
+</table>
+
+<div class="callout callout-orange">
+  <strong>Trampa frecuente:</strong> el banco preguntó (2018, pregunta 82) qué puede hacer una mujer sana de 56 años sin antecedentes para reducir su riesgo de cáncer de mama. La respuesta correcta fue ejercicio físico + dieta rica en frutas y verduras. Las opciones incorrectas incluían "mamografía y ecografía anual" (eso es tamizaje/prevención secundaria, no reducción del riesgo) y "2 copas de vino por día" (el alcohol es factor de riesgo).
+</div>
+</div>
+
+<!-- ④ CLÍNICA -->
+<div id="sec-clin" class="sec">
+<h2>④ Clínica — cómo se presenta y cómo se reconoce</h2>
+<div class="sec-sub">El nódulo sospechoso vs. el benigno es el diagnóstico diferencial más preguntado</div>
+
+<div class="frase">"El carcinoma de mama típico es: nódulo duro, indoloro, de bordes irregulares, poco móvil, en cuadrante superoexterno (CSE). Eso es lo que el examen describe. Comparalo con el fibroadenoma: blando o elástico, móvil, bien delimitado, indoloro, en mujeres jóvenes."</div>
+
+<h3>Síntomas y signos por estadio</h3>
+<div class="g2">
+  <div class="card" style="border-left: 3px solid var(--green);">
+    <div class="card-t" style="color:var(--green)">Estadios tempranos (I–II)</div>
+    <ul>
+      <li>Nódulo palpable asintomático (hallazgo propio o mamografía)</li>
+      <li>Nódulo duro, bordes irregulares, poco móvil</li>
+      <li>Microcalcificaciones en mamografía sin masa palpable (CDIS)</li>
+      <li>Adenopatía axilar homolateral palpable</li>
+    </ul>
+  </div>
+  <div class="card" style="border-left: 3px solid var(--red);">
+    <div class="card-t" style="color:var(--red)">Estadios avanzados (III–IV)</div>
+    <ul>
+      <li>Retracción del pezón o de la piel</li>
+      <li>Piel de naranja (edema dérmico por obstrucción linfática)</li>
+      <li>Úlcera cutánea</li>
+      <li>Adenopatías axilares fijas o supraclaviculares</li>
+      <li>Carcinoma inflamatorio: eritema difuso, mama caliente, indurada</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Tabla comparativa nódulo benigno vs. maligno — clave del examen</h3>
+<table>
+  <tr><th>Característica</th><th style="color:var(--green)">Benigno (típico fibroadenoma)</th><th style="color:var(--red)">Maligno (típico carcinoma)</th></tr>
+  <tr><td>Consistencia</td><td>Blanda, elástica, renitente</td><td><strong>Dura, pétrea</strong></td></tr>
+  <tr><td>Bordes</td><td>Bien definidos, netos</td><td><strong>Irregulares, mal definidos, espiculados</strong></td></tr>
+  <tr><td>Movilidad</td><td><strong>Muy móvil</strong> ("pelota de ping pong")</td><td>Poco móvil o fijo a planos</td></tr>
+  <tr><td>Dolor</td><td>Puede ser doloroso (cíclico)</td><td>Generalmente <strong>indoloro</strong></td></tr>
+  <tr><td>Piel suprayacente</td><td>Normal</td><td>Retracción, piel de naranja, ulceración</td></tr>
+  <tr><td>Pezón</td><td>Normal</td><td>Retracción, secreción sanguinolenta</td></tr>
+  <tr><td>Edad típica</td><td>15–35 años (fibroadenoma)</td><td>&gt;40 años (mayor riesgo)</td></tr>
+  <tr><td>Mamografía</td><td>Imagen redondeada, bordes lisos, halo claro</td><td>Bordes difusos, espiculados, <strong>microcalcificaciones agrupadas heterogéneas</strong></td></tr>
+</table>
+
+<h3>Secreción por el pezón — cuándo preocupa</h3>
+<table>
+  <tr><th>Tipo de secreción</th><th>Causa más probable</th><th>Conducta</th></tr>
+  <tr><td>Lechosa bilateral</td><td>Galactorrea (hiperprolactinemia)</td><td>Prolactina sérica, RMN hipofisaria</td></tr>
+  <tr><td>Serosa o serosanguinolenta unilateral</td><td>Papiloma intraductal (más frecuente), carcinoma</td><td>Ecografía + citología del líquido + biopsia</td></tr>
+  <tr><td><strong>Sanguinolenta unilateral</strong></td><td>Papiloma o <strong>carcinoma</strong></td><td><strong>Biopsia obligatoria</strong></td></tr>
+  <tr><td>Purulenta</td><td>Mastitis/absceso</td><td>ATB + drenaje si colección</td></tr>
+</table>
+
+<h3>Localización</h3>
+<p>El cuadrante superoexterno (CSE) contiene el mayor volumen de tejido glandular y es el sitio donde se origina el 50% de los carcinomas. La cola axilar de Spence (prolongación del tejido mamario hacia la axila) también es un sitio frecuente. Esta información aparece en las preguntas del banco que ubican el nódulo en CSE.</p>
+</div>
+
+<!-- ⑤ DIAGNÓSTICO -->
+<div id="sec-dx" class="sec">
+<h2>⑤ Diagnóstico e imagen — el algoritmo que el examen sigue</h2>
+<div class="sec-sub">Mamografía + ecografía + biopsia = la tríada diagnóstica</div>
+
+<div class="frase">"Ante un nódulo mamario sospechoso: mamografía bilateral + ecografía → si sospecha de malignidad → biopsia con aguja gruesa (BAG/tru-cut). El diagnóstico definitivo es siempre histológico."</div>
+
+<h3>Algoritmo diagnóstico ante nódulo palpable</h3>
+<div class="algo">
+  <div class="step"><span class="sn sb">1</span><div class="stxt"><strong>Examen físico completo</strong> — caracterizar el nódulo (tamaño, consistencia, bordes, movilidad, piel, pezón, adenopatías). Evaluar mama contralateral y región supraclavicular.</div></div>
+  <div class="step"><span class="sn sb">2</span><div class="stxt"><strong>Mamografía bilateral</strong> — siempre en mujeres ≥40 años. Evalúa microcalcificaciones, densidad, asimetría, distorsión arquitectural. En mujeres jóvenes (&lt;35 años) con mama densa, la ecografía es más sensible.</div></div>
+  <div class="step"><span class="sn sb">3</span><div class="stxt"><strong>Ecografía mamaria</strong> — complemento de la mamografía. Diferencia quiste simple (anecoico, paredes lisas → benigno) de nódulo sólido (requiere más estudio). Es el primer estudio en mujeres &lt;35 años.</div></div>
+  <div class="step"><span class="sn sa">4</span><div class="stxt"><strong>Clasificar con BIRADS</strong> (ver sección ⑥). BIRADS 0 → estudio incompleto → completar. BIRADS 3 → control en 6 meses. BIRADS 4–5 → biopsia.</div></div>
+  <div class="step"><span class="sn sr">5</span><div class="stxt"><strong>Biopsia con aguja gruesa (BAG / tru-cut)</strong> — diagnóstico histológico definitivo. Permite determinar tipo histológico, grado, receptores hormonales (RE, RP), HER2, Ki-67. NO se hace PAAF como primer paso para nódulo sólido sospechoso — la BAG es el estándar.</div></div>
+  <div class="step"><span class="sn sg">6</span><div class="stxt"><strong>Estadificación</strong> si hay confirmación de malignidad: RMN de mama, TAC tórax-abdomen-pelvis, centellograma óseo, PET-CT (casos seleccionados).</div></div>
+</div>
+
+<h3>Mamografía — lo que el examen describe</h3>
+<table>
+  <tr><th>Hallazgo mamográfico</th><th>Interpretación</th><th>BIRADS más probable</th></tr>
+  <tr><td>Imagen redondeada, bordes lisos, halo claro</td><td>Probable benigno (fibroadenoma, quiste)</td><td>2</td></tr>
+  <tr><td>Imagen oval con macrocalcificaciones gruesas</td><td>Fibroadenoma calcificado</td><td>2</td></tr>
+  <tr><td>Imagen redondeada, bordes bien definidos, sin calcificaciones, &lt;3 cm en joven</td><td>Probablemente benigno → control</td><td>3</td></tr>
+  <tr><td><strong>Microcalcificaciones agrupadas heterogéneas</strong></td><td><strong>Alta sospecha de malignidad</strong></td><td>4–5</td></tr>
+  <tr><td>Nódulo espiculado, bordes irregulares, distorsión arquitectural</td><td>Alta sospecha de carcinoma</td><td>4–5</td></tr>
+  <tr><td>Asimetría focal con distorsión</td><td>Requiere evaluación adicional</td><td>0 o 4</td></tr>
+</table>
+
+<h3>Ecografía — claves para el examen</h3>
+<p>La ecografía diferencia quiste de sólido. Un quiste simple (completamente anecoico, paredes finas, refuerzo posterior) es benigno y no requiere biopsia. Un nódulo sólido hipoecogénico con sombra acústica posterior, márgenes angulados o espiculados → alta sospecha de malignidad. La ecografía también guía la biopsia con aguja gruesa.</p>
+
+<h3>Marcadores tumorales en mama</h3>
+<table>
+  <tr><th>Marcador</th><th>Uso clínico</th><th>Limitaciones</th></tr>
+  <tr><td>CA 15-3</td><td>Seguimiento y detección de recaída en pacientes con diagnóstico establecido</td><td>No sirve para screening ni diagnóstico</td></tr>
+  <tr><td>CEA</td><td>Complementario al CA 15-3 en seguimiento</td><td>Muy inespecífico</td></tr>
+  <tr><td>RE / RP (receptores hormonales)</td><td>Determinan indicación de hormonoterapia</td><td>Se obtienen de la biopsia, no de sangre</td></tr>
+  <tr><td>HER2</td><td>Determina indicación de trastuzumab</td><td>Se obtiene de la biopsia</td></tr>
+</table>
+</div>
+
+<!-- ⑥ BIRADS -->
+<div id="sec-birads" class="sec">
+<h2>⑥ Sistema BIRADS — el vocabulario que el examen usa sistemáticamente</h2>
+<div class="sec-sub">Breast Imaging-Reporting and Data System (ACR). El banco 2025 preguntó BIRADS-3 directamente.</div>
+
+<div class="frase">"BIRADS es el lenguaje universal de los informes mamográficos. Cada categoría tiene una probabilidad de malignidad específica y una conducta estándar. Dominar BIRADS 0 a 6 resuelve entre 1 y 2 preguntas por año."</div>
+
+<div class="birads-row">
+  <div class="birads-box b0">
+    <div class="birads-num">0</div>
+    <div class="birads-label">Incompleto</div>
+    <div class="birads-mal">Indefinida</div>
+    <div class="birads-cond">Completar estudio</div>
+  </div>
+  <div class="birads-box b1">
+    <div class="birads-num">1</div>
+    <div class="birads-label">Negativo</div>
+    <div class="birads-mal">0%</div>
+    <div class="birads-cond">Control anual</div>
+  </div>
+  <div class="birads-box b2">
+    <div class="birads-num">2</div>
+    <div class="birads-label">Benigno</div>
+    <div class="birads-mal">0%</div>
+    <div class="birads-cond">Control anual</div>
+  </div>
+  <div class="birads-box b3">
+    <div class="birads-num">3</div>
+    <div class="birads-label">Prob. benigno</div>
+    <div class="birads-mal">&lt;2%</div>
+    <div class="birads-cond">Control 6 meses</div>
+  </div>
+  <div class="birads-box b4">
+    <div class="birads-num">4</div>
+    <div class="birads-label">Sospechoso</div>
+    <div class="birads-mal">2–95%</div>
+    <div class="birads-cond">Biopsia</div>
+  </div>
+  <div class="birads-box b5">
+    <div class="birads-num">5</div>
+    <div class="birads-label">Alta sospecha</div>
+    <div class="birads-mal">&gt;95%</div>
+    <div class="birads-cond">Biopsia</div>
+  </div>
+  <div class="birads-box b6">
+    <div class="birads-num">6</div>
+    <div class="birads-label">Malignidad confirmada</div>
+    <div class="birads-mal">100%</div>
+    <div class="birads-cond">Tratamiento</div>
+  </div>
+</div>
+
+<h3>Detalle de cada categoría</h3>
+<table>
+  <tr><th>BIRADS</th><th>Probabilidad de malignidad</th><th>Conducta específica</th><th>Ejemplos</th></tr>
+  <tr><td><strong>0</strong></td><td>Indeterminada</td><td>Completar estudio (agregar ecografía, proyecciones adicionales, comparar con mamografía anterior)</td><td>Mama densa que oscurece lesión, hallazgo que necesita ecografía complementaria</td></tr>
+  <tr><td><strong>1</strong></td><td>0%</td><td>Screening de rutina (anual)</td><td>Mamografía normal, sin hallazgos</td></tr>
+  <tr><td><strong>2</strong></td><td>0%</td><td>Screening de rutina (anual)</td><td>Quiste simple, fibroadenoma calcificado, ganglio intramamario, implante</td></tr>
+  <tr><td><strong>3</strong></td><td>&lt;2%</td><td><strong>Control en 6 meses</strong> (mamografía o ecografía). Si estable → control a los 12 meses. Si estable → BIRADS 2. Si cambia → biopsia.</td><td>Nódulo circunscrito sólido no calcificado, asimetría focal sin distorsión</td></tr>
+  <tr><td><strong>4A</strong></td><td>2–10%</td><td>Biopsia con aguja gruesa (BAG)</td><td>Nódulo parcialmente circunscrito con algún criterio sospechoso leve</td></tr>
+  <tr><td><strong>4B</strong></td><td>10–50%</td><td>Biopsia con aguja gruesa (BAG)</td><td>Nódulo con bordes parcialmente irregulares</td></tr>
+  <tr><td><strong>4C</strong></td><td>50–95%</td><td>Biopsia con aguja gruesa (BAG)</td><td>Microcalcificaciones pleomórficas moderadas, nódulo irregular sin características de malignidad definitiva</td></tr>
+  <tr><td><strong>5</strong></td><td>&gt;95%</td><td>Biopsia — diagnóstico prácticamente confirmado por imagen</td><td>Nódulo espiculado irregular, microcalcificaciones lineales ramificadas</td></tr>
+  <tr><td><strong>6</strong></td><td>100% (ya confirmado)</td><td>Estadificación y tratamiento</td><td>Biopsia positiva ya realizada, evaluación preoperatoria</td></tr>
+</table>
+
+<div class="callout callout-orange">
+  <strong>Pregunta directa del banco 2025 (pregunta 27):</strong> "¿Cuál es la conducta ante BIRADS-3?" → La correcta fue C: "Se explica que la probabilidad de malignidad es menor al 2% y se cita a control en 6 meses." La trampa más frecuente es elegir la opción que dice "mayor al 2%" — BIRADS-3 es MENOR al 2%.
+</div>
+
+<div class="callout callout-blue">
+  <strong>Distinción crítica BIRADS-3 para el examen:</strong> BIRADS-3 no se biopsía de entrada. Se controla. Esto va en contra del instinto clínico de "cualquier cosa sospechosa → biopsia". La evidencia muestra que la conducta expectante con control semestral tiene la misma seguridad y evita biopsias innecesarias. Solo se adelanta la biopsia si la paciente tiene ansiedad elevada, si va a quedar sin seguimiento, o si tiene factores de alto riesgo.
+</div>
+</div>
+
+<!-- ⑦ ESTADIFICACIÓN -->
+<div id="sec-stad" class="sec">
+<h2>⑦ Estadificación TNM — lo que el examen mide en clasificación</h2>
+<div class="sec-sub">El banco 2022 preguntó TNM con un caso clínico concreto</div>
+
+<h3>Componentes del TNM mamario</h3>
+<div class="g3">
+  <div class="card">
+    <div class="card-t">T — Tumor primario</div>
+    <p><strong>Tis:</strong> in situ (CDIS, CLIS, Paget sin invasión)</p>
+    <p><strong>T1:</strong> ≤2 cm (T1a ≤0,5; T1b 0,5–1; T1c 1–2 cm)</p>
+    <p><strong>T2:</strong> &gt;2 cm y ≤5 cm</p>
+    <p><strong>T3:</strong> &gt;5 cm</p>
+    <p><strong>T4:</strong> extensión a pared torácica o piel (incluye inflamatorio)</p>
+  </div>
+  <div class="card">
+    <div class="card-t">N — Ganglios regionales</div>
+    <p><strong>N0:</strong> sin ganglios</p>
+    <p><strong>N1:</strong> 1–3 ganglios axilares ipsilaterales móviles</p>
+    <p><strong>N2:</strong> 4–9 ganglios axilares O mamaria interna clínica sin axila</p>
+    <p><strong>N3:</strong> ≥10 ganglios axilares O infraclavicular O supraclavicular</p>
+  </div>
+  <div class="card">
+    <div class="card-t">M — Metástasis a distancia</div>
+    <p><strong>M0:</strong> sin metástasis</p>
+    <p><strong>M1:</strong> metástasis a distancia (hueso, hígado, pulmón, cerebro)</p>
+    <p><em>Sitios más frecuentes: hueso (60–70%), hígado, pulmón, cerebro.</em></p>
+  </div>
+</div>
+
+<h3>Estadios clínicos simplificados</h3>
+<div class="tnm-grid">
+  <div class="tnm-box tnm-I">
+    <div class="tnm-num">I</div>
+    <div style="font-size:11px;color:#7ee8b8">T1 N0 M0</div>
+    <div style="font-size:11px;margin-top:4px;color:var(--text2)">≤2 cm sin ganglios</div>
+    <div style="font-size:12px;color:var(--green);margin-top:4px;font-weight:600">&gt;95%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tnm-II">
+    <div class="tnm-num">II</div>
+    <div style="font-size:11px;color:#a3e635">T1N1 / T2N0–1 / T3N0</div>
+    <div style="font-size:11px;margin-top:4px;color:var(--text2)">Tumor o ganglios limitados</div>
+    <div style="font-size:12px;color:#a3e635;margin-top:4px;font-weight:600">~80%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tnm-III">
+    <div class="tnm-num">III</div>
+    <div style="font-size:11px;color:var(--orange)">T3N1–2 / T4 / N2–3</div>
+    <div style="font-size:11px;margin-top:4px;color:var(--text2)">Localmente avanzado</div>
+    <div style="font-size:12px;color:var(--orange);margin-top:4px;font-weight:600">~50–60%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tnm-IV">
+    <div class="tnm-num">IV</div>
+    <div style="font-size:11px;color:var(--red)">Cualquier T/N M1</div>
+    <div style="font-size:11px;margin-top:4px;color:var(--text2)">Metástasis a distancia</div>
+    <div style="font-size:12px;color:var(--red);margin-top:4px;font-weight:600">~28%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+</div>
+
+<div class="callout callout-orange">
+  <strong>Pregunta directa del banco 2022 (pregunta 45):</strong> mujer de 36 años con nódulo palpable de 2,5 cm (→ T2) + conglomerado de adenopatías axilares fijas ipsilaterales (→ N2) + sin metástasis (→ M0) = <strong>T2 N2 M0</strong>. Respuesta correcta: B. Los distractores usaban T1 (error: 2,5 cm &gt;2 cm = T2) y N3 (error: fijas pero no supraclaviculares ni infraclaviculares = N2).
+</div>
+
+<h3>Perfiles moleculares — lo que el examen puede mencionar</h3>
+<table>
+  <tr><th>Subtipo</th><th>RE/RP</th><th>HER2</th><th>Pronóstico</th><th>Tratamiento base</th></tr>
+  <tr><td>Luminal A</td><td>+</td><td>−</td><td>Mejor</td><td>Hormonoterapia</td></tr>
+  <tr><td>Luminal B</td><td>+</td><td>± (Ki-67 alto)</td><td>Intermedio</td><td>Hormonoterapia ± QT</td></tr>
+  <tr><td>HER2 enriquecido</td><td>−</td><td>+</td><td>Intermedio (mejoró con trastuzumab)</td><td>Trastuzumab + QT</td></tr>
+  <tr><td><strong>Triple negativo</strong></td><td>−</td><td>−</td><td>Peor. Asociado a BRCA1.</td><td>QT (no hormonoterapia, no trastuzumab)</td></tr>
+</table>
+</div>
+
+<!-- ⑧ TRATAMIENTO Y TAMIZAJE -->
+<div id="sec-tto" class="sec">
+<h2>⑧ Tratamiento y tamizaje — lo que el examen pregunta</h2>
+<div class="sec-sub">Consenso Tamizaje 2021 · Guía "Cáncer de Mama en 8 Palabras" (bibliografía oficial Integrador 2026)</div>
+
+<div class="div">Tamizaje — el capítulo más preguntado de este nodo</div>
+
+<div class="callout callout-orange">
+  <strong>Controversia Argentina que el examen explota:</strong> hay dos posiciones en las guías nacionales sobre cuándo iniciar la mamografía. El INC (Instituto Nacional del Cáncer) recomienda no realizarla en mujeres de 40–49 años con riesgo promedio. El Consenso Inter-Sociedades 2021 (bibliografía oficial del examen) recomienda comenzar a los <strong>40 años</strong>. Cuando el examen pregunta edades de tamizaje → usar el Consenso 2021 (40 años).
+</div>
+
+<table>
+  <tr><th>Recomendación</th><th>Según Consenso Inter-Sociedades 2021 (bibliografía oficial examen)</th></tr>
+  <tr><td>Inicio tamizaje (riesgo promedio)</td><td><strong>40 años</strong></td></tr>
+  <tr><td>Frecuencia</td><td><strong>Anual o cada 2 años</strong> entre 40–49. <strong>Anual</strong> a partir de los 50.</td></tr>
+  <tr><td>Método de tamizaje</td><td>Mamografía bilateral. Ecografía complementaria en mama densa.</td></tr>
+  <tr><td>Fin del tamizaje</td><td>No hay límite de edad estricto — individualizar según estado de salud general y expectativa de vida.</td></tr>
+  <tr><td>Autoexamen mamario</td><td>No se recomienda como método de screening formal. Sí se recomienda el <strong>conocimiento corporal</strong> (que la mujer conozca sus mamas y consulte ante cambios).</td></tr>
+  <tr><td>Examen clínico mamario</td><td>En cada consulta de control de salud desde los 25 años.</td></tr>
+  <tr><td>Alto riesgo (BRCA+, historia familiar fuerte)</td><td>Inicio a los 25–30 años + RMN de mama anual alternada con mamografía.</td></tr>
+</table>
+
+<div class="div">Tratamiento — principios generales</div>
+
+<h3>Cirugía — opciones</h3>
+<table>
+  <tr><th>Procedimiento</th><th>Indicación</th><th>Consideraciones</th></tr>
+  <tr><td>Cirugía conservadora (tumorectomía + radioterapia)</td><td>Estadios I–II con tumor &lt;4–5 cm, mama adecuada</td><td>Equivalente oncológico a la mastectomía en estadios tempranos. Requiere RT adyuvante.</td></tr>
+  <tr><td>Mastectomía total</td><td>Multifocalidad, tumor grande, contraindicación de RT, preferencia de la paciente, BRCA+</td><td>Puede ser con o sin reconstrucción simultánea.</td></tr>
+  <tr><td>Ganglio centinela (GC)</td><td>N0 clínico antes de la cirugía</td><td>Si GC negativo → no se hace linfadenectomía axilar completa. Banco 2021: carcinoma ductal in situ con márgenes libres → finalizar cirugía con estudio de GC.</td></tr>
+  <tr><td>Linfadenectomía axilar</td><td>GC positivo o N+ clínico confirmado</td><td>Complicación principal: linfedema.</td></tr>
+</table>
+
+<h3>Tratamiento sistémico — conceptos clave</h3>
+<p><strong>Hormonoterapia</strong> (tamoxifeno, inhibidores de aromatasa): para tumores RE+ o RP+. Tamoxifeno en premenopáusicas. Inhibidores de aromatasa en posmenopáusicas.</p>
+<p><strong>Quimioterapia adyuvante</strong>: para tumores con factores de mal pronóstico (triple negativo, HER2+, ganglios positivos, Ki-67 alto).</p>
+<p><strong>Trastuzumab</strong>: anticuerpo monoclonal anti-HER2. Solo para tumores HER2+. Revolucionó el pronóstico de ese subtipo.</p>
+<p><strong>Radioterapia</strong>: siempre después de cirugía conservadora. En mastectomía: indicada si T3–T4 o ≥4 ganglios positivos.</p>
+</div>
+
+<!-- ⑨ TRAMPAS -->
+<div id="sec-trap" class="sec">
+<h2>⑨ Trampas del examen — todas identificadas en el banco 2016–2025</h2>
+
+<div class="trap">
+  <div class="tq">Trampa 1: BIRADS-3 → biopsia inmediata</div>
+  <div class="tw">✗ "BIRADS-3 → derivar para biopsia porque hay alguna probabilidad de malignidad" → INCORRECTO</div>
+  <div class="tr">✓ BIRADS-3 = probabilidad de malignidad MENOR AL 2%. Conducta: control en 6 meses, no biopsia. La biopsia en BIRADS-3 solo se adelanta en casos excepcionales (ansiedad, imposibilidad de seguimiento, alto riesgo). Pregunta 27 del banco 2025 confirmó esto.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 2: Nódulo móvil, bien delimitado → carcinoma</div>
+  <div class="tw">✗ Ver "nódulo mamario" y asumir que cualquier nódulo es maligno → ERROR</div>
+  <div class="tr">✓ El perfil del fibroadenoma (móvil, bien delimitado, consistencia elástica, mujer joven) es benigno. En la pregunta 8 del banco (examen de otra convocatoria): mujer de 28 años con nódulo de 2x2 cm, móvil, no doloroso, no adherido → fibroadenoma. El cáncer es duro, bordes irregulares, poco móvil.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 3: Microcalcificaciones = siempre benigno</div>
+  <div class="tw">✗ "Las calcificaciones en mamografía son depósitos calcáreos benignos" → DEPENDE DEL TIPO</div>
+  <div class="tr">✓ Macrocalcificaciones gruesas (en fibroadenoma, quiste, tejido vascular) → benignas. Microcalcificaciones agrupadas heterogéneas o lineales ramificadas → alta sospecha de malignidad (CDIS o carcinoma infiltrante). Las preguntas 2 (2022) y 72 (examen anterior) describieron exactamente: "microcalcificaciones agrupadas heterogéneas" → diagnóstico presuntivo cáncer de mama.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 4: Mamografía = prevención primaria</div>
+  <div class="tw">✗ "La mamografía es una medida de prevención primaria del cáncer de mama" → FALSO</div>
+  <div class="tr">✓ La mamografía es prevención SECUNDARIA (detecta la enfermedad ya presente en estadio temprano). No hay vacuna ni medida eficaz de prevención primaria para cáncer de mama en la población general (a diferencia del cérvix con la vacuna HPV). La reducción de factores de riesgo (dieta, ejercicio, control del peso) es prevención primaria pero de eficacia moderada.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 5: TNM — confundir T1 con T2</div>
+  <div class="tw">✗ Ver "nódulo de 2,5 cm" y clasificarlo como T1 → ERROR. T1 es ≤2 cm. 2,5 cm es T2.</div>
+  <div class="tr">✓ El corte está en 2 cm: ≤2 cm = T1. &gt;2 cm y ≤5 cm = T2. &gt;5 cm = T3. En la pregunta 45 del banco 2022: nódulo de 2,5 cm = T2. Las opciones distractoras usaban T1 precisamente para atrapar este error.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 6: Adenopatías axilares fijas = N3</div>
+  <div class="tw">✗ "Adenopatías axilares fijas ipsilaterales → N3" → ERROR</div>
+  <div class="tr">✓ N3 requiere ≥10 ganglios axilares, o compromiso infraclavicular, o supraclavicular. Adenopatías axilares fijas en conglomerado pero sin esas características → N2. En la pregunta 45/2022: conglomerado de adenopatías fijas = N2, no N3.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 7: El autoexamen mamario es el método de screening recomendado</div>
+  <div class="tw">✗ "El autoexamen mensual es la estrategia de screening más importante" → OBSOLETO</div>
+  <div class="tr">✓ El autoexamen formal no reduce la mortalidad por cáncer de mama en estudios controlados. Lo que sí se recomienda es el "conocimiento corporal" (que la mujer consulte ante cualquier cambio). El método de screening con evidencia de reducción de mortalidad es la mamografía.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 8: 2 copas de vino al día = beneficio cardiovascular para mujer con riesgo de cáncer de mama</div>
+  <div class="tw">✗ Pregunta 82/2018: "consumir 2 copas de vino al día" como medida para reducir riesgo de cáncer de mama → FALSO (trampa directa del banco)</div>
+  <div class="tr">✓ El alcohol (incluso en dosis moderadas) aumenta el riesgo de cáncer de mama. No existe "dosis segura" de alcohol en este contexto. La respuesta correcta de la pregunta era ejercicio físico + dieta saludable, no alcohol.</div>
+</div>
+
+<div class="frase">"La lógica del examen en cáncer de mama: nódulo duro + bordes irregulares + microcalcificaciones heterogéneas → sospechar maligno. BIRADS-3 → controlar, no biopsiar. BIRADS-4/5 → biopsiar. TNM: 2,5 cm = T2, ganglios axilares fijos = N2."</div>
+</div>
+
+<!-- ⑩ PREGUNTAS REALES -->
+<div id="sec-preg" class="sec">
+<h2>⑩ Preguntas reales del banco 2016–2025</h2>
+<div class="sec-sub">8 preguntas identificadas sobre cáncer de mama. Hacé clic para ver respuesta y análisis.</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2025 · PREGUNTA 27 · BIRADS</div>
+  <div class="qtxt">¿Cuál es la conducta a tomar ante el resultado de una mamografía informada con BIRADS-3?</div>
+  <div class="qopt">A) Se explica que la probabilidad de malignidad es mayor al 2% y sugiere realizar una biopsia de mama.</div>
+  <div class="qopt">B) Se explica que la probabilidad de malignidad es mayor al 2% y sugiere confirmar con otro estudio de imagen.</div>
+  <div class="qopt ok">✓ C) Se explica que la probabilidad de malignidad es menor al 2% y cita a control en 6 meses.</div>
+  <div class="qopt">D) Se explica que la probabilidad de malignidad es menor al 2% y cita a control en 1 año.</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">BIRADS-3 = probabilidad de malignidad MENOR al 2%. Conducta = control en 6 meses (no biopsia, no control en 1 año). Las trampas A y B dicen "mayor al 2%" → incorrecto. La trampa D dice "menor al 2%" pero "control en 1 año" → incorrecto, son 6 meses. La distinción entre 6 meses y 1 año es la clave de esta pregunta. Si a los 6 meses el hallazgo es estable → control a los 12 meses. Si cambia → biopsia.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2025 · PREGUNTA 14 · EPIDEMIOLOGÍA</div>
+  <div class="qtxt">¿Cuál es el tipo de cáncer con más prevalencia en Argentina?</div>
+  <div class="qopt">A) Pulmón</div>
+  <div class="qopt">B) Próstata</div>
+  <div class="qopt">C) Colon</div>
+  <div class="qopt ok">✓ D) Mama</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">Prevalencia = casos acumulados vivos en la población. El cáncer de mama combina alta incidencia (~21.000 casos/año) con relativamente buena sobrevida → alto número de sobrevivientes viviendo con o después de la enfermedad = alta prevalencia. No confundir con "el que más mata" (pulmón) ni "el más frecuente en hombres" (próstata). La palabra clave es PREVALENCIA.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2022 · PREGUNTA 2 · DIAGNÓSTICO PRESUNTIVO</div>
+  <div class="qtxt">Persona de 46 años consulta por nódulo mamario. Al examen clínico: nódulo de 2 cm, móvil, duro, indoloro, con bordes irregulares, sin alteraciones en piel, ubicado en CSE. Mamografía: imagen nodular de 1,5 cm de bordes difusos con microcalcificaciones agrupadas heterogéneas. ¿Cuál es su diagnóstico presuntivo?</div>
+  <div class="qopt ok">✓ A) Cáncer de mama</div>
+  <div class="qopt">B) Fibroadenoma calcificado</div>
+  <div class="qopt">C) Quiste displásico</div>
+  <div class="qopt">D) Mastopatía escleroquística</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">La combinación de hallazgos apunta a carcinoma: nódulo duro + bordes irregulares + microcalcificaciones agrupadas heterogéneas. Las microcalcificaciones agrupadas heterogéneas en mamografía son el hallazgo más característico del CDIS y del CDI. El fibroadenoma calcificado tiene macrocalcificaciones gruesas homogéneas (no agrupadas heterogéneas). El quiste displásico es renitente/blando. La mastopatía escleroquística no produce este patrón mamográfico.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2022 · PREGUNTA 45 · TNM</div>
+  <div class="qtxt">Paciente de 36 años con nódulo palpable de 2,5 cm en CSE mama derecha. Conglomerado de adenopatías axilares fijas ipsilaterales. Biopsia: carcinoma ductal infiltrante. Sin metástasis a distancia. ¿Cuál es la clasificación TNM?</div>
+  <div class="qopt">A) T1 N2 M0</div>
+  <div class="qopt ok">✓ B) T2 N2 M0</div>
+  <div class="qopt">C) T2 N3 M0</div>
+  <div class="qopt">D) T1 N3 M0</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">Análisis paso a paso: T → tumor de 2,5 cm: &gt;2 cm y ≤5 cm = T2 (no T1, que es ≤2 cm). N → conglomerado de adenopatías axilares fijas ipsilaterales = N2 (no N3, que requeriría ≥10 ganglios, supraclavicular o infraclavicular). M → "sin metástasis a distancia" = M0. Resultado: T2 N2 M0. Las trampas A y D usan T1 (error por 2,5 cm > 2 cm). Las trampas C y D usan N3 (error: fijas pero no supraclaviculares).</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN ANTERIOR · DIAGNÓSTICO DIFERENCIAL</div>
+  <div class="qtxt">Paciente de 52 años consulta por nódulo mamario no doloroso. Examen clínico: 2 cm, móvil, duro, bordes irregulares, sin alteraciones de piel, en CSE. Mamografía: imagen nodular 1,5 cm de bordes difusos con microcalcificaciones agrupadas heterogéneas. ¿Diagnóstico presuntivo?</div>
+  <div class="qopt">A) Fibroadenoma calcificado</div>
+  <div class="qopt">B) Quiste displásico</div>
+  <div class="qopt ok">✓ C) Cáncer de mama</div>
+  <div class="qopt">D) Mastopatía escleroquística</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">Idéntica lógica al caso 2022: bordes irregulares + microcalcificaciones agrupadas heterogéneas = patrón de malignidad. Este caso con una paciente de 52 años (posmenopáusica) tiene aún mayor riesgo a priori. La repetición de este formato en el banco confirma que es la pregunta tipo del tema: describir un nódulo con características clínicas + mamográficas y pedir diagnóstico presuntivo.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2018 · PREGUNTA 82 · FACTORES DE RIESGO Y PREVENCIÓN</div>
+  <div class="qtxt">Mujer sana de 56 años, sin antecedentes familiares de cáncer mamario, consulta sobre qué puede hacer para disminuir la posibilidad de enfermar de cáncer de mama. ¿Cuál sería la respuesta más adecuada?</div>
+  <div class="qopt ok">✓ A) Que debe realizar ejercicio físico y tener una dieta rica en frutas, verduras y baja en grasas.</div>
+  <div class="qopt">B) Que debe realizar ejercicio físico y consumir menos pollo en la dieta y tomar 2 copas de vino por día.</div>
+  <div class="qopt">C) Que el riesgo es muy bajo porque no tiene antecedentes familiares.</div>
+  <div class="qopt">D) Que debe realizar mamografía y ecografía mamaria anual.</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">La pregunta pide qué hace para REDUCIR EL RIESGO (prevención primaria). A → correcto: ejercicio + dieta saludable reducen el riesgo moderadamente (factores de estilo de vida modificables). B → el alcohol es factor de RIESGO para cáncer de mama, no protector. Aunque el ejercicio es correcto, la "copa de vino" la invalida. C → falso: el 75% de los casos ocurre sin antecedentes familiares. D → mamografía es tamizaje (prevención secundaria), no reduce el riesgo de contraer la enfermedad, solo lo detecta tempranamente.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN BANCO · CARCINOMA DUCTAL IN SITU · CIRUGÍA</div>
+  <div class="qtxt">Durante la cirugía mamaria de un carcinoma ductal in situ que tiene márgenes libres de lesión a 1,5 cm. ¿Cuál es la conducta?</div>
+  <div class="qopt">A) Realizar mastectomía por márgenes insuficientes</div>
+  <div class="qopt">B) Finalizar cirugía con estudio de ganglio centinela por márgenes suficientes</div>
+  <div class="qopt ok">✓ C) Finalizar la cirugía por márgenes suficientes</div>
+  <div class="qopt">D) Realizar una segunda resección por márgenes insuficientes</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">Márgenes libres a 1,5 cm = márgenes SUFICIENTES (el estándar es ≥2 mm para CDIS, pero 1,5 cm supera ampliamente cualquier umbral). El carcinoma ductal IN SITU no requiere ganglio centinela de rutina porque por definición no invade la membrana basal → no tiene capacidad de metastizar a ganglios. El ganglio centinela se hace cuando hay sospecha de microinvasión. Mastectomía es excesiva con márgenes libres amplios.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">BANCO · DIAGNÓSTICO DIFERENCIAL NÓDULO JOVEN</div>
+  <div class="qtxt">Paciente de 28 años acude por tumoración en mama izquierda. Al examen físico: nódulo de 2x2 cm, móvil, no doloroso, no adherido a planos superficiales ni profundos. Ambas axilas sin adenopatías. ¿Cuál es su presunción diagnóstica?</div>
+  <div class="qopt">A) Cáncer de mama</div>
+  <div class="qopt">B) Necrosis grasa</div>
+  <div class="qopt ok">✓ C) Fibroadenoma</div>
+  <div class="qopt">D) Absceso de mama</div>
+  <div class="reveal-hint">↓ clic para análisis</div>
+  <div class="qexp">Perfil clásico del fibroadenoma: mujer joven (15–35 años) + nódulo móvil + no doloroso + bien delimitado + sin adenopatías. El carcinoma típico es duro, poco móvil, bordes irregulares. La necrosis grasa tiene antecedente de trauma y piel retráctil. El absceso tiene signos inflamatorios (dolor, calor, eritema). Con estas características en una paciente de 28 años el diagnóstico más probable es fibroadenoma.</div>
+</div>
+
+<div class="frase">"Patrón del examen: te dan edad + nódulo + mamografía → pedís diagnóstico presuntivo. La clave es leer JUNTOS los datos clínicos y los radiológicos. Microcalcificaciones agrupadas heterogéneas siempre apuntan a malignidad independientemente de la clínica."</div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  const ids = ['intro','epid','riesgo','clin','dx','birads','stad','tto','trap','preg'];
+  document.querySelectorAll('.nb')[ids.indexOf(id)].classList.add('on');
+  document.getElementById('sec-' + id).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

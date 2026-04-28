@@ -88,6 +88,7 @@
 
     <nav class="space-y-2">
       <button data-nav="dashboard" class="navBtn w-full rounded-2xl px-4 py-3 text-left text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-900" onclick="showView('dashboard')">🏠 Panel principal</button>
+      <button data-nav="learn" class="navBtn w-full rounded-2xl px-4 py-3 text-left text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-900" onclick="showView('learn')">🎓 Aprender desde cero</button>
       <button data-nav="session" class="navBtn w-full rounded-2xl px-4 py-3 text-left text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-900" onclick="resumeOrStart()">🧠 Sesión activa</button>
       <button data-nav="review" class="navBtn w-full rounded-2xl px-4 py-3 text-left text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-900" onclick="showView('review')">🔁 Repaso inteligente</button>
       <button data-nav="methods" class="navBtn w-full rounded-2xl px-4 py-3 text-left text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-900" onclick="showView('methods')">🛠️ Métodos de estudio</button>
@@ -141,6 +142,7 @@
             <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">El banco está reorganizado según el temario 2026. Cada pregunta puede repasarse con Feynman, flashcard, mapa mental, nemotecnia, error log, simulacro o repaso espaciado.</p>
             <div class="mt-6 flex flex-wrap gap-3">
               <button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="startGlobalSession()">Empezar entrenamiento global</button>
+              <button class="rounded-2xl border border-medical-200 bg-medical-50 px-5 py-3 text-sm font-black text-medical-700 hover:bg-medical-100 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-300" onclick="showView('learn')">Aprender con tutor</button>
               <button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView('methods')">Ver métodos</button>
               <button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView('review')">Repasar vencidos</button>
               <button class="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-black text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300" onclick="toggleCollaborationMode()">Activar colaboración</button>
@@ -246,6 +248,59 @@
 
     <section id="resultsView" class="view hidden px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       <div id="resultsContent"></div>
+    </section>
+
+
+    <section id="learnView" class="view hidden px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div class="grid gap-6 xl:grid-cols-[.85fr_1.15fr]">
+        <aside class="space-y-4">
+          <div class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-5 shadow-premium dark:border-slate-800 dark:bg-slate-900">
+            <div class="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-medical-200/60 blur-3xl dark:bg-medical-700/20"></div>
+            <div class="relative">
+              <p class="text-xs font-black uppercase tracking-[.2em] text-medical-600 dark:text-medical-300">ResidenciAPP Tutor</p>
+              <h3 class="mt-1 font-display text-3xl font-extrabold tracking-tight">Aprender desde cero</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Nodos guiados con explicación narrativa, algoritmos, trampas y preguntas reales. Primero entendés la película; después entrenás el banco.</p>
+              <div id="lessonStats" class="mt-4 grid grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Buscar nodo</p>
+                <h4 class="font-display text-xl font-extrabold">Lecciones disponibles</h4>
+              </div>
+              <button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="resetLessonFilter()">Limpiar</button>
+            </div>
+            <input id="lessonSearch" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Ej: BIRADS, RPM, endometriosis, HPV…" autocomplete="off" />
+            <div id="lessonGrid" class="mt-4 grid max-h-[660px] gap-3 overflow-auto pr-1 no-scrollbar"></div>
+          </div>
+        </aside>
+
+        <section class="rounded-[2rem] border border-slate-200 bg-white shadow-premium dark:border-slate-800 dark:bg-slate-900">
+          <div id="lessonEmpty" class="p-8 text-center">
+            <div class="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-medical-50 text-3xl dark:bg-medical-950/30">🎓</div>
+            <h3 class="mt-4 font-display text-2xl font-extrabold">Elegí un nodo para empezar</h3>
+            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-400">Cada nodo funciona como una clase guiada: concepto, diagnóstico, conducta, trampas y preguntas reales.</p>
+          </div>
+          <div id="lessonViewer" class="hidden">
+            <div class="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+              <div class="min-w-0">
+                <p id="lessonViewerMeta" class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300"></p>
+                <h3 id="lessonViewerTitle" class="truncate font-display text-2xl font-extrabold"></h3>
+                <p id="lessonViewerSub" class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400"></p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button id="lessonCompleteBtn" class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700" onclick="markCurrentLessonDone()">Marcar vista</button>
+                <button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startCurrentLessonPractice()">Preguntas</button>
+                <button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="saveCurrentLessonForReview()">Repasar luego</button>
+              </div>
+            </div>
+            <div id="lessonQuickMap" class="border-b border-slate-200 p-4 dark:border-slate-800"></div>
+            <iframe id="lessonFrame" title="Lección ResidenciAPP" class="h-[78vh] min-h-[720px] w-full rounded-b-[2rem] bg-white dark:bg-slate-950" loading="lazy"></iframe>
+          </div>
+        </section>
+      </div>
     </section>
 
     <section id="reviewView" class="view hidden px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
@@ -359,6 +414,7 @@
     <script src="./assets/js/config.js"></script>
   <script src="./assets/data/questions.js"></script>
   <script src="./assets/data/collabdata.js"></script>
+  <script src="./assets/data/lessons.js"></script>
   <script src="./assets/js/main.js"></script>
 <!--
 ======================== RESIDENCIAPP · APORTES COLABORATIVOS SIN GITHUB ========================

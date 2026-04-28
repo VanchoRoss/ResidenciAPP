@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cáncer de Ovario — Residencia Médica Argentina 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+:root {
+  --bg: #0f1117;
+  --bg2: #161820;
+  --bg3: #1e2028;
+  --border: #2a2d3a;
+  --border2: #363a4a;
+  --text: #e8eaf0;
+  --text2: #9ba3bf;
+  --text3: #6b7494;
+  --accent: #7c9ef5;
+  --accent2: #5a7de8;
+  --green: #5fbd8a;
+  --green2: #3d9966;
+  --amber: #e8a94a;
+  --amber2: #c4862a;
+  --red: #e86060;
+  --red2: #c43d3d;
+  --purple: #a07cf5;
+  --teal: #4ecdc4;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* HEADER */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.header-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.header-h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+  letter-spacing: .04em;
+}
+
+.badge-blue { background: #1a2540; color: var(--accent); border-color: #2a3d6a; }
+.badge-green { background: #1a2e24; color: var(--green); border-color: #2a4836; }
+.badge-amber { background: #2e2210; color: var(--amber); border-color: #4a3618; }
+
+/* NAV TABS */
+.nav {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.nb {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: .04em;
+  transition: all .15s;
+  border-radius: 4px 4px 0 0;
+}
+.nb:hover { color: var(--text2); background: var(--bg3); }
+.nb.on {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(124,158,245,.06);
+}
+
+/* MAIN */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+.sec { display: none; }
+.sec.on { display: block; }
+
+/* SECTION HEADER */
+.sec-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sec-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .1em;
+  margin-bottom: 4px;
+}
+
+.sec-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+
+/* TYPOGRAPHY */
+h3 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 20px 0 10px;
+  font-family: var(--mono);
+}
+
+p { font-size: 13.5px; color: var(--text2); margin-bottom: 10px; line-height: 1.7; }
+ul { padding-left: 20px; margin-bottom: 10px; }
+li { font-size: 13.5px; color: var(--text2); margin-bottom: 4px; line-height: 1.6; }
+strong { color: var(--text); font-weight: 500; }
+
+/* CALLOUTS */
+.callout {
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.65;
+  border-left: 3px solid;
+}
+.callout-blue { background: #131c30; border-color: var(--accent); color: #b8c8f0; }
+.callout-green { background: #121e18; border-color: var(--green); color: #a0cfb8; }
+.callout-amber { background: #201a0e; border-color: var(--amber); color: #d4b07a; }
+.callout-red { background: #201212; border-color: var(--red); color: #d4a0a0; }
+.callout strong { color: inherit; font-weight: 600; }
+
+.frase {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--text2);
+  text-align: center;
+  margin: 16px 0;
+  line-height: 1.7;
+}
+
+/* TABLES */
+.tbl-wrap { overflow-x: auto; margin: 10px 0 16px; border-radius: 8px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th {
+  text-align: left;
+  padding: 9px 12px;
+  background: var(--bg3);
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border2);
+}
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+tr:last-child td { border-bottom: none; }
+td strong { color: var(--text); }
+.tr-hi td { background: rgba(124,158,245,.04); }
+.tr-g td { background: rgba(95,189,138,.04); }
+.tr-a td { background: rgba(232,169,74,.04); }
+.tr-r td { background: rgba(232,96,96,.04); }
+
+/* ALGO */
+.algo {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.step:last-child { margin-bottom: 0; }
+
+.sn {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.sn-b { background: #1a2540; color: var(--accent); border: 1px solid #2a3d6a; }
+.sn-g { background: #1a2e24; color: var(--green); border: 1px solid #2a4836; }
+.sn-a { background: #2e2210; color: var(--amber); border: 1px solid #4a3618; }
+.sn-r { background: #201212; color: var(--red); border: 1px solid #4a2020; }
+
+.stxt { font-size: 13.5px; color: var(--text2); line-height: 1.65; }
+.stxt strong { color: var(--text); }
+
+/* GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
+@media(max-width:600px) { .g2,.g3 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 13px;
+}
+.card-t {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* ESTADIOS */
+.estadios {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+@media(max-width:600px) { .estadios { grid-template-columns: 1fr 1fr; } }
+
+.estadio-box {
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid;
+}
+.est-I { background: #121e18; border-color: #2a4836; }
+.est-II { background: #201a0e; border-color: #4a3618; }
+.est-III { background: #1e1010; border-color: #4a2a18; }
+.est-IV { background: #201212; border-color: #4a2020; }
+
+.est-num { font-size: 26px; font-weight: 600; margin-bottom: 4px; font-family: var(--mono); }
+.est-I .est-num { color: var(--green); }
+.est-II .est-num { color: var(--amber); }
+.est-III .est-num { color: #e87a40; }
+.est-IV .est-num { color: var(--red); }
+.est-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* PROGRESS BARS */
+.prog-row { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+.prog-label { min-width: 130px; font-size: 12px; color: var(--text2); }
+.prog-bar { flex: 1; height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+.prog-fill { height: 100%; border-radius: 4px; }
+.prog-val { min-width: 36px; text-align: right; font-family: var(--mono); font-size: 12px; color: var(--text3); }
+
+/* TRAP */
+.trap {
+  border-left: 3px solid var(--red);
+  background: #160a0a;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 10px 0;
+}
+.trap-q { font-weight: 500; color: var(--text); margin-bottom: 5px; font-size: 13.5px; }
+.trap-w { color: #d47a7a; font-size: 12.5px; margin-bottom: 4px; }
+.trap-r { color: var(--green); font-size: 12.5px; line-height: 1.6; }
+
+/* Q CARDS */
+.qcard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.qcard:hover { border-color: var(--border2); }
+.qcard.revealed { border-color: var(--accent2); }
+
+.qtag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.qtxt { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+.qopt { font-size: 13px; color: var(--text3); padding: 3px 0; }
+.qopt.ok { color: var(--green); font-weight: 500; }
+.qhint { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 8px; letter-spacing: .04em; }
+.qexp {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.qcard.revealed .qexp { display: block; }
+.qcard.revealed .qhint { display: none; }
+
+/* DIVIDER */
+.div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.div::before,.div::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* MARKER TABLE */
+.mtbl td:first-child { color: var(--text); font-weight: 500; }
+
+/* PILL */
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  margin: 1px 2px;
+  vertical-align: middle;
+}
+.pill-r { background: #201212; color: var(--red); border: 1px solid #4a2020; }
+.pill-g { background: #1a2e24; color: var(--green); border: 1px solid #2a4836; }
+.pill-b { background: #1a2540; color: var(--accent); border: 1px solid #2a3d6a; }
+.pill-a { background: #2e2210; color: var(--amber); border: 1px solid #4a3618; }
+.pill-p { background: #1e1630; color: var(--purple); border: 1px solid #3a2860; }
+.pill-t { background: #0e2020; color: var(--teal); border: 1px solid #1a3838; }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: .06em;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">Residencia Médica Argentina 2026 · Bloque C · Salud integral de las mujeres</div>
+      <div class="header-h1">Cáncer de Ovario</div>
+      <div class="badges">
+        <span class="badge badge-blue">Gori 3ª ed.</span>
+        <span class="badge badge-green">Banco 2016–2025</span>
+        <span class="badge badge-amber">Alta rentabilidad examen</span>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="nb on" onclick="show('intro')">① Concepto</button>
+    <button class="nb" onclick="show('epid')">② Epidemiología</button>
+    <button class="nb" onclick="show('clas')">③ Clasificación</button>
+    <button class="nb" onclick="show('clin')">④ Clínica</button>
+    <button class="nb" onclick="show('dx')">⑤ Diagnóstico</button>
+    <button class="nb" onclick="show('stad')">⑥ Estadificación</button>
+    <button class="nb" onclick="show('tto')">⑦ Tratamiento</button>
+    <button class="nb" onclick="show('dd')">⑧ Diag. Diferencial</button>
+    <button class="nb" onclick="show('trap')">⑨ Trampas</button>
+    <button class="nb" onclick="show('preg')">⑩ Preguntas reales</button>
+  </nav>
+</div>
+
+<div class="main">
+
+<!-- ① CONCEPTO -->
+<div id="sec-intro" class="sec on">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 01 / 10</div>
+    <div class="sec-title">Concepto — por qué importa y cómo pensar este tema</div>
+  </div>
+
+  <div class="frase">"El cáncer de ovario es el más silencioso y el más letal de los tumores ginecológicos. No sangra, no duele al principio, no tiene screening efectivo. Cuando se manifiesta clínicamente, el 70% ya está en estadio III o IV."</div>
+
+  <h3>El mecanismo que explica todo</h3>
+  <p>El ovario flota libre en la cavidad peritoneal. A diferencia del endometrio (que sangra) o el cérvix (que puede rastrearse con PAP), el ovario no tiene mucosa de revestimiento ni orificio de drenaje. Un tumor que crece en él puede alcanzar varios centímetros sin generar síntoma alguno. Cuando la cápsula se distiende o el tumor siembra el peritoneo, recién aparecen síntomas vagos: distensión, saciedad precoz, dispepsia. Para ese momento, las metástasis peritoneales y la ascitis ya están.</p>
+  <p>Esa fisiopatología explica tres hechos que el examen usa sistemáticamente:</p>
+  <ul>
+    <li>El diagnóstico tardío (70% en estadios III–IV) y la alta mortalidad, a pesar de no ser el tumor ginecológico más frecuente.</li>
+    <li>La ausencia de screening poblacional efectivo — ni CA-125 ni ecografía transvaginal reducen mortalidad en población general.</li>
+    <li>La estadificación quirúrgica: no hay forma de estadificar sin operar.</li>
+  </ul>
+
+  <h3>Posición en el mapa de tumores ginecológicos</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Tumor</th><th>Frecuencia (Argentina)</th><th>Mortalidad</th><th>Screening efectivo</th><th>Síntoma inicial</th></tr>
+      <tr class="tr-hi"><td><strong>Endometrio</strong></td><td>1er lugar países desarrollados</td><td>Intermedia</td><td>No</td><td>Metrorragia posmenopáusica</td></tr>
+      <tr class="tr-g"><td><strong>Cérvix</strong></td><td>1er lugar en Argentina</td><td>Baja (si detectado)</td><td><strong>Sí</strong> (PAP + HPV)</td><td>Sangrado poscoito</td></tr>
+      <tr class="tr-r"><td><strong>Ovario</strong></td><td>3er lugar</td><td><strong>1ª causa de muerte ginecológica</strong></td><td><strong>No</strong></td><td>Distensión abdominal tardía</td></tr>
+    </table>
+  </div>
+
+  <div class="callout callout-blue"><strong>Frase compresiva:</strong> 3° en frecuencia → 1° en mortalidad. La paradoja del cáncer de ovario.</div>
+
+  <h3>Lo que el examen mide</h3>
+  <ul>
+    <li>Masa ovárica en ecografía → diagnóstico diferencial + conducta (preguntas 25/2024, 79/2018)</li>
+    <li>Primer paso del tratamiento (pregunta 91/2025: cirugía de citorreducción óptima)</li>
+    <li>Factores de riesgo / protectores (ACO, nuliparidad, BRCA)</li>
+  </ul>
+</div>
+
+<!-- ② EPIDEMIOLOGÍA -->
+<div id="sec-epid" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 02 / 10</div>
+    <div class="sec-title">Epidemiología y factores de riesgo</div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-t" style="color:var(--accent)">Argentina</div>
+      ~2.500 nuevos casos/año · ~1.400 muertes/año · 3° tumor ginecológico en frecuencia · <strong>1ª causa de muerte por cáncer ginecológico</strong>
+    </div>
+    <div class="card">
+      <div class="card-t" style="color:var(--green)">Edad según tipo</div>
+      Epitelial: posmenopausia (pico 55–65 años). Células germinales: &lt;30 años. Cordones sexuales: cualquier edad.
+    </div>
+  </div>
+
+  <div class="frase">"A mayor número de ovulaciones acumuladas → mayor riesgo. Todo lo que suprime ovulación protege."</div>
+
+  <h3>Factores de riesgo y protección</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Factor</th><th>Dirección</th><th>Magnitud</th></tr>
+      <tr class="tr-r"><td>Mutación BRCA1</td><td><span class="pill pill-r">Riesgo</span></td><td>Riesgo de por vida 35–46%</td></tr>
+      <tr class="tr-r"><td>Mutación BRCA2</td><td><span class="pill pill-r">Riesgo</span></td><td>Riesgo de por vida 13–23%</td></tr>
+      <tr class="tr-r"><td>Historia familiar (1er grado)</td><td><span class="pill pill-r">Riesgo</span></td><td>RR 3,1 con un familiar afectado</td></tr>
+      <tr class="tr-r"><td>Síndrome de Lynch II</td><td><span class="pill pill-r">Riesgo</span></td><td>~10–12% riesgo de por vida</td></tr>
+      <tr class="tr-r"><td>Nuliparidad / infertilidad</td><td><span class="pill pill-r">Riesgo</span></td><td>RR ~1,5</td></tr>
+      <tr class="tr-r"><td>Menarquia temprana / menopausia tardía</td><td><span class="pill pill-r">Riesgo</span></td><td>Más años de ovulación activa</td></tr>
+      <tr class="tr-g"><td><strong>ACO ≥5 años</strong></td><td><span class="pill pill-g">Protector</span></td><td><strong>Reducen el riesgo ~50%</strong></td></tr>
+      <tr class="tr-g"><td>Multiparidad</td><td><span class="pill pill-g">Protector</span></td><td>Cada embarazo ~10% reducción</td></tr>
+      <tr class="tr-g"><td>Lactancia materna</td><td><span class="pill pill-g">Protector</span></td><td>Suprime ovulación</td></tr>
+      <tr class="tr-g"><td>Ligadura tubaria</td><td><span class="pill pill-g">Protector</span></td><td>RR ~0,67</td></tr>
+      <tr class="tr-g"><td>Salpingooforectomía profiláctica (BRCA+)</td><td><span class="pill pill-g">Protector mayor</span></td><td>Reduce riesgo &gt;90%</td></tr>
+    </table>
+  </div>
+
+  <div class="callout callout-red"><strong>Screening poblacional:</strong> ni CA-125 solo, ni ecografía transvaginal, ni la combinación de ambos han demostrado reducir mortalidad en población general. No existe programa de screening masivo.</div>
+</div>
+
+<!-- ③ CLASIFICACIÓN -->
+<div id="sec-clas" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 03 / 10</div>
+    <div class="sec-title">Clasificación histológica</div>
+  </div>
+
+  <div class="frase">El examen no pide nomenclatura histológica exhaustiva. Pide que identifiques el tipo por: edad + marcador + característica clínica especial.</div>
+
+  <div class="div">Grupo 1 — Epiteliales (65–70%)</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Subtipo</th><th>Frecuencia</th><th>Característica clave</th></tr>
+      <tr class="tr-hi"><td><strong>Seroso</strong></td><td>50–70% de epiteliales</td><td>El más frecuente. Bilateral 30–50%. Cuerpos de psammoma. Quimiosensible.</td></tr>
+      <tr><td>Mucinoso</td><td>10–15%</td><td>Unilateral, grande (&gt;30 cm posible). Menos quimiosensible.</td></tr>
+      <tr><td>Endometrioide</td><td>10–15%</td><td>Asociado a endometriosis. Mejor pronóstico relativo.</td></tr>
+      <tr><td>Células claras</td><td>5–10%</td><td>Asociado a endometriosis. Resistente a QT convencional.</td></tr>
+    </table>
+  </div>
+
+  <div class="div">Grupo 2 — Células germinales (15–20%) — Mujeres jóvenes &lt;30 años</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Tipo</th><th>Característica esencial</th><th>Marcador</th></tr>
+      <tr class="tr-g"><td><strong>Teratoma maduro (dermoide)</strong></td><td>Benigno. Eco: hiperecogénico con sombra acústica.</td><td>Normal</td></tr>
+      <tr class="tr-hi"><td><strong>Disgerminoma</strong></td><td>Maligno más frecuente en jóvenes. Análogo del seminoma. Buen pronóstico.</td><td><strong>LDH</strong></td></tr>
+      <tr class="tr-r"><td>Tumor del seno endodérmico (yolk sac)</td><td>Muy agresivo. Niñas/adolescentes.</td><td><strong>AFP muy elevada</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="div">Grupo 3 — Cordones sexuales-estroma (5–10%) — Funcionantes</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Tipo</th><th>Hormona</th><th>Manifestación clínica</th><th>Marcador</th></tr>
+      <tr class="tr-a"><td><strong>Granulosa adulto</strong></td><td>Estrógenos</td><td>Metrorragia posmenopáusica, pubertad precoz en niñas. Cuerpos de Call-Exner.</td><td>Inhibina B</td></tr>
+      <tr><td>Tecoma</td><td>Estrógenos</td><td>Casi siempre benigno. Hiperplasia endometrial.</td><td>Estrógenos</td></tr>
+      <tr class="tr-g"><td><strong>Fibroma</strong></td><td>Ninguna</td><td><strong>Síndrome de Meigs:</strong> fibroma + ascitis + hidrotórax derecho. Benigno.</td><td>Normal</td></tr>
+      <tr><td>Sertoli-Leydig</td><td>Andrógenos</td><td>Virilización: hirsutismo, clitoromegalia, amenorrea.</td><td>Testosterona</td></tr>
+    </table>
+  </div>
+
+  <div class="div">Grupo 4 — Metastásicos (5%)</div>
+  <div class="card">
+    <div class="card-t" style="color:var(--red)">Tumor de Krukenberg</div>
+    <p style="margin:6px 0 0; font-size:13px; color:var(--text2)">Metástasis de adenocarcinoma gástrico (célula en anillo de sello). Bilateral prácticamente siempre. Siempre buscar primario gástrico. Pronóstico muy malo.</p>
+  </div>
+
+  <h3>Tabla resumen — pista clínica → diagnóstico → marcador</h3>
+  <div class="tbl-wrap">
+    <table class="mtbl">
+      <tr><th>Pista clínica</th><th>Pensar en</th><th>Marcador clave</th></tr>
+      <tr class="tr-r"><td>Posmenopáusica, masa sólida/mixta bilateral, ascitis</td><td>Carcinoma epitelial seroso</td><td>CA-125 muy elevado</td></tr>
+      <tr class="tr-g"><td>Mujer joven (&lt;30 años), masa sólida unilateral</td><td>Disgerminoma</td><td>LDH</td></tr>
+      <tr class="tr-a"><td>Niña o joven, AFP muy elevada, masa sólida</td><td>Tumor del seno endodérmico</td><td>AFP</td></tr>
+      <tr><td>Quiste hiperecogénico + sombra acústica en joven</td><td>Teratoma maduro (benigno)</td><td>Normal</td></tr>
+      <tr class="tr-a"><td>Posmenopáusica con metrorragia + masa ovárica pequeña</td><td>Tumor de granulosa</td><td>Inhibina, estrógenos</td></tr>
+      <tr><td>Virilización + masa ovárica</td><td>Tumor de Sertoli-Leydig</td><td>Testosterona</td></tr>
+      <tr><td>Masa ovárica bilateral + síntomas gástricos</td><td>Tumor de Krukenberg</td><td>Según primario</td></tr>
+      <tr class="tr-g"><td>Masa ovárica + ascitis + derrame pleural derecho (benigno)</td><td>Fibroma (Síndrome de Meigs)</td><td>Normal o CA-125 leve</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ④ CLÍNICA -->
+<div id="sec-clin" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 04 / 10</div>
+    <div class="sec-title">Clínica y marcadores tumorales</div>
+  </div>
+
+  <div class="frase">El cáncer de ovario es la "enfermedad del silencio". Los síntomas son inespecíficos, tardíos y fácilmente atribuibles a patología digestiva.</div>
+
+  <div class="g2">
+    <div class="card" style="border-left:3px solid var(--green)">
+      <div class="card-t" style="color:var(--green)">Estadios I–II (diagnóstico infrecuente)</div>
+      <ul style="margin-top:6px">
+        <li>Generalmente asintomático o hallazgo ecográfico casual</li>
+        <li>Dolor pélvico leve o sensación de pesadez</li>
+        <li>Torsión del pedículo: dolor agudo súbito (urgencia)</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red)">
+      <div class="card-t" style="color:var(--red)">Estadios III–IV (diagnóstico habitual — 70%)</div>
+      <ul style="margin-top:6px">
+        <li><strong>Distensión abdominal progresiva</strong> (el más frecuente)</li>
+        <li>Saciedad precoz, dispepsia, náuseas</li>
+        <li>Cambio en hábito evacuatorio</li>
+        <li>Polaquiuria por compresión vesical</li>
+        <li>Pérdida de peso, disnea (ascitis masiva)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Marcadores tumorales — cuándo y cuál</h3>
+  <div class="tbl-wrap">
+    <table class="mtbl">
+      <tr><th>Marcador</th><th>Valor normal</th><th>Se eleva en</th><th>Limitaciones</th></tr>
+      <tr class="tr-hi"><td>CA-125</td><td>&lt;35 U/ml</td><td>Epiteliales (80% en estadio III–IV, solo 50% en estadio I)</td><td>Falsos positivos: endometriosis, EIP, embarazo, menstruación. Baja especificidad en premenopausia.</td></tr>
+      <tr class="tr-a"><td>AFP</td><td>&lt;10 ng/ml</td><td>Tumor del seno endodérmico, teratoma inmaduro</td><td>También en hepatocarcinoma y embarazo</td></tr>
+      <tr><td>β-hCG</td><td>&lt;5 mUI/ml</td><td>Disgerminoma (5–10%), coriocarcinoma</td><td>Positivo en embarazo normal</td></tr>
+      <tr><td>LDH</td><td>Variable</td><td>Disgerminoma (marcador principal)</td><td>Inespecífico</td></tr>
+      <tr class="tr-g"><td>Inhibina B</td><td>Variable</td><td>Tumor de granulosa</td><td>Más específico que CA-125 para este tipo</td></tr>
+      <tr><td>Testosterona</td><td>&lt;70 ng/dl</td><td>Tumor de Sertoli-Leydig</td><td>También en hiperplasia adrenal</td></tr>
+    </table>
+  </div>
+
+  <div class="callout callout-amber"><strong>Dato crítico:</strong> CA-125 de 50 U/ml en una mujer de 32 años con dismenorrea NO es carcinoma — es casi seguramente endometrioma. El CA-125 en premenopausia es inespecífico.</div>
+</div>
+
+<!-- ⑤ DIAGNÓSTICO -->
+<div id="sec-dx" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 05 / 10</div>
+    <div class="sec-title">Diagnóstico — algoritmo paso a paso</div>
+  </div>
+
+  <div class="frase">El diagnóstico definitivo siempre es anatomopatológico intraoperatorio. Todo lo previo orienta, pero no confirma.</div>
+
+  <h3>Algoritmo diagnóstico</h3>
+  <div class="algo">
+    <div class="step"><span class="sn sn-b">1</span><div class="stxt"><strong>Sospecha clínica</strong> — masa pélvica palpable, distensión abdominal, síntomas digestivos vagos en mujer adulta o posmenopáusica.</div></div>
+    <div class="step"><span class="sn sn-b">2</span><div class="stxt"><strong>Ecografía transvaginal (ETV)</strong> — primer estudio siempre. Evalúa: tamaño, lateralidad, contenido, tabiques, papilas, ascitis, Doppler.</div></div>
+    <div class="step"><span class="sn sn-b">3</span><div class="stxt"><strong>Marcadores tumorales</strong> — CA-125 en adultas. AFP + β-hCG + LDH si mujer joven. Inhibina si sospecha granulosa.</div></div>
+    <div class="step"><span class="sn sn-b">4</span><div class="stxt"><strong>TAC abdominopélvica con contraste</strong> — extensión, ganglios, metástasis. Orienta pero no estadifica definitivamente.</div></div>
+    <div class="step"><span class="sn sn-a">5</span><div class="stxt"><strong>Biopsia percutánea preoperatoria: CONTRAINDICADA</strong> ante sospecha de carcinoma primario. Riesgo de siembra tumoral.</div></div>
+    <div class="step"><span class="sn sn-g">6</span><div class="stxt"><strong>Diagnóstico definitivo: cirugía + AP intraoperatoria.</strong> La estadificación es siempre quirúrgica.</div></div>
+  </div>
+
+  <h3>Ecografía transvaginal — interpretación</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Hallazgo ecográfico</th><th>Interpretación</th></tr>
+      <tr class="tr-g"><td>Quiste unilocular, pared fina y lisa, &lt;5 cm, unilateral</td><td><span class="pill pill-g">Muy probable benigno</span></td></tr>
+      <tr class="tr-a"><td>Contenido finamente particulado "vidrio esmerilado"</td><td><span class="pill pill-a">Endometrioma</span></td></tr>
+      <tr class="tr-g"><td>Zona hiperecogénica con sombra acústica posterior</td><td><span class="pill pill-g">Teratoma maduro</span></td></tr>
+      <tr class="tr-a"><td>Tabiques gruesos (&gt;3 mm) o papilas con Doppler</td><td><span class="pill pill-a">Sospecha malignidad</span></td></tr>
+      <tr class="tr-r"><td>Componente sólido + quístico + bilateral + ascitis</td><td><span class="pill pill-r">Alta sospecha carcinoma</span></td></tr>
+      <tr class="tr-g"><td>Masa sólida + ascitis + hidrotórax derecho, CA-125 normal</td><td><span class="pill pill-t">Síndrome de Meigs</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ⑥ ESTADIFICACIÓN -->
+<div id="sec-stad" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 06 / 10</div>
+    <div class="sec-title">Estadificación FIGO</div>
+  </div>
+
+  <div class="frase">La estadificación es QUIRÚRGICA, siempre. No existe estadificación clínica ni radiológica definitiva para el cáncer de ovario.</div>
+
+  <div class="estadios">
+    <div class="estadio-box est-I">
+      <div class="est-num">I</div>
+      <div class="est-desc"><strong>Tumor limitado a ovarios</strong><br>Ia: un ovario, cápsula íntegra<br>Ib: ambos ovarios<br>Ic: cápsula rota</div>
+    </div>
+    <div class="estadio-box est-II">
+      <div class="est-num">II</div>
+      <div class="est-desc"><strong>Extensión a pelvis</strong><br>IIa: útero/trompas<br>IIb: otros órganos pélvicos</div>
+    </div>
+    <div class="estadio-box est-III">
+      <div class="est-num">III</div>
+      <div class="est-desc"><strong>Implantes peritoneales fuera de pelvis / ganglios retroperitoneales</strong></div>
+    </div>
+    <div class="estadio-box est-IV">
+      <div class="est-num">IV</div>
+      <div class="est-desc"><strong>Metástasis a distancia</strong><br>IVa: derrame pleural maligno<br>IVb: metástasis sólidas</div>
+    </div>
+  </div>
+
+  <h3>Sobrevida a 5 años por estadio</h3>
+  <div class="prog-row"><span class="prog-label">Estadio I (~30% casos)</span><div class="prog-bar"><div class="prog-fill" style="width:90%;background:var(--green)"></div></div><span class="prog-val">~90%</span></div>
+  <div class="prog-row"><span class="prog-label">Estadio II (~7% casos)</span><div class="prog-bar"><div class="prog-fill" style="width:70%;background:var(--amber)"></div></div><span class="prog-val">~70%</span></div>
+  <div class="prog-row"><span class="prog-label">Estadio III (~47% casos)</span><div class="prog-bar"><div class="prog-fill" style="width:30%;background:#e87a40"></div></div><span class="prog-val">25–35%</span></div>
+  <div class="prog-row"><span class="prog-label">Estadio IV (~16% casos)</span><div class="prog-bar"><div class="prog-fill" style="width:10%;background:var(--red)"></div></div><span class="prog-val">&lt;10%</span></div>
+
+  <div class="callout callout-red" style="margin-top:16px"><strong>Dato clave:</strong> el 70% se diagnostica en estadio III o IV. Eso explica por qué la sobrevida global a 5 años es ~45% pese a la buena quimiosensibilidad del tumor.</div>
+
+  <h3>Cirugía de estadificación — qué incluye</h3>
+  <div class="algo">
+    <div class="step"><span class="sn sn-g">1</span><div class="stxt">Laparotomía por línea media (xifopubiana)</div></div>
+    <div class="step"><span class="sn sn-g">2</span><div class="stxt">Lavado peritoneal con citología</div></div>
+    <div class="step"><span class="sn sn-g">3</span><div class="stxt">Histerectomía total + salpingooforectomía bilateral</div></div>
+    <div class="step"><span class="sn sn-g">4</span><div class="stxt">Omentectomía infracólica</div></div>
+    <div class="step"><span class="sn sn-g">5</span><div class="stxt">Linfadenectomía pelviana y paraaórtica bilateral</div></div>
+    <div class="step"><span class="sn sn-g">6</span><div class="stxt">Biopsias peritoneales múltiples (cúpulas, goteras, diafragma)</div></div>
+    <div class="step"><span class="sn sn-g">7</span><div class="stxt">Apendicectomía (especialmente en tumores mucinosos)</div></div>
+  </div>
+</div>
+
+<!-- ⑦ TRATAMIENTO -->
+<div id="sec-tto" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 07 / 10</div>
+    <div class="sec-title">Tratamiento</div>
+  </div>
+
+  <div class="callout callout-red"><strong>Pregunta directa del banco 2025:</strong> "¿Cuál es el primer paso para el tratamiento del cáncer de ovario?" → <strong>Cirugía de citorreducción óptima primaria.</strong></div>
+
+  <h3>Carcinoma epitelial — el más preguntado</h3>
+  <div class="algo">
+    <div class="step"><span class="sn sn-g">1</span><div class="stxt"><strong>Cirugía de citorreducción óptima primaria</strong> — primer paso siempre cuando la paciente es operable. Objetivo: resecar todo tumor visible (residuo &lt;1 cm idealmente nulo).</div></div>
+    <div class="step"><span class="sn sn-g">2</span><div class="stxt"><strong>Quimioterapia adyuvante</strong> — Carboplatino + Paclitaxel (6 ciclos). Para estadios Ic en adelante.</div></div>
+    <div class="step"><span class="sn sn-a">3</span><div class="stxt"><strong>Si tumor irresecable de entrada (estadio IV muy avanzado):</strong> QT neoadyuvante → cirugía de intervalo → completar QT. Esta es la excepción, no la regla.</div></div>
+    <div class="step"><span class="sn sn-b">4</span><div class="stxt"><strong>Seguimiento:</strong> CA-125 cada 3 meses × 2 años, luego semestral.</div></div>
+  </div>
+
+  <h3>Tratamiento según tipo histológico</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Tipo</th><th>Tratamiento</th><th>Especial</th></tr>
+      <tr class="tr-hi"><td><strong>Carcinoma epitelial</strong></td><td>Citorreducción + Carboplatino/Paclitaxel</td><td>Olaparib en BRCA+</td></tr>
+      <tr class="tr-g"><td><strong>Disgerminoma</strong></td><td>Cirugía conservadora (estadio I) + BEP si avanzado</td><td>Excelente pronóstico (~90% curación)</td></tr>
+      <tr class="tr-a"><td><strong>Tumor seno endodérmico</strong></td><td>Cirugía + BEP obligatorio</td><td>AFP como marcador de respuesta</td></tr>
+      <tr><td><strong>Tumor de granulosa</strong></td><td>Cirugía (histerectomía + doble anexectomía)</td><td>Vigilar recaídas tardías (10–20 años)</td></tr>
+      <tr class="tr-g"><td><strong>Fibroma (Meigs)</strong></td><td>Extirpación del tumor</td><td>Ascitis y derrame se resuelven solos</td></tr>
+    </table>
+  </div>
+
+  <div class="callout callout-amber"><strong>Regla:</strong> La radioterapia NO es el tratamiento estándar primario. La quimioterapia sola sin cirugía previa tampoco. Ambas son trampas cuando el examen pregunta el primer paso.</div>
+</div>
+
+<!-- ⑧ DD -->
+<div id="sec-dd" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 08 / 10</div>
+    <div class="sec-title">Diagnóstico diferencial de la masa ovárica</div>
+  </div>
+
+  <div class="frase">La masa ovárica es el punto de partida de casi todas las preguntas de ovario. La clave está en el perfil edad + eco + síntomas + marcadores.</div>
+
+  <h3>Masa ovárica según edad — árbol de decisión</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Edad</th><th>Diagnóstico diferencial más probable</th><th>Primer paso</th></tr>
+      <tr class="tr-g"><td><strong>Niña prepúber</strong></td><td>Teratoma maduro, disgerminoma, tumor de granulosa juvenil</td><td>Eco + AFP + β-hCG + inhibina</td></tr>
+      <tr class="tr-hi"><td><strong>15–35 años</strong></td><td>Quiste folicular funcional, endometrioma, teratoma maduro</td><td>Eco transvaginal. Si quiste simple &lt;5 cm → control 4–6 sem.</td></tr>
+      <tr class="tr-a"><td><strong>35–50 años</strong></td><td>Endometrioma, quiste folicular, tumor borderline, carcinoma incipiente</td><td>Eco + CA-125</td></tr>
+      <tr class="tr-r"><td><strong>&gt;50 años (posmenopausia)</strong></td><td>Carcinoma epitelial (primera sospecha para cualquier masa nueva)</td><td>Eco + CA-125 + TAC. Umbral bajo para cirugía.</td></tr>
+    </table>
+  </div>
+
+  <h3>Las 5 masas más preguntadas en el banco</h3>
+  <div class="g2">
+    <div class="card" style="border-top:3px solid var(--accent)">
+      <div class="card-t" style="color:var(--accent)">Quiste folicular funcional</div>
+      Mujer reproductiva, asintomática, quiste simple &lt;5 cm. <strong>Regresa en 4–6 semanas.</strong> No requiere cirugía.
+    </div>
+    <div class="card" style="border-top:3px solid var(--purple)">
+      <div class="card-t" style="color:var(--purple)">Endometrioma</div>
+      Mujer 20–40 años, dismenorrea, quiste "vidrio esmerilado". CA-125 moderado. <strong>Cirugía si &gt;4 cm sintomático.</strong>
+    </div>
+    <div class="card" style="border-top:3px solid var(--green)">
+      <div class="card-t" style="color:var(--green)">Teratoma maduro</div>
+      Mujer joven, eco hiperecogénico + sombra acústica. Benigno. Riesgo de torsión.
+    </div>
+    <div class="card" style="border-top:3px solid var(--red)">
+      <div class="card-t" style="color:var(--red)">Carcinoma epitelial</div>
+      Posmenopáusica, masa sólida/mixta bilateral, ascitis, CA-125 &gt;100 U/ml. Diagnóstico quirúrgico.
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card" style="border-top:3px solid var(--teal)">
+      <div class="card-t" style="color:var(--teal)">Síndrome de Meigs</div>
+      Masa ovárica sólida benigna + ascitis + hidrotórax derecho. CA-125 normal o leve. Benigno. Todo se resuelve al extirpar el tumor.
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <div class="card-t" style="color:var(--amber)">Tumor de Krukenberg</div>
+      Masa bilateral en mujer con antecedente de cáncer gástrico. Siempre buscar primario.
+    </div>
+  </div>
+</div>
+
+<!-- ⑨ TRAMPAS -->
+<div id="sec-trap" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 09 / 10</div>
+    <div class="sec-title">Trampas del examen — banco 2016–2025</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 1: CA-125 elevado en mujer joven = carcinoma de ovario</div>
+    <div class="trap-w">✗ "CA-125 50 U/ml en mujer de 32 años con dismenorrea → carcinoma epitelial" → FALSO</div>
+    <div class="trap-r">✓ En premenopausia el CA-125 es inespecífico. Endometriosis, EIP, embarazo, menstruación lo elevan. CA-125 50 U/ml + vidrio esmerilado + dismenorrea = <strong>ENDOMETRIOMA</strong>. (Banco 2024, pregunta 25)</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 2: Endometrioma de 7 cm sintomático → solo observar</div>
+    <div class="trap-w">✗ "Control en 6 meses" para quiste de 7 cm con dismenorrea → INSUFICIENTE</div>
+    <div class="trap-r">✓ Endometrioma ≥4–5 cm persistente o sintomático → indicación quirúrgica. <strong>Laparoscopía diagnóstica y terapéutica.</strong> (Banco 2024, pregunta 25)</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 3: Ovario de 36 mm = blastoma de ovario</div>
+    <div class="trap-w">✗ Examen 2018 (pregunta 79): ovario derecho 36x22 mm → opción "blastoma" → FALSO</div>
+    <div class="trap-r">✓ Ovario normal llega hasta 30–35 mm. Un ovario de 36 mm es límite normal. Leer la ecografía completa. El útero agrandado e irregular → <strong>miomatosis uterina</strong>.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 4: Los ACO aumentan el riesgo de cáncer de ovario</div>
+    <div class="trap-w">✗ "Los ACO estimulan el ovario → mayor riesgo" → FALSO</div>
+    <div class="trap-r">✓ Los ACO son <strong>PROTECTORES</strong>. Reducen el riesgo ~50% con uso ≥5 años por supresión de la ovulación.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 5: Primer paso del tratamiento = quimioterapia o radioterapia</div>
+    <div class="trap-w">✗ Banco 2025 (pregunta 91): opciones incorrectas eran "quimioterapia exclusivamente" o "radioterapia"</div>
+    <div class="trap-r">✓ El primer paso es la <strong>cirugía de citorreducción óptima primaria</strong>. La QT viene después como adyuvancia.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 6: Biopsia percutánea para confirmar diagnóstico preoperatorio</div>
+    <div class="trap-w">✗ "Biopsia percutánea con TAC para confirmar antes de operar" → CONTRAINDICADO</div>
+    <div class="trap-r">✓ Riesgo de siembra tumoral. El diagnóstico se hace en la cirugía con biopsia por congelación intraoperatoria.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-q">Trampa 7: Síndrome de Meigs = carcinoma de ovario avanzado</div>
+    <div class="trap-w">✗ "Masa ovárica + ascitis + derrame pleural → carcinoma con metástasis pleurales" → ERROR</div>
+    <div class="trap-r">✓ El Síndrome de Meigs es tríada <strong>benigna</strong> (fibroma + ascitis + hidrotórax derecho). Todo se resuelve al extirpar el fibroma.</div>
+  </div>
+
+  <div class="frase">Síntesis del examinador: masa ovárica + posmenopausia + ascitis → malignidad hasta cirugía. Masa ovárica + joven + dismenorrea + CA-125 moderado → endometrioma primero.</div>
+</div>
+
+<!-- ⑩ PREGUNTAS REALES -->
+<div id="sec-preg" class="sec">
+  <div class="sec-header">
+    <div class="sec-num">SECCIÓN 10 / 10</div>
+    <div class="sec-title">Preguntas reales del banco 2016–2025</div>
+  </div>
+  <p style="font-size:12px;color:var(--text3);margin-bottom:16px;font-family:var(--mono)">▶ HACÉ CLIC EN CADA TARJETA PARA REVELAR RESPUESTA Y ANÁLISIS</p>
+
+  <div class="qcard" onclick="this.classList.toggle('revealed')">
+    <div class="qtag">EXAMEN 2025 · PREGUNTA 91 · TRATAMIENTO</div>
+    <div class="qtxt">¿Cuál es el primer paso para el tratamiento respecto del cáncer de ovario?</div>
+    <div class="qopt">A) Quimioterapia exclusivamente</div>
+    <div class="qopt">B) Cirugía de citorreducción óptima primaria</div>
+    <div class="qopt">C) Radioterapia</div>
+    <div class="qopt">D) Neoadyuvancia</div>
+    <div class="qopt ok">✓ Correcta: B</div>
+    <div class="qhint">[ clic para ver análisis ]</div>
+    <div class="qexp">Pregunta directa de concepto. El primer paso del tratamiento del carcinoma de ovario es siempre la cirugía de citorreducción óptima primaria (cuando la paciente es operable). La quimioterapia adyuvante viene después. La neoadyuvancia (D) es la excepción para pacientes con enfermedad muy avanzada no resecable, no el primer paso general.</div>
+  </div>
+
+  <div class="qcard" onclick="this.classList.toggle('revealed')">
+    <div class="qtag">EXAMEN 2024 · PREGUNTA 25 · CONDUCTA ANTE MASA OVÁRICA</div>
+    <div class="qtxt">Paciente de 32 años, dismenorrea de 2 años. Ecografía: imagen quística con contenido finamente particulado en ovario derecho de 7 cm. CA-125: 50 U/ml. ¿Qué conducta tomaría?</div>
+    <div class="qopt">A) Control en 6 meses con ecografía transvaginal</div>
+    <div class="qopt">B) Laparoscopía diagnóstica y terapéutica</div>
+    <div class="qopt">C) Control en 3 meses con nuevo CA-125</div>
+    <div class="qopt">D) Anexectomía derecha</div>
+    <div class="qopt ok">✓ Correcta: B</div>
+    <div class="qhint">[ clic para ver análisis ]</div>
+    <div class="qexp">Perfil de endometrioma: mujer joven + dismenorrea progresiva + contenido "vidrio esmerilado" + CA-125 moderado (inespecífico en premenopausia). Con 7 cm y síntomas → indicación quirúrgica. Laparoscopía es la vía correcta para masa probablemente benigna. Opción D (anexectomía) sería excesiva en mujer joven con deseos potenciales de fertilidad.</div>
+  </div>
+
+  <div class="qcard" onclick="this.classList.toggle('revealed')">
+    <div class="qtag">EXAMEN 2018 · PREGUNTA 79 · DIAGNÓSTICO DIFERENCIAL ECOGRÁFICO</div>
+    <div class="qtxt">Mujer nulípara de 35 años, hipermenorrea + dolor hipogástrico continuo. Ecografía: útero 95x60 mm (normal: 80x50x40 mm), endometrio 15 mm, ovario derecho 36x22 mm. ¿Diagnóstico más probable?</div>
+    <div class="qopt">A) Blastoma de ovario derecho</div>
+    <div class="qopt">B) Útero miomatoso</div>
+    <div class="qopt">C) Endometriosis</div>
+    <div class="qopt">D) Cáncer de cuello de endometrio</div>
+    <div class="qopt ok">✓ Correcta: B</div>
+    <div class="qhint">[ clic para ver análisis ]</div>
+    <div class="qexp">La clave es leer TODA la ecografía. El útero mide 95x60 mm = agrandado + irregular → miomatosis uterina. El síntoma guía es hipermenorrea. Los ovarios están apenas en el límite superior de la normalidad (36 mm es límite, no patológico). La trampa: el examinador sabe que vas a ver "36 mm" y asumir tumor ovárico ignorando el útero agrandado.</div>
+  </div>
+
+  <div class="qcard" onclick="this.classList.toggle('revealed')">
+    <div class="qtag">CASO INTEGRADOR · POSMENOPAUSIA + ASCITIS</div>
+    <div class="qtxt">Mujer de 63 años, distensión abdominal 4 meses, pérdida de 5 kg. Eco: masa pélvica 9 cm sólida-quística con papilas, bilateral, ascitis. CA-125: 310 U/ml. ¿Conducta más adecuada?</div>
+    <div class="qopt">A) Control en 3 meses con nueva ecografía</div>
+    <div class="qopt">B) Biopsia percutánea guiada por TAC</div>
+    <div class="qopt">C) Laparotomía con estadificación quirúrgica completa</div>
+    <div class="qopt">D) Iniciar carboplatino + paclitaxel sin cirugía</div>
+    <div class="qopt ok">✓ Correcta: C</div>
+    <div class="qhint">[ clic para ver análisis ]</div>
+    <div class="qexp">Perfil de carcinoma epitelial avanzado: posmenopáusica + masa sólida-quística bilateral + papilas + ascitis + CA-125 muy elevado. La conducta es laparotomía. Biopsia percutánea (B) contraindicada. No se inicia QT (D) sin diagnóstico histológico. Observar (A) sería un error grave.</div>
+  </div>
+
+  <div class="qcard" onclick="this.classList.toggle('revealed')">
+    <div class="qtag">CASO INTEGRADOR · FACTORES DE RIESGO Y PROTECTORES</div>
+    <div class="qtxt">¿Cuál de los siguientes factores DISMINUYE el riesgo de desarrollar cáncer de ovario?</div>
+    <div class="qopt">A) Nuliparidad</div>
+    <div class="qopt">B) Menarquia temprana (10 años)</div>
+    <div class="qopt">C) Uso de anticonceptivos orales combinados por 7 años</div>
+    <div class="qopt">D) Historia familiar de cáncer de ovario en madre y hermana</div>
+    <div class="qopt ok">✓ Correcta: C</div>
+    <div class="qhint">[ clic para ver análisis ]</div>
+    <div class="qexp">Los ACO con uso ≥5 años reducen el riesgo ~50% por supresión sostenida de la ovulación. A, B y D son todos factores de RIESGO. La trampa: asumir que hormonas = oncogénico, lo que es válido para endometrio pero no para ovario.</div>
+  </div>
+
+  <div class="footer">
+    RESIDENCIA MÉDICA ARGENTINA 2026 · BLOQUE C · CÁNCER DE OVARIO<br>
+    Fuente: Gori 3ª ed. · Banco histórico 2016–2025 · Guía Integrador Nación 2026
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  const ids = ['intro','epid','clas','clin','dx','stad','tto','dd','trap','preg'];
+  document.querySelectorAll('.nb')[ids.indexOf(id)].classList.add('on');
+  document.getElementById('sec-' + id).classList.add('on');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>

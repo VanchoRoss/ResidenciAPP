@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cáncer de Endometrio — Nodo Residencia 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{--bg:#0f1117;--bg2:#161b25;--bg3:#1e2433;--border:#2a3347;--border2:#364055;--text:#e2e8f4;--text2:#8b9ab8;--text3:#5c6a85;--accent:#4f8ef7;--green:#3ecf8e;--green2:#0d3d27;--red:#f56565;--red2:#3d1515;--orange:#f6a623;--orange2:#3d2a0d;--purple:#a78bfa;--purple2:#2d1f5e;--teal:#2dd4bf;--teal2:#0d3330;--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+.header{background:linear-gradient(135deg,#0f1117 0%,#161b25 50%,#1a1f30 100%);border-bottom:1px solid var(--border);padding:20px 24px 16px;position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.header-badge{background:#a78bfa;color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:.8px;text-transform:uppercase;font-family:var(--mono)}
+.header-title{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-.2px}
+.header-sub{font-size:12px;color:var(--text3);font-family:var(--mono)}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nb{padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;border:1px solid var(--border);color:var(--text2);background:var(--color-background-primary,#ffffff);font-family:var(--font);transition:all .15s;white-space:nowrap}
+.nb:hover{border-color:var(--border2);color:var(--text)}
+.nb.on{background:#a78bfa;color:#fff;border-color:#a78bfa}
+.container{max-width:900px;margin:0 auto;padding:24px 20px 60px}
+.sec{display:none}.sec.on{display:block}
+h2{font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.sec-sub{font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+h3{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin:20px 0 8px}
+p,li{font-size:13.5px;line-height:1.7;margin-bottom:8px;color:var(--text)}
+ul{padding-left:18px;margin-bottom:10px}
+.callout{border-radius:8px;padding:12px 14px;font-size:13px;margin:12px 0;line-height:1.6;border-left:3px solid}
+.c-blue{background:#0d1929;border-color:var(--accent);color:#a8c4f0}
+.c-green{background:var(--green2);border-color:var(--green);color:#7ee8b8}
+.c-red{background:var(--red2);border-color:var(--red);color:#fca5a5}
+.c-orange{background:var(--orange2);border-color:var(--orange);color:#fcd38a}
+.c-purple{background:var(--purple2);border-color:var(--purple);color:#c4b5fd}
+.callout strong{color:inherit}
+.frase{border:1px solid var(--border2);border-radius:8px;padding:14px 16px;background:var(--bg2);font-size:13.5px;font-style:italic;text-align:center;margin:16px 0;color:var(--text2);line-height:1.7}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:10px 0 14px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+th{text-align:left;padding:8px 12px;background:var(--bg3);font-weight:600;font-size:11.5px;color:var(--text2);border-bottom:1px solid var(--border2);text-transform:uppercase;letter-spacing:.4px}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#ffffff05}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12.5px}
+.card-t{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;font-family:var(--mono)}
+.algo{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin:12px 0}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.step:last-child{margin-bottom:0}
+.sn{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;font-family:var(--mono)}
+.sb{background:#0d1929;color:var(--accent);border:1px solid var(--accent)}
+.sg{background:var(--green2);color:var(--green);border:1px solid var(--green)}
+.sr{background:var(--red2);color:var(--red);border:1px solid var(--red)}
+.sa{background:var(--orange2);color:var(--orange);border:1px solid var(--orange)}
+.sp{background:var(--purple2);color:var(--purple);border:1px solid var(--purple)}
+.stxt{font-size:13px;line-height:1.6}
+.trap{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:12px 14px;margin:10px 0;font-size:13px}
+.tq{font-weight:600;margin-bottom:6px;color:var(--text)}
+.tw{color:#fca5a5;font-size:12px;margin-bottom:4px}
+.tr{color:var(--green);font-size:12px}
+.qcard{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0;cursor:pointer;transition:border-color .15s}
+.qcard:hover{border-color:var(--border2)}
+.qtag{font-size:11px;font-weight:600;color:var(--text3);font-family:var(--mono);margin-bottom:7px}
+.qtxt{font-weight:600;font-size:13.5px;line-height:1.55;margin-bottom:10px}
+.qopt{padding:3px 0;color:var(--text2);font-size:13px}
+.qopt.ok{color:var(--green);font-weight:600}
+.qexp{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text2);display:none;line-height:1.65}
+.qcard.revealed .qexp{display:block}
+.hint{font-size:11px;color:var(--text3);margin-top:8px;font-family:var(--mono)}
+.div{display:flex;align-items:center;gap:10px;margin:18px 0 10px;color:var(--text3);font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
+.pill{display:inline-block;padding:2px 8px;border-radius:11px;font-size:11.5px;font-weight:500;margin:2px 2px 2px 0;vertical-align:middle}
+.pr{background:var(--red2);color:#fca5a5}.pg{background:var(--green2);color:var(--green)}.pb{background:#0d1929;color:var(--accent)}.pa{background:var(--orange2);color:var(--orange)}.pp{background:var(--purple2);color:var(--purple)}
+.tnm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+@media(max-width:500px){.tnm-grid{grid-template-columns:1fr 1fr}}
+.tnm-box{border-radius:8px;padding:10px 8px;text-align:center;font-size:12px;border:1px solid}
+.tI{background:#0d3d27;border-color:var(--green)}.tII{background:#1a2d0d;border-color:#84cc16}.tIII{background:var(--orange2);border-color:var(--orange)}.tIV{background:var(--red2);border-color:var(--red)}
+.tnm-num{font-size:22px;font-weight:600;margin-bottom:3px;font-family:var(--mono)}
+.tI .tnm-num{color:var(--green)}.tII .tnm-num{color:#a3e635}.tIII .tnm-num{color:var(--orange)}.tIV .tnm-num{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <span class="header-badge">Residencia 2026</span>
+    <div>
+      <div class="header-title">Cáncer de Endometrio</div>
+      <div class="header-sub">Gori 3ª ed. · Banco histórico 2016–2025</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nb on" onclick="show('intro')">① Concepto</button>
+    <button class="nb" onclick="show('epid')">② Epidemiología</button>
+    <button class="nb" onclick="show('riesgo')">③ Factores de riesgo</button>
+    <button class="nb" onclick="show('clin')">④ Clínica</button>
+    <button class="nb" onclick="show('dx')">⑤ Diagnóstico</button>
+    <button class="nb" onclick="show('stad')">⑥ Estadificación</button>
+    <button class="nb" onclick="show('tto')">⑦ Tratamiento</button>
+    <button class="nb" onclick="show('hiper')">⑧ Hiperplasia</button>
+    <button class="nb" onclick="show('trap')">⑨ Trampas</button>
+    <button class="nb" onclick="show('preg')">⑩ Preguntas reales</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ① -->
+<div id="sec-intro" class="sec on">
+<h2>① Concepto — la paradoja del tumor que se detecta solo</h2>
+<div class="sec-sub">Fuente: Gori 3ª ed. · Temario Integrador 2026: "Tumores de endometrio"</div>
+<div class="frase">"El cáncer de endometrio es el tumor ginecológico más frecuente en países desarrollados y el 2° en Argentina. Su ventaja: el síntoma cardinal (metrorragia posmenopáusica) aparece temprano y obliga a consultar. Por eso el 75% se diagnostica en estadio I, con sobrevida a 5 años &gt;90%."</div>
+<p>A diferencia del ovario (silencioso) o el pulmón (tardío), el endometrio genera síntoma precoz porque el tejido tumoral sangra hacia la cavidad uterina. Eso explica por qué tiene la mejor tasa de curación entre los tumores ginecológicos pese a ser el más frecuente en países desarrollados.</p>
+<h3>Fisiopatología — dos vías que el examen puede distinguir</h3>
+<div class="g2">
+  <div class="card" style="border-left:3px solid var(--orange)">
+    <div class="card-t" style="color:var(--orange)">Tipo I — Estrogénico (80%)</div>
+    <p>Hiperestimulación estrogénica sin oposición de progesterona → hiperplasia endometrial → carcinoma endometrioide. Bien diferenciado. Mejor pronóstico. Asociado a obesidad, nuliparidad, DM, TRH solo con estrógenos.</p>
+  </div>
+  <div class="card" style="border-left:3px solid var(--red)">
+    <div class="card-t" style="color:var(--red)">Tipo II — No estrogénico (20%)</div>
+    <p>Independiente de estrógenos. Histología serosa papilar o células claras. Poco diferenciado. Peor pronóstico, comportamiento agresivo similar al carcinoma ovárico. No tiene lesión precursora identificable.</p>
+  </div>
+</div>
+<h3>Lo que el examen mide</h3>
+<div class="g3">
+  <div class="card"><div class="card-t">Familia 1</div><p>Diagnóstico presuntivo: mujer posmenopáusica + metrorragia → cáncer de endometrio hasta demostrar lo contrario.</p></div>
+  <div class="card"><div class="card-t">Familia 2</div><p>Gold standard diagnóstico: legrado uterino biópsico fraccionado con histeroscopía. El banco lo preguntó directo en 2025.</p></div>
+  <div class="card"><div class="card-t">Familia 3</div><p>Factores de riesgo: obesidad, DM, HTA, nuliparidad, TRH solo con estrógenos. La tríada obesa-diabética-hipertensa es el perfil clásico.</p></div>
+</div>
+<h3>Conexiones</h3>
+<p><span class="pill pb">→</span> Hiperplasia endometrial (lesión precursora) <span class="pill pb">→</span> Síndrome de Lynch II (cáncer colorrectal hereditario no polipósico) <span class="pill pb">→</span> Ovario (carcinoma sincrónico en 15–20%) <span class="pill pb">→</span> Miomatosis uterina (diagnóstico diferencial de metrorragia) <span class="pill pb">→</span> TRH (estrógenos solos sin progesterona = riesgo)</p>
+</div>
+
+<!-- ② -->
+<div id="sec-epid" class="sec">
+<h2>② Epidemiología — posición en Argentina y el mundo</h2>
+<div class="sec-sub">Dato clave: el banco preguntó indirectamente la posición del endometrio en el ranking ginecológico</div>
+<div class="callout c-purple"><strong>Posición en Argentina:</strong> el endometrio ocupa el 4° lugar en frecuencia entre todos los cánceres femeninos y el 2° entre los tumores del tracto genital, después del cérvix. En países desarrollados (Europa, EEUU) es el 1° del tracto genital. La diferencia se debe a que en Argentina el cérvix mantiene alta incidencia por brechas en screening.</div>
+<table>
+  <tr><th>Indicador</th><th>Dato</th></tr>
+  <tr><td>Casos nuevos por año Argentina</td><td>~4.000</td></tr>
+  <tr><td>Muertes por año Argentina</td><td>~800</td></tr>
+  <tr><td>% diagnosticados en estadio I</td><td>~75% (por síntoma precoz)</td></tr>
+  <tr><td>Sobrevida a 5 años estadio I</td><td>&gt;90%</td></tr>
+  <tr><td>Sobrevida a 5 años estadio IV</td><td>~20%</td></tr>
+  <tr><td>Edad pico de presentación</td><td>55–65 años (posmenopáusica en 75% de los casos)</td></tr>
+  <tr><td>Riesgo de vida en mujeres generales</td><td>~2,8%</td></tr>
+</table>
+<h3>Tipos histológicos</h3>
+<table>
+  <tr><th>Tipo</th><th>%</th><th>Características</th></tr>
+  <tr><td><strong>Adenocarcinoma endometrioide</strong></td><td>75–80%</td><td>El más frecuente. Grado 1–2: bien/moderado diferenciado. Hormono-dependiente. Buen pronóstico. Tipo I.</td></tr>
+  <tr><td>Adenocarcinoma seroso papilar</td><td>5–10%</td><td>Tipo II. Agresivo, comportamiento como Ca ovárico. Mal pronóstico.</td></tr>
+  <tr><td>Células claras</td><td>1–5%</td><td>Tipo II. Agresivo.</td></tr>
+  <tr><td>Carcinoma escamoso / mixto</td><td>Raro</td><td>Poco frecuente</td></tr>
+</table>
+</div>
+
+<!-- ③ -->
+<div id="sec-riesgo" class="sec">
+<h2>③ Factores de riesgo y protectores</h2>
+<div class="sec-sub">La tríada obesidad-DM-HTA es el perfil más preguntado</div>
+<div class="frase">"Todo lo que aumenta la exposición estrogénica sin oposición de progesterona = riesgo de tipo I. La protección viene de la progesterona."</div>
+<h3>Factores de riesgo — organizados por mecanismo</h3>
+<table>
+  <tr><th>Factor</th><th>Mecanismo</th><th>Magnitud</th></tr>
+  <tr><td><strong>Obesidad</strong></td><td>Aromatización periférica de andrógenos → estrógenos extra-ováricos. Cada 10 kg de sobrepeso: RR x2</td><td>RR 2–5 según grado de obesidad</td></tr>
+  <tr><td><strong>Nuliparidad</strong></td><td>Más ciclos sin exposición a progesterona del cuerpo lúteo</td><td>RR 2–3</td></tr>
+  <tr><td><strong>Diabetes mellitus</strong></td><td>Hiperinsulinemia → estimula la producción ovárica de estrógenos. También asociada a obesidad.</td><td>RR 1,8–2,5</td></tr>
+  <tr><td><strong>Hipertensión arterial</strong></td><td>Factor asociado (comparte raíz con obesidad y DM) más que causa directa</td><td>RR moderado</td></tr>
+  <tr><td>TRH solo con estrógenos (sin progesterona)</td><td>Estimulación endometrial continua sin oposición</td><td>RR 5–10 con uso prolongado</td></tr>
+  <tr><td>Menarquia temprana / menopausia tardía</td><td>Más años de exposición estrogénica</td><td>RR leve</td></tr>
+  <tr><td>Tumor secretor de estrógenos (granulosa)</td><td>Estimulación estrogénica exógena al endometrio</td><td>Alto riesgo si no se detecta</td></tr>
+  <tr><td>Tamoxifeno (tratamiento de Ca mama)</td><td>Actúa como estrógeno débil en el útero (aunque es antiestrogénico en mama)</td><td>RR 2–3. Requiere monitoreo endometrial.</td></tr>
+  <tr><td>Síndrome de Lynch II (HNPCC)</td><td>Mutaciones en genes reparadores del ADN (MLH1, MSH2)</td><td>Riesgo de por vida 40–60%</td></tr>
+  <tr><td>Historia familiar de Ca endometrio</td><td>Predisposición genética</td><td>RR 2–3</td></tr>
+</table>
+<h3>Factores protectores</h3>
+<table>
+  <tr><th>Factor</th><th>Mecanismo</th></tr>
+  <tr><td><strong>ACO combinados</strong></td><td>La progesterona del ACO se opone a los estrógenos → reduce el riesgo ~50% con uso &gt;1 año</td></tr>
+  <tr><td><strong>TRH combinada (estrógenos + progesterona)</strong></td><td>La progesterona protege el endometrio de la estimulación estrogénica</td></tr>
+  <tr><td>Multiparidad</td><td>Cada embarazo expone el endometrio a progesterona durante 9 meses</td></tr>
+  <tr><td>Actividad física</td><td>Reduce estrógenos circulantes</td></tr>
+  <tr><td>Tabaquismo</td><td>Antiestrogénico (menopausia más temprana) — protector paradójico, sin recomendar</td></tr>
+</table>
+<div class="callout c-orange"><strong>La tríada para el examen:</strong> mujer posmenopáusica + obesa + diabética + hipertensa → perfil de máximo riesgo de cáncer de endometrio tipo I. Cualquier sangrado en esa paciente = biopsia endometrial hasta demostrar lo contrario.</div>
+</div>
+
+<!-- ④ -->
+<div id="sec-clin" class="sec">
+<h2>④ Clínica — el síntoma que salva vidas</h2>
+<div class="sec-sub">La metrorragia posmenopáusica es el síntoma más importante del examen</div>
+<div class="frase">"Regla de oro: TODA metrorragia posmenopáusica es cáncer de endometrio hasta que se demuestre lo contrario. No importa si es escasa, si fue solo una vez, si la paciente se ve bien. Se estudia siempre."</div>
+<h3>Síntomas por estadio</h3>
+<div class="g2">
+  <div class="card" style="border-left:3px solid var(--green)">
+    <div class="card-t" style="color:var(--green)">Estadio I (75% de los casos)</div>
+    <ul style="margin-top:6px">
+      <li><strong>Metrorragia posmenopáusica</strong> — puede ser escasa, intermitente</li>
+      <li>Metrorragia premenopáusica anormal (ciclos irregulares, sangrado abundante)</li>
+      <li>Flujo seroso o serohemático</li>
+      <li>Ocasionalmente: hallazgo casual en eco TV (endometrio engrosado)</li>
+    </ul>
+  </div>
+  <div class="card" style="border-left:3px solid var(--red)">
+    <div class="card-t" style="color:var(--red)">Estadios II–IV</div>
+    <ul style="margin-top:6px">
+      <li>Dolor pélvico o hipogástrico</li>
+      <li>Distensión abdominal</li>
+      <li>Síntomas urinarios o rectales (invasión)</li>
+      <li>Ascitis (estadio avanzado)</li>
+      <li>Edema de miembros inferiores (obstrucción linfática)</li>
+    </ul>
+  </div>
+</div>
+<div class="callout c-blue"><strong>Dato epidemiológico importante:</strong> solo el 9% de los carcinomas de endometrio ocurren en mujeres &lt;45 años. El pico es a los 55–65 años. Cuando la pregunta describe una posmenopáusica con sangrado → pensar endometrio como primera posibilidad.</div>
+<h3>Examen físico</h3>
+<p>En estadios tempranos: puede ser completamente normal. El útero puede estar levemente agrandado. Examen pélvico bimanual puede revelar útero irregular o doloroso en estadios avanzados. En estadio IV: adenopatías inguinales, ascitis, hepatomegalia.</p>
+<h3>Endometrio en ecografía — el grosor que importa</h3>
+<table>
+  <tr><th>Situación</th><th>Grosor endometrial que dispara estudio</th></tr>
+  <tr><td>Mujer posmenopáusica asintomática</td><td>&gt;5 mm (algunos usan &gt;4 mm) → biopsia recomendada</td></tr>
+  <tr><td>Mujer posmenopáusica con metrorragia</td><td>Cualquier grosor → biopsia. La eco puede mostrar endometrio "fino" (&lt;4 mm) en el 95% de los carcinomas → endometrio fino no descarta carcinoma si hay sangrado.</td></tr>
+  <tr><td>Mujer premenopáusica</td><td>Varía con la fase del ciclo. Se requiere contexto clínico.</td></tr>
+</table>
+<div class="callout c-red"><strong>Trampa crítica:</strong> ecografía transvaginal con endometrio "fino" en posmenopáusica con metrorragia NO descarta cáncer de endometrio. El diagnóstico sigue siendo biopsia. La eco orienta pero no confirma ni descarta.</div>
+</div>
+
+<!-- ⑤ -->
+<div id="sec-dx" class="sec">
+<h2>⑤ Diagnóstico — el algoritmo y el gold standard</h2>
+<div class="sec-sub">Pregunta directa del banco 2025: "¿Cuál es el gold standard para diagnóstico de cáncer de endometrio?"</div>
+<div class="frase">"El diagnóstico definitivo de cáncer de endometrio es siempre histológico. El gold standard es el legrado uterino biópsico fraccionado bajo visión directa por histeroscopía."</div>
+<h3>Algoritmo diagnóstico ante metrorragia posmenopáusica</h3>
+<div class="algo">
+  <div class="step"><span class="sn sb">1</span><div class="stxt"><strong>Historia clínica y examen físico</strong> — descartar causa extravaginal (uretral, rectal). Caracterizar el sangrado. Evaluar factores de riesgo.</div></div>
+  <div class="step"><span class="sn sb">2</span><div class="stxt"><strong>Ecografía transvaginal</strong> — evalúa grosor endometrial, morfología uterina, ovarios. Primer estudio de imagen. Si endometrio &gt;5 mm o imagen sospechosa → biopsia. Si &lt;4 mm en posmenopáusica con sangrado → biopsia igual.</div></div>
+  <div class="step"><span class="sn sp">3</span><div class="stxt"><strong>Biopsia endometrial</strong> — dos métodos posibles:</div></div>
+  <div class="step"><span class="sn sg">4</span><div class="stxt"><strong>Gold standard: Legrado uterino biópsico fraccionado con histeroscopía</strong> — permite visualización directa del endometrio + toma de muestra guiada + biopsia del endocérvix por separado. La histeroscopía mejora la precisión diagnóstica y permite detectar lesiones focales que el legrado ciego perdería.</div></div>
+  <div class="step"><span class="sn sb">5</span><div class="stxt"><strong>Alternativa aceptable: dispositivos de aspiración endometrial (Pipelle)</strong> — biopsia ambulatoria, sin anestesia, alta sensibilidad (&gt;90%) para carcinoma. Útil en primer nivel. No visualiza el endometrio directamente. Puede dar falsos negativos en lesiones focales.</div></div>
+  <div class="step"><span class="sn sg">6</span><div class="stxt"><strong>Si confirmación histológica:</strong> estadificación con RMN de pelvis (profundidad de invasión miometrial, compromiso cervical) + TAC tórax-abdomen-pelvis (metástasis). La estadificación definitiva es quirúrgica.</div></div>
+</div>
+<h3>La controversia diagnóstica que el examen explota</h3>
+<div class="callout c-orange">
+  <strong>Pregunta 56 del banco 2025:</strong> "¿Cuál es el gold standard para diagnóstico de cáncer de endometrio?" → Las opciones eran: A) Legrado fraccionado solo, B) <strong>Legrado fraccionado con histeroscopía</strong>, C) RMN pélvica, D) Biopsia por aspiración endometrial. La correcta es B. La trampa: D (dispositivo de aspiración) es una técnica válida de primer nivel pero NO es el gold standard — la histeroscopía permite visualización directa y es más precisa.
+</div>
+<h3>Marcadores tumorales</h3>
+<table>
+  <tr><th>Marcador</th><th>Utilidad en endometrio</th></tr>
+  <tr><td>CA-125</td><td>Puede elevarse en estadios avanzados o tipo II. No sirve para diagnóstico. Útil en seguimiento de estadios III–IV.</td></tr>
+  <tr><td>HE4 (proteína epididimal humana 4)</td><td>Más específico que CA-125 para endometrio. Emergente. No está establecido en el banco actual.</td></tr>
+</table>
+</div>
+
+<!-- ⑥ -->
+<div id="sec-stad" class="sec">
+<h2>⑥ Estadificación FIGO — quirúrgica siempre</h2>
+<div class="sec-sub">La estadificación es quirúrgica, no clínica. La profundidad de invasión miometrial es el factor pronóstico principal.</div>
+<div class="tnm-grid">
+  <div class="tnm-box tI">
+    <div class="tnm-num">I</div>
+    <div style="font-size:11px;color:#7ee8b8">Confinado al útero</div>
+    <div style="font-size:10px;color:var(--text2);margin-top:4px">Ia: &lt;50% miometrio<br>Ib: ≥50% miometrio</div>
+    <div style="font-size:12px;color:var(--green);margin-top:5px;font-weight:600">&gt;90%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tII">
+    <div class="tnm-num">II</div>
+    <div style="font-size:11px;color:#a3e635">Invasión cervical estromal</div>
+    <div style="font-size:10px;color:var(--text2);margin-top:4px">Endocérvix comprometido</div>
+    <div style="font-size:12px;color:#a3e635;margin-top:5px;font-weight:600">~75%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tIII">
+    <div class="tnm-num">III</div>
+    <div style="font-size:11px;color:var(--orange)">Extensión local / regional</div>
+    <div style="font-size:10px;color:var(--text2);margin-top:4px">Serosa, anexos, vagina, ganglios pélvicos o paraaórticos</div>
+    <div style="font-size:12px;color:var(--orange);margin-top:5px;font-weight:600">~50%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+  <div class="tnm-box tIV">
+    <div class="tnm-num">IV</div>
+    <div style="font-size:11px;color:var(--red)">Invasión vesical/rectal o metástasis distancia</div>
+    <div style="font-size:12px;color:var(--red);margin-top:5px;font-weight:600">~20%</div>
+    <div style="font-size:10px;color:var(--text3)">sobrevida 5 años</div>
+  </div>
+</div>
+<h3>Factores pronósticos — más allá del estadio</h3>
+<table>
+  <tr><th>Factor</th><th>Mejor pronóstico</th><th>Peor pronóstico</th></tr>
+  <tr><td>Grado histológico</td><td>Grado 1 (bien diferenciado)</td><td>Grado 3 (pobremente diferenciado)</td></tr>
+  <tr><td>Tipo histológico</td><td>Endometrioide</td><td>Seroso papilar, células claras</td></tr>
+  <tr><td>Profundidad invasión miometrial</td><td>&lt;50% miometrio</td><td>≥50% miometrio</td></tr>
+  <tr><td>Receptores hormonales</td><td>RE+ / RP+</td><td>RE− / RP−</td></tr>
+  <tr><td>Citología peritoneal</td><td>Negativa</td><td>Positiva</td></tr>
+  <tr><td>Ganglios linfáticos</td><td>Negativos</td><td>Positivos</td></tr>
+</table>
+</div>
+
+<!-- ⑦ -->
+<div id="sec-tto" class="sec">
+<h2>⑦ Tratamiento</h2>
+<div class="sec-sub">La cirugía es el tratamiento primario en todos los estadios operables</div>
+<div class="frase">"El tratamiento estándar del cáncer de endometrio es quirúrgico: histerectomía total + doble salpingooforectomía + estadificación. En estadios avanzados se agrega radioterapia y/o quimioterapia."</div>
+<h3>Cirugía — el primer paso siempre</h3>
+<div class="algo">
+  <div class="step"><span class="sn sg">1</span><div class="stxt"><strong>Histerectomía total + salpingooforectomía bilateral</strong> — pieza única. Permite estadificación definitiva (profundidad de invasión, margen cervical, compromiso ovárico).</div></div>
+  <div class="step"><span class="sn sg">2</span><div class="stxt"><strong>Linfadenectomía pélvica ± paraaórtica</strong> — según estadio y factores de riesgo. En estadio Ia bajo grado puede omitirse.</div></div>
+  <div class="step"><span class="sn sg">3</span><div class="stxt"><strong>Lavado peritoneal</strong> con citología — parte de la estadificación.</div></div>
+  <div class="step"><span class="sn sb">4</span><div class="stxt"><strong>Vía de abordaje:</strong> laparoscopía (mínimamente invasiva, estándar actual para estadios tempranos) o laparotomía (estadios avanzados o tumores grandes).</div></div>
+</div>
+<h3>Tratamiento adyuvante según estadio</h3>
+<table>
+  <tr><th>Estadio</th><th>Tratamiento adyuvante</th></tr>
+  <tr><td>Ia bajo grado (G1–2), sin factores de riesgo</td><td>Solo cirugía. Seguimiento.</td></tr>
+  <tr><td>Ia alto grado (G3) o Ib</td><td>Braquiterapia vaginal ± radioterapia externa</td></tr>
+  <tr><td>II</td><td>Radioterapia externa + braquiterapia vaginal</td></tr>
+  <tr><td>III</td><td>Radioterapia + quimioterapia (carboplatino + paclitaxel)</td></tr>
+  <tr><td>IV</td><td>Quimioterapia sistémica. Radioterapia paliativa.</td></tr>
+</table>
+<h3>Hormonoterapia</h3>
+<p>Para tumores RE+/RP+ con metástasis o recaída: progestágenos (medroxiprogesterona de alta dosis, megestrol) como tratamiento paliativo. Tasa de respuesta ~25%. También en mujeres jóvenes con estadio Ia bajo grado y deseos de fertilidad — tratamiento conservador con progestágenos + seguimiento estricto (no es el estándar, es la excepción).</p>
+</div>
+
+<!-- ⑧ -->
+<div id="sec-hiper" class="sec">
+<h2>⑧ Hiperplasia endometrial — la lesión precursora</h2>
+<div class="sec-sub">Importante para entender la historia natural del tipo I y el rol de la progesterona</div>
+<div class="frase">"La hiperplasia endometrial es la lesión que precede al carcinoma tipo I. La presencia de atipia celular define el riesgo de progresión a carcinoma. Sin atipia → riesgo bajo, manejo con progesterona. Con atipia → riesgo alto, considerar cirugía."</div>
+<h3>Clasificación y riesgo de progresión</h3>
+<table>
+  <tr><th>Tipo</th><th>Atipia</th><th>Riesgo de progresión a carcinoma</th><th>Conducta</th></tr>
+  <tr><td>Hiperplasia simple</td><td>Sin atipia</td><td>&lt;2%</td><td>Progesterona (MPA, DIU-LNG) + seguimiento biópsico</td></tr>
+  <tr><td>Hiperplasia compleja</td><td>Sin atipia</td><td>3–5%</td><td>Progesterona + seguimiento</td></tr>
+  <tr><td>Hiperplasia simple con atipia</td><td>Con atipia</td><td>~10%</td><td>Progesterona o cirugía según edad/fertilidad</td></tr>
+  <tr><td><strong>Hiperplasia compleja con atipia</strong></td><td>Con atipia</td><td><strong>~30–50%</strong></td><td><strong>Histerectomía (estándar)</strong>. Progesterona solo si contraindicación quirúrgica o deseos de fertilidad.</td></tr>
+</table>
+<div class="callout c-orange"><strong>Dato clave:</strong> en el 30–40% de las histerectomías por hiperplasia compleja atípica se encuentra un carcinoma endometrial coexistente. Por eso la histerectomía es el tratamiento estándar para esta lesión.</div>
+<h3>Tratamiento con progesterona — cuándo y cómo</h3>
+<p>La progesterona antagoniza la acción estrogénica sobre el endometrio → inducción de decidualización y atrofia. Se usa como MPA (acetato de medroxiprogesterona) oral en altas dosis, o como SIU-LNG (Mirena) que libera progesterona localmente. La respuesta se evalúa con biopsia de control a los 3–6 meses.</p>
+<div class="callout c-blue"><strong>Conexión con el examen:</strong> la pregunta sobre "paciente de 58 años con sangrado vaginal escaso + menopausia hace 18 meses + DM2" que apareció en el banco → estudios a solicitar incluían ecografía TV (evaluar endometrio) + biopsia. El endometrio engrosado en posmenopáusica con factores de riesgo activa el algoritmo de hiperplasia → biopsia → categorizar atipia → decidir conducta.</div>
+</div>
+
+<!-- ⑨ -->
+<div id="sec-trap" class="sec">
+<h2>⑨ Trampas del examen</h2>
+
+<div class="trap">
+  <div class="tq">Trampa 1: Legrado sin histeroscopía = gold standard</div>
+  <div class="tw">✗ "El gold standard es el legrado uterino fraccionado solo" → INCOMPLETO según la guía actual</div>
+  <div class="tr">✓ El gold standard es el legrado biópsico fraccionado CON histeroscopía. La histeroscopía agrega visualización directa y permite toma de biopsia guiada de lesiones focales que el legrado ciego puede no alcanzar. El banco 2025 preguntó exactamente esto y la opción correcta fue B (con histeroscopía).</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 2: Biopsia por aspiración (Pipelle) = gold standard</div>
+  <div class="tw">✗ "El dispositivo de aspiración endometrial es el gold standard porque es ambulatorio y tiene alta sensibilidad" → FALSO</div>
+  <div class="tr">✓ La biopsia por aspiración es una técnica válida de primer nivel, con alta sensibilidad para el carcinoma (&gt;90%), pero NO es el gold standard. El gold standard es el legrado con histeroscopía. El Pipelle puede dar falsos negativos en lesiones focales pequeñas.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 3: RMN = diagnóstico definitivo de cáncer de endometrio</div>
+  <div class="tw">✗ "Con RMN de pelvis que muestra masa endometrial ya tengo el diagnóstico" → FALSO</div>
+  <div class="tr">✓ La RMN evalúa la profundidad de invasión miometrial y el compromiso cervical para la estadificación preoperatoria. No es diagnóstica: el diagnóstico definitivo es siempre histológico (biopsia). La RMN puede sugerir invasión pero no confirma malignidad.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 4: Endometrio fino en eco TV descarta carcinoma en posmenopáusica con metrorragia</div>
+  <div class="tw">✗ "La eco muestra endometrio de 3 mm → no hay riesgo de carcinoma" → FALSO</div>
+  <div class="tr">✓ En una posmenopáusica con metrorragia, el endometrio fino (&lt;4 mm) reduce la probabilidad de carcinoma pero no la elimina. Los carcinomas tipo II (seroso papilar) pueden presentarse con endometrio relativamente fino. Ante metrorragia posmenopáusica → biopsia siempre, independientemente del grosor endometrial.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 5: La TRH combinada (estrógenos + progesterona) aumenta el riesgo de endometrio igual que la TRH solo con estrógenos</div>
+  <div class="tw">✗ "Toda TRH es factor de riesgo para endometrio" → FALSO</div>
+  <div class="tr">✓ La TRH SOLO con estrógenos (sin progesterona) aumenta enormemente el riesgo (RR 5–10). La TRH combinada (estrógenos + progesterona) NO aumenta el riesgo de endometrio — la progesterona lo protege. La TRH combinada sí tiene leve aumento de riesgo de mama, pero no de endometrio.</div>
+</div>
+
+<div class="trap">
+  <div class="tq">Trampa 6: El cáncer de endometrio tiene peor pronóstico que el de ovario porque es más frecuente</div>
+  <div class="tw">✗ "El endometrio mata más que el ovario porque es más frecuente" → FALSO</div>
+  <div class="tr">✓ El endometrio tiene MEJOR pronóstico que el ovario porque el 75% se diagnostica en estadio I (sobrevida &gt;90%) gracias al síntoma precoz (metrorragia). El ovario tiene peor pronóstico porque el 70% se diagnostica en estadio III–IV. "Más frecuente" no implica "más letal".</div>
+</div>
+
+<div class="frase">"Regla del examen: posmenopáusica + metrorragia = carcinoma endometrio hasta demostrar lo contrario. Gold standard = legrado + histeroscopía. No es la eco, no es la RMN, no es el Pipelle solo."</div>
+</div>
+
+<!-- ⑩ -->
+<div id="sec-preg" class="sec">
+<h2>⑩ Preguntas reales del banco 2016–2025</h2>
+<div class="sec-sub">6 preguntas identificadas. Clic para ver respuesta y análisis.</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2025 · PREGUNTA 56 · GOLD STANDARD DIAGNÓSTICO</div>
+  <div class="qtxt">¿Cuál es el standard de oro para realizar diagnóstico de cáncer de endometrio?</div>
+  <div class="qopt">A) Dilatación cervical y legrado uterino biópsico fraccionado</div>
+  <div class="qopt ok">✓ B) Dilatación cervical y legrado uterino biópsico fraccionado con histeroscopía</div>
+  <div class="qopt">C) Resonancia Magnética nuclear de pelvis</div>
+  <div class="qopt">D) Toma de biopsia con dispositivos de aspiración endometrial</div>
+  <div class="hint">↓ clic para análisis</div>
+  <div class="qexp">El gold standard es el legrado CON histeroscopía (opción B). La histeroscopía permite visualización directa del endometrio y toma de biopsia guiada, lo que aumenta la precisión diagnóstica respecto al legrado ciego solo (A). La RMN (C) estadifica pero no diagnostica — no es histológica. El Pipelle (D) es útil como primer nivel pero tiene limitaciones para lesiones focales y no es el gold standard. La trampa más frecuente es elegir A (legrado solo) o D (aspiración), ambas técnicas válidas pero no el gold standard actual.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">EXAMEN 2016 · PREGUNTA 76 · DIAGNÓSTICO PRESUNTIVO</div>
+  <div class="qtxt">Mujer de 65 años, obesa, sin TRH, presenta un episodio de metrorragia de una semana de duración. Examen físico: útero levemente aumentado de tamaño. ¿Diagnóstico más probable?</div>
+  <div class="qopt ok">✓ A) Cáncer de endometrio</div>
+  <div class="qopt">B) Cáncer de cuello uterino</div>
+  <div class="qopt">C) Atrofia genital avanzada sintomática</div>
+  <div class="qopt">D) Atrofia endometrial</div>
+  <div class="hint">↓ clic para análisis</div>
+  <div class="qexp">Perfil clásico de carcinoma de endometrio tipo I: mujer posmenopáusica (65 años) + obesa (factor de riesgo por aromatización periférica) + metrorragia. La obesa posmenopáusica tiene estrógenos extra-ováricos que estimulan el endometrio. La atrofia genital (C) puede sangrar pero no produce útero agrandado. La atrofia endometrial (D) no produce sangrado activo relevante. El cérvix (B) podría sangrar pero el perfil clínico (obesa, posmenopáusica sin TRH, útero agrandado) orienta al endometrio. Ante este perfil: ecografía TV + biopsia endometrial.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">BANCO · CONTROL GINECOLÓGICO · SANGRADO POSMENOPÁUSICO</div>
+  <div class="qtxt">Cecilia, 58 años, DM2. Refiere sangrado vaginal escaso de 24 hs el mes pasado, no consultó. FUM hace 18 meses. ¿Qué estudios complementarios corresponde realizar?</div>
+  <div class="qopt">A) PAP exo y endocervical, mamografía bilateral, DMO</div>
+  <div class="qopt">B) PAP endo y exocervical y mamografía bilateral</div>
+  <div class="qopt">C) PAP endo y exocervical, mamografía bilateral, DMO, eco TV</div>
+  <div class="qopt ok">✓ D) PAP endo y exocervical, mamografía bilateral, colposcopía y eco TV</div>
+  <div class="hint">↓ clic para análisis</div>
+  <div class="qexp">Esta paciente tiene: metrorragia posmenopáusica + DM2 (factor de riesgo de endometrio). La eco TV es obligatoria para evaluar el endometrio. El PAP endo y exocervical se indica para tamizaje cervical. La mamografía corresponde por edad y control. La colposcopía se indica ante cualquier sangrado anormal posmenopáusico para descartar lesión cervical. La DMO (densitometría) se haría en control rutinario de menopausia pero no es la prioridad ante el sangrado. La clave: la metrorragia posmenopáusica + DM2 obliga a agregar eco TV y colposcopía para descartar patología endometrial y cervical.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">BANCO · TRATAMIENTO · MIOMA SUBMUCOSO</div>
+  <div class="qtxt">Paciente de 35 años con deseo de fertilidad, mioma submucoso de 2 cm sintomático. ¿Cuál es el tratamiento de elección?</div>
+  <div class="qopt">A) Miomectomía laparoscópica</div>
+  <div class="qopt">B) Histerectomía total</div>
+  <div class="qopt ok">✓ C) Miomectomía histeroscópica</div>
+  <div class="qopt">D) Miomectomía convencional laparotómica</div>
+  <div class="hint">↓ clic para análisis</div>
+  <div class="qexp">El mioma submucoso se ubica en la cavidad endometrial y produce sangrado (hipermenorrea), por eso causa diagnóstico diferencial con patología endometrial. El tratamiento de elección para mioma submucoso sintomático con deseos de fertilidad es la miomectomía histeroscópica (resección endoscópica). La laparoscopía (A) es para miomas subserosos o intramurales. La histerectomía (B) está contraindicada en mujer con deseos de fertilidad. La laparotomía (D) sería excesiva para un mioma submucoso de 2 cm que tiene acceso histeroscópico. Esta pregunta conecta con el diagnóstico diferencial de metrorragia: mioma submucoso vs. pólipo endometrial vs. carcinoma → en todos se estudia el endometrio.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+  <div class="qtag">INTEGRADOR BANCO · DIAGNÓSTICO DIFERENCIAL METRORRAGIA</div>
+  <div class="qtxt">Caso integrador: mujer de 58 años, posmenopáusica, obesa, HTA, DM2, presenta 2 episodios de metrorragia escasa en el último mes. Eco TV: endometrio de 12 mm. ¿Cuál es la conducta más adecuada?</div>
+  <div class="qopt">A) Iniciar TRH con progesterona y controlar</div>
+  <div class="qopt">B) Control en 3 meses con nueva ecografía</div>
+  <div class="qopt ok">✓ C) Biopsia endometrial (legrado con histeroscopía)</div>
+  <div class="qopt">D) PAP y colposcopía solamente</div>
+  <div class="hint">↓ clic para análisis</div>
+  <div class="qexp">Tríada de riesgo máximo: posmenopáusica + obesa + DM2 + HTA + sangrado + endometrio engrosado (12 mm, cuando en posmenopausia el umbral es 5 mm). La conducta obligatoria es biopsia endometrial (gold standard: legrado con histeroscopía). No se observa ni se da hormonas antes de descartar malignidad. El PAP evalúa el cérvix, no el endometrio. La TRH estaría contraindicada hasta no descartar carcinoma y sería añadir estrógenos a un endometrio ya estimulado.</div>
+</div>
+
+<div class="frase">"El examen de endometrio sigue una lógica simple: perfil de riesgo (obesa-DM-HTA-nuliparidad-posmenopáusica) + síntoma (metrorragia) → biopsia (legrado + histeroscopía). El gold standard no es la RMN ni el Pipelle solo."</div>
+</div>
+
+</div>
+<script>
+function show(id){document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));const ids=['intro','epid','riesgo','clin','dx','stad','tto','hiper','trap','preg'];document.querySelectorAll('.nb')[ids.indexOf(id)].classList.add('on');document.getElementById('sec-'+id).classList.add('on');window.scrollTo({top:0,behavior:'smooth'})}
+</script>
+</body>
+</html>

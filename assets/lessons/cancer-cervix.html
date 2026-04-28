@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html><head>
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-info:#185fa5;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;}
+@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-info:#b5d4f4;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary,#ffffff);padding:0 0 24px}
+.nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--color-border-tertiary);position:sticky;top:0;background:var(--color-background-primary,white);z-index:10}
+.nb{padding:5px 11px;border-radius:18px;cursor:pointer;font-size:12px;font-weight:500;border:1px solid var(--color-border-secondary);color:var(--color-text-secondary);background:var(--color-background-primary,#ffffff);white-space:nowrap;transition:all .15s}
+.nb.on{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
+.sec{display:none;padding:14px 2px 0}
+.sec.on{display:block}
+h2{font-size:15px;font-weight:500;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--color-border-tertiary)}
+h3{font-size:13px;font-weight:500;margin:14px 0 7px;color:var(--color-text-secondary)}
+p,li{font-size:13px;line-height:1.65;margin-bottom:7px}
+ul{padding-left:18px;margin-bottom:8px}
+.pill{display:inline-block;padding:2px 8px;border-radius:11px;font-size:11.5px;font-weight:500;margin:2px 2px 2px 0;vertical-align:middle}
+.pr{background:#fcebeb;color:#791f1f}.pb{background:#e6f1fb;color:#0c447c}
+.pg{background:#eaf3de;color:#27500a}.pa{background:#faeeda;color:#633806}
+.pp{background:#eeedfe;color:#3c3489}.pt{background:#e1f5ee;color:#085041}
+.pgr{background:#f1efe8;color:#444441}.pc{background:#faece7;color:#4a1b0c}
+@media(prefers-color-scheme:dark){
+.pr{background:#501313;color:#f7c1c1}.pb{background:#042c53;color:#b5d4f4}
+.pg{background:#173404;color:#c0dd97}.pa{background:#412402;color:#fac775}
+.pp{background:#26215c;color:#cecbf6}.pt{background:#04342c;color:#9fe1cb}
+.pgr{background:#2c2c2a;color:#d3d1c7}.pc{background:#4a1b0c;color:#f5c4b3}
+}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0 12px}
+th{text-align:left;padding:7px 10px;background:var(--color-background-secondary);font-weight:500;font-size:12px;border-bottom:2px solid var(--color-border-secondary)}
+td{padding:6px 10px;border-bottom:1px solid var(--color-border-tertiary);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+.ra{background:#e6f1fb0d}.rb{background:#eaf3de0d}.rc{background:#faeeda0d}.rd{background:#eeedfe0d}.re{background:#fcebeb0d}
+.algo{border:1px solid var(--color-border-secondary);border-radius:10px;padding:13px;margin:10px 0}
+.step{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px}
+.step:last-child{margin-bottom:0}
+.sn{min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.sb{background:#e6f1fb;color:#0c447c}.sg{background:#eaf3de;color:#27500a}
+.sa{background:#faeeda;color:#633806}.sr{background:#fcebeb;color:#791f1f}
+.sp{background:#eeedfe;color:#3c3489}
+.stxt{font-size:13px;line-height:1.6}
+.frase{border:1px solid var(--color-border-secondary);border-radius:8px;padding:10px 14px;background:var(--color-background-secondary);font-size:13px;font-style:italic;text-align:center;margin:12px 0;line-height:1.6}
+.warn{background:var(--color-background-warning,#faeeda);border:1px solid #e8a000;border-radius:8px;padding:10px 13px;font-size:12.5px;margin:10px 0}
+.info{background:var(--color-background-info,#e6f1fb);border:1px solid #378add;border-radius:8px;padding:10px 13px;font-size:12.5px;margin:10px 0}
+.suc{background:var(--color-background-success,#eaf3de);border:1px solid #639922;border-radius:8px;padding:10px 13px;font-size:12.5px;margin:10px 0}
+.danger{background:var(--color-background-danger,#fcebeb);border:1px solid #e24b4a;border-radius:8px;padding:10px 13px;font-size:12.5px;margin:10px 0}
+.trap{border-left:3px solid #e24b4a;background:var(--color-background-secondary);border-radius:0 8px 8px 0;padding:10px 12px;margin:8px 0;font-size:13px}
+.tq{font-weight:500;margin-bottom:4px}
+.tw{color:#a32d2d;font-size:12px;margin-bottom:3px}
+.tr{color:#3b6d11;font-size:12px}
+@media(prefers-color-scheme:dark){.tw{color:#f7c1c1}.tr{color:#c0dd97}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+@media(max-width:500px){.g2{grid-template-columns:1fr}}
+.card{border:1px solid var(--color-border-tertiary);border-radius:9px;padding:11px 13px;font-size:12.5px}
+.ct{font-weight:500;font-size:12px;margin-bottom:5px;color:var(--color-text-secondary)}
+.qcard{border:1px solid var(--color-border-secondary);border-radius:9px;padding:13px;margin:10px 0;cursor:pointer;transition:background .1s}
+.qcard:hover{background:var(--color-background-secondary)}
+.qtag{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px}
+.qtxt{margin-bottom:9px;font-weight:500;font-size:13px;line-height:1.5}
+.qopt{padding:3px 0;color:var(--color-text-secondary);font-size:12.5px}
+.qopt.ok{color:#3b6d11;font-weight:500}
+@media(prefers-color-scheme:dark){.qopt.ok{color:#c0dd97}}
+.qexp{margin-top:9px;padding-top:9px;border-top:1px solid var(--color-border-tertiary);font-size:12px;color:var(--color-text-secondary);display:none;line-height:1.6}
+.qcard.revealed .qexp{display:block}
+.div{display:flex;align-items:center;gap:10px;margin:14px 0 8px;color:var(--color-text-secondary);font-size:12px}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--color-border-tertiary)}
+
+/* LESION FLOW */
+.lflow{display:flex;flex-direction:column;gap:0}
+.lrow{display:flex;gap:0;border:1px solid var(--color-border-secondary);border-radius:0;margin-top:-1px;overflow:hidden;font-size:12.5px}
+.lrow:first-child{border-radius:8px 8px 0 0}
+.lrow:last-child{border-radius:0 0 8px 8px}
+.lcell{padding:8px 12px;flex:1;border-right:1px solid var(--color-border-secondary)}
+.lcell:last-child{border-right:none}
+.lhdr{font-weight:500;font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.4px;background:var(--color-background-secondary)}
+.l-obs{background:#eaf3de0d}
+.l-col{background:#e6f1fb0d}
+.l-cx{background:#faeeda0d}
+.l-cir{background:#fcebeb0d}
+</style></head>
+<body>
+
+<div class="nav">
+  <button class="nb on" onclick="show('intro')">① Concepto</button>
+  <button class="nb" onclick="show('prev')">② Prevención</button>
+  <button class="nb" onclick="show('scr')">③ Tamizaje</button>
+  <button class="nb" onclick="show('cit')">④ Citología y clasificación</button>
+  <button class="nb" onclick="show('cond')">⑤ Conducta por lesión</button>
+  <button class="nb" onclick="show('ca')">⑥ Carcinoma invasor</button>
+  <button class="nb" onclick="show('trap')">⑦ Trampas</button>
+  <button class="nb" onclick="show('preg')">⑧ Preguntas reales</button>
+</div>
+
+<!-- ① CONCEPTO -->
+<div id="sec-intro" class="sec on">
+<h2>① Concepto — por qué es el tema más preguntado del eje ginecológico</h2>
+
+<div class="frase">"El cáncer de cérvix es el único tumor ginecológico que se puede prevenir en dos niveles simultáneos: vacunando contra el agente causal (HPV) y detectando lesiones precursoras antes de que se vuelvan invasoras (PAP / test HPV)."</div>
+
+<p><span class="pill pb">Fuente oficial 2026</span> Guía SAPTGIyC–SOGIBA–FASGO 2022 · Gori 3ª ed. · Temario Integrador (ítem 18) y CABA</p>
+<p><span class="pill pa">Frecuencia examen</span> Muy alta — aparece en promedio 2–3 preguntas por año entre 2016 y 2025. Es el tema ginecológico más preguntado del banco después de obstetricia.</p>
+
+<h3>El eje fisiopatológico que explica todo</h3>
+<p>El carcinoma de cérvix no aparece de la nada. Tiene una historia natural larga y conocida, con una secuencia que puede interrumpirse en cualquier punto:</p>
+
+<div class="algo">
+<div class="step"><span class="sn sb">1</span><div class="stxt"><strong>Infección por HPV</strong> (virus del papiloma humano) — especialmente genotipos de alto riesgo: 16 y 18 causan el 70% de los carcinomas. La infección es muy frecuente: ~80% de las personas sexualmente activas se infectan en algún momento. La mayoría la elimina espontáneamente.</div></div>
+<div class="step"><span class="sn sb">2</span><div class="stxt"><strong>Persistencia viral</strong> — si el sistema inmune no elimina el virus, el HPV persiste en el epitelio cervical, especialmente en la zona de transformación (unión escamocolumnar), donde se producen las metaplasias.</div></div>
+<div class="step"><span class="sn sa">3</span><div class="stxt"><strong>Lesión intraepitelial de bajo grado (L-SIL / CIN 1)</strong> — cambios citológicos leves, en su mayoría reversibles espontáneamente. Refleja infección activa más que neoplasia verdadera.</div></div>
+<div class="step"><span class="sn sa">4</span><div class="stxt"><strong>Lesión intraepitelial de alto grado (H-SIL / CIN 2–3)</strong> — displasia moderada a severa. Sin tratamiento, puede progresar a carcinoma. Esta es la lesión que el tamizaje busca detectar y tratar.</div></div>
+<div class="step"><span class="sn sr">5</span><div class="stxt"><strong>Carcinoma in situ → Carcinoma invasor</strong> — ruptura de la membrana basal. A partir de aquí el pronóstico empeora progresivamente con el estadio.</div></div>
+</div>
+
+<p>Este proceso tarda en promedio 10–15 años desde la infección hasta el carcinoma invasor. Ese es el tiempo que el sistema de tamizaje tiene para intervenir.</p>
+
+<h3>Tipos histológicos principales</h3>
+<table>
+<tr><th>Tipo</th><th>Frecuencia</th><th>Origen</th><th>HPV asociado</th></tr>
+<tr class="ra"><td><strong>Carcinoma escamoso (epidermoide)</strong></td><td>70–80%</td><td>Epitelio escamoso de la exocérvix / zona de transformación</td><td>HPV 16 (principal)</td></tr>
+<tr class="rb"><td><strong>Adenocarcinoma</strong></td><td>20–25%</td><td>Epitelio glandular endocervical</td><td>HPV 18 (principal)</td></tr>
+<tr class="rc"><td>Adenoescamoso</td><td>3–5%</td><td>Mixto</td><td>HPV 16 y 18</td></tr>
+</table>
+
+<h3>Conexiones a otros nodos</h3>
+<p><span class="pill pp">→</span> Vacuna HPV (calendario, edades, géneros) <span class="pill pp">→</span> Prevención primaria vs. secundaria <span class="pill pp">→</span> ITS y conducta sexual de riesgo <span class="pill pp">→</span> Colposcopía como herramienta diagnóstica <span class="pill pp">→</span> Cáncer de cérvix en embarazo <span class="pill pp">→</span> Persona trans masculina con cérvix: sigue necesitando screening</p>
+</div>
+
+<!-- ② PREVENCIÓN -->
+<div id="sec-prev" class="sec">
+<h2>② Prevención — primaria, secundaria y terciaria</h2>
+
+<div class="frase">La pregunta más repetida del banco en este tema: "¿Cuál es la medida de prevención PRIMARIA del cáncer de cérvix?" → Vacuna HPV. El PAP es prevención SECUNDARIA. Esta distinción aparece en el banco al menos 3 veces entre 2016 y 2025.</div>
+
+<h3>Prevención primaria — vacuna HPV</h3>
+<div class="suc"><strong>Vacuna HPV en el Calendario Nacional Argentina 2026:</strong> se indica a los 11 años en niñas, niños y adolescentes. 2 dosis (0 y 6 meses). En personas inmunocomprometidas o que inician esquema después de los 15 años: 3 dosis (0, 2 y 6 meses). También se indica en personas VIH positivas hasta los 26 años (o más, según criterio).</div>
+
+<table>
+<tr><th>Vacuna</th><th>Genotipos cubiertos</th><th>Protección contra</th></tr>
+<tr class="ra"><td>Bivalente (Cervarix)</td><td>HPV 16 + 18</td><td>70% de carcinomas cervicales</td></tr>
+<tr class="rb"><td>Cuadrivalente (Gardasil 4)</td><td>HPV 6 + 11 + 16 + 18</td><td>Carcinoma cervical + verrugas genitales (condilomas)</td></tr>
+<tr class="rc"><td>Nonavalente (Gardasil 9)</td><td>HPV 6+11+16+18+31+33+45+52+58</td><td>~90% de carcinomas cervicales</td></tr>
+</table>
+
+<p><strong>¿La vacuna elimina la necesidad del PAP?</strong> No. La vacuna no cubre el 100% de los genotipos, y las mujeres ya expuestas a HPV antes de vacunarse no obtienen protección retroactiva para esas cepas. El tamizaje debe continuar igualmente.</p>
+
+<h3>Otras medidas de prevención primaria</h3>
+<ul>
+<li>Uso correcto de preservativo (reduce pero no elimina el riesgo — el HPV se transmite por contacto piel con piel, no solo secreciones).</li>
+<li>Reducción del número de parejas sexuales.</li>
+<li>Cesación tabáquica (el tabaco es cofactor que favorece la persistencia del HPV y la progresión de lesiones).</li>
+<li>Diagnóstico y tratamiento de otras ITS (especialmente VIH, que aumenta el riesgo de lesiones cervicales).</li>
+</ul>
+
+<h3>Prevención secundaria — tamizaje</h3>
+<p>PAP (citología cervical) y test de HPV. Detectan lesiones precursoras antes de que se vuelvan invasoras. Se desarrolla en detalle en la pestaña ③.</p>
+
+<h3>Prevención terciaria</h3>
+<p>Tratamiento del carcinoma invasor para reducir mortalidad y secuelas. Cirugía, radioterapia, quimioterapia según estadio.</p>
+
+<h3>Factores de riesgo para el banco</h3>
+<table>
+<tr><th>Factor</th><th>Mecanismo</th></tr>
+<tr class="ra"><td>Infección por HPV (necesario, no suficiente)</td><td>Agente causal directo. Sin HPV no hay carcinoma cervical.</td></tr>
+<tr class="rb"><td>Inicio precoz de relaciones sexuales (&lt;16 años)</td><td>Metaplasia escamosa activa → mayor susceptibilidad al HPV</td></tr>
+<tr class="rc"><td>Múltiples parejas sexuales (propias o de la pareja)</td><td>Mayor exposición al HPV</td></tr>
+<tr class="rd"><td>Tabaquismo</td><td>Cofactor: favorece persistencia viral y progresión de lesiones</td></tr>
+<tr class="ra"><td>Inmunosupresión (VIH, trasplante, corticoides)</td><td>Menor capacidad de eliminar el virus</td></tr>
+<tr class="rb"><td>Multiparidad (≥3 partos)</td><td>Trauma repetido de la zona de transformación</td></tr>
+<tr class="rc"><td>ACO de larga data (&gt;5 años)</td><td>Cofactor leve, mecanismo no completamente claro</td></tr>
+<tr class="rd"><td>Bajo nivel socioeconómico / falta de acceso al tamizaje</td><td>Factor indirecto: no acceden al PAP regularmente</td></tr>
+</table>
+</div>
+
+<!-- ③ TAMIZAJE -->
+<div id="sec-scr" class="sec">
+<h2>③ Tamizaje — el capítulo más preguntado del banco</h2>
+
+<div class="frase">Las edades de inicio del PAP y el test de HPV, y sus características (sensibilidad, VPN) son las preguntas que más se repiten año a año. Memorizarlas es obligatorio.</div>
+
+<h3>Dos métodos, dos edades, dos características — según guía SAPTGIyC-SOGIBA-FASGO 2022</h3>
+
+<div class="g2">
+<div class="card" style="border-top:3px solid #185fa5">
+<div class="ct" style="color:#185fa5">PAP (citología cervical)</div>
+<p><strong>Inicio:</strong> a los 25 años (Argentina, guía 2022). Históricamente se discutió iniciar antes, pero la tendencia actual es a los 25 años.</p>
+<p><strong>Frecuencia:</strong> anual × 2 años consecutivos normales → luego cada 3 años.</p>
+<p><strong>Sensibilidad:</strong> baja-moderada (~60%). Una muestra normal no descarta lesión.</p>
+<p><strong>VPN:</strong> moderado. Por eso requiere repetición periódica.</p>
+<p><strong>Especificidad:</strong> alta cuando es positivo.</p>
+</div>
+<div class="card" style="border-top:3px solid #534ab7">
+<div class="ct" style="color:#534ab7">Test de HPV (detección molecular)</div>
+<p><strong>Inicio:</strong> a los 30 años (guía Argentina 2022).</p>
+<p><strong>Frecuencia:</strong> cada 5 años si negativo.</p>
+<p><strong>Sensibilidad:</strong> alta (~95%). Detecta casi todas las infecciones activas por HPV de alto riesgo.</p>
+<p><strong>VPN muy alto:</strong> test HPV negativo descarta con mucha certeza presencia de lesión de alto grado. Es el dato de mayor rentabilidad en el examen.</p>
+<p><strong>Especificidad:</strong> menor que el PAP. Un HPV positivo no significa lesión — requiere triage con PAP.</p>
+</div>
+</div>
+
+<div class="warn"><strong>Pregunta directa del banco 2025 (pregunta 84):</strong> "¿A qué edad debe realizarse el rastreo con PAP y test HPV respectivamente?" → Respuesta correcta: mayor de 25 años y mayor de 30 años. Las opciones distractoras usaron 21, 18, 20 y 35 como otras edades.</div>
+
+<div class="warn"><strong>Pregunta directa del banco 2022 (pregunta 51):</strong> "¿Qué características tienen el PAP y el test HPV?" → PAP: VPN moderado, sensibilidad baja-moderada. Test HPV: VPN <strong>alto</strong> y sensibilidad <strong>alta</strong>. La respuesta correcta era B (Test HPV: VPN alto y sensibilidad alta).</div>
+
+<div class="warn"><strong>Pregunta directa del banco 2022 (pregunta 52):</strong> edad de rastreo con PAP y test HPV. Respuesta: mayor 25 años PAP, mayor 30 años HPV. Correcta: A.</div>
+
+<h3>Algoritmo de tamizaje según guía 2022</h3>
+<div class="algo">
+<div class="step"><span class="sn sb">1</span><div class="stxt"><strong>Primeros dos años:</strong> PAP anual × 2. Si ambos son normales → continuar con PAP cada 3 años o test HPV cada 5 años (desde los 30).</div></div>
+<div class="step"><span class="sn sb">2</span><div class="stxt"><strong>Test HPV a los 30 años:</strong> si negativo → repetir a los 5 años. Si positivo → triage con citología (PAP).</div></div>
+<div class="step"><span class="sn sa">3</span><div class="stxt"><strong>Autotoma (test HPV):</strong> la guía 2022 y el banco 2025 (pregunta 56) validan la autotoma de HPV. Test HPV positivo por autotoma → conducta: tomar PAP (citología cervical). No se repite la autotoma ni se hace conización directa.</div></div>
+<div class="step"><span class="sn sg">4</span><div class="stxt"><strong>Fin del tamizaje:</strong> a los 65 años, si tiene 3 o más PAP normales consecutivos en los últimos 10 años, o 2 test HPV negativos consecutivos. No reiniciar tamizaje después de los 65 años en estas condiciones.</div></div>
+</div>
+
+<h3>Situaciones especiales de tamizaje</h3>
+<table>
+<tr><th>Situación</th><th>Conducta de tamizaje</th></tr>
+<tr class="ra"><td>Persona trans masculina con cérvix presente</td><td>Tamizaje igual que para mujeres cis con cérvix. Se puede hacer citología a ciegas (sin espéculo) si hay atrofia por androgenoterapia. El banco 2025 preguntó exactamente esto.</td></tr>
+<tr class="rb"><td>VIH positiva</td><td>PAP cada 6 meses el primer año, luego anual si es normal. Mayor riesgo → vigilancia más estrecha.</td></tr>
+<tr class="rc"><td>Sin relaciones sexuales previas</td><td>No hay indicación de tamizaje sin exposición al HPV. El banco preguntó si la persona trans masculina sin relaciones con penetración vaginal necesita PAP → respuesta: no es necesario el rastreo en esa condición específica.</td></tr>
+<tr class="rd"><td>Histerectomía total por causa benigna</td><td>Suspender el tamizaje. Sin cérvix, no hay riesgo de cáncer cervical.</td></tr>
+<tr class="ra"><td>Embarazada</td><td>El tamizaje continúa normalmente. El PAP en embarazo es seguro.</td></tr>
+</table>
+</div>
+
+<!-- ④ CITOLOGÍA Y CLASIFICACIÓN -->
+<div id="sec-cit" class="sec">
+<h2>④ Citología y clasificación — el vocabulario del examen</h2>
+
+<div class="frase">El examen usa la terminología del sistema Bethesda. Hay que conocer qué significa cada sigla y qué conducta genera. Es el vocabulario que conecta el resultado del PAP con la decisión clínica.</div>
+
+<h3>Sistema Bethesda — clasificación citológica</h3>
+<table>
+<tr><th>Sigla</th><th>Nombre completo</th><th>Significado clínico</th><th>Equivalente histológico</th></tr>
+<tr class="ra"><td><strong>NILM</strong></td><td>Negativo para lesión intraepitelial o malignidad</td><td>Normal. Sin lesión.</td><td>—</td></tr>
+<tr class="rb"><td><strong>ASC-US</strong></td><td>Células escamosas atípicas de significado incierto</td><td>Atipia mínima, dudosa. Puede ser inflamatoria, reactiva o preneoplásica incipiente.</td><td>Puede corresponder a nada o a CIN 1</td></tr>
+<tr class="rc"><td><strong>ASC-H</strong></td><td>Células escamosas atípicas, no puede excluirse H-SIL</td><td>Atipia que levanta sospecha de lesión de alto grado. Más preocupante que ASC-US.</td><td>Puede corresponder a CIN 2–3</td></tr>
+<tr class="rd"><td><strong>L-SIL</strong></td><td>Lesión escamosa intraepitelial de bajo grado</td><td>Bajo grado, generalmente regresión espontánea. Refleja infección HPV activa.</td><td>CIN 1</td></tr>
+<tr class="ra"><td><strong>H-SIL</strong></td><td>Lesión escamosa intraepitelial de alto grado</td><td>Alto grado, riesgo de progresión. Requiere tratamiento en la mayoría de los casos.</td><td>CIN 2–3, carcinoma in situ</td></tr>
+<tr class="rb"><td><strong>AGC</strong></td><td>Células glandulares atípicas</td><td>Atipia en células glandulares (endocervicales o endometriales). Requiere estudio.</td><td>Variable</td></tr>
+<tr class="rc"><td><strong>Carcinoma escamoso</strong></td><td>—</td><td>Maligno confirmado en citología.</td><td>Carcinoma invasor</td></tr>
+</table>
+
+<div class="div">Clasificación histológica (biopsia — gold standard)</div>
+<table>
+<tr><th>CIN</th><th>Nombre</th><th>Descripción</th><th>Relación Bethesda</th></tr>
+<tr class="ra"><td><strong>CIN 1</strong></td><td>Displasia leve / NIC 1</td><td>Cambios displásicos en el tercio inferior del epitelio. Alta tasa de regresión espontánea (60–70%).</td><td>L-SIL</td></tr>
+<tr class="rb"><td><strong>CIN 2</strong></td><td>Displasia moderada / NIC 2</td><td>Cambios en los 2/3 inferiores. Regresión en ~40%, progresión en ~20%.</td><td>H-SIL</td></tr>
+<tr class="rc"><td><strong>CIN 3</strong></td><td>Displasia severa / carcinoma in situ</td><td>Cambios en todo el espesor epitelial. Alta progresión sin tratamiento.</td><td>H-SIL</td></tr>
+</table>
+
+<div class="info"><strong>Frase compresiva:</strong> ASC-US → dudar y vigilar. ASC-H → sospechar alto grado → colposcopía. L-SIL → observar (la mayoría regresa). H-SIL → tratar. La conducta sigue la sospecha histológica que cada categoría implica.</div>
+
+<h3>La zona de transformación — por qué importa para la colposcopía</h3>
+<p>La mayoría de las lesiones cervicales se originan en la zona de transformación (ZT), que es la unión entre el epitelio escamoso (exocérvix) y el glandular (endocérvix). Esta zona migra con la edad: en mujeres jóvenes está visible en la exocérvix; en posmenopáusicas retrocede hacia el canal endocervical y puede no verse con el colposcopio.</p>
+<p>La colposcopía se reporta como "satisfactoria" si la ZT es completamente visible, e "insatisfactoria" si no lo es. Eso cambia la conducta.</p>
+</div>
+
+<!-- ⑤ CONDUCTA POR LESIÓN -->
+<div id="sec-cond" class="sec">
+<h2>⑤ Conducta por tipo de lesión — la tabla que el examen prueba sistemáticamente</h2>
+
+<div class="frase">El examen siempre da el resultado citológico/histológico y pregunta la conducta. Dominar esta tabla resuelve entre 2 y 3 preguntas por año.</div>
+
+<h3>Algoritmo general de triage</h3>
+<div class="algo">
+<div class="step"><span class="sn sb">1</span><div class="stxt">PAP anormal → el paso siguiente casi siempre es <strong>colposcopía</strong>, salvo en ASC-US (donde primero se hace test HPV) y en L-SIL (donde en mujeres jóvenes se puede observar).</div></div>
+<div class="step"><span class="sn sb">2</span><div class="stxt">Colposcopía → si visualiza lesión → <strong>biopsia dirigida</strong>. La biopsia da el diagnóstico histológico definitivo (CIN 1/2/3).</div></div>
+<div class="step"><span class="sn sa">3</span><div class="stxt">Biopsia informa lesión de alto grado (CIN 2–3) → <strong>tratamiento escisional</strong> (LLETZ/LEEP o conización).</div></div>
+<div class="step"><span class="sn sg">4</span><div class="stxt">Colposcopía insatisfactoria (no se ve la ZT) + citología de alto grado → <strong>conización diagnóstica</strong> sin biopsia previa.</div></div>
+</div>
+
+<div class="div">Tabla de conducta completa por resultado</div>
+
+<div class="lflow">
+<div class="lrow">
+  <div class="lcell lhdr" style="flex:1.2">Resultado</div>
+  <div class="lcell lhdr" style="flex:2">Conducta según guía 2022</div>
+  <div class="lcell lhdr" style="flex:1.5">Clave del examen</div>
+</div>
+<div class="lrow l-obs">
+  <div class="lcell" style="flex:1.2"><strong>ASC-US</strong></div>
+  <div class="lcell" style="flex:2">Realizar test HPV como triage. Si HPV negativo → repetir PAP en 1 año. Si HPV positivo → colposcopía.</div>
+  <div class="lcell" style="flex:1.5">No hacer colposcopía directa. Primero test HPV. El banco 2025 preguntó esto (Karina, 35 años, ASC-US → respuesta correcta: repetir citología en 6 meses o 1 año / o test HPV según protocolo).</div>
+</div>
+<div class="lrow l-col">
+  <div class="lcell" style="flex:1.2"><strong>ASC-H</strong></div>
+  <div class="lcell" style="flex:2"><strong>Colposcopía y biopsia siempre.</strong> No se puede observar ni repetir el PAP. La "H" implica que no se puede descartar lesión de alto grado.</div>
+  <div class="lcell" style="flex:1.5">El banco 2018 (pregunta 78) y 2016 (pregunta 85) preguntaron ASC-H → respuesta: colposcopía y biopsia. La trampa era repetir el PAP.</div>
+</div>
+<div class="lrow l-obs">
+  <div class="lcell" style="flex:1.2"><strong>L-SIL (CIN 1)</strong></div>
+  <div class="lcell" style="flex:2"><strong>Observación.</strong> Alta tasa de regresión espontánea. Control cito-colposcópico semestral × 2 años. Si persiste → tratamiento. <em>No tratar de entrada.</em></div>
+  <div class="lcell" style="flex:1.5">El banco 2025 (pregunta 63) preguntó L-SIL → correcta: control semestral durante dos años. La trampa era "tratamiento inmediato". También pregunta del banco 2017: CIN 1 en mujer joven → control cito-colposcópico semestral.</div>
+</div>
+<div class="lrow l-cx">
+  <div class="lcell" style="flex:1.2"><strong>H-SIL (CIN 2–3)</strong></div>
+  <div class="lcell" style="flex:2"><strong>Tratamiento.</strong> LLETZ/LEEP (escisión con asa diatérmica de la zona de transformación) como primera opción. Es diagnóstico y terapéutico. Conización si colposcopía insatisfactoria o lesión endocervical.</div>
+  <div class="lcell" style="flex:1.5">El banco 2024 (pregunta 21): CIN II con colposcopía con ZT no completamente visible → conización cervical diagnóstica (no LLETZ porque la colposcopía es "insatisfactoria").</div>
+</div>
+<div class="lrow l-cir">
+  <div class="lcell" style="flex:1.2"><strong>Carcinoma in situ / microinvasor T1a1</strong></div>
+  <div class="lcell" style="flex:2">Si márgenes libres en la conización y sin invasión linfovascular → <strong>control</strong> (conización fue suficiente). Si márgenes comprometidos o invasión → cirugía radical.</div>
+  <div class="lcell" style="flex:1.5">El banco 2024 (pregunta 29): H-SIL con foco de infiltración 1 mm (T1a1), márgenes libres, sin invasión linfovascular, mujer con deseos de fertilidad → conducta: control. Trampa: histerectomía radical.</div>
+</div>
+<div class="lrow l-cir">
+  <div class="lcell" style="flex:1.2"><strong>ASC-H + CIN 1 histológico (discordancia)</strong></div>
+  <div class="lcell" style="flex:2">La citología (ASC-H) y la histología (CIN 1) son discordantes. El alto riesgo de la citología domina. La guía indica escisión (LLETZ/conización) para no subestimar.</div>
+  <div class="lcell" style="flex:1.5">El banco 2016 (pregunta 35): ASC-H + CIN 1 en posmenopáusica → LLETZ/conización.</div>
+</div>
+</div>
+
+<h3>LLETZ / LEEP vs. Conización — cuándo usar cada uno</h3>
+<div class="g2">
+<div class="card" style="border-left:3px solid #185fa5">
+<div class="ct" style="color:#185fa5">LLETZ / LEEP (escisión con asa diatérmica)</div>
+Primera elección para H-SIL cuando la colposcopía es <strong>satisfactoria</strong> (ZT completamente visible). Es diagnóstico y terapéutico. Ambulatorio, bajo costo, márgenes evaluables.
+</div>
+<div class="card" style="border-left:3px solid #993556">
+<div class="ct" style="color:#993556">Conización (a bisturí frío o láser)</div>
+Indicada cuando: colposcopía <strong>insatisfactoria</strong> (ZT no visible), lesión endocervical, discordancia citología/histología, adenocarcinoma in situ, recidiva post-LLETZ.
+</div>
+</div>
+
+<div class="info"><strong>Regla rápida:</strong> ZT visible + H-SIL → LLETZ. ZT no visible / endocervical → conización. CIN 1 → observar (no LLETZ, no conización).</div>
+</div>
+
+<!-- ⑥ CARCINOMA INVASOR -->
+<div id="sec-ca" class="sec">
+<h2>⑥ Carcinoma invasor — lo que el examen pregunta sobre el cáncer establecido</h2>
+
+<div class="frase">Una vez rota la membrana basal, el carcinoma es invasor. El estadio decide el tratamiento. El síntoma inicial más preguntado es el sangrado poscoital.</div>
+
+<h3>Clínica — síntomas por estadio</h3>
+<div class="g2">
+<div class="card" style="border-left:3px solid #3b6d11">
+<div class="ct" style="color:#3b6d11">Estadios tempranos (I–IIA)</div>
+<ul style="margin-top:5px">
+<li><strong>Sangrado poscoital</strong> — el síntoma más característico y el más preguntado</li>
+<li>Flujo vaginal fétido o con sangre</li>
+<li>Spotting intermenstrual</li>
+<li>Muchas veces asintomático — detectado por PAP</li>
+</ul>
+</div>
+<div class="card" style="border-left:3px solid #a32d2d">
+<div class="ct" style="color:#a32d2d">Estadios avanzados (IIB–IV)</div>
+<ul style="margin-top:5px">
+<li>Dolor pélvico o lumbar</li>
+<li>Hematuria, rectorragia (invasión vesical/rectal)</li>
+<li>Edema en MMII (obstrucción linfática)</li>
+<li>Ureterohidronefrosis</li>
+<li>Hemorragia masiva</li>
+</ul>
+</div>
+</div>
+
+<h3>Estadificación FIGO — lo esencial</h3>
+<table>
+<tr><th>Estadio</th><th>Extensión</th><th>Sobrevida 5 años</th></tr>
+<tr class="rb"><td><strong>I</strong></td><td>Confinado al cérvix</td><td>~80–90%</td></tr>
+<tr class="rb"><td>Ia</td><td>Microinvasor (≤5 mm profundidad)</td><td>&gt;95%</td></tr>
+<tr class="rb"><td>Ib</td><td>Invasor visible o &gt;5 mm, confinado a cérvix</td><td>~80%</td></tr>
+<tr class="rc"><td><strong>II</strong></td><td>Más allá del cérvix pero no pared pélvica ni tercio inferior vagina</td><td>~65%</td></tr>
+<tr class="rd"><td><strong>III</strong></td><td>Pared pélvica y/o tercio inferior vagina / ureteroH</td><td>~35%</td></tr>
+<tr class="re"><td><strong>IV</strong></td><td>Vejiga, recto, metástasis a distancia</td><td>&lt;15%</td></tr>
+</table>
+
+<h3>Diagnóstico del carcinoma invasor</h3>
+<div class="algo">
+<div class="step"><span class="sn sb">1</span><div class="stxt">Sospecha clínica (sangrado poscoital, lesión visible en cérvix) → <strong>biopsia</strong> de la lesión visible. No esperar PAP si hay lesión macroscópica sospechosa.</div></div>
+<div class="step"><span class="sn sb">2</span><div class="stxt">Biopsia confirma carcinoma → estadificación: examen físico + colposcopía + TAC o RM de pelvis/abdomen.</div></div>
+<div class="step"><span class="sn sg">3</span><div class="stxt">La estadificación del cáncer de cérvix es <strong>clínica</strong> (no quirúrgica como el ovario). Se puede usar imágenes como apoyo.</div></div>
+</div>
+
+<h3>Tratamiento — según estadio</h3>
+<table>
+<tr><th>Estadio</th><th>Tratamiento</th></tr>
+<tr class="rb"><td>Ia1 sin invasión linfovascular + deseos fertilidad</td><td>Conización con márgenes libres (suficiente)</td></tr>
+<tr class="rb"><td>Ia1 sin invasión + sin deseos fertilidad</td><td>Histerectomía simple</td></tr>
+<tr class="rc"><td>Ia2 – IIa</td><td>Histerectomía radical (Wertheim-Meigs) + linfadenectomía pélvica O radioterapia + quimioterapia (cisplatino)</td></tr>
+<tr class="rd"><td>IIb – IVa</td><td>Radioterapia + quimioterapia concomitante (cisplatino). La cirugía radical no es factible.</td></tr>
+<tr class="re"><td>IVb (metástasis distancia)</td><td>Quimioterapia paliativa ± radioterapia paliativa</td></tr>
+</table>
+
+<h3>Cáncer de cérvix en el embarazo</h3>
+<p>Si se detecta un CIN 2–3 en el embarazo → conducta conservadora (colposcopía de seguimiento cada 12 semanas, biopsia solo si sospecha de invasión). No tratar durante el embarazo salvo carcinoma invasor confirmado. Después del parto → tratamiento definitivo.</p>
+</div>
+
+<!-- ⑦ TRAMPAS -->
+<div id="sec-trap" class="sec">
+<h2>⑦ Trampas del examen — todas las identificadas en el banco 2016–2025</h2>
+
+<div class="trap">
+<div class="tq">Trampa 1: PAP = prevención primaria del cáncer de cérvix</div>
+<div class="tw">✗ "El PAP es una medida de prevención primaria" → FALSO</div>
+<div class="tr">✓ El PAP es prevención SECUNDARIA (detecta lesiones ya existentes). La prevención PRIMARIA es la vacuna HPV (evita la infección). El banco repitió esta pregunta al menos 3 veces entre 2016 y 2025 (2018 pregunta 77, 2021 pregunta 45).</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 2: ASC-H → repetir PAP</div>
+<div class="tw">✗ "ASC-H → repetir citología en 6 meses" → INCORRECTO</div>
+<div class="tr">✓ ASC-H → colposcopía y biopsia siempre. La "H" indica que no se puede descartar lesión de alto grado → no se puede observar ni esperar. El banco 2018 (pregunta 78) y 2016 (pregunta 85) confirman esta conducta.</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 3: L-SIL (CIN 1) → tratamiento inmediato</div>
+<div class="tw">✗ "L-SIL → LLETZ de entrada" → SOBRETRATAR</div>
+<div class="tr">✓ L-SIL → observación con control semestral × 2 años. El 60–70% regresa espontáneamente. Solo se trata si persiste más de 2 años o progresa. El banco 2025 (pregunta 63) confirmó: L-SIL → control semestral durante dos años. Trampa clásica: elegir "tratamiento inmediato".</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 4: Colposcopía insatisfactoria + H-SIL → LLETZ</div>
+<div class="tw">✗ "Colposcopía no ve la ZT pero hago LLETZ de todos modos" → INCOMPLETO</div>
+<div class="tr">✓ Si la colposcopía es insatisfactoria (ZT no visible) y la citología indica H-SIL → conización diagnóstica, no LLETZ. El banco 2024 (pregunta 21): lesión de alto grado con ZT no completamente visible → conización cervical diagnóstica.</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 5: T1a1 con márgenes libres en mujer joven → histerectomía</div>
+<div class="tw">✗ "Microinvasor T1a1 → histerectomía radical con linfadenectomía para asegurar márgenes" → EXCESIVO</div>
+<div class="tr">✓ T1a1, márgenes libres, sin invasión linfovascular, con deseos de fertilidad → control. La conización fue diagnóstica y terapéutica. El banco 2024 (pregunta 29) confirmó esto con una mujer nulípara de 28 años → respuesta: control (opción D).</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 6: Test HPV positivo por autotoma → hacer conización</div>
+<div class="tw">✗ "Autotoma HPV positiva → derivar directamente para conización" → EXCESIVO</div>
+<div class="tr">✓ Autotoma HPV positiva → conducta: tomar citología (PAP). La autotoma positiva requiere triage con PAP, no procedimiento quirúrgico directo. El banco 2025 (pregunta 56) preguntó exactamente esto: autotoma HPV + → tomar citología cervical.</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 7: La vacuna HPV hace innecesario el PAP</div>
+<div class="tw">✗ "Una vez vacunada ya no necesita hacerse el PAP" → FALSO</div>
+<div class="tr">✓ La vacuna no cubre todos los genotipos de HPV y no protege retroactivamente en quienes ya estuvieron expuestas. El tamizaje continúa de por vida en la población vacunada, con las mismas frecuencias. Este error es muy común y el examen lo puede usar como distractor.</div>
+</div>
+
+<div class="trap">
+<div class="tq">Trampa 8: ASC-US → colposcopía directa</div>
+<div class="tw">✗ "ASC-US → derivar inmediatamente a colposcopía" → PREMATURO según la guía 2022</div>
+<div class="tr">✓ ASC-US → primero test HPV como triage. Si HPV negativo → repetir PAP en 1 año. Si HPV positivo → colposcopía. No se va directo a colposcopía con ASC-US sin test HPV. El banco 2025 (Karina, ASC-US) → la conducta correcta era repetir citología o hacer test HPV, no colposcopía directa.</div>
+</div>
+
+<div class="frase">La lógica que unifica todas las trampas: la conducta escala según la severidad. ASC-US → vigilar/test HPV. ASC-H → colposcopía. L-SIL → observar. H-SIL → tratar. Nunca se salta etapas hacia abajo ni se subtrata hacia arriba.</div>
+</div>
+
+<!-- ⑧ PREGUNTAS REALES -->
+<div id="sec-preg" class="sec">
+<h2>⑧ Preguntas reales del banco 2016–2025</h2>
+<p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px">El tema más preguntado del bloque ginecológico — 9 preguntas identificadas. Hacé clic para ver respuesta y análisis.</p>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2025 · Pregunta 84 · Formato: edades de tamizaje</div>
+<div class="qtxt">¿A qué edad debe realizarse el rastreo de cáncer de cuello uterino con PAP y test de HPV respectivamente?</div>
+<div class="qopt">A) Mayor de 18 años y mayor de 35 años</div>
+<div class="qopt">B) Mayor de 20 años y mayor de 40 años</div>
+<div class="qopt">C) Mayor de 21 años y mayor de 30 años</div>
+<div class="qopt">D) Mayor de 25 años y mayor de 30 años</div>
+<div class="qopt ok">✓ Correcta: D</div>
+<div class="qexp">PAP desde los 25 años, test HPV desde los 30 años — según la guía SAPTGIyC-SOGIBA-FASGO 2022, que es la bibliografía oficial de ambos exámenes. La opción C (21 y 30) refleja las recomendaciones de EEUU (ASCCP), no las argentinas. La opción A (18 y 35) es histórica Argentina pre-2022. Esta distinción entre guías internacionales y locales es exactamente el tipo de trampa que el examen usa.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2025 · Pregunta 56 · Formato: autotoma</div>
+<div class="qtxt">Evangelina, de 35 años, se realizó un test de HPV positivo por modalidad autotoma. ¿Qué conducta debería tomar?</div>
+<div class="qopt">A) Realizar una conización cervical</div>
+<div class="qopt">B) Realizar una histerectomía</div>
+<div class="qopt">C) Repetir el test ya que no es segura la autotoma</div>
+<div class="qopt">D) Realizar una toma de citología cervical (PAP)</div>
+<div class="qopt ok">✓ Correcta: D</div>
+<div class="qexp">La autotoma es un método válido según la guía 2022. Un test HPV positivo por autotoma requiere triage con citología (PAP), no conización directa. La conización solo se indica si hay lesión histológica confirmada de alto grado. La opción C es trampa: la autotoma sí es técnicamente válida y aceptada. La opción A salta muchos pasos.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2025 · Pregunta 63 · Formato: conducta ante L-SIL</div>
+<div class="qtxt">En una paciente de 32 años, con Lesión Cervical de Bajo Grado (L-SIL), ¿cuál es la conducta recomendada?</div>
+<div class="qopt">A) Control anual (PAP + Colpo)</div>
+<div class="qopt">B) Efectuar test HPV</div>
+<div class="qopt">C) Control semestral durante dos años</div>
+<div class="qopt">D) Tratamiento inmediato</div>
+<div class="qopt ok">✓ Correcta: C</div>
+<div class="qexp">L-SIL (CIN 1) tiene alta tasa de regresión espontánea (~60–70%). La conducta es observación con control cito-colposcópico semestral por 2 años. Si regresa → alta. Si persiste a los 2 años → tratamiento. La opción D (tratamiento inmediato) es la trampa más común: sobretratar una lesión que la mayoría de las veces regresa sola. La opción A (anual) es insuficiente para el seguimiento de una L-SIL activa.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2025 · Pregunta 2 · Formato: conducta ante ASC-US</div>
+<div class="qtxt">Karina, 35 años, PAP: muestra satisfactoria, ASC-US. Según recomendaciones del Ministerio de Salud, ¿cuál es la conducta adecuada?</div>
+<div class="qopt">A) Repetir citología (PAP) lo antes posible</div>
+<div class="qopt">B) Derivar para colposcopía y biopsia, y tratamiento</div>
+<div class="qopt">C) Repetir citología (PAP) en 6 meses o un año</div>
+<div class="qopt">D) Derivar al hospital para investigación y tratamiento</div>
+<div class="qopt ok">✓ Correcta: C</div>
+<div class="qexp">ASC-US es la atipia más baja de la escala. Según las guías argentinas, ante ASC-US la conducta es repetir la citología en 6 meses a 1 año (o realizar test HPV como triage). No se va directo a colposcopía con ASC-US sin test HPV. La opción B (colposcopía y biopsia y tratamiento) sobretrata una atipia leve. La distinción ASC-US vs ASC-H es el eje de múltiples preguntas: ASC-US → vigilar/HPV triage; ASC-H → colposcopía siempre.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2024 · Pregunta 21 · Formato: CIN II + colposcopía insatisfactoria</div>
+<div class="qtxt">Paciente de 36 años. Colposcopía: visualización incompleta de la zona de transformación, lesión de alto grado en hora 2 que ocupa menos de un cuadrante. AP informa CIN II (H-SIL). ¿Qué conducta toma?</div>
+<div class="qopt">A) Realizar una criocirugía bajo guía colposcópica</div>
+<div class="qopt">B) Realizar una biopsia simple bajo guía colposcópica</div>
+<div class="qopt">C) Realizar una conización cervical diagnóstica</div>
+<div class="qopt">D) Realizar un legrado endocervical</div>
+<div class="qopt ok">✓ Correcta: C</div>
+<div class="qexp">La clave es "visualización incompleta de la zona de transformación" = colposcopía insatisfactoria. Ante H-SIL con colposcopía insatisfactoria → conización cervical diagnóstica (no LLETZ). Si la colposcopía fuera satisfactoria → LLETZ. La criocirugía (A) es un método destructivo que no genera pieza para histología — contraindicado cuando se sospecha lesión de alto grado. El legrado endocervical (D) es un complemento diagnóstico, no tratamiento.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2024 · Pregunta 29 · Formato: microinvasor con márgenes libres</div>
+<div class="qtxt">Mujer de 28 años, nulípara, con deseos de fertilidad. Conización previa informa: H-SIL extenso exo y endocervical con foco de infiltración de 1 mm (T1a1). Márgenes del cono libres. Sin invasión linfovascular. ¿Conducta más adecuada?</div>
+<div class="qopt">A) Histerectomía radical con linfadenectomía pelviana</div>
+<div class="qopt">B) Traquelectomía radical con linfadenectomía pelviana</div>
+<div class="qopt">C) Conización (repetir)</div>
+<div class="qopt">D) Control</div>
+<div class="qopt ok">✓ Correcta: D</div>
+<div class="qexp">T1a1 (microinvasor ≤1 mm profundidad y ≤7 mm de ancho) con márgenes libres y sin invasión linfovascular = conización fue tratamiento suficiente. En mujer joven con deseos de fertilidad → control. No se justifica histerectomía radical (A) ni traquelectomía (B) — son para estadios más avanzados. La conización repetida (C) también sería innecesaria con márgenes libres. Esta pregunta testea si sabés que los microinvasores con márgenes libres se tratan con seguimiento.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2022 · Pregunta 51 · Formato: características PAP vs test HPV</div>
+<div class="qtxt">¿Qué características tienen el PAP y el test de HPV como métodos de tamizaje?</div>
+<div class="qopt">A) PAP: VPN bajo y sensibilidad alta</div>
+<div class="qopt">B) Test HPV: VPN alto y sensibilidad alta</div>
+<div class="qopt">C) PAP: VPN alto y sensibilidad baja</div>
+<div class="qopt">D) Test HPV: VPN bajo y sensibilidad alta</div>
+<div class="qopt ok">✓ Correcta: B</div>
+<div class="qexp">El test HPV tiene sensibilidad alta (~95%) y VPN muy alto (si es negativo, descarta con gran certeza la presencia de lesión de alto grado). El PAP tiene sensibilidad baja-moderada (~60%) pero especificidad alta cuando es positivo. La opción C también es parcialmente correcta (PAP tiene sensibilidad baja) pero está incompleta respecto a VPN. La respuesta B es la más completa y correcta para el test HPV, que es la opción que el examen valida.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2018 · Pregunta 77 · Formato: prevención primaria vs secundaria</div>
+<div class="qtxt">¿Cuál es una medida de prevención primaria para el cáncer de cuello de útero?</div>
+<div class="qopt">A) Papanicolaou</div>
+<div class="qopt">B) Vacuna HPV</div>
+<div class="qopt">C) Colposcopía</div>
+<div class="qopt">D) Ecografía transvaginal</div>
+<div class="qopt ok">✓ Correcta: B</div>
+<div class="qexp">Prevención primaria = evitar que la enfermedad ocurra = vacuna HPV (evita la infección causal). PAP (A) y colposcopía (C) son prevención secundaria (detectan lesiones ya existentes). La ecografía transvaginal (D) no tiene rol en el screening de cáncer de cérvix. Esta pregunta se repitió con distintas variantes en 2018, 2021 y otros años.</div>
+</div>
+
+<div class="qcard" onclick="this.classList.toggle('revealed')">
+<div class="qtag">Examen 2018 · Pregunta 78 · Formato: conducta ante ASC-H</div>
+<div class="qtxt">Mujer de 36 años con PAP: muestra satisfactoria, trófico, ASC-H, ausencia de células glandulares y endometriales. ¿Cuál es la conducta más adecuada?</div>
+<div class="qopt">A) Derivar para conización</div>
+<div class="qopt">B) Repetir la citología en seis meses</div>
+<div class="qopt">C) Realizar colposcopía y biopsia</div>
+<div class="qopt">D) Repetir la citología en forma anual</div>
+<div class="qopt ok">✓ Correcta: C</div>
+<div class="qexp">ASC-H → colposcopía y biopsia siempre, sin demora. La "H" implica que no se puede descartar H-SIL subyacente, por lo que no se puede observar ni repetir el PAP. La opción A (conización directa) es excesiva sin biopsia histológica previa que confirme la lesión. Las opciones B y D (repetir PAP) son incorrectas porque se trata de una lesión con sospecha de alto grado que requiere diagnóstico histológico.</div>
+</div>
+
+<div class="frase">Patrón del examen: te dan el resultado citológico o histológico → te piden la conducta. La secuencia correcta siempre sigue la severidad: ASC-US (observar/HPV) → ASC-H (colpo) → L-SIL (observar) → H-SIL (tratar). Los saltos hacia adelante y los retrocesos son las trampas.</div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  const ids=['intro','prev','scr','cit','cond','ca','trap','preg'];
+  document.querySelectorAll('.nb')[ids.indexOf(id)].classList.add('on');
+  document.getElementById('sec-'+id).classList.add('on');
+}
+</script>
+</body></html>

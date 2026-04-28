@@ -1,5 +1,6 @@
 const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summary_by_tema:[], summary_by_sprint:[], questions:[]};
     const QUESTIONS = DATA.questions || [];
+    const LESSONS = window.RESIDENCIAPP_LESSONS || [];
     const METHODS = [
       {id:'preguntas', name:'Preguntas ABCD', icon:'✅', tag:'Aplicación', desc:'Responder y justificar. Ideal para entrenar toma de decisiones.'},
       {id:'simulacro', name:'Simulacro', icon:'⏱️', tag:'Presión', desc:'Sin explicación inmediata. Sirve para entrenar rendimiento real.'},
@@ -38,7 +39,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const addDays = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
 
     function defaultState(){
-      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0}, timing:{totalMs:0, timedAnswers:0, questionTimes:{}} };
+      return { theme:'', method:'preguntas', answers:{}, mistakes:{}, favorites:{}, scheduled:{}, library:[], daily:{}, session:null, streak:{last:'',count:0}, timing:{totalMs:0, timedAnswers:0, questionTimes:{}}, lessonProgress:{}, currentLessonId:'' };
     }
     let state = loadState();
     let session = null;
@@ -211,6 +212,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#temaFilter').addEventListener('change', renderSprints);
       $('#searchInput').addEventListener('input', renderSprints);
       $('#librarySearch').addEventListener('input', renderLibrary);
+      if($('#lessonSearch')) $('#lessonSearch').addEventListener('input', renderLearn);
     }
     function updateTemaFilter(){
       const eje = $('#ejeFilter').value;
@@ -605,6 +607,109 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function toggleDaily(i){ const t=todayKey(); state.daily[t] ||= {}; state.daily[t][i] = !state.daily[t][i]; saveState(); renderDailyChecklist(); }
     function resetDailyChecklist(){ state.daily[todayKey()]={}; saveState(); renderDailyChecklist(); }
 
+
+    function lessonById(id){ return LESSONS.find(l => l.id === id); }
+    function lessonProgress(id){ state.lessonProgress ||= {}; return state.lessonProgress[id] || {}; }
+    function lessonIsDone(id){ return lessonProgress(id).status === 'done'; }
+    function lessonIsSaved(id){ return lessonProgress(id).status === 'saved'; }
+    function lessonAccentClasses(accent){
+      const map = {blue:'border-medical-200 bg-medical-50 text-medical-700 dark:border-medical-900/60 dark:bg-medical-950/30 dark:text-medical-300',rose:'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300',purple:'border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-900/60 dark:bg-purple-950/30 dark:text-purple-300',teal:'border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-900/60 dark:bg-teal-950/30 dark:text-teal-300',amber:'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300',indigo:'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-300'};
+      return map[accent] || map.blue;
+    }
+    function lessonMatches(lesson, query){
+      const tokens = searchTokens(query);
+      if(!tokens.length) return true;
+      const hay = norm([lesson.title, lesson.eje, lesson.tema, lesson.subtitle, lesson.description, (lesson.badges||[]).join(' '), (lesson.sections||[]).join(' '), (lesson.terms||[]).join(' ')].join(' '));
+      return tokens.every(t => hay.includes(t));
+    }
+    function lessonRelatedQuestions(lesson){
+      const terms = (lesson?.terms || []).map(norm).filter(Boolean);
+      if(!terms.length) return [];
+      return QUESTIONS.filter(q => {
+        const hay = norm([q.eje, q.tema, q.sprint, q.q, q.source, q.year, Object.values(q.opts||{}).join(' ')].join(' '));
+        return terms.some(t => t.length > 2 && hay.includes(t));
+      });
+    }
+    function lessonCard(lesson){
+      const prog = lessonProgress(lesson.id);
+      const done = prog.status === 'done';
+      const saved = prog.status === 'saved';
+      const current = state.currentLessonId === lesson.id;
+      const related = lessonRelatedQuestions(lesson).length;
+      const status = done ? 'Vista' : saved ? 'Para repasar' : 'Pendiente';
+      const statusClass = done ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' : saved ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300';
+      return '<button class="w-full rounded-3xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-soft '+(current?'border-medical-400 bg-medical-50/80 dark:border-medical-700 dark:bg-medical-950/20':'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950/50')+'" onclick="openLesson(\''+lesson.id+'\')">'
+        + '<div class="flex items-start justify-between gap-3"><div class="min-w-0"><p class="text-[11px] font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+esc(lesson.eje)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-6">'+esc(lesson.title)+'</h4><p class="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400">'+esc(lesson.subtitle)+'</p></div><span class="rounded-full px-2 py-1 text-[10px] font-black '+statusClass+'">'+status+'</span></div>'
+        + '<p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">'+esc(lesson.description)+'</p>'
+        + '<div class="mt-3 flex flex-wrap gap-2">'+(lesson.badges||[]).map(b=>'<span class="rounded-full border px-2 py-1 text-[10px] font-black '+lessonAccentClasses(lesson.accent)+'">'+esc(b)+'</span>').join('')+'</div>'
+        + '<p class="mt-3 text-xs font-bold text-slate-500 dark:text-slate-400">'+related+' preguntas relacionadas · '+(lesson.sections||[]).length+' secciones</p>'
+        + '</button>';
+    }
+    function renderLessonStats(){
+      if(!$('#lessonStats')) return;
+      const total = LESSONS.length;
+      const done = LESSONS.filter(l => lessonIsDone(l.id)).length;
+      const saved = LESSONS.filter(l => lessonIsSaved(l.id)).length;
+      const pct = total ? Math.round(done/total*100) : 0;
+      $('#lessonStats').innerHTML = [['Nodos', total, 'disponibles'],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
+    }
+    function renderLearn(){
+      if(!$('#learnView')) return;
+      renderLessonStats();
+      const q = $('#lessonSearch')?.value || '';
+      const list = LESSONS.filter(l => lessonMatches(l, q));
+      if($('#lessonGrid')) $('#lessonGrid').innerHTML = list.map(lessonCard).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>';
+      if(state.currentLessonId && lessonById(state.currentLessonId)) openLesson(state.currentLessonId, true);
+    }
+    function resetLessonFilter(){ if($('#lessonSearch')) $('#lessonSearch').value=''; renderLearn(); }
+    function openLesson(id, silent=false){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      state.currentLessonId = id;
+      saveState();
+      if($('#lessonEmpty')) $('#lessonEmpty').classList.add('hidden');
+      if($('#lessonViewer')) $('#lessonViewer').classList.remove('hidden');
+      if($('#lessonViewerTitle')) $('#lessonViewerTitle').textContent = lesson.title;
+      if($('#lessonViewerMeta')) $('#lessonViewerMeta').textContent = lesson.tema+' · '+lesson.eje;
+      if($('#lessonViewerSub')) $('#lessonViewerSub').textContent = lesson.subtitle;
+      const frame = $('#lessonFrame');
+      if(frame && frame.getAttribute('src') !== lesson.file) frame.setAttribute('src', lesson.file);
+      const related = lessonRelatedQuestions(lesson);
+      const done = lessonIsDone(id);
+      if($('#lessonCompleteBtn')) $('#lessonCompleteBtn').textContent = done ? '✓ Vista' : 'Marcar vista';
+      if($('#lessonQuickMap')) $('#lessonQuickMap').innerHTML = '<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Ruta del nodo</p><div class="mt-2 flex flex-wrap gap-2">'+(lesson.sections||[]).map((s,i)=>'<span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+(i+1)+'. '+esc(s)+'</span>').join('')+'</div></div><div class="shrink-0 rounded-2xl border border-slate-200 px-4 py-3 text-center dark:border-slate-700"><p class="font-display text-2xl font-extrabold">'+related.length+'</p><p class="text-[10px] font-black uppercase tracking-[.16em] text-slate-400">preguntas relacionadas</p></div></div>';
+      renderLessonStats();
+      if(!silent) renderLearn();
+    }
+    function markCurrentLessonDone(){
+      const id = state.currentLessonId;
+      if(!id) return;
+      state.lessonProgress ||= {};
+      state.lessonProgress[id] = Object.assign({}, state.lessonProgress[id]||{}, {status:'done', completedAt:Date.now()});
+      saveState(); renderLearn();
+    }
+    function saveCurrentLessonForReview(){
+      const id = state.currentLessonId;
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      state.lessonProgress ||= {};
+      state.lessonProgress[id] = Object.assign({}, state.lessonProgress[id]||{}, {status:'saved', savedAt:Date.now(), nextReview:addDays(3)});
+      addLibrary({type:'tema', topic:lesson.title, text:'Nodo tutor guardado para repasar: '+lesson.subtitle, qid:''});
+      saveState(); renderLearn(); alert('Nodo guardado para repasar luego.');
+    }
+    function startCurrentLessonPractice(){
+      const lesson = lessonById(state.currentLessonId);
+      if(!lesson) return alert('Elegí primero un nodo.');
+      startLessonPractice(lesson.id);
+    }
+    function startLessonPractice(id){
+      const lesson = lessonById(id);
+      if(!lesson) return;
+      const qs = lessonRelatedQuestions(lesson);
+      if(!qs.length) return alert('Todavía no encontré preguntas vinculadas a este nodo.');
+      setSession(qs, 'Tutor · '+lesson.title, lesson.tema+' · '+qs.length+' preguntas relacionadas', state.method || 'preguntas', true);
+    }
+
     function renderMethods(){
       $('#methodGuide').innerHTML = METHODS.map(m=>'<div class="rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><p class="text-2xl">'+m.icon+'</p><h4 class="mt-2 font-display text-lg font-extrabold">'+m.name+'</h4><p class="text-xs font-black uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">'+m.tag+'</p><p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">'+m.desc+'</p></div>').join('');
       const techniques = [
@@ -627,17 +732,17 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function saveStateAndAll(){ saveState(); renderAll(); }
-    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
+    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderLearn(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
 
     function showView(name){
       $$('.view').forEach(v=>v.classList.add('hidden'));
       $('#'+name+'View')?.classList.remove('hidden');
       $$('.navBtn').forEach(b=> b.classList.toggle('bg-medical-50', b.dataset.nav===name));
       $$('.navBtn').forEach(b=> b.classList.toggle('text-medical-700', b.dataset.nav===name));
-      const titles={dashboard:'Panel principal',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
+      const titles={dashboard:'Panel principal',learn:'Aprender desde cero',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
       $('#viewTitle').textContent = titles[name] || 'ResidenciAPP';
       closeMobileMenu(); window.scrollTo({top:0, behavior:'smooth'});
-      if(name==='session') renderQuestion(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
+      if(name==='session') renderQuestion(); if(name==='learn') renderLearn(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
     }
     function openMobileMenu(){ $('#sidebar').classList.remove('-translate-x-full'); $('#overlay').classList.remove('hidden'); }
     function closeMobileMenu(){ $('#sidebar').classList.add('-translate-x-full'); $('#overlay').classList.add('hidden'); }
