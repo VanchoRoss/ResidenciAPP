@@ -213,3 +213,18 @@ html { scroll-behavior: smooth; }
   #loading img { width: 12rem; height: 12rem; }
   .lesson-focus #lessonFrame { height: calc(100vh - 150px) !important; min-height: 620px !important; }
 }
+
+
+/* ResidenciAPP v2.1: splash manual + sidebar colapsable */
+#loading { transition: opacity .28s ease, visibility .28s ease; }
+#loading.loading-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+body.sidebar-collapsed #sidebar { transform: translateX(-100%) !important; }
+@media (min-width: 1024px) {
+  body.sidebar-collapsed main { padding-left: 0 !important; }
+  #mobileMenuBtn { display: inline-flex !important; align-items: center; justify-content: center; }
+}
+@media (max-width: 1023px) {
+  #sidebar { width: min(304px, 88vw); }
+}
+.feedback-official-badge { display:inline-flex; align-items:center; gap:.35rem; border-radius:999px; padding:.25rem .65rem; font-size:.68rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; background:rgba(16,185,129,.1); color:#047857; }
+.dark .feedback-official-badge { color:#86efac; background:rgba(16,185,129,.14); }

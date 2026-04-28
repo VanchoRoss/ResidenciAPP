@@ -1124,7 +1124,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         + imageUploadTemplate(q, saved)
         + '<div class="mt-5 grid gap-4 lg:grid-cols-2">'+fields+'</div>'
         + '<div class="mt-5 grid gap-3 md:grid-cols-3"><label><span class="text-xs font-black uppercase tracking-[.15em] text-slate-400">Nombre / alias opcional</span><input class="mt-2 w-full rounded-2xl border border-slate-200 bg-white/90 p-3 text-sm font-bold outline-none transition focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" value="'+esc(saved.contributorName||'')+'" placeholder="Ej: Juan, Dra. M, Anónimo" oninput="saveCollaborativeField(\''+q.id+'\',\'contributorName\',this.value)"></label><label><span class="text-xs font-black uppercase tracking-[.15em] text-slate-400">Tipo de aporte</span><select class="mt-2 w-full rounded-2xl border border-slate-200 bg-white/90 p-3 text-sm font-bold outline-none transition focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" onchange="saveCollaborativeField(\''+q.id+'\',\'contributionType\',this.value)">'+typeOptions+'</select></label><label><span class="text-xs font-black uppercase tracking-[.15em] text-slate-400">Confianza</span><select class="mt-2 w-full rounded-2xl border border-slate-200 bg-white/90 p-3 text-sm font-bold outline-none transition focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" onchange="saveCollaborativeField(\''+q.id+'\',\'confidence\',this.value)">'+confidenceOptions+'</select></label></div>'
-        + '<div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><p id="collabSavedStamp_'+q.id+'" class="text-xs font-bold text-slate-500 dark:text-slate-400">'+(saved.updatedAt ? 'Última edición local: '+new Date(saved.updatedAt).toLocaleString('es-AR') : 'Todavía sin edición local')+'</p><div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="copyContributionPrompt(\''+q.id+'\')">Copiar prompt IA</button><button class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="exportContributionDatabase()">Exportar aportes JSON</button></div></div>'
+        + '<div class="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><p id="collabSavedStamp_'+q.id+'" class="text-xs font-bold text-slate-500 dark:text-slate-400">'+(saved.updatedAt ? 'Última edición local: '+new Date(saved.updatedAt).toLocaleString('es-AR') : 'Todavía sin edición local')+'</p><div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="copyContributionPrompt(\''+q.id+'\')">Copiar prompt IA</button><button class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="exportContributionDatabase()">Exportar feedback para GitHub</button></div></div>'
         + '</section>';
     }
 
@@ -1547,6 +1547,135 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     toggleSessionFocus = function(){ document.body.classList.toggle('session-focus'); const b=$('#sessionFocusBtn'); if(b) b.textContent = document.body.classList.contains('session-focus') ? 'Vista normal' : 'Expandir'; };
 
 
+    /* === ResidenciAPP v2.1 · Ajustes de uso real ===
+       - Splash manual con botón Comenzar.
+       - Sidebar colapsable también en escritorio.
+       - Feedback colaborativo aparece en Experiencia de aprendizaje.
+       - Errores corregidos desaparecen del repaso de errores.
+    */
+    function enterResidenciApp(){
+      const loading = $('#loading');
+      if(!loading) return;
+      loading.classList.add('loading-hidden');
+      setTimeout(()=>{ loading.style.display='none'; }, 320);
+    }
+
+    openMobileMenu = function(){
+      const sidebar = $('#sidebar');
+      const overlay = $('#overlay');
+      document.body.classList.remove('sidebar-collapsed');
+      if(sidebar) sidebar.classList.remove('-translate-x-full');
+      if(window.innerWidth < 1024 && overlay) overlay.classList.remove('hidden');
+    };
+    closeMobileMenu = function(){
+      const sidebar = $('#sidebar');
+      const overlay = $('#overlay');
+      if(window.innerWidth >= 1024){ if(overlay) overlay.classList.add('hidden'); return; }
+      if(sidebar) sidebar.classList.add('-translate-x-full');
+      if(overlay) overlay.classList.add('hidden');
+    };
+    function toggleSidebar(){
+      const sidebar = $('#sidebar');
+      const overlay = $('#overlay');
+      if(window.innerWidth >= 1024){
+        document.body.classList.toggle('sidebar-collapsed');
+        if(overlay) overlay.classList.add('hidden');
+        return;
+      }
+      if(!sidebar) return;
+      const closed = sidebar.classList.contains('-translate-x-full');
+      sidebar.classList.toggle('-translate-x-full', !closed);
+      if(overlay) overlay.classList.toggle('hidden', !closed);
+    }
+
+    function collabHasText(value){ return String(value||'').trim().length > 0; }
+    function collabFeedbackStatus(id){
+      const a = getCollabAnalysis ? getCollabAnalysis(id) : {};
+      const fields = ['whyCorrect','keyData','distractors','goldenRule','bibliography'];
+      return fields.some(k=>collabHasText(a[k])) ? a : null;
+    }
+    function collabOfficialBadge(){ return '<span class="feedback-official-badge">✓ Feedback colaborativo local</span>'; }
+    function collabBlockHtml(id, field, html){
+      return '<div id="feedback_'+field+'_'+id+'">'+html+'</div>';
+    }
+    function textToParagraphs(text){
+      const parts = String(text||'').trim().split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);
+      if(!parts.length) return '';
+      return parts.map(x=>'<p class="whitespace-pre-wrap">'+esc(x)+'</p>').join('<div class="h-2"></div>');
+    }
+
+    const __v21WhyCorrectHint = whyCorrectHint;
+    whyCorrectHint = function(q){
+      const a = collabFeedbackStatus(q.id);
+      if(a && collabHasText(a.whyCorrect)) return collabBlockHtml(q.id, 'whyCorrect', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.whyCorrect)+'</div>');
+      return collabBlockHtml(q.id, 'whyCorrect', __v21WhyCorrectHint(q));
+    };
+    const __v21KeyDataHint = keyDataHint;
+    keyDataHint = function(q){
+      const a = collabFeedbackStatus(q.id);
+      if(a && collabHasText(a.keyData)) return collabBlockHtml(q.id, 'keyData', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.keyData)+'</div>');
+      return collabBlockHtml(q.id, 'keyData', __v21KeyDataHint(q));
+    };
+    const __v21WrongOptionsHint = wrongOptionsHint;
+    wrongOptionsHint = function(q){
+      const a = collabFeedbackStatus(q.id);
+      if(a && collabHasText(a.distractors)) return collabBlockHtml(q.id, 'distractors', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.distractors)+'</div>');
+      return collabBlockHtml(q.id, 'distractors', __v21WrongOptionsHint(q));
+    };
+
+    const __v21ExplanationTemplate = explanationTemplate;
+    explanationTemplate = function(q, selected){
+      let html = __v21ExplanationTemplate(q, selected);
+      const a = collabFeedbackStatus(q.id);
+      if(a && (collabHasText(a.goldenRule) || collabHasText(a.bibliography))){
+        const extra = '<div class="mt-3 grid gap-3">'
+          + (collabHasText(a.goldenRule) ? learningPanelItem('Regla de Oro', collabBlockHtml(q.id, 'goldenRule', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.goldenRule)+'</div>'), 'emerald') : '')
+          + (collabHasText(a.bibliography) ? learningPanelItem('Bibliografía / fuente', collabBlockHtml(q.id, 'bibliography', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.bibliography)+'</div>'), 'medical') : '')
+          + '</div>';
+        html = html.replace('</section>', extra+'</section>');
+      }
+      return html;
+    };
+
+    function syncCollaborativeFeedbackPreview(id){
+      const q = QUESTIONS.find(x=>x.id===id);
+      if(!q) return;
+      const targets = [
+        ['whyCorrect', whyCorrectHint(q)],
+        ['keyData', keyDataHint(q)],
+        ['distractors', wrongOptionsHint(q)]
+      ];
+      const a = collabFeedbackStatus(id);
+      if(a){
+        if(collabHasText(a.goldenRule)) targets.push(['goldenRule', collabBlockHtml(id, 'goldenRule', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.goldenRule)+'</div>')]);
+        if(collabHasText(a.bibliography)) targets.push(['bibliography', collabBlockHtml(id, 'bibliography', collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.bibliography)+'</div>')]);
+      }
+      targets.forEach(([field, html])=>{
+        const el = $('#feedback_'+field+'_'+id);
+        if(el) el.outerHTML = html;
+      });
+    }
+    const __v21SaveCollaborativeField = saveCollaborativeField;
+    saveCollaborativeField = function(id, field, value){
+      __v21SaveCollaborativeField(id, field, value);
+      syncCollaborativeFeedbackPreview(id);
+    };
+
+    const __v21SelectAnswer = selectAnswer;
+    selectAnswer = function(id, selected){
+      __v21SelectAnswer(id, selected);
+      const q = QUESTIONS.find(x=>x.id===id);
+      if(q && selected === q.ans){
+        let changed = false;
+        if(state.mistakes && state.mistakes[id]){ delete state.mistakes[id]; changed = true; }
+        if(session && /repaso de errores|error/i.test(String(session.title||'') + ' ' + String(session.meta||''))){
+          if(state.scheduled && state.scheduled[id]){ delete state.scheduled[id]; changed = true; }
+        }
+        if(changed){ saveState(); renderReview(); renderDueTodayHero(); renderAdvancedFlashcards(); }
+      }
+    };
+
+
     function init(){
       initSelects();
       session = state.session || null;
@@ -1556,10 +1685,10 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       mergeEmbeddedCollaborationData();
       renderAll();
       renderCollaborationControls();
-      $('#loading').style.display='none';
+      $('#startAppBtn')?.addEventListener('click', enterResidenciApp);
       $('#themeToggle').addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#themeToggleTop')?.addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
-      $('#mobileMenuBtn').addEventListener('click',openMobileMenu); $('#closeMenuBtn').addEventListener('click',closeMobileMenu); $('#overlay').addEventListener('click',closeMobileMenu);
+      $('#mobileMenuBtn').addEventListener('click',toggleSidebar); $('#closeMenuBtn').addEventListener('click',closeMobileMenu); $('#overlay').addEventListener('click',closeMobileMenu);
       $('#resetProgressBtn').addEventListener('click', resetGlobalProgress);
     }
     init();
