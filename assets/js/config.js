@@ -6,7 +6,7 @@ window.RESIDENCIAPP_CONFIG = {
     mode: 'google-sheet',
     enabled: true,
     // Endpoint /exec de Google Apps Script para recibir aportes.
-    endpoint: 'https://script.google.com/macros/s/AKfycbxaNwbYDNjee8gfrO2GBXwIkW8ppBekaUqv_Bh-XSUvZ2D2bNN261m0HWDWQ4OjGBj9xA/exec',
+    endpoint: 'https://script.google.com/macros/s/AKfycbygt2OyUmyVEjgeIYvEYGEJNAM_QMsRM3NPMz7WOfZ_tP79OAGe3Cssl52fqv8rynpvUA/exec',
     requireEndpoint: false,
     allowImages: true,
     maxImageSizeMB: 3
