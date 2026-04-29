@@ -1931,7 +1931,24 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
 
     /* === ResidenciAPP Tutor v2.4 · Mini-apuntes locales + Regla de Oro fija + D1/D2/D4 === */
     function ensureQuestionNotebookState(){ state.questionNotebooks ||= {}; }
-    function getQuestionNotebook(id){ ensureQuestionNotebookState(); return state.questionNotebooks[id] || {html:'', canvasData:'', fontSize:15, updatedAt:0}; }
+    function normalizeQuestionNotebook(nb){
+      nb = nb || {};
+      nb.textBoxes ||= [];
+      nb.canvasData ||= '';
+      nb.fontSize ||= 16;
+      nb.tool ||= 'pen';
+      nb.drawColor ||= '#2563eb';
+      nb.textColor ||= '#0f172a';
+      nb.textBg ||= '#ffffffcc';
+      nb.strokeWidth ||= 4;
+      nb.eraserWidth ||= 26;
+      if(nb.html && !nb.__migratedToBoard && !nb.textBoxes.length){
+        nb.textBoxes.push({id:'legacy_'+Date.now(), left:4, top:5, width:34, height:30, html:nb.html, fontSize:nb.fontSize||16, color:'#0f172a', bg:'#ffffffdd'});
+        nb.__migratedToBoard = true;
+      }
+      return nb;
+    }
+    function getQuestionNotebook(id){ ensureQuestionNotebookState(); return normalizeQuestionNotebook(state.questionNotebooks[id] || {}); }
     function saveQuestionNotebook(id, patch={}){
       ensureQuestionNotebookState();
       state.questionNotebooks[id] = Object.assign(getQuestionNotebook(id), patch, {updatedAt:Date.now()});
@@ -1939,75 +1956,174 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const saved = $('#notebookSaved_'+id);
       if(saved){ saved.textContent='Guardado · '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
     }
-    function notebookExec(id, command, value=null){
-      const editor = $('#noteEditor_'+id);
-      if(editor) editor.focus();
-      try { document.execCommand(command, false, value); } catch(e) {}
-      saveNotebookText(id);
+    function notebookSetTool(id, tool){
+      saveQuestionNotebook(id, {tool});
+      document.querySelectorAll('[data-note-tool="'+id+'"]').forEach(btn=>btn.classList.toggle('is-active', btn.dataset.tool === tool));
+      const board = $('#noteBoard_'+id);
+      if(board) board.dataset.tool = tool;
     }
+    function notebookSetColor(id, color, kind='draw'){
+      const patch = kind === 'text' ? {textColor:color} : {drawColor:color};
+      saveQuestionNotebook(id, patch);
+      const canvas = $('#noteCanvas_'+id);
+      if(canvas && canvas._ctx) canvas._ctx.strokeStyle = color;
+      const selected = getSelectedNoteBox(id);
+      if(kind === 'text' && selected){ selected.style.color = color; saveNotebookTextBoxes(id); }
+      const preview = $('#noteColorPreview_'+id);
+      if(preview) preview.style.background = color;
+    }
+    function notebookSetStroke(id, value){
+      const n = Math.max(1, Math.min(22, Number(value)||4));
+      saveQuestionNotebook(id, {strokeWidth:n});
+      const canvas = $('#noteCanvas_'+id);
+      if(canvas && canvas._ctx) canvas._ctx.lineWidth = n;
+    }
+    function notebookSetEraser(id, value){ saveQuestionNotebook(id, {eraserWidth:Math.max(8, Math.min(80, Number(value)||26))}); }
+    function getSelectedNoteBox(id){ return document.querySelector('#noteTextLayer_'+id+' .note-textbox-wrap.is-selected .note-textbox'); }
+    function selectNoteBox(id, boxId){
+      document.querySelectorAll('#noteTextLayer_'+id+' .note-textbox-wrap').forEach(el=>el.classList.toggle('is-selected', el.dataset.boxId===boxId));
+    }
+    function noteBoxDataFromDom(id){
+      const layer = $('#noteTextLayer_'+id);
+      if(!layer) return [];
+      return Array.from(layer.querySelectorAll('.note-textbox-wrap')).map(wrap=>{
+        const box = wrap.querySelector('.note-textbox');
+        return {
+          id: wrap.dataset.boxId,
+          left: parseFloat(wrap.style.left)||4,
+          top: parseFloat(wrap.style.top)||4,
+          width: parseFloat(wrap.style.width)||30,
+          height: parseFloat(wrap.style.height)||18,
+          html: box ? box.innerHTML : '',
+          fontSize: box ? parseInt(box.style.fontSize||'16',10) : 16,
+          color: box ? box.style.color || '#0f172a' : '#0f172a',
+          bg: box ? box.style.background || '#ffffffdd' : '#ffffffdd'
+        };
+      });
+    }
+    function saveNotebookTextBoxes(id){ saveQuestionNotebook(id, {textBoxes:noteBoxDataFromDom(id)}); }
     function notebookFont(id, delta){
       const nb = getQuestionNotebook(id);
-      const size = Math.max(12, Math.min(26, (nb.fontSize || 15) + delta));
-      const editor = $('#noteEditor_'+id);
-      if(editor) editor.style.fontSize = size+'px';
-      saveQuestionNotebook(id, {fontSize:size, html: editor ? editor.innerHTML : nb.html});
+      const selected = getSelectedNoteBox(id);
+      const size = Math.max(11, Math.min(34, (selected ? parseInt(selected.style.fontSize||nb.fontSize||16,10) : (nb.fontSize||16)) + delta));
+      if(selected){ selected.style.fontSize = size+'px'; saveNotebookTextBoxes(id); }
+      saveQuestionNotebook(id, {fontSize:size});
     }
-    function saveNotebookText(id){
-      const editor = $('#noteEditor_'+id);
-      if(editor) saveQuestionNotebook(id, {html: editor.innerHTML});
+    function notebookTextBg(id, color){
+      saveQuestionNotebook(id, {textBg:color});
+      const selected = getSelectedNoteBox(id);
+      if(selected){ selected.style.background = color; saveNotebookTextBoxes(id); }
     }
-    function clearNotebookText(id){
-      if(!confirm('¿Borrar el texto del mini apunte local de esta pregunta?')) return;
-      const editor = $('#noteEditor_'+id);
-      if(editor) editor.innerHTML = '';
-      saveQuestionNotebook(id, {html:''});
+    function clearNotebookBoard(id){
+      if(!confirm('¿Borrar TODO el pizarrón local de esta pregunta?')) return;
+      const canvas = $('#noteCanvas_'+id);
+      if(canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+      const layer = $('#noteTextLayer_'+id); if(layer) layer.innerHTML='';
+      saveQuestionNotebook(id, {canvasData:'', textBoxes:[]});
     }
     function clearNotebookCanvas(id){
-      if(!confirm('¿Borrar el dibujo del mini apunte local de esta pregunta?')) return;
+      if(!confirm('¿Borrar solo el dibujo del pizarrón? Los cuadros de texto quedan guardados.')) return;
       const canvas = $('#noteCanvas_'+id);
       if(canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
       saveQuestionNotebook(id, {canvasData:''});
     }
+    function deleteSelectedTextBox(id){
+      const selectedWrap = document.querySelector('#noteTextLayer_'+id+' .note-textbox-wrap.is-selected');
+      if(!selectedWrap) return alert('Seleccioná un cuadro de texto para eliminarlo.');
+      selectedWrap.remove(); saveNotebookTextBoxes(id);
+    }
+    function renderNoteTextBox(id, box){
+      const safeId = esc(String(box.id || ('box_'+Date.now())));
+      const html = box.html || '';
+      const style = 'left:'+(box.left||4)+'%;top:'+(box.top||5)+'%;width:'+(box.width||30)+'%;height:'+(box.height||18)+'%;';
+      return '<div class="note-textbox-wrap" data-box-id="'+safeId+'" style="'+style+'">'
+        + '<div class="note-textbox-bar"><button type="button" title="Mover" class="note-drag-handle">↕ mover</button><button type="button" title="Eliminar" class="note-box-delete" onclick="event.stopPropagation();this.closest(\'.note-textbox-wrap\').remove();saveNotebookTextBoxes(\''+esc(id)+'\')">×</button></div>'
+        + '<div class="note-textbox" contenteditable="true" oninput="saveNotebookTextBoxes(\''+esc(id)+'\')" onblur="saveNotebookTextBoxes(\''+esc(id)+'\')" style="font-size:'+(box.fontSize||16)+'px;color:'+(box.color||'#0f172a')+';background:'+(box.bg||'#ffffffdd')+'">'+html+'</div>'
+        + '</div>';
+    }
     function questionNotebookTemplate(q){
       const nb = getQuestionNotebook(q.id);
-      const html = nb.html || '';
-      const size = nb.fontSize || 15;
-      return '<section class="mt-5 rounded-[1.5rem] border border-violet-200 bg-white/85 p-4 shadow-soft dark:border-violet-900/60 dark:bg-slate-900/80" data-question-notebook="'+esc(q.id)+'">'
-        + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Mini hoja personal</p><h5 class="mt-1 font-display text-xl font-extrabold">Apunte local de esta pregunta</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">Se revela recién después de responder. Queda guardado solo en el navegador de cada usuario.</p></div><span id="notebookSaved_'+esc(q.id)+'" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700 dark:bg-violet-950/40 dark:text-violet-200">Local</span></div>'
-        + '<div class="mt-4 flex flex-wrap gap-2">'
-        + '<button class="note-tool" onclick="notebookExec(\''+esc(q.id)+'\',\'bold\')">Negrita</button>'
-        + '<button class="note-tool" onclick="notebookExec(\''+esc(q.id)+'\',\'backColor\',\'#fff3a3\')">Resaltar</button>'
-        + '<button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',-1)">A−</button>'
-        + '<button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',1)">A+</button>'
-        + '<button class="note-tool" onclick="clearNotebookText(\''+esc(q.id)+'\')">Limpiar texto</button>'
-        + '<button class="note-tool" onclick="clearNotebookCanvas(\''+esc(q.id)+'\')">Limpiar dibujo</button>'
+      const colors = ['#2563eb','#0f172a','#dc2626','#16a34a','#f59e0b','#9333ea','#db2777','#06b6d4','#84cc16','#facc15'];
+      return '<section class="mt-5 rounded-[1.65rem] border border-violet-200 bg-white/90 p-4 shadow-soft dark:border-violet-900/60 dark:bg-slate-900/80" data-question-notebook="'+esc(q.id)+'">'
+        + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Mini hoja personal</p><h5 class="mt-1 font-display text-xl font-extrabold">Pizarrón local de esta pregunta</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">Se revela recién después de responder. Podés dibujar, borrar zonas puntuales y crear cuadros de texto. Queda guardado solo en este navegador.</p></div><span id="notebookSaved_'+esc(q.id)+'" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700 dark:bg-violet-950/40 dark:text-violet-200">Local</span></div>'
+        + '<div class="note-ribbon mt-4">'
+        + '<div class="note-toolgroup"><span>Herramienta</span><button data-note-tool="'+esc(q.id)+'" data-tool="pen" class="note-tool '+((nb.tool||'pen')==='pen'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'pen\')">Birome</button><button data-note-tool="'+esc(q.id)+'" data-tool="eraser" class="note-tool '+(nb.tool==='eraser'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'eraser\')">Borrador</button><button data-note-tool="'+esc(q.id)+'" data-tool="text" class="note-tool '+(nb.tool==='text'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'text\')">Texto</button><button data-note-tool="'+esc(q.id)+'" data-tool="move" class="note-tool '+(nb.tool==='move'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'move\')">Mover</button></div>'
+        + '<div class="note-toolgroup note-colors"><span>Color</span>'+colors.map(c=>'<button class="note-color" style="background:'+c+'" onclick="notebookSetColor(\''+esc(q.id)+'\',\''+c+'\')" title="'+c+'"></button>').join('')+'<input class="note-color-input" type="color" value="'+esc(nb.drawColor||'#2563eb')+'" onchange="notebookSetColor(\''+esc(q.id)+'\',this.value)"><span id="noteColorPreview_'+esc(q.id)+'" class="note-color-preview" style="background:'+(nb.drawColor||'#2563eb')+'"></span></div>'
+        + '<div class="note-toolgroup"><span>Trazo</span><select class="note-select" onchange="notebookSetStroke(\''+esc(q.id)+'\',this.value)"><option value="2">Fino</option><option value="4" '+((nb.strokeWidth||4)==4?'selected':'')+'>Normal</option><option value="8" '+((nb.strokeWidth||4)==8?'selected':'')+'>Grueso</option><option value="14" '+((nb.strokeWidth||4)==14?'selected':'')+'>Marcador</option></select><span>Borrador</span><select class="note-select" onchange="notebookSetEraser(\''+esc(q.id)+'\',this.value)"><option value="16">Chico</option><option value="28" '+((nb.eraserWidth||26)>=24&&(nb.eraserWidth||26)<40?'selected':'')+'>Medio</option><option value="52" '+((nb.eraserWidth||26)>=40?'selected':'')+'>Grande</option></select></div>'
+        + '<div class="note-toolgroup"><span>Texto</span><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',-1)">A−</button><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',1)">A+</button><button class="note-tool" onclick="notebookTextBg(\''+esc(q.id)+'\',\'#fef08acc\')">Resaltar</button><button class="note-tool" onclick="deleteSelectedTextBox(\''+esc(q.id)+'\')">Eliminar texto</button></div>'
+        + '<div class="note-toolgroup"><button class="note-tool danger" onclick="clearNotebookCanvas(\''+esc(q.id)+'\')">Limpiar dibujo</button><button class="note-tool danger" onclick="clearNotebookBoard(\''+esc(q.id)+'\')">Limpiar todo</button></div>'
         + '</div>'
-        + '<div class="mt-3 grid gap-3 xl:grid-cols-[1fr_420px]">'
-        + '<div id="noteEditor_'+esc(q.id)+'" class="note-editor" contenteditable="true" oninput="saveNotebookText(\''+esc(q.id)+'\')" onblur="saveNotebookText(\''+esc(q.id)+'\')" style="font-size:'+size+'px" data-placeholder="Hacé click y escribí tu mini esquema: claves, flechas, mnemotecnias, dudas…">'+html+'</div>'
-        + '<div class="rounded-2xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-950"><div class="mb-2 flex items-center justify-between gap-2 px-1"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Birome / esquema</p><p class="text-[11px] font-semibold text-slate-400">dibujá con mouse o dedo</p></div><canvas id="noteCanvas_'+esc(q.id)+'" class="note-canvas" width="820" height="420"></canvas></div>'
-        + '</div></section>';
+        + '<div class="note-board-shell mt-3"><div id="noteBoard_'+esc(q.id)+'" class="note-board" data-tool="'+esc(nb.tool||'pen')+'"><canvas id="noteCanvas_'+esc(q.id)+'" class="note-canvas" width="1400" height="820"></canvas><div id="noteTextLayer_'+esc(q.id)+'" class="note-text-layer">'+(nb.textBoxes||[]).map(b=>renderNoteTextBox(q.id,b)).join('')+'</div><div class="note-board-hint">Birome para dibujar · Borrador para borrar una zona · Texto y click para insertar cuadro · Mover para arrastrar cuadros</div></div></div>'
+        + '</section>';
     }
     function setupQuestionNotebook(id){
       const canvas = $('#noteCanvas_'+id);
-      const editor = $('#noteEditor_'+id);
-      if(editor){ const nb=getQuestionNotebook(id); editor.style.fontSize=(nb.fontSize||15)+'px'; }
-      if(!canvas || canvas.dataset.ready === '1') return;
+      const board = $('#noteBoard_'+id);
+      const layer = $('#noteTextLayer_'+id);
+      if(!canvas || !board || !layer || canvas.dataset.ready === '1') return;
       canvas.dataset.ready = '1';
-      const ctx = canvas.getContext('2d');
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#1d4ed8';
       const nb = getQuestionNotebook(id);
+      const ctx = canvas.getContext('2d');
+      canvas._ctx = ctx;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = nb.strokeWidth || 4; ctx.strokeStyle = nb.drawColor || '#2563eb';
       if(nb.canvasData){ const img = new Image(); img.onload = ()=>ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src = nb.canvasData; }
-      let drawing = false; let last = null;
-      const pos = (ev) => {
-        const rect = canvas.getBoundingClientRect();
-        const p = ev.touches ? ev.touches[0] : ev;
-        return {x:(p.clientX-rect.left)*(canvas.width/rect.width), y:(p.clientY-rect.top)*(canvas.height/rect.height)};
+      const saveCanvas = () => saveQuestionNotebook(id, {canvasData:canvas.toDataURL('image/png')});
+      const posCanvas = (ev) => { const rect = canvas.getBoundingClientRect(); const p = ev.touches ? ev.touches[0] : ev; return {x:(p.clientX-rect.left)*(canvas.width/rect.width), y:(p.clientY-rect.top)*(canvas.height/rect.height)}; };
+      const posBoardPct = (ev) => { const rect = board.getBoundingClientRect(); const p = ev.touches ? ev.touches[0] : ev; return {x:((p.clientX-rect.left)/rect.width)*100, y:((p.clientY-rect.top)/rect.height)*100}; };
+      let drawing=false, last=null;
+      const startDraw = (ev) => {
+        const tool = getQuestionNotebook(id).tool || 'pen';
+        if(tool === 'text') { if(ev.target === canvas || ev.target === layer || ev.target === board){ createNotebookTextBoxAt(id, posBoardPct(ev)); ev.preventDefault(); } return; }
+        if(tool !== 'pen' && tool !== 'eraser') return;
+        drawing=true; last=posCanvas(ev);
+        ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
+        ctx.lineWidth = tool === 'eraser' ? (getQuestionNotebook(id).eraserWidth || 26) : (getQuestionNotebook(id).strokeWidth || 4);
+        ctx.strokeStyle = getQuestionNotebook(id).drawColor || '#2563eb';
+        ev.preventDefault();
       };
-      const start = (ev) => { drawing = true; last = pos(ev); ev.preventDefault(); };
-      const move = (ev) => { if(!drawing) return; const p=pos(ev); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; ev.preventDefault(); };
-      const end = () => { if(!drawing) return; drawing=false; saveQuestionNotebook(id, {canvasData:canvas.toDataURL('image/png')}); };
-      canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
-      canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); canvas.addEventListener('touchend', end);
+      const moveDraw = (ev) => { if(!drawing) return; const p=posCanvas(ev); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; ev.preventDefault(); };
+      const endDraw = () => { if(!drawing) return; drawing=false; ctx.globalCompositeOperation='source-over'; saveCanvas(); };
+      canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', moveDraw); window.addEventListener('mouseup', endDraw);
+      canvas.addEventListener('touchstart', startDraw, {passive:false}); canvas.addEventListener('touchmove', moveDraw, {passive:false}); canvas.addEventListener('touchend', endDraw);
+      board.addEventListener('click', (ev)=>{ if((getQuestionNotebook(id).tool||'pen')==='text' && (ev.target===layer || ev.target===board)){ createNotebookTextBoxAt(id,posBoardPct(ev)); } });
+      setupNotebookTextBoxEvents(id);
+    }
+    function createNotebookTextBoxAt(id, pt){
+      const nb = getQuestionNotebook(id);
+      const box = {id:'box_'+Date.now(), left:Math.max(1, Math.min(82, pt.x)), top:Math.max(1, Math.min(82, pt.y)), width:26, height:14, html:'Escribí acá…', fontSize:nb.fontSize||16, color:nb.textColor||'#0f172a', bg:nb.textBg||'#ffffffdd'};
+      const layer = $('#noteTextLayer_'+id); if(!layer) return;
+      layer.insertAdjacentHTML('beforeend', renderNoteTextBox(id, box));
+      setupNotebookTextBoxEvents(id);
+      selectNoteBox(id, box.id);
+      const el = layer.querySelector('[data-box-id="'+box.id+'"] .note-textbox');
+      if(el){ el.focus(); document.execCommand && document.execCommand('selectAll', false, null); }
+      saveNotebookTextBoxes(id);
+    }
+    function setupNotebookTextBoxEvents(id){
+      const layer = $('#noteTextLayer_'+id); if(!layer) return; if(layer.dataset.ready === '1') return;
+      layer.dataset.ready = '1';
+      let drag=null;
+      layer.addEventListener('mousedown', (ev)=>{
+        const wrap = ev.target.closest('.note-textbox-wrap');
+        if(wrap) selectNoteBox(id, wrap.dataset.boxId);
+        const handle = ev.target.closest('.note-drag-handle');
+        if(!handle) return;
+        const rect = layer.getBoundingClientRect();
+        drag = {wrap, rect, sx:ev.clientX, sy:ev.clientY, left:parseFloat(wrap.style.left)||0, top:parseFloat(wrap.style.top)||0};
+        ev.preventDefault();
+      });
+      window.addEventListener('mousemove', (ev)=>{
+        if(!drag) return;
+        const dx = (ev.clientX-drag.sx)/drag.rect.width*100;
+        const dy = (ev.clientY-drag.sy)/drag.rect.height*100;
+        drag.wrap.style.left = Math.max(0, Math.min(88, drag.left+dx))+'%';
+        drag.wrap.style.top = Math.max(0, Math.min(88, drag.top+dy))+'%';
+      });
+      window.addEventListener('mouseup', ()=>{ if(drag){ saveNotebookTextBoxes(id); drag=null; } });
+      layer.addEventListener('mouseup', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50));
+      layer.addEventListener('touchend', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50));
+      layer.addEventListener('input', ()=>saveNotebookTextBoxes(id));
+      layer.addEventListener('click', (ev)=>{ const wrap = ev.target.closest('.note-textbox-wrap'); if(wrap) selectNoteBox(id, wrap.dataset.boxId); });
     }
     function goldenRuleDefaultHint(q){
       const hasAns = q.ans && q.opts?.[q.ans];
