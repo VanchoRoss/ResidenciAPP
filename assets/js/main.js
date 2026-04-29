@@ -9,7 +9,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       {id:'mapa', name:'Mapa mental', icon:'🗺️', tag:'Estructura', desc:'Ordenar ramas, claves y distractores del tema.'},
       {id:'nemotecnia', name:'Nemotecnia', icon:'🧩', tag:'Memoria', desc:'Crear una frase/imagen absurda para datos aislados.'},
       {id:'errorlog', name:'Error log', icon:'🧾', tag:'Corrección', desc:'Clasificar por qué fallaste: lectura, concepto, razonamiento o trampa.'},
-      {id:'repaso', name:'Repaso espaciado', icon:'🔁', tag:'Consolidación', desc:'Programar D1-D3-D7-D21 según dificultad.'},
+      {id:'repaso', name:'Repaso espaciado', icon:'🔁', tag:'Consolidación', desc:'Programar D1-D2-D4 según dificultad.'},
     ];
     const ERROR_REASONS = [
       {id:'no_sabia', label:'No sabía el tema'},
@@ -338,7 +338,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         + '</div>'
         + (!ok ? errorLogRequiredTemplate(q, selected) : '')
         + '<div class="mt-4 flex flex-wrap gap-2">'+METHODS.filter(m=>['feynman','flashcard','mapa','nemotecnia','errorlog','repaso'].includes(m.id)).map(m => '<button class="rounded-2xl border border-white/70 bg-white/70 px-3 py-2 text-xs font-black hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800" onclick="openMethodForQuestion(\''+m.id+'\',\''+q.id+'\')">'+m.icon+' '+m.name+'</button>').join('')+'</div>'
-        + (session.method==='repaso' ? '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7)">Fácil · +7 días</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3)">Dudosa · +3 días</button><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1)">Difícil · mañana</button></div>' : '')
+        + (session.method==='repaso' ? '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7)">Fácil · +4 días</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3)">Dudosa · +2 días</button><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1)">Difícil · mañana</button></div>' : '')
         + '</section>';
     }
 
@@ -553,12 +553,12 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function modalBody(method,q){
       const correct = q.ans ? q.ans.toUpperCase()+') '+q.opts[q.ans] : 'Sin clave cargada';
       const header = '<div class="rounded-3xl bg-slate-50 p-4 dark:bg-slate-950/60"><p class="text-sm font-black">Pregunta</p><p class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(q.q)+'</p><p class="mt-3 text-sm font-black text-emerald-600 dark:text-emerald-300">'+esc(correct)+'</p></div>';
-      if(method==='flashcard') return header + '<div class="mt-4 card-flip min-h-72" data-flipped="false" onclick="this.dataset.flipped=this.dataset.flipped===\'true\'?\'false\':\'true\'"><div class="card-flip-inner relative min-h-72"><div class="card-face absolute inset-0 rounded-[1.75rem] border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-950"><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Frente</p><h4 class="mt-3 font-display text-2xl font-extrabold">'+esc(q.q)+'</h4><p class="mt-4 text-sm text-slate-500">Tocá para ver respuesta</p></div><div class="card-face card-back absolute inset-0 rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-900/60 dark:bg-emerald-950/20"><p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600">Dorso</p><h4 class="mt-3 text-xl font-black">'+esc(correct)+'</h4><p class="mt-4 text-sm leading-6">'+esc(reasoningHint(q))+'</p></div></div></div><div class="mt-4 flex gap-2"><button class="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7); closeMethodModal();">La sé · +7 días</button><button class="rounded-2xl bg-amber-500 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3); closeMethodModal();">Dudosa · +3 días</button><button class="rounded-2xl bg-rose-600 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1); closeMethodModal();">No la sé · mañana</button></div>';
+      if(method==='flashcard') return header + '<div class="mt-4 card-flip min-h-72" data-flipped="false" onclick="this.dataset.flipped=this.dataset.flipped===\'true\'?\'false\':\'true\'"><div class="card-flip-inner relative min-h-72"><div class="card-face absolute inset-0 rounded-[1.75rem] border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-950"><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Frente</p><h4 class="mt-3 font-display text-2xl font-extrabold">'+esc(q.q)+'</h4><p class="mt-4 text-sm text-slate-500">Tocá para ver respuesta</p></div><div class="card-face card-back absolute inset-0 rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-900/60 dark:bg-emerald-950/20"><p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600">Dorso</p><h4 class="mt-3 text-xl font-black">'+esc(correct)+'</h4><p class="mt-4 text-sm leading-6">'+esc(reasoningHint(q))+'</p></div></div></div><div class="mt-4 flex gap-2"><button class="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7); closeMethodModal();">La sé · +4 días</button><button class="rounded-2xl bg-amber-500 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3); closeMethodModal();">Dudosa · +2 días</button><button class="rounded-2xl bg-rose-600 px-4 py-2 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1); closeMethodModal();">No la sé · mañana</button></div>';
       if(method==='feynman') return header + noteEditor('feynman', q, 'Explicá esta pregunta como si se la contaras a alguien sin base médica. Evitá jerga. Donde te trabes, marcá el hueco.', 'Mi explicación simple es…');
       if(method==='mapa') return header + noteEditor('mapa', q, 'Construí un mapa mental del tema. Ramas sugeridas: diagnóstico, datos clave, conducta inicial, distractores frecuentes, trampa del examen.', 'Centro: '+q.sprint+'\n1) Diagnóstico/conducta:\n2) Datos clave:\n3) Distractores:\n4) Trampa del examen:');
       if(method==='nemotecnia') return header + noteEditor('nemotecnia', q, 'Inventá una frase, imagen o historia absurda para recordar este dato o criterio.', 'Mi nemotecnia absurda es…');
       if(method==='errorlog') return header + '<div class="mt-4 rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><label class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Tipo de error</label><select id="errorType" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950"><option>Falta de conocimiento</option><option>Mala lectura del enunciado</option><option>Razonamiento incorrecto</option><option>Confusión entre dos temas</option><option>Trampa/distractor</option><option>Dato duro olvidado</option></select><textarea id="errorNote" class="mt-3 min-h-32 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-950" placeholder="¿Por qué me equivoqué? ¿Qué regla puedo sacar para no repetirlo?"></textarea><button class="mt-3 rounded-2xl bg-medical-600 px-4 py-3 text-sm font-black text-white" onclick="saveErrorLog(\''+q.id+'\')">Guardar error log</button></div>';
-      if(method==='repaso') return header + '<div class="mt-4 rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><p class="text-sm font-black">Programar próximo contacto</p><p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Elegí según dificultad. Lo difícil vuelve antes; lo fácil se aleja.</p><div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1); closeMethodModal();">Mañana</button><button class="rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3); closeMethodModal();">+3 días</button><button class="rounded-2xl bg-medical-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7); closeMethodModal();">+7 días</button><button class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',21); closeMethodModal();">+21 días</button></div></div>';
+      if(method==='repaso') return header + '<div class="mt-4 rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><p class="text-sm font-black">Programar próximo contacto</p><p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Elegí según dificultad. Lo difícil vuelve antes; lo fácil se aleja.</p><div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',1); closeMethodModal();">Mañana</button><button class="rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',3); closeMethodModal();">+2 días</button><button class="rounded-2xl bg-medical-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',7); closeMethodModal();">+4 días</button><button class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white" onclick="scheduleQuestion(\''+q.id+'\',21); closeMethodModal();">+21 días</button></div></div>';
       return header;
     }
     function noteEditor(type,q,help,placeholder){ return '<div class="mt-4 rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><p class="text-sm font-black">'+esc(help)+'</p><textarea id="methodNote" class="mt-3 min-h-44 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm outline-none dark:border-slate-700 dark:bg-slate-950" placeholder="'+esc(placeholder)+'"></textarea><div class="mt-3 flex flex-wrap gap-2"><button class="rounded-2xl bg-medical-600 px-4 py-3 text-sm font-black text-white" onclick="saveMethodNote(\''+type+'\',\''+q.id+'\')">Guardar</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="openGoogleForQuestion(\''+q.id+'\')">Copiar pregunta + Consultar IA</button></div></div>'; }
@@ -595,7 +595,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const dailyBlocks = [
       ['Codificación activa','60–90 min','Construir desde cero: mapa, metáfora, esquema visual.'],
       ['Simulación clínica','90–120 min','Casos y preguntas tipo examen bajo presión.'],
-      ['Repaso espaciado','45–60 min','Recuperar sin mirar: flashcards, falladas y D1-D3-D7-D21.'],
+      ['Repaso espaciado','45–60 min','Recuperar sin mirar: flashcards, falladas y D1-D2-D4.'],
       ['Exposición libre','30–45 min','Videos o lectura rápida como insumo, no como aprendizaje principal.'],
       ['Cierre metacognitivo','10–30 min','Qué aprendí, qué no quedó claro y qué método funcionó.']
     ];
@@ -773,8 +773,8 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function difficultyConfig(difficulty){
       const d = String(difficulty||'medium');
       if(['hard','dificil','difícil'].includes(d)) return {days:1, label:'Difícil', color:'rose', ease:1.3};
-      if(['easy','facil','fácil'].includes(d)) return {days:7, label:'Fácil', color:'emerald', ease:2.5};
-      return {days:3, label:'Dudosa', color:'amber', ease:1.8};
+      if(['easy','facil','fácil'].includes(d)) return {days:4, label:'Fácil', color:'emerald', ease:2.5};
+      return {days:2, label:'Dudosa', color:'amber', ease:1.8};
     }
     function markDifficulty(id, difficulty='medium', announce=true){
       ensureAdvancedState();
@@ -840,7 +840,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         + '<div class="flip-card-3d-face flip-card-3d-back absolute inset-0 overflow-auto rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5 shadow-soft dark:border-emerald-900/60 dark:bg-emerald-950/25">'
         + '<p class="text-xs font-black uppercase tracking-[.16em] text-emerald-700 dark:text-emerald-300">Dato clave</p><p class="mt-2 text-sm font-bold leading-6">'+esc(kd.hits.length?kd.hits.join(' · '):keywordHint(q))+'</p>'
         + '<p class="mt-3 text-xs font-black uppercase tracking-[.16em] text-emerald-700 dark:text-emerald-300">Respuesta</p><p class="mt-1 text-base font-black leading-6">'+esc(kd.correct)+'</p>'+backMnemonic
-        + '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +3 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +7 días</button></div>'
+        + '<div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +2 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="event.stopPropagation(); markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +4 días</button></div>'
         + '</div></div></div>';
     }
     function renderAdvancedFlashcards(){
@@ -878,7 +878,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       addLibrary({type:'feynman', topic:q.sprint, text, qid:id});
       saveState(); renderLibrary();
       const correct = q.ans ? q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'') : 'Sin clave cargada';
-      $('#feynmanOfficial').innerHTML = '<div class="rounded-[1.75rem] border border-medical-200 bg-medical-50 p-5 animate-fadeUp dark:border-medical-900/60 dark:bg-medical-950/30"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:text-medical-300">Explicación oficial para comparar</p><div class="mt-4 grid gap-3">'+learningPanelItem('Respuesta correcta', esc(correct), 'emerald')+learningPanelItem('Dato clave', keyDataHint(q), 'amber')+learningPanelItem('Por qué es correcta', whyCorrectHint(q), 'medical')+'</div><div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Me costó · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Regular · +3 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Lo expliqué bien · +7 días</button></div></div>';
+      $('#feynmanOfficial').innerHTML = '<div class="rounded-[1.75rem] border border-medical-200 bg-medical-50 p-5 animate-fadeUp dark:border-medical-900/60 dark:bg-medical-950/30"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:text-medical-300">Explicación oficial para comparar</p><div class="mt-4 grid gap-3">'+learningPanelItem('Respuesta correcta', esc(correct), 'emerald')+learningPanelItem('Dato clave', keyDataHint(q), 'amber')+learningPanelItem('Por qué es correcta', whyCorrectHint(q), 'medical')+'</div><div class="mt-4 flex flex-wrap gap-2"><button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Me costó · mañana</button><button class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Regular · +2 días</button><button class="rounded-2xl bg-emerald-600 px-3 py-2 text-xs font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Lo expliqué bien · +4 días</button></div></div>';
       $('#feynmanOfficial').classList.remove('hidden');
       $('#feynmanOfficial').scrollIntoView({behavior:'smooth', block:'nearest'});
     }
@@ -900,7 +900,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const __oldExplanationTemplate = explanationTemplate;
     explanationTemplate = function(q, selected){
       const base = __oldExplanationTemplate(q, selected);
-      const extra = '<div class="mt-5 rounded-[1.5rem] border border-slate-200 bg-white/75 p-4 dark:border-slate-700 dark:bg-slate-950/50"><div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Retención avanzada</p><h5 class="mt-1 font-display text-xl font-extrabold">¿Qué tan difícil se sintió?</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">La dificultad programa el próximo repaso: Difícil mañana, Fácil en 7 días.</p></div><button class="native-tap rounded-2xl border border-medical-200 bg-medical-50 px-4 py-3 text-sm font-black text-medical-700 hover:bg-medical-100 dark:border-medical-800 dark:bg-medical-950/30 dark:text-medical-300" onclick="openFeynmanModalForQuestion(\''+q.id+'\')">🎙️ ¿Podés explicarlo?</button></div><div class="mt-4 flex flex-wrap gap-2"><button class="retention-pill rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="retention-pill rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +3 días</button><button class="retention-pill rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +7 días</button></div></div>';
+      const extra = '<div class="mt-5 rounded-[1.5rem] border border-slate-200 bg-white/75 p-4 dark:border-slate-700 dark:bg-slate-950/50"><div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Retención avanzada</p><h5 class="mt-1 font-display text-xl font-extrabold">¿Qué tan difícil se sintió?</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">La dificultad programa el próximo repaso: Difícil mañana, Dudosa en 2 días y Fácil en 4 días.</p></div><button class="native-tap rounded-2xl border border-medical-200 bg-medical-50 px-4 py-3 text-sm font-black text-medical-700 hover:bg-medical-100 dark:border-medical-800 dark:bg-medical-950/30 dark:text-medical-300" onclick="openFeynmanModalForQuestion(\''+q.id+'\')">🎙️ ¿Podés explicarlo?</button></div><div class="mt-4 flex flex-wrap gap-2"><button class="retention-pill rounded-2xl bg-rose-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'hard\')">Difícil · mañana</button><button class="retention-pill rounded-2xl bg-amber-500 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'medium\')">Dudosa · +2 días</button><button class="retention-pill rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white" onclick="markDifficulty(\''+q.id+'\',\'easy\')">Fácil · +4 días</button></div></div>';
       return base.replace('</section>', extra+'</section>');
     };
     const __oldQuestionTemplate = questionTemplate;
@@ -1826,6 +1826,222 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     };
 
 
+
+
+    /* === ResidenciAPP v2.3 · Imágenes aprobadas visibles para todos ===
+       Permite que una imagen enviada desde el panel colaborativo aparezca en la pregunta
+       cuando la fila correspondiente esté marcada como "aprobado" en Google Sheets.
+    */
+    function contributionImageDisplayUrl(item){
+      if(!item) return '';
+      const image = item.image || {};
+      const fileId = item.imageFileId || image.fileId || image.id || '';
+      if(fileId) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(fileId) + '&sz=w1600';
+      return item.imageUrl || image.url || image.data || '';
+    }
+
+    function contributionImageOriginalUrl(item){
+      if(!item) return '';
+      const image = item.image || {};
+      return item.imageUrl || image.url || '';
+    }
+
+    function contributionHasImage(item){
+      return !!contributionImageDisplayUrl(item);
+    }
+
+    function approvedQuestionImageHtml(q){
+      const a = (typeof collabFeedbackStatus === 'function') ? collabFeedbackStatus(q.id) : null;
+      if(!contributionHasImage(a)) return '';
+      const displayUrl = contributionImageDisplayUrl(a);
+      const originalUrl = contributionImageOriginalUrl(a);
+      const label = a.source === 'remote-approved' || a.source === 'local-over-remote'
+        ? 'Imagen aprobada / visible para todos'
+        : 'Imagen colaborativa local';
+      const openLink = originalUrl
+        ? '<a class="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" href="'+esc(originalUrl)+'" target="_blank" rel="noopener noreferrer">Abrir original</a>'
+        : '';
+      return '<figure class="mt-5 overflow-hidden rounded-[1.5rem] border border-medical-200 bg-white shadow-soft dark:border-medical-900/60 dark:bg-slate-950">'
+        + '<div class="flex flex-wrap items-center justify-between gap-3 border-b border-medical-100 bg-medical-50 px-4 py-3 dark:border-medical-900/60 dark:bg-medical-950/30">'
+        + '<div><p class="text-[11px] font-black uppercase tracking-[.16em] text-medical-700 dark:text-medical-300">'+label+'</p>'
+        + '<p class="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">Adjunta desde aportes colaborativos y validada desde la hoja de revisión.</p></div>'
+        + openLink
+        + '</div>'
+        + '<img src="'+esc(displayUrl)+'" alt="Imagen asociada a la pregunta '+esc(q.id)+'" loading="lazy" class="max-h-[520px] w-full object-contain bg-slate-50 p-2 dark:bg-slate-900" />'
+        + '</figure>';
+    }
+
+    const __v23NormalizeRemoteApprovedRecord = normalizeRemoteApprovedRecord;
+    normalizeRemoteApprovedRecord = function(record){
+      const item = __v23NormalizeRemoteApprovedRecord(record);
+      if(!item) return null;
+      const c = record.contribution || record.analysis || record || {};
+      const imageUrl = c.imageUrl || c.image_url || c['Imagen URL Drive'] || record.imageUrl || record.image_url || '';
+      const imageFileId = c.imageFileId || c.image_file_id || c['Imagen File ID'] || record.imageFileId || record.image_file_id || '';
+      const imageName = c.imageName || c.image_name || c['Imagen nombre'] || record.imageName || '';
+      const imageMimeType = c.imageMimeType || c.image_mime || c['Imagen MIME'] || record.imageMimeType || '';
+      if(imageUrl || imageFileId){
+        item.imageUrl = imageUrl;
+        item.imageFileId = imageFileId;
+        item.image = Object.assign({}, item.image || {}, {
+          url: imageUrl,
+          fileId: imageFileId,
+          name: imageName,
+          mimeType: imageMimeType
+        });
+      }
+      return item;
+    };
+
+    const __v23CollabFeedbackStatus = collabFeedbackStatus;
+    collabFeedbackStatus = function(id){
+      const local = (typeof getCollabAnalysis === 'function') ? getCollabAnalysis(id) : {};
+      const remote = remoteApprovedMap()[id] || null;
+      const fields = ['whyCorrect','keyData','distractors','goldenRule','bibliography'];
+      const localHasAny = fields.some(k => collabHasText(local?.[k])) || contributionHasImage(local);
+      if(!remote) return localHasAny ? local : null;
+      const merged = Object.assign({}, remote);
+      fields.forEach(k => { if(collabHasText(local?.[k])) merged[k] = local[k]; });
+      ['contributorName','confidence','contributionType','image','imageUrl','imageFileId'].forEach(k => { if(local?.[k]) merged[k] = local[k]; });
+      merged.source = localHasAny ? 'local-over-remote' : 'remote-approved';
+      return merged;
+    };
+
+    const __v23QuestionTemplate = questionTemplate;
+    questionTemplate = function(q, selected, showExplanation){
+      let html = __v23QuestionTemplate(q, selected, showExplanation);
+      const imageHtml = approvedQuestionImageHtml(q);
+      if(imageHtml && !html.includes('Imagen aprobada / visible para todos') && !html.includes('Imagen colaborativa local')){
+        html = html.replace('</h3>', '</h3>' + imageHtml);
+      }
+      return html;
+    };
+
+    const __v23RevengeQuestionTemplate = revengeQuestionTemplate;
+    revengeQuestionTemplate = function(q, selected){
+      let html = __v23RevengeQuestionTemplate(q, selected);
+      const imageHtml = approvedQuestionImageHtml(q);
+      if(imageHtml && !html.includes('Imagen aprobada / visible para todos') && !html.includes('Imagen colaborativa local')){
+        html = html.replace('</h3>', '</h3>' + imageHtml);
+      }
+      return html;
+    };
+
+
+
+    /* === ResidenciAPP Tutor v2.4 · Mini-apuntes locales + Regla de Oro fija + D1/D2/D4 === */
+    function ensureQuestionNotebookState(){ state.questionNotebooks ||= {}; }
+    function getQuestionNotebook(id){ ensureQuestionNotebookState(); return state.questionNotebooks[id] || {html:'', canvasData:'', fontSize:15, updatedAt:0}; }
+    function saveQuestionNotebook(id, patch={}){
+      ensureQuestionNotebookState();
+      state.questionNotebooks[id] = Object.assign(getQuestionNotebook(id), patch, {updatedAt:Date.now()});
+      saveState();
+      const saved = $('#notebookSaved_'+id);
+      if(saved){ saved.textContent='Guardado · '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
+    }
+    function notebookExec(id, command, value=null){
+      const editor = $('#noteEditor_'+id);
+      if(editor) editor.focus();
+      try { document.execCommand(command, false, value); } catch(e) {}
+      saveNotebookText(id);
+    }
+    function notebookFont(id, delta){
+      const nb = getQuestionNotebook(id);
+      const size = Math.max(12, Math.min(26, (nb.fontSize || 15) + delta));
+      const editor = $('#noteEditor_'+id);
+      if(editor) editor.style.fontSize = size+'px';
+      saveQuestionNotebook(id, {fontSize:size, html: editor ? editor.innerHTML : nb.html});
+    }
+    function saveNotebookText(id){
+      const editor = $('#noteEditor_'+id);
+      if(editor) saveQuestionNotebook(id, {html: editor.innerHTML});
+    }
+    function clearNotebookText(id){
+      if(!confirm('¿Borrar el texto del mini apunte local de esta pregunta?')) return;
+      const editor = $('#noteEditor_'+id);
+      if(editor) editor.innerHTML = '';
+      saveQuestionNotebook(id, {html:''});
+    }
+    function clearNotebookCanvas(id){
+      if(!confirm('¿Borrar el dibujo del mini apunte local de esta pregunta?')) return;
+      const canvas = $('#noteCanvas_'+id);
+      if(canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+      saveQuestionNotebook(id, {canvasData:''});
+    }
+    function questionNotebookTemplate(q){
+      const nb = getQuestionNotebook(q.id);
+      const html = nb.html || '';
+      const size = nb.fontSize || 15;
+      return '<section class="mt-5 rounded-[1.5rem] border border-violet-200 bg-white/85 p-4 shadow-soft dark:border-violet-900/60 dark:bg-slate-900/80" data-question-notebook="'+esc(q.id)+'">'
+        + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Mini hoja personal</p><h5 class="mt-1 font-display text-xl font-extrabold">Apunte local de esta pregunta</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">Se revela recién después de responder. Queda guardado solo en el navegador de cada usuario.</p></div><span id="notebookSaved_'+esc(q.id)+'" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700 dark:bg-violet-950/40 dark:text-violet-200">Local</span></div>'
+        + '<div class="mt-4 flex flex-wrap gap-2">'
+        + '<button class="note-tool" onclick="notebookExec(\''+esc(q.id)+'\',\'bold\')">Negrita</button>'
+        + '<button class="note-tool" onclick="notebookExec(\''+esc(q.id)+'\',\'backColor\',\'#fff3a3\')">Resaltar</button>'
+        + '<button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',-1)">A−</button>'
+        + '<button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',1)">A+</button>'
+        + '<button class="note-tool" onclick="clearNotebookText(\''+esc(q.id)+'\')">Limpiar texto</button>'
+        + '<button class="note-tool" onclick="clearNotebookCanvas(\''+esc(q.id)+'\')">Limpiar dibujo</button>'
+        + '</div>'
+        + '<div class="mt-3 grid gap-3 xl:grid-cols-[1fr_420px]">'
+        + '<div id="noteEditor_'+esc(q.id)+'" class="note-editor" contenteditable="true" oninput="saveNotebookText(\''+esc(q.id)+'\')" onblur="saveNotebookText(\''+esc(q.id)+'\')" style="font-size:'+size+'px" data-placeholder="Hacé click y escribí tu mini esquema: claves, flechas, mnemotecnias, dudas…">'+html+'</div>'
+        + '<div class="rounded-2xl border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-950"><div class="mb-2 flex items-center justify-between gap-2 px-1"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Birome / esquema</p><p class="text-[11px] font-semibold text-slate-400">dibujá con mouse o dedo</p></div><canvas id="noteCanvas_'+esc(q.id)+'" class="note-canvas" width="820" height="420"></canvas></div>'
+        + '</div></section>';
+    }
+    function setupQuestionNotebook(id){
+      const canvas = $('#noteCanvas_'+id);
+      const editor = $('#noteEditor_'+id);
+      if(editor){ const nb=getQuestionNotebook(id); editor.style.fontSize=(nb.fontSize||15)+'px'; }
+      if(!canvas || canvas.dataset.ready === '1') return;
+      canvas.dataset.ready = '1';
+      const ctx = canvas.getContext('2d');
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#1d4ed8';
+      const nb = getQuestionNotebook(id);
+      if(nb.canvasData){ const img = new Image(); img.onload = ()=>ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src = nb.canvasData; }
+      let drawing = false; let last = null;
+      const pos = (ev) => {
+        const rect = canvas.getBoundingClientRect();
+        const p = ev.touches ? ev.touches[0] : ev;
+        return {x:(p.clientX-rect.left)*(canvas.width/rect.width), y:(p.clientY-rect.top)*(canvas.height/rect.height)};
+      };
+      const start = (ev) => { drawing = true; last = pos(ev); ev.preventDefault(); };
+      const move = (ev) => { if(!drawing) return; const p=pos(ev); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; ev.preventDefault(); };
+      const end = () => { if(!drawing) return; drawing=false; saveQuestionNotebook(id, {canvasData:canvas.toDataURL('image/png')}); };
+      canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+      canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false}); canvas.addEventListener('touchend', end);
+    }
+    function goldenRuleDefaultHint(q){
+      const hasAns = q.ans && q.opts?.[q.ans];
+      if(!hasAns) return '<p>Regla de Oro pendiente: primero revisá la clave correcta de esta pregunta.</p>';
+      if(/conducta|tratamiento|manejo|indica|solicita|realizar|a seguir/i.test(q.q)) return '<p><strong>Regla de examen:</strong> identificá gravedad, urgencia y dato bisagra; la opción correcta debe cambiar la conducta con menos supuestos.</p>';
+      if(/diagn[oó]stico|sospecha|presuntivo/i.test(q.q)) return '<p><strong>Regla de examen:</strong> edad + síntoma cardinal + laboratorio/imagen mandan sobre distractores aislados.</p>';
+      if(/prevalencia|porcentaje|incidencia|mortalidad|edad|calendario|criterio|gu[ií]a/i.test(q.q)) return '<p><strong>Dato actualizable:</strong> convertir en flashcard y verificar contra fuente vigente antes de validar feedback oficial.</p>';
+      return '<p><strong>Regla de examen:</strong> transformá el dato clave en una frase corta que puedas recuperar sin mirar opciones.</p>';
+    }
+    function goldenRuleExperienceBlock(q){
+      const a = (typeof collabFeedbackStatus === 'function') ? collabFeedbackStatus(q.id) : null;
+      const body = a && collabHasText(a.goldenRule)
+        ? collabOfficialBadge() + '<div class="mt-3">'+textToParagraphs(a.goldenRule)+'</div>'
+        : '<div id="feedback_goldenRule_'+esc(q.id)+'">'+goldenRuleDefaultHint(q)+'<p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Cuando cargues una Regla de Oro en el aporte colaborativo, reemplazará esta guía local.</p></div>';
+      return '<div data-v24-golden-rule>'+learningPanelItem('Regla de Oro', body, 'emerald')+'</div>';
+    }
+    const __v24ExplanationTemplate = explanationTemplate;
+    explanationTemplate = function(q, selected){
+      let html = __v24ExplanationTemplate(q, selected);
+      if(!html.includes('data-v24-golden-rule')){
+        html = html.replace('<div class="mt-4 flex flex-wrap gap-2">', '<div class="mt-3">'+goldenRuleExperienceBlock(q)+'</div><div class="mt-4 flex flex-wrap gap-2">');
+      }
+      if(!html.includes('data-question-notebook="'+esc(q.id)+'"')){
+        html = html.replace('</section>', questionNotebookTemplate(q) + '</section>');
+      }
+      return html;
+    };
+    const __v24RenderQuestion = renderQuestion;
+    renderQuestion = function(){
+      __v24RenderQuestion();
+      try {
+        if(session){ const q=getSessionQuestions()[session.idx]; const selected = q ? questionSessionSelection(q) : ''; if(q && selected && session.mode !== 'exam' && session.mode !== 'revenge') setupQuestionNotebook(q.id); }
+      } catch(e) {}
+    };
 
     function init(){
       initSelects();
