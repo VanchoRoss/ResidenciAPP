@@ -1675,6 +1675,157 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       }
     };
 
+    /* === ResidenciAPP v2.2 · Revancha + IA verificadora + feedback aprobado remoto ===
+       - Modo Revancha de errores: no muestra feedback; si acertás, limpia el error activo.
+       - El prompt de IA ahora audita la clave antes de justificarla.
+       - Etiqueta preguntas con datos actualizables para revisión de fuente vigente.
+       - Carga feedback aprobado desde Google Sheets vía JSONP y lo muestra como validado.
+    */
+
+    window.RESIDENCIAPP_APPROVED_ANALYSES ||= {};
+
+    function isUpdatableQuestion(q){
+      const hay = norm([q.q, q.tema, q.sprint, Object.values(q.opts||{}).join(' ')].join(' '));
+      const patterns = ['prevalencia','incidencia','mortalidad','porcentaje','%','frecuencia','estadistica','estadístico','ranking','casos nuevos','calendario','vacuna','vacunacion','vacunación','edad de inicio','rastreo','screening','tamizaje','criterio','criterios','guia','guía','consenso','normativa','clasificacion','clasificación','2025','2024','2017','2016'];
+      return patterns.some(p => hay.includes(norm(p))) || /\b\d{1,3}\s?%/.test([q.q, Object.values(q.opts||{}).join(' ')].join(' '));
+    }
+    function dataUpdateWarning(q){
+      if(!isUpdatableQuestion(q)) return '';
+      return '<div class="mt-4 rounded-3xl border border-amber-300 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100"><div class="flex items-start gap-3"><span class="mt-0.5">⚠️</span><div><p class="font-black uppercase tracking-[.14em] text-[11px]">Dato actualizable / clave para verificar</p><p class="mt-1">Esta pregunta puede depender de prevalencias, guías, calendarios, criterios o datos epidemiológicos. Antes de transformar el feedback en oficial, contrastá con fuente vigente y con el año de la pregunta.</p></div></div></div>';
+    }
+
+    function remoteApprovedMap(){ return window.RESIDENCIAPP_APPROVED_ANALYSES || {}; }
+    function normalizeRemoteApprovedRecord(record){
+      if(!record) return null;
+      const questionId = record.questionId || record.question_id || record.id || record?.question?.id;
+      if(!questionId) return null;
+      const c = record.contribution || record.analysis || record;
+      return { questionId, status: record.status || 'aprobado', source: 'remote-approved', approvedAt: record.approvedAt || record.fecha || record.createdAt || '', whyCorrect: c.whyCorrect || c.why_correct || c.porqueCorrecta || c['Por qué es correcta'] || '', keyData: c.keyData || c.key_data || c.datosClave || c['Datos clave'] || '', distractors: c.distractors || c.analisisDistractores || c['Análisis de distractores'] || '', goldenRule: c.goldenRule || c.golden_rule || c.reglaDeOro || c['Regla de Oro'] || '', bibliography: c.bibliography || c.bibliografia || c['Bibliografía / fuente'] || c['Bibliografía'] || '', contributorName: c.contributorName || c.colaborador || record.contributorName || '', confidence: c.confidence || record.confidence || '', updatedAt: record.updatedAt || record.createdAt || new Date().toISOString() };
+    }
+    function ingestApprovedFeedback(payload){
+      const records = Array.isArray(payload) ? payload : (payload?.records || payload?.analyses || payload?.data || []);
+      if(!Array.isArray(records)) return;
+      records.forEach(r => { const item = normalizeRemoteApprovedRecord(r); if(item) window.RESIDENCIAPP_APPROVED_ANALYSES[item.questionId] = item; });
+      if(records.length){ renderQuestion(); renderReview(); }
+    }
+    function loadApprovedCollaborationData(){
+      const endpoint = getContributionEndpoint ? getContributionEndpoint() : '';
+      if(!endpoint) return;
+      const cb = '__residenciappApproved_'+Date.now();
+      window[cb] = function(payload){ try { ingestApprovedFeedback(payload); } finally { try { delete window[cb]; } catch(e){ window[cb] = undefined; } } };
+      const sep = endpoint.includes('?') ? '&' : '?';
+      const script = document.createElement('script');
+      script.src = endpoint + sep + 'mode=approved&callback=' + encodeURIComponent(cb) + '&_=' + Date.now();
+      script.async = true;
+      script.onerror = function(){ try { delete window[cb]; } catch(e){}; script.remove(); };
+      script.onload = function(){ setTimeout(()=>script.remove(), 1000); };
+      document.head.appendChild(script);
+    }
+
+    const __v22CollabFeedbackStatus = collabFeedbackStatus;
+    collabFeedbackStatus = function(id){
+      const local = (typeof getCollabAnalysis === 'function') ? getCollabAnalysis(id) : {};
+      const remote = remoteApprovedMap()[id] || null;
+      const fields = ['whyCorrect','keyData','distractors','goldenRule','bibliography'];
+      const localHasAny = fields.some(k => collabHasText(local?.[k]));
+      if(!remote) return localHasAny ? local : null;
+      const merged = Object.assign({}, remote);
+      fields.forEach(k => { if(collabHasText(local?.[k])) merged[k] = local[k]; });
+      ['contributorName','confidence','contributionType','image'].forEach(k => { if(local?.[k]) merged[k] = local[k]; });
+      merged.source = localHasAny ? 'local-over-remote' : 'remote-approved';
+      return merged;
+    };
+    collabOfficialBadge = function(){ return '<span class="feedback-official-badge">✓ Feedback validado / colaborativo</span>'; };
+
+    function questionSessionSelection(q){
+      if(!session) return '';
+      if(session.mode === 'exam' || session.mode === 'revenge') return session.selected?.[q.id] || '';
+      return session.selected?.[q.id] || answerFor(q)?.selected || '';
+    }
+    function selectedForScoring(q, oldSession){
+      if(oldSession?.mode === 'exam' || oldSession?.mode === 'revenge') return oldSession.selected?.[q.id] || '';
+      return oldSession?.selected?.[q.id] || answerFor(q)?.selected || '';
+    }
+
+    function startMistakesRevengeSession(){
+      const qs = Object.keys(state.mistakes||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      if(!qs.length) return alert('No tenés errores activos para revancha.');
+      setSession(qs, 'Revancha de errores', 'Sin feedback · si acertás se elimina del error log', 'preguntas', true, {mode:'revenge'});
+    }
+
+    function revengeQuestionTemplate(q, selected){
+      const year = q.year ? 'Año '+q.year : 'Año no detectado';
+      const options = ['a','b','c','d'].map(k => { const txt = q.opts?.[k]; if(!txt) return ''; const isSel = selected===k; const cls = isSel ? 'border-medical-400 bg-medical-50 dark:border-medical-700 dark:bg-medical-950/30' : 'border-slate-200 hover:border-medical-300 dark:border-slate-700 dark:hover:border-medical-700'; return '<label class="choice block cursor-pointer"><input class="sr-only" name="choice" type="radio" value="'+k+'" '+(isSel?'checked':'')+' '+(selected?'disabled':'')+' onchange="selectAnswer(\''+q.id+'\',\''+k+'\')"><div class="rounded-3xl border '+cls+' p-4 transition"><div class="flex gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-slate-100 text-sm font-black uppercase dark:bg-slate-800">'+k+'</span><p class="text-sm font-semibold leading-6">'+esc(txt)+'</p></div></div></label>'; }).join('');
+      return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">Revancha</span><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(q.eje)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(year)+'</span></div><span class="text-xs font-black uppercase tracking-[.16em] text-rose-500">sin feedback</span></div>' + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+highlightTriggerWords(q.q)+'</h3>' + dataUpdateWarning(q) + (q.image_reference ? '<div class="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">⚠️ Esta pregunta menciona una imagen/ECG/radiografía.</div>' : '') + '<div class="mt-5 grid gap-3">'+options+'</div>' + (selected ? '<div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">Respuesta registrada. En modo revancha no se muestra la corrección. Si acertaste, este error se quita del listado activo.</div>' : '<div class="mt-5 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-bold text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-100">Respondé sin mirar feedback. La pregunta solo se considera corregida si la acertás.</div>') + '<div class="mt-6 flex flex-wrap justify-between gap-3"><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-slate-800" '+(session.idx===0?'disabled':'')+' onclick="prevQuestion()">← Anterior</button><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white hover:bg-medical-700" onclick="nextQuestion()">'+(session.idx===getSessionQuestions().length-1?'Terminar':'Siguiente →')+'</button></div>';
+    }
+
+    const __v22QuestionTemplateBase = questionTemplate;
+    questionTemplate = function(q, selected, showExplanation){
+      if(session?.mode === 'revenge') return revengeQuestionTemplate(q, selected);
+      let html = __v22QuestionTemplateBase(q, selected, showExplanation);
+      if(isUpdatableQuestion(q) && !html.includes('Dato actualizable')) html = html.replace('<div class="mt-6 grid gap-3">', dataUpdateWarning(q)+'<div class="mt-6 grid gap-3">');
+      return html;
+    };
+
+    const __v22BaseCurrentNeedsErrorLog = currentNeedsErrorLog;
+    currentNeedsErrorLog = function(){ if(session?.mode === 'exam' || session?.mode === 'revenge') return false; return __v22BaseCurrentNeedsErrorLog(); };
+
+    renderQuestion = function(){
+      if(!session){ $('#emptySession').classList.remove('hidden'); $('#sessionContent').classList.add('hidden'); renderExamTimerPanel?.(); return; }
+      $('#emptySession').classList.add('hidden'); $('#sessionContent').classList.remove('hidden');
+      const arr=getSessionQuestions(); const q=arr[session.idx]; if(!q){ finishSession(); return; }
+      $('#sessionMethod').value = session.method; $('#sessionTitle').textContent = session.title; $('#sessionMeta').textContent = session.meta;
+      const pct = Math.round(((session.idx)/arr.length)*100); $('#sessionBar').style.width = pct+'%';
+      const mode = session.mode === 'exam' ? 'Simulacro' : session.mode === 'revenge' ? 'Revancha' : 'Práctica libre';
+      const timingText = session.mode === 'exam' ? ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds) : ' · Sin tiempo';
+      $('#sessionProgress').textContent = 'Pregunta '+(session.idx+1)+' de '+arr.length+' · '+mode+timingText;
+      const selected = questionSessionSelection(q); const showExplanation = !!selected && session.mode !== 'exam' && session.mode !== 'revenge';
+      startQuestionTimer(q); renderPerformancePanel(); $('#questionCard').innerHTML = questionTemplate(q, selected, showExplanation); renderMethodDock(q); startExamTimerIfNeeded?.();
+    };
+
+    const __v22SelectAnswer = selectAnswer;
+    selectAnswer = function(id, selected){
+      const wasRevenge = session?.mode === 'revenge'; const q = QUESTIONS.find(x=>x.id===id);
+      __v22SelectAnswer(id, selected);
+      if(wasRevenge && q){
+        if(selected === q.ans){ if(state.mistakes) delete state.mistakes[id]; if(state.scheduled) delete state.scheduled[id]; if(state.retention) delete state.retention[id]; }
+        else { state.mistakes[id] = Object.assign(state.mistakes[id]||{}, {id, selected, correct:q.ans, at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint, revengeFailedAt:Date.now()}); }
+        saveState(); renderReview(); renderDueTodayHero?.(); renderAdvancedFlashcards?.(); renderQuestion();
+      }
+    };
+
+    finishSession = function(reason='manual'){
+      stopExamTimer?.(); if(!session){ showView('dashboard'); return; }
+      const qs = getSessionQuestions(); const old = session;
+      const answered = qs.filter(q=>selectedForScoring(q, old)).length;
+      const correct = qs.filter(q=>{ const s=selectedForScoring(q, old); return s && s===q.ans; }).length;
+      const failed = qs.filter(q=>{ const s=selectedForScoring(q, old); return s && q.ans && s!==q.ans; });
+      const skipped = qs.filter(q=>!selectedForScoring(q, old)).length; const acc = answered ? Math.round(correct/answered*100) : 0;
+      const wasExam = old.mode === 'exam'; const wasRevenge = old.mode === 'revenge';
+      state.session = null; saveState(); session=null;
+      const headline = reason === 'time' ? 'Tiempo finalizado' : wasRevenge ? 'Revancha finalizada' : 'Sesión finalizada';
+      $('#resultsContent').innerHTML = '<div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-premium dark:border-slate-800 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">'+headline+'</p><h3 class="mt-1 font-display text-4xl font-extrabold">'+acc+'% de precisión</h3><p class="mt-2 text-slate-600 dark:text-slate-400">'+correct+' correctas sobre '+answered+' respondidas · '+failed.length+' errores · '+skipped+' sin responder.</p>'+(wasRevenge?'<p class="mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-300">Las preguntas acertadas fueron eliminadas de errores activos.</p>':'')+'<div class="mt-6 flex flex-wrap gap-3"><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white" onclick="showView(\'dashboard\')">Volver al panel</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startMistakesRevengeSession()">Revancha de errores</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startMistakesSession()">Repaso guiado</button></div></div>' + '<div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">'+failed.slice(0,24).map(q => flashcardMini(q)).join('')+'</div>' + ((wasExam || wasRevenge) ? '<div class="mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Corrección final</p><div class="mt-4 grid gap-3">'+qs.map(q=>{ const s=selectedForScoring(q, old); const ok=s&&s===q.ans; return '<div class="rounded-2xl border '+(ok?'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20':'border-rose-200 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20')+' p-4"><p class="text-sm font-black">'+esc(q.q)+'</p><p class="mt-2 text-xs font-bold">Tu respuesta: '+(s?esc(s.toUpperCase()+') '+(q.opts?.[s]||'')):'Sin responder')+'</p><p class="text-xs font-bold">Correcta: '+(q.ans?esc(q.ans.toUpperCase()+') '+(q.opts?.[q.ans]||'')):'Sin clave')+'</p></div>'; }).join('')+'</div></div>' : '');
+      showView('results');
+    };
+
+    renderReview = function(){
+      const mistakes = Object.keys(state.mistakes||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const due = dueQuestions(); const fav = Object.keys(state.favorites||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const panel = (title, icon, qs, buttons, note='') => '<section class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="flex items-start justify-between gap-3"><div><p class="text-2xl">'+icon+'</p><h4 class="mt-1 font-display text-xl font-extrabold">'+title+'</h4><p class="text-sm font-bold text-slate-500">'+qs.length+' preguntas</p>'+(note?'<p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+note+'</p>':'')+'</div></div><div class="mt-4 flex flex-wrap gap-2">'+buttons+'</div><div class="mt-4 space-y-2">'+qs.slice(0,5).map(q=>'<div class="rounded-2xl bg-slate-50 p-3 text-xs font-semibold leading-5 dark:bg-slate-950/60">'+esc(q.q.slice(0,130))+(q.q.length>130?'…':'')+'</div>').join('')+'</div></section>';
+      $('#reviewPanels').innerHTML = panel('Errores activos','🧾',mistakes,'<button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="startMistakesRevengeSession()">Revancha</button><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startMistakesSession()">Repaso guiado</button>','Revancha no muestra feedback. Si acertás, el error desaparece del listado.') + panel('Repasos vencidos','🔁',due,'<button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white" onclick="startDueSession()">Iniciar</button>') + panel('Favoritas','⭐',fav,'<button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white" onclick="startFavoritesSession()">Iniciar</button>');
+      renderAdvancedFlashcards?.();
+    };
+
+    aiPromptForQuestion = function(q){
+      return ['Actuá como docente experto en examen de residencia médica argentina.','','IMPORTANTE: no asumas que la respuesta cargada en el banco es correcta. Primero procesá el enunciado, las opciones, el año y el tema. Verificá cuál sería la respuesta más correcta según criterio actual, bibliografía argentina y enfoque de examen. Si la clave cargada parece incorrecta, desactualizada o dudosa, marcá ALERTA.','','Devolvé en este formato exacto:','','0) Verificación de clave:','- Respuesta más probable:','- ¿Coincide con la clave cargada? Sí / No / Dudosa','- Motivo:','- Si depende de epidemiología, prevalencias, guías, criterios o calendarios, aclarar año/fuente probable y si pudo cambiar.','','1) Por qué es correcta:','2) Datos clave del enunciado:','3) Análisis de distractores: explicá por qué las opciones incorrectas no corresponden.','4) Regla de Oro: una regla corta para recordar en examen.','5) Alerta de actualización:','- ¿Requiere revisar guía, consenso o dato oficial vigente? Sí / No','',questionFullText(q)].join('\n');
+    };
+    copyContributionPrompt = function(id){
+      const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      const text = aiPromptForQuestion(q) + '\n\nCuando termines, separá tu respuesta para pegarla en estos campos de ResidenciAPP: Por qué es correcta / Datos clave / Análisis de distractores / Regla de Oro / Bibliografía.';
+      navigator.clipboard?.writeText(text).then(()=>alert('Prompt verificador copiado. La IA debe auditar la clave antes de justificarla.')).catch(()=>prompt('Copiá este prompt:', text));
+    };
+
+
 
     function init(){
       initSelects();
@@ -1683,6 +1834,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       applyTheme(state.theme || (preferredDark?'dark':'light'));
       ensureCollaborationState();
       mergeEmbeddedCollaborationData();
+      loadApprovedCollaborationData();
       renderAll();
       renderCollaborationControls();
       $('#startAppBtn')?.addEventListener('click', enterResidenciApp);

@@ -1,14 +1,24 @@
 /**
- * ResidenciAPP · Bandeja de aportes colaborativos con imágenes
- * Pegar este código en Google Apps Script dentro de una Google Sheet.
- * Luego desplegar como Web App y pegar la URL /exec en assets/js/config.js.
+ * ResidenciAPP · Bandeja de aportes colaborativos con imágenes + feedback aprobado
+ *
+ * Uso:
+ * 1) Pegar este código en Google Apps Script.
+ * 2) Si el proyecto NO está vinculado a una Google Sheet, completar SPREADSHEET_ID.
+ * 3) Implementar como Web App con acceso "Cualquier persona".
+ * 4) Pegar la URL /exec en assets/js/config.js.
+ *
+ * Estados útiles en la columna Estado:
+ * - pendiente: aporte recibido, no visible públicamente.
+ * - aprobado: la app lo carga como feedback validado para todos.
+ * - rechazado: no se carga.
  */
+const SPREADSHEET_ID = ''; // Opcional. Si el script está creado desde la Sheet, dejalo vacío.
 const SHEET_NAME = 'Aportes';
 const IMAGE_FOLDER_NAME = 'ResidenciAPP Aportes - Imagenes';
 
 function doPost(e) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getSpreadsheet_();
     const sheet = getOrCreateSheet_(ss, SHEET_NAME);
     ensureHeader_(sheet);
 
@@ -57,8 +67,20 @@ function doPost(e) {
   }
 }
 
-function doGet() {
-  return json_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST desde la app.' });
+function doGet(e) {
+  const params = (e && e.parameter) || {};
+  if (params.mode === 'approved') {
+    const records = getApprovedRecords_();
+    return output_({ ok: true, records: records, count: records.length }, params.callback);
+  }
+  return output_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST para aportes o GET ?mode=approved para feedback aprobado.' }, params.callback);
+}
+
+function getSpreadsheet_() {
+  if (SPREADSHEET_ID) return SpreadsheetApp.openById(SPREADSHEET_ID);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('No hay Google Sheet activa. Completá SPREADSHEET_ID en el Apps Script.');
+  return ss;
 }
 
 function getOrCreateSheet_(ss, name) {
@@ -99,6 +121,82 @@ function ensureHeader_(sheet) {
   sheet.setFrozenRows(1);
 }
 
+function getApprovedRecords_() {
+  const ss = getSpreadsheet_();
+  const sheet = getOrCreateSheet_(ss, SHEET_NAME);
+  ensureHeader_(sheet);
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return [];
+
+  const headers = values[0].map(String);
+  const idx = makeIndex_(headers);
+  const out = [];
+
+  for (let r = 1; r < values.length; r++) {
+    const row = values[r];
+    const status = String(row[idx['Estado']] || '').trim().toLowerCase();
+    if (!['aprobado', 'aprobada', 'approved', 'validado', 'validada'].includes(status)) continue;
+
+    let payload = null;
+    const payloadRaw = row[idx['Payload completo JSON sin base64']];
+    if (payloadRaw) {
+      try { payload = JSON.parse(payloadRaw); } catch (err) { payload = null; }
+    }
+    const question = payload && payload.question ? payload.question : {};
+    const contribution = payload && payload.contribution ? payload.contribution : {};
+
+    out.push({
+      status: status,
+      approvedAt: toIso_(row[idx['Fecha']]),
+      submissionId: row[idx['Submission ID']] || '',
+      questionId: row[idx['Pregunta ID']] || question.id || '',
+      question: {
+        id: row[idx['Pregunta ID']] || question.id || '',
+        source: row[idx['Fuente']] || question.source || '',
+        year: row[idx['Año']] || question.year || '',
+        eje: row[idx['Eje']] || question.eje || '',
+        tema: row[idx['Tema']] || question.tema || '',
+        sprint: row[idx['Sprint']] || question.sprint || '',
+        text: row[idx['Enunciado']] || question.text || '',
+        answer: row[idx['Respuesta']] || question.answer || '',
+        correctAnswerText: row[idx['Respuesta correcta texto']] || question.correctAnswerText || ''
+      },
+      contribution: {
+        whyCorrect: row[idx['Por qué es correcta']] || contribution.whyCorrect || '',
+        keyData: row[idx['Datos clave']] || contribution.keyData || '',
+        distractors: row[idx['Análisis de distractores']] || contribution.distractors || '',
+        goldenRule: row[idx['Regla de Oro']] || contribution.goldenRule || '',
+        bibliography: row[idx['Bibliografía / fuente']] || contribution.bibliography || '',
+        contributorName: row[idx['Colaborador']] || contribution.contributorName || '',
+        contributionType: row[idx['Tipo de aporte']] || contribution.contributionType || '',
+        confidence: row[idx['Confianza']] || contribution.confidence || '',
+        imageUrl: row[idx['Imagen URL Drive']] || '',
+        imageFileId: row[idx['Imagen File ID']] || ''
+      }
+    });
+  }
+  return out;
+}
+
+function makeIndex_(headers) {
+  const index = {};
+  headers.forEach((h, i) => { index[h] = i; });
+  return new Proxy(index, {
+    get(target, prop) {
+      if (prop in target) return target[prop];
+      return -1;
+    }
+  });
+}
+
+function toIso_(value) {
+  if (!value) return '';
+  try {
+    const d = value instanceof Date ? value : new Date(value);
+    return isNaN(d.getTime()) ? String(value) : d.toISOString();
+  } catch (err) { return String(value); }
+}
+
 function saveImage_(image, question, submissionId) {
   const dataUrl = String(image.data || '');
   const match = dataUrl.match(/^data:(.+);base64,(.+)$/);
@@ -114,19 +212,9 @@ function saveImage_(image, question, submissionId) {
   const folder = getOrCreateImageFolder_();
   const blob = Utilities.newBlob(bytes, mimeType, fileName);
   const file = folder.createFile(blob);
-
-  // Para que puedas abrir la imagen desde la Google Sheet.
-  // Si preferís que quede privada, comentá la línea siguiente.
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-  return {
-    name: fileName,
-    originalName: image.name || '',
-    mimeType: mimeType,
-    size: bytes.length,
-    fileId: file.getId(),
-    url: file.getUrl()
-  };
+  return { name: fileName, originalName: image.name || '', mimeType: mimeType, size: bytes.length, fileId: file.getId(), url: file.getUrl() };
 }
 
 function getOrCreateImageFolder_() {
@@ -136,10 +224,7 @@ function getOrCreateImageFolder_() {
 }
 
 function sanitizeFileName_(name) {
-  return String(name || '')
-    .replace(/[\\/:*?"<>|#%{}$!`&@+=]/g, '-')
-    .replace(/\s+/g, '_')
-    .slice(0, 120);
+  return String(name || '').replace(/[\\/:*?"<>|#%{}$!`&@+=]/g, '-').replace(/\s+/g, '_').slice(0, 120);
 }
 
 function sanitizePayloadForSheet_(payload, imageResult) {
@@ -157,8 +242,11 @@ function sanitizePayloadForSheet_(payload, imageResult) {
   return copy;
 }
 
-function json_(obj) {
+function json_(obj) { return output_(obj, ''); }
+
+function output_(obj, callback) {
+  const text = callback ? String(callback) + '(' + JSON.stringify(obj) + ');' : JSON.stringify(obj);
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+    .createTextOutput(text)
+    .setMimeType(callback ? ContentService.MimeType.JAVASCRIPT : ContentService.MimeType.JSON);
 }
