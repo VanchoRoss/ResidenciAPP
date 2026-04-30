@@ -1554,12 +1554,102 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
        - Feedback colaborativo aparece en Experiencia de aprendizaje.
        - Errores corregidos desaparecen del repaso de errores.
     */
-    function enterResidenciApp(){
+    const ACCESS_USER = 'resiapp';
+    const ACCESS_PASS_SHA256 = '83589d4a38d3a491a38923299c55edd17eb1e2cc4b50495eefbc0cab9ad52660';
+    const ACCESS_STORAGE_KEY = 'residenciapp_access_granted_v31';
+
+    async function sha256Hex(text){
+      const data = new TextEncoder().encode(String(text || ''));
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    function isAccessGranted(){
+      try { return localStorage.getItem(ACCESS_STORAGE_KEY) === 'true'; }
+      catch(err){ return false; }
+    }
+
+    function setAccessGranted(value){
+      try {
+        if(value) localStorage.setItem(ACCESS_STORAGE_KEY, 'true');
+        else localStorage.removeItem(ACCESS_STORAGE_KEY);
+      } catch(err) {}
+    }
+
+    function hideAccessScreen(){
       const loading = $('#loading');
       if(!loading) return;
       loading.classList.add('loading-hidden');
       setTimeout(()=>{ loading.style.display='none'; }, 320);
     }
+
+    function setLoginStatus(message, tone='neutral'){
+      const el = $('#loginStatus');
+      if(!el) return;
+      el.textContent = message || '';
+      el.className = 'min-h-[1.25rem] text-center text-xs font-bold ' + (
+        tone === 'error' ? 'text-rose-600 dark:text-rose-300' :
+        tone === 'ok' ? 'text-emerald-600 dark:text-emerald-300' :
+        'text-slate-500 dark:text-slate-400'
+      );
+    }
+
+    async function enterResidenciApp(){
+      if(isAccessGranted()) { hideAccessScreen(); return; }
+      const user = String($('#loginUser')?.value || '').trim().toLowerCase();
+      const pass = String($('#loginPass')?.value || '');
+      const btn = $('#startAppBtn');
+      if(!user || !pass){
+        setLoginStatus('Completá usuario y contraseña para ingresar.', 'error');
+        return;
+      }
+      try{
+        if(btn){ btn.disabled = true; btn.textContent = 'Verificando…'; btn.classList.add('opacity-70'); }
+        const hash = await sha256Hex(pass);
+        if(user === ACCESS_USER && hash === ACCESS_PASS_SHA256){
+          setAccessGranted(true);
+          setLoginStatus('Acceso concedido. Bienvenido a ResidenciAPP.', 'ok');
+          setTimeout(hideAccessScreen, 220);
+        } else {
+          setLoginStatus('Usuario o contraseña incorrectos.', 'error');
+          const passInput = $('#loginPass');
+          if(passInput){ passInput.value = ''; passInput.focus(); }
+        }
+      } catch(err){
+        setLoginStatus('No se pudo verificar el acceso en este navegador.', 'error');
+      } finally {
+        if(btn){ btn.disabled = false; btn.textContent = 'Acceder y comenzar'; btn.classList.remove('opacity-70'); }
+      }
+    }
+
+    function initAccessGate(){
+      const btn = $('#startAppBtn');
+      const user = $('#loginUser');
+      const pass = $('#loginPass');
+      if(isAccessGranted()){
+        setLoginStatus('Sesión autorizada en este navegador. Tocá para entrar.', 'ok');
+        if(btn) btn.textContent = 'Entrar a ResidenciAPP';
+        if(user) user.closest('div')?.classList.add('hidden');
+        if(pass) pass.closest('div')?.classList.add('hidden');
+      }
+      [user, pass].forEach(input => input?.addEventListener('keydown', ev => {
+        if(ev.key === 'Enter'){ ev.preventDefault(); enterResidenciApp(); }
+      }));
+    }
+
+    toggleAccessPassword = function(){
+      const input = $('#loginPass');
+      const btn = $('#togglePassBtn');
+      if(!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      if(btn) btn.textContent = show ? 'Ocultar' : 'Ver';
+    };
+
+    logoutResidenciApp = function(){
+      setAccessGranted(false);
+      location.reload();
+    };
 
     openMobileMenu = function(){
       const sidebar = $('#sidebar');
@@ -2773,7 +2863,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       loadApprovedCollaborationData();
       renderAll();
       renderCollaborationControls();
-      $('#startAppBtn')?.addEventListener('click', enterResidenciApp);
+      initAccessGate();
       $('#themeToggle').addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#themeToggleTop')?.addEventListener('click',()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'));
       $('#mobileMenuBtn').addEventListener('click',toggleSidebar); $('#closeMenuBtn').addEventListener('click',closeMobileMenu); $('#overlay').addEventListener('click',closeMobileMenu);

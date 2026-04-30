@@ -8,7 +8,7 @@
   <meta name="description" content="ResidenciAPP es una plataforma de estudio activo para residencia médica: preguntas por sprints, repaso espaciado, flashcards, error log y colaboración." />
   <meta name="keywords" content="residencia médica, examen único, medicina, preguntas médicas, repaso espaciado, flashcards, Argentina" />
   <meta name="author" content="ResidenciAPP" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="noindex, nofollow" />
   <link rel="canonical" href="https://vanchoross.github.io/ResidenciAPP/" />
   <meta property="og:title" content="ResidenciAPP · Estudio activo para residencia médica" />
   <meta property="og:description" content="Entrená con preguntas por temario, sprints, flashcards, error log, repaso espaciado y colaboración." />
@@ -70,7 +70,31 @@
       <p class="font-display text-3xl font-extrabold tracking-tight">ResidenciAPP</p>
       <p class="mt-1 text-sm font-bold uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">Estudiar para entender · Medir para dominar</p>
       <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">Entrená, aprendé desde cero y medí tu progreso con sprints y simulacros.</p>
-      <button id="startAppBtn" class="mt-6 rounded-2xl bg-medical-600 px-7 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-medical-700" onclick="enterResidenciApp()">Comenzar</button>
+
+      <div class="mt-6 rounded-[1.7rem] border border-medical-100 bg-white/85 p-4 text-left shadow-soft backdrop-blur dark:border-medical-900/70 dark:bg-slate-900/80">
+        <div class="mb-4 flex items-center gap-3">
+          <div class="grid h-11 w-11 place-items-center rounded-2xl bg-medical-50 text-xl text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">🔒</div>
+          <div>
+            <p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Acceso privado</p>
+            <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Ingresá tus credenciales para comenzar.</p>
+          </div>
+        </div>
+        <form id="accessForm" class="space-y-3" onsubmit="event.preventDefault(); enterResidenciApp();">
+          <div>
+            <label for="loginUser" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Usuario</label>
+            <input id="loginUser" type="text" autocomplete="username" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold outline-none transition focus:border-medical-400 focus:ring-4 focus:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus:ring-medical-950/40" placeholder="Usuario" />
+          </div>
+          <div>
+            <label for="loginPass" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Contraseña</label>
+            <div class="mt-1 flex rounded-2xl border border-slate-200 bg-white focus-within:border-medical-400 focus-within:ring-4 focus-within:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus-within:ring-medical-950/40">
+              <input id="loginPass" type="password" autocomplete="current-password" class="min-w-0 flex-1 rounded-2xl bg-transparent px-4 py-3 text-sm font-bold outline-none" placeholder="Contraseña" />
+              <button type="button" id="togglePassBtn" class="px-4 text-xs font-black text-slate-500 hover:text-medical-700 dark:text-slate-400 dark:hover:text-medical-300" onclick="toggleAccessPassword()">Ver</button>
+            </div>
+          </div>
+          <p id="loginStatus" class="min-h-[1.25rem] text-center text-xs font-bold text-slate-500 dark:text-slate-400"></p>
+          <button id="startAppBtn" type="submit" class="w-full rounded-2xl bg-medical-600 px-7 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-medical-700">Acceder y comenzar</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -112,6 +136,7 @@
         <span id="themeLabel">Oscuro</span><span id="themeIcon">🌙</span>
       </button>
       <button id="resetProgressBtn" class="w-full rounded-2xl border border-rose-200 px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">Reinicio global del progreso</button>
+      <button class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-900" onclick="logoutResidenciApp()">Cerrar sesión</button>
     </div>
   </aside>
 
