@@ -3,6 +3,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const LESSONS = window.RESIDENCIAPP_LESSONS || [];
     const METHODS = [
       {id:'preguntas', name:'Preguntas ABCD', icon:'✅', tag:'Aplicación', desc:'Responder y justificar. Ideal para entrenar toma de decisiones.'},
+      {id:'razonamiento', name:'Razonamiento guiado', icon:'🧬', tag:'NeuroPREP', desc:'Primero formulás hipótesis sin opciones, luego comparás contra ABCD y calibrás confianza.'},
       {id:'simulacro', name:'Simulacro', icon:'⏱️', tag:'Presión', desc:'Sin explicación inmediata. Sirve para entrenar rendimiento real.'},
       {id:'flashcard', name:'Flashcard', icon:'🃏', tag:'Recuerdo', desc:'Pregunta al frente, respuesta al dorso. Útil para falladas.'},
       {id:'feynman', name:'Feynman', icon:'🎙️', tag:'Comprensión', desc:'Explicar simple. Ideal para temas nuevos o confusos.'},
@@ -732,17 +733,17 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function saveStateAndAll(){ saveState(); renderAll(); }
-    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderLearn(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
+    function renderAll(){ renderStats(); renderPerformancePanel(); updateTemaFilter(); renderSprints(); renderLearn(); renderNeuroprep(); renderReview(); renderDailyChecklist(); renderMethods(); renderTemario(); renderLibrary(); }
 
     function showView(name){
       $$('.view').forEach(v=>v.classList.add('hidden'));
       $('#'+name+'View')?.classList.remove('hidden');
       $$('.navBtn').forEach(b=> b.classList.toggle('bg-medical-50', b.dataset.nav===name));
       $$('.navBtn').forEach(b=> b.classList.toggle('text-medical-700', b.dataset.nav===name));
-      const titles={dashboard:'Panel principal',learn:'Aprender desde cero',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
+      const titles={dashboard:'Panel principal',learn:'Aprender desde cero',neuroprep:'NeuroPREP',session:'Sesión activa',results:'Resultados',review:'Repaso inteligente',methods:'Métodos de estudio',temario:'Temario 2026',library:'Biblioteca personal'};
       $('#viewTitle').textContent = titles[name] || 'ResidenciAPP';
       closeMobileMenu(); window.scrollTo({top:0, behavior:'smooth'});
-      if(name==='session') renderQuestion(); if(name==='learn') renderLearn(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
+      if(name==='session') renderQuestion(); if(name==='learn') renderLearn(); if(name==='neuroprep') renderNeuroprep(); if(name==='review') renderReview(); if(name==='library') renderLibrary();
     }
     function openMobileMenu(){ $('#sidebar').classList.remove('-translate-x-full'); $('#overlay').classList.remove('hidden'); }
     function closeMobileMenu(){ $('#sidebar').classList.add('-translate-x-full'); $('#overlay').classList.add('hidden'); }
@@ -1930,20 +1931,26 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
 
 
     /* === ResidenciAPP Tutor v2.4 · Mini-apuntes locales + Regla de Oro fija + D1/D2/D4 === */
+    /* === ResidenciAPP Tutor v2.6 · Pizarrón avanzado: pantalla completa, selección, texto limpio y trazos editables === */
     function ensureQuestionNotebookState(){ state.questionNotebooks ||= {}; }
     function normalizeQuestionNotebook(nb){
       nb = nb || {};
       nb.textBoxes ||= [];
-      nb.canvasData ||= '';
+      nb.strokes ||= [];
+      nb.canvasBg ||= '';
+      if(nb.canvasData && !nb.canvasBg && !nb.strokes.length){ nb.canvasBg = nb.canvasData; nb.canvasData = ''; }
       nb.fontSize ||= 16;
       nb.tool ||= 'pen';
       nb.drawColor ||= '#2563eb';
       nb.textColor ||= '#0f172a';
-      nb.textBg ||= '#ffffffcc';
+      nb.textBg ||= 'transparent';
+      nb.textBorderColor ||= '#2563eb';
+      nb.textBorderWidth ||= 1;
       nb.strokeWidth ||= 4;
       nb.eraserWidth ||= 26;
+      nb.selectedStrokeId ||= '';
       if(nb.html && !nb.__migratedToBoard && !nb.textBoxes.length){
-        nb.textBoxes.push({id:'legacy_'+Date.now(), left:4, top:5, width:34, height:30, html:nb.html, fontSize:nb.fontSize||16, color:'#0f172a', bg:'#ffffffdd'});
+        nb.textBoxes.push({id:'legacy_'+Date.now(), left:4, top:5, width:34, height:30, html:nb.html, fontSize:nb.fontSize||16, color:'#0f172a', bg:'transparent', border:false, borderColor:'#2563eb', borderWidth:1});
         nb.__migratedToBoard = true;
       }
       return nb;
@@ -1963,25 +1970,26 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       if(board) board.dataset.tool = tool;
     }
     function notebookSetColor(id, color, kind='draw'){
-      const patch = kind === 'text' ? {textColor:color} : {drawColor:color};
+      const patch = kind === 'text' ? {textColor:color} : (kind === 'border' ? {textBorderColor:color} : {drawColor:color});
       saveQuestionNotebook(id, patch);
-      const canvas = $('#noteCanvas_'+id);
-      if(canvas && canvas._ctx) canvas._ctx.strokeStyle = color;
       const selected = getSelectedNoteBox(id);
       if(kind === 'text' && selected){ selected.style.color = color; saveNotebookTextBoxes(id); }
+      if(kind === 'border'){
+        const wrap = getSelectedNoteWrap(id);
+        if(wrap){ wrap.dataset.bordered='1'; wrap.style.borderColor=color; saveNotebookTextBoxes(id); }
+      }
       const preview = $('#noteColorPreview_'+id);
-      if(preview) preview.style.background = color;
+      if(preview && kind === 'draw') preview.style.background = color;
+      redrawNotebookCanvas(id);
     }
-    function notebookSetStroke(id, value){
-      const n = Math.max(1, Math.min(22, Number(value)||4));
-      saveQuestionNotebook(id, {strokeWidth:n});
-      const canvas = $('#noteCanvas_'+id);
-      if(canvas && canvas._ctx) canvas._ctx.lineWidth = n;
-    }
-    function notebookSetEraser(id, value){ saveQuestionNotebook(id, {eraserWidth:Math.max(8, Math.min(80, Number(value)||26))}); }
-    function getSelectedNoteBox(id){ return document.querySelector('#noteTextLayer_'+id+' .note-textbox-wrap.is-selected .note-textbox'); }
+    function notebookSetStroke(id, value){ saveQuestionNotebook(id, {strokeWidth:Math.max(1, Math.min(22, Number(value)||4))}); }
+    function notebookSetEraser(id, value){ saveQuestionNotebook(id, {eraserWidth:Math.max(8, Math.min(90, Number(value)||26))}); }
+    function getSelectedNoteWrap(id){ return document.querySelector('#noteTextLayer_'+id+' .note-textbox-wrap.is-selected'); }
+    function getSelectedNoteBox(id){ const w = getSelectedNoteWrap(id); return w ? w.querySelector('.note-textbox') : null; }
     function selectNoteBox(id, boxId){
       document.querySelectorAll('#noteTextLayer_'+id+' .note-textbox-wrap').forEach(el=>el.classList.toggle('is-selected', el.dataset.boxId===boxId));
+      saveQuestionNotebook(id, {selectedStrokeId:''});
+      redrawNotebookCanvas(id);
     }
     function noteBoxDataFromDom(id){
       const layer = $('#noteTextLayer_'+id);
@@ -1997,7 +2005,10 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
           html: box ? box.innerHTML : '',
           fontSize: box ? parseInt(box.style.fontSize||'16',10) : 16,
           color: box ? box.style.color || '#0f172a' : '#0f172a',
-          bg: box ? box.style.background || '#ffffffdd' : '#ffffffdd'
+          bg: box ? box.style.background || 'transparent' : 'transparent',
+          border: wrap.dataset.bordered === '1',
+          borderColor: wrap.style.borderColor || '#2563eb',
+          borderWidth: parseInt(wrap.dataset.borderWidth||'1',10) || 1
         };
       });
     }
@@ -2005,7 +2016,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function notebookFont(id, delta){
       const nb = getQuestionNotebook(id);
       const selected = getSelectedNoteBox(id);
-      const size = Math.max(11, Math.min(34, (selected ? parseInt(selected.style.fontSize||nb.fontSize||16,10) : (nb.fontSize||16)) + delta));
+      const size = Math.max(11, Math.min(42, (selected ? parseInt(selected.style.fontSize||nb.fontSize||16,10) : (nb.fontSize||16)) + delta));
       if(selected){ selected.style.fontSize = size+'px'; saveNotebookTextBoxes(id); }
       saveQuestionNotebook(id, {fontSize:size});
     }
@@ -2014,75 +2025,164 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const selected = getSelectedNoteBox(id);
       if(selected){ selected.style.background = color; saveNotebookTextBoxes(id); }
     }
+    function notebookHighlightText(id){
+      const selected = getSelectedNoteBox(id);
+      if(!selected) return alert('Seleccioná un cuadro y marcá las palabras que querés resaltar.');
+      selected.focus();
+      try { document.execCommand('backColor', false, '#fef08a'); } catch(e) { document.execCommand('hiliteColor', false, '#fef08a'); }
+      saveNotebookTextBoxes(id);
+    }
+    function notebookClearTextHighlight(id){
+      const selected = getSelectedNoteBox(id);
+      if(!selected) return;
+      selected.focus();
+      try { document.execCommand('removeFormat', false, null); } catch(e) {}
+      saveNotebookTextBoxes(id);
+    }
+    function notebookToggleBoxBorder(id){
+      const wrap = getSelectedNoteWrap(id);
+      if(!wrap) return alert('Seleccioná un cuadro de texto.');
+      const on = wrap.dataset.bordered !== '1';
+      const nb = getQuestionNotebook(id);
+      wrap.dataset.bordered = on ? '1' : '0';
+      wrap.style.borderColor = nb.textBorderColor || '#2563eb';
+      wrap.style.borderWidth = (nb.textBorderWidth || 1)+'px';
+      saveNotebookTextBoxes(id);
+    }
+    function notebookSetBoxBorderWidth(id, value){
+      const n = Math.max(1, Math.min(8, Number(value)||1));
+      saveQuestionNotebook(id, {textBorderWidth:n});
+      const wrap = getSelectedNoteWrap(id);
+      if(wrap){ wrap.dataset.bordered='1'; wrap.dataset.borderWidth=String(n); wrap.style.borderWidth=n+'px'; saveNotebookTextBoxes(id); }
+    }
+    function toggleNotebookFullscreen(id){
+      const sec = document.querySelector('[data-question-notebook="'+id+'"]');
+      if(!sec) return;
+      const on = !sec.classList.contains('note-fullscreen');
+      document.querySelectorAll('.note-fullscreen').forEach(el=>el.classList.remove('note-fullscreen'));
+      document.body.classList.toggle('note-fullscreen-active', on);
+      sec.classList.toggle('note-fullscreen', on);
+      const btn = $('#noteFullscreenBtn_'+id);
+      if(btn) btn.textContent = on ? 'Salir de pantalla completa' : 'Pantalla completa';
+      setTimeout(()=>redrawNotebookCanvas(id), 120);
+    }
     function clearNotebookBoard(id){
       if(!confirm('¿Borrar TODO el pizarrón local de esta pregunta?')) return;
-      const canvas = $('#noteCanvas_'+id);
-      if(canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
       const layer = $('#noteTextLayer_'+id); if(layer) layer.innerHTML='';
-      saveQuestionNotebook(id, {canvasData:'', textBoxes:[]});
+      saveQuestionNotebook(id, {canvasData:'', canvasBg:'', strokes:[], selectedStrokeId:'', textBoxes:[]});
+      redrawNotebookCanvas(id);
     }
     function clearNotebookCanvas(id){
       if(!confirm('¿Borrar solo el dibujo del pizarrón? Los cuadros de texto quedan guardados.')) return;
-      const canvas = $('#noteCanvas_'+id);
-      if(canvas){ const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
-      saveQuestionNotebook(id, {canvasData:''});
+      saveQuestionNotebook(id, {canvasData:'', canvasBg:'', strokes:[], selectedStrokeId:''});
+      redrawNotebookCanvas(id);
     }
     function deleteSelectedTextBox(id){
-      const selectedWrap = document.querySelector('#noteTextLayer_'+id+' .note-textbox-wrap.is-selected');
+      const selectedWrap = getSelectedNoteWrap(id);
       if(!selectedWrap) return alert('Seleccioná un cuadro de texto para eliminarlo.');
       selectedWrap.remove(); saveNotebookTextBoxes(id);
     }
     function renderNoteTextBox(id, box){
       const safeId = esc(String(box.id || ('box_'+Date.now())));
       const html = box.html || '';
-      const style = 'left:'+(box.left||4)+'%;top:'+(box.top||5)+'%;width:'+(box.width||30)+'%;height:'+(box.height||18)+'%;';
-      return '<div class="note-textbox-wrap" data-box-id="'+safeId+'" style="'+style+'">'
-        + '<div class="note-textbox-bar"><button type="button" title="Mover" class="note-drag-handle">↕ mover</button><button type="button" title="Eliminar" class="note-box-delete" onclick="event.stopPropagation();this.closest(\'.note-textbox-wrap\').remove();saveNotebookTextBoxes(\''+esc(id)+'\')">×</button></div>'
-        + '<div class="note-textbox" contenteditable="true" oninput="saveNotebookTextBoxes(\''+esc(id)+'\')" onblur="saveNotebookTextBoxes(\''+esc(id)+'\')" style="font-size:'+(box.fontSize||16)+'px;color:'+(box.color||'#0f172a')+';background:'+(box.bg||'#ffffffdd')+'">'+html+'</div>'
+      const bordered = !!box.border;
+      const borderColor = box.borderColor || '#2563eb';
+      const borderWidth = box.borderWidth || 1;
+      const style = 'left:'+(box.left||4)+'%;top:'+(box.top||5)+'%;width:'+(box.width||30)+'%;height:'+(box.height||18)+'%;--note-border:'+borderColor+';border-color:'+borderColor+';border-width:'+borderWidth+'px;';
+      return '<div class="note-textbox-wrap" data-box-id="'+safeId+'" data-bordered="'+(bordered?'1':'0')+'" data-border-width="'+borderWidth+'" style="'+style+'">'
+        + '<button type="button" title="Eliminar texto" class="note-box-delete" onclick="event.stopPropagation();this.closest(\'.note-textbox-wrap\').remove();saveNotebookTextBoxes(\''+esc(id)+'\')">×</button>'
+        + '<div class="note-textbox" contenteditable="true" oninput="saveNotebookTextBoxes(\''+esc(id)+'\')" onblur="saveNotebookTextBoxes(\''+esc(id)+'\')" style="font-size:'+(box.fontSize||16)+'px;color:'+(box.color||'#0f172a')+';background:'+(box.bg||'transparent')+'">'+html+'</div>'
         + '</div>';
     }
     function questionNotebookTemplate(q){
       const nb = getQuestionNotebook(q.id);
-      const colors = ['#2563eb','#0f172a','#dc2626','#16a34a','#f59e0b','#9333ea','#db2777','#06b6d4','#84cc16','#facc15'];
+      const colors = ['#2563eb','#0f172a','#dc2626','#16a34a','#f59e0b','#9333ea','#db2777','#06b6d4','#84cc16','#facc15','#ffffff'];
       return '<section class="mt-5 rounded-[1.65rem] border border-violet-200 bg-white/90 p-4 shadow-soft dark:border-violet-900/60 dark:bg-slate-900/80" data-question-notebook="'+esc(q.id)+'">'
-        + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Mini hoja personal</p><h5 class="mt-1 font-display text-xl font-extrabold">Pizarrón local de esta pregunta</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">Se revela recién después de responder. Podés dibujar, borrar zonas puntuales y crear cuadros de texto. Queda guardado solo en este navegador.</p></div><span id="notebookSaved_'+esc(q.id)+'" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700 dark:bg-violet-950/40 dark:text-violet-200">Local</span></div>'
+        + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Mini hoja personal</p><h5 class="mt-1 font-display text-xl font-extrabold">Pizarrón local de esta pregunta</h5><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-400">Se revela después de responder. Dibujá, seleccioná trazos, mové textos, resaltá ideas y guardá tu mini esquema local.</p></div><div class="flex flex-wrap items-center gap-2"><span id="notebookSaved_'+esc(q.id)+'" class="rounded-full bg-violet-50 px-3 py-1 text-xs font-black text-violet-700 dark:bg-violet-950/40 dark:text-violet-200">Local</span><button id="noteFullscreenBtn_'+esc(q.id)+'" class="note-tool is-ghost" onclick="toggleNotebookFullscreen(\''+esc(q.id)+'\')">Pantalla completa</button></div></div>'
         + '<div class="note-ribbon mt-4">'
-        + '<div class="note-toolgroup"><span>Herramienta</span><button data-note-tool="'+esc(q.id)+'" data-tool="pen" class="note-tool '+((nb.tool||'pen')==='pen'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'pen\')">Birome</button><button data-note-tool="'+esc(q.id)+'" data-tool="eraser" class="note-tool '+(nb.tool==='eraser'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'eraser\')">Borrador</button><button data-note-tool="'+esc(q.id)+'" data-tool="text" class="note-tool '+(nb.tool==='text'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'text\')">Texto</button><button data-note-tool="'+esc(q.id)+'" data-tool="move" class="note-tool '+(nb.tool==='move'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'move\')">Mover</button></div>'
-        + '<div class="note-toolgroup note-colors"><span>Color</span>'+colors.map(c=>'<button class="note-color" style="background:'+c+'" onclick="notebookSetColor(\''+esc(q.id)+'\',\''+c+'\')" title="'+c+'"></button>').join('')+'<input class="note-color-input" type="color" value="'+esc(nb.drawColor||'#2563eb')+'" onchange="notebookSetColor(\''+esc(q.id)+'\',this.value)"><span id="noteColorPreview_'+esc(q.id)+'" class="note-color-preview" style="background:'+(nb.drawColor||'#2563eb')+'"></span></div>'
+        + '<div class="note-toolgroup"><span>Herramienta</span><button data-note-tool="'+esc(q.id)+'" data-tool="pen" class="note-tool '+((nb.tool||'pen')==='pen'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'pen\')">Birome</button><button data-note-tool="'+esc(q.id)+'" data-tool="eraser" class="note-tool '+(nb.tool==='eraser'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'eraser\')">Borrador</button><button data-note-tool="'+esc(q.id)+'" data-tool="text" class="note-tool '+(nb.tool==='text'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'text\')">Texto</button><button data-note-tool="'+esc(q.id)+'" data-tool="move" class="note-tool '+(nb.tool==='move'?'is-active':'')+'" onclick="notebookSetTool(\''+esc(q.id)+'\',\'move\')">Seleccionar</button></div>'
+        + '<div class="note-toolgroup note-colors"><span>Birome</span>'+colors.map(c=>'<button class="note-color" style="background:'+c+'" onclick="notebookSetColor(\''+esc(q.id)+'\',\''+c+'\',\'draw\')" title="'+c+'"></button>').join('')+'<input class="note-color-input" type="color" value="'+esc(nb.drawColor||'#2563eb')+'" onchange="notebookSetColor(\''+esc(q.id)+'\',this.value,\'draw\')"><span id="noteColorPreview_'+esc(q.id)+'" class="note-color-preview" style="background:'+(nb.drawColor||'#2563eb')+'"></span></div>'
         + '<div class="note-toolgroup"><span>Trazo</span><select class="note-select" onchange="notebookSetStroke(\''+esc(q.id)+'\',this.value)"><option value="2">Fino</option><option value="4" '+((nb.strokeWidth||4)==4?'selected':'')+'>Normal</option><option value="8" '+((nb.strokeWidth||4)==8?'selected':'')+'>Grueso</option><option value="14" '+((nb.strokeWidth||4)==14?'selected':'')+'>Marcador</option></select><span>Borrador</span><select class="note-select" onchange="notebookSetEraser(\''+esc(q.id)+'\',this.value)"><option value="16">Chico</option><option value="28" '+((nb.eraserWidth||26)>=24&&(nb.eraserWidth||26)<40?'selected':'')+'>Medio</option><option value="52" '+((nb.eraserWidth||26)>=40?'selected':'')+'>Grande</option></select></div>'
-        + '<div class="note-toolgroup"><span>Texto</span><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',-1)">A−</button><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',1)">A+</button><button class="note-tool" onclick="notebookTextBg(\''+esc(q.id)+'\',\'#fef08acc\')">Resaltar</button><button class="note-tool" onclick="deleteSelectedTextBox(\''+esc(q.id)+'\')">Eliminar texto</button></div>'
+        + '<div class="note-toolgroup"><span>Texto</span><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',-1)">A−</button><button class="note-tool" onclick="notebookFont(\''+esc(q.id)+'\',1)">A+</button><input class="note-color-input" type="color" value="'+esc(nb.textColor||'#0f172a')+'" title="Color del texto" onchange="notebookSetColor(\''+esc(q.id)+'\',this.value,\'text\')"><button class="note-tool" onclick="notebookHighlightText(\''+esc(q.id)+'\')">Resaltar letras</button><button class="note-tool" onclick="notebookTextBg(\''+esc(q.id)+'\',\'transparent\')">Fondo limpio</button><button class="note-tool" onclick="deleteSelectedTextBox(\''+esc(q.id)+'\')">Eliminar texto</button></div>'
+        + '<div class="note-toolgroup"><span>Recuadro</span><button class="note-tool" onclick="notebookToggleBoxBorder(\''+esc(q.id)+'\')">Borde sí/no</button><input class="note-color-input" type="color" value="'+esc(nb.textBorderColor||'#2563eb')+'" title="Color del borde" onchange="notebookSetColor(\''+esc(q.id)+'\',this.value,\'border\')"><select class="note-select" onchange="notebookSetBoxBorderWidth(\''+esc(q.id)+'\',this.value)"><option value="1">1 px</option><option value="2">2 px</option><option value="4">4 px</option><option value="6">6 px</option></select></div>'
         + '<div class="note-toolgroup"><button class="note-tool danger" onclick="clearNotebookCanvas(\''+esc(q.id)+'\')">Limpiar dibujo</button><button class="note-tool danger" onclick="clearNotebookBoard(\''+esc(q.id)+'\')">Limpiar todo</button></div>'
         + '</div>'
-        + '<div class="note-board-shell mt-3"><div id="noteBoard_'+esc(q.id)+'" class="note-board" data-tool="'+esc(nb.tool||'pen')+'"><canvas id="noteCanvas_'+esc(q.id)+'" class="note-canvas" width="1400" height="820"></canvas><div id="noteTextLayer_'+esc(q.id)+'" class="note-text-layer">'+(nb.textBoxes||[]).map(b=>renderNoteTextBox(q.id,b)).join('')+'</div><div class="note-board-hint">Birome para dibujar · Borrador para borrar una zona · Texto y click para insertar cuadro · Mover para arrastrar cuadros</div></div></div>'
+        + '<div class="note-board-shell mt-3"><div id="noteBoard_'+esc(q.id)+'" class="note-board" data-tool="'+esc(nb.tool||'pen')+'"><canvas id="noteCanvas_'+esc(q.id)+'" class="note-canvas" width="1400" height="820"></canvas><div id="noteTextLayer_'+esc(q.id)+'" class="note-text-layer">'+(nb.textBoxes||[]).map(b=>renderNoteTextBox(q.id,b)).join('')+'</div><div class="note-board-hint">Seleccionar: mové cuadros y trazos · Texto: click para insertar · Borrador: borra partes del dibujo</div></div></div>'
         + '</section>';
     }
+    function redrawNotebookCanvas(id){
+      const canvas = $('#noteCanvas_'+id); if(!canvas) return;
+      const ctx = canvas.getContext('2d'); const nb = getQuestionNotebook(id);
+      ctx.clearRect(0,0,canvas.width,canvas.height); ctx.lineCap='round'; ctx.lineJoin='round';
+      const drawStrokes = () => {
+        (nb.strokes||[]).forEach(st=>{
+          if(!st.points || st.points.length<2) return;
+          ctx.save(); ctx.strokeStyle=st.color||'#2563eb'; ctx.lineWidth=st.width||4; ctx.globalCompositeOperation='source-over';
+          ctx.beginPath(); ctx.moveTo(st.points[0].x, st.points[0].y);
+          for(let i=1;i<st.points.length;i++) ctx.lineTo(st.points[i].x, st.points[i].y);
+          ctx.stroke();
+          if(nb.selectedStrokeId && st.id===nb.selectedStrokeId){
+            const b = strokeBounds(st); if(b){ ctx.setLineDash([10,8]); ctx.lineWidth=2; ctx.strokeStyle='rgba(37,99,235,.85)'; ctx.strokeRect(b.minX-10,b.minY-10,(b.maxX-b.minX)+20,(b.maxY-b.minY)+20); }
+          }
+          ctx.restore();
+        });
+      };
+      if(nb.canvasBg){ const img=new Image(); img.onload=()=>{ ctx.drawImage(img,0,0,canvas.width,canvas.height); drawStrokes(); }; img.src=nb.canvasBg; } else drawStrokes();
+    }
+    function strokeBounds(st){ if(!st.points?.length) return null; const xs=st.points.map(p=>p.x), ys=st.points.map(p=>p.y); return {minX:Math.min(...xs),maxX:Math.max(...xs),minY:Math.min(...ys),maxY:Math.max(...ys)}; }
+    function distToSeg(p,a,b){ const dx=b.x-a.x, dy=b.y-a.y; if(dx===0&&dy===0) return Math.hypot(p.x-a.x,p.y-a.y); let t=((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy); t=Math.max(0,Math.min(1,t)); return Math.hypot(p.x-(a.x+t*dx), p.y-(a.y+t*dy)); }
+    function hitTestStroke(id,p){ const nb=getQuestionNotebook(id); let hit=null, best=1e9; (nb.strokes||[]).forEach(st=>{ for(let i=1;i<(st.points||[]).length;i++){ const d=distToSeg(p,st.points[i-1],st.points[i]); const threshold=Math.max(12,(st.width||4)+8); if(d<threshold && d<best){ best=d; hit=st; } } }); return hit; }
+    function eraseNotebookStrokes(id,p,radius){
+      const nb=getQuestionNotebook(id); const out=[];
+      (nb.strokes||[]).forEach(st=>{
+        let seg=[];
+        (st.points||[]).forEach(pt=>{
+          if(Math.hypot(pt.x-p.x, pt.y-p.y) <= radius){ if(seg.length>1) out.push(Object.assign({},st,{id:st.id+'_'+out.length,points:seg})); seg=[]; }
+          else seg.push(pt);
+        });
+        if(seg.length>1) out.push(Object.assign({},st,{id:st.id+'_'+out.length,points:seg}));
+      });
+      saveQuestionNotebook(id,{strokes:out,selectedStrokeId:''}); redrawNotebookCanvas(id);
+    }
     function setupQuestionNotebook(id){
-      const canvas = $('#noteCanvas_'+id);
-      const board = $('#noteBoard_'+id);
-      const layer = $('#noteTextLayer_'+id);
+      const canvas = $('#noteCanvas_'+id); const board = $('#noteBoard_'+id); const layer = $('#noteTextLayer_'+id);
       if(!canvas || !board || !layer || canvas.dataset.ready === '1') return;
       canvas.dataset.ready = '1';
-      const nb = getQuestionNotebook(id);
-      const ctx = canvas.getContext('2d');
-      canvas._ctx = ctx;
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = nb.strokeWidth || 4; ctx.strokeStyle = nb.drawColor || '#2563eb';
-      if(nb.canvasData){ const img = new Image(); img.onload = ()=>ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src = nb.canvasData; }
-      const saveCanvas = () => saveQuestionNotebook(id, {canvasData:canvas.toDataURL('image/png')});
+      const ctx = canvas.getContext('2d'); canvas._ctx = ctx; redrawNotebookCanvas(id);
       const posCanvas = (ev) => { const rect = canvas.getBoundingClientRect(); const p = ev.touches ? ev.touches[0] : ev; return {x:(p.clientX-rect.left)*(canvas.width/rect.width), y:(p.clientY-rect.top)*(canvas.height/rect.height)}; };
       const posBoardPct = (ev) => { const rect = board.getBoundingClientRect(); const p = ev.touches ? ev.touches[0] : ev; return {x:((p.clientX-rect.left)/rect.width)*100, y:((p.clientY-rect.top)/rect.height)*100}; };
-      let drawing=false, last=null;
+      let drawing=false, currentStroke=null, dragStroke=null, lastPoint=null;
       const startDraw = (ev) => {
         const tool = getQuestionNotebook(id).tool || 'pen';
         if(tool === 'text') { if(ev.target === canvas || ev.target === layer || ev.target === board){ createNotebookTextBoxAt(id, posBoardPct(ev)); ev.preventDefault(); } return; }
-        if(tool !== 'pen' && tool !== 'eraser') return;
-        drawing=true; last=posCanvas(ev);
-        ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
-        ctx.lineWidth = tool === 'eraser' ? (getQuestionNotebook(id).eraserWidth || 26) : (getQuestionNotebook(id).strokeWidth || 4);
-        ctx.strokeStyle = getQuestionNotebook(id).drawColor || '#2563eb';
-        ev.preventDefault();
+        const p = posCanvas(ev);
+        if(tool === 'move'){
+          const st=hitTestStroke(id,p);
+          if(st){ saveQuestionNotebook(id,{selectedStrokeId:st.id}); dragStroke={id:st.id,start:p,orig:st.points.map(pt=>({x:pt.x,y:pt.y}))}; redrawNotebookCanvas(id); ev.preventDefault(); }
+          return;
+        }
+        if(tool === 'eraser'){ drawing=true; lastPoint=p; eraseNotebookStrokes(id,p,getQuestionNotebook(id).eraserWidth||26); ev.preventDefault(); return; }
+        if(tool !== 'pen') return;
+        const nb=getQuestionNotebook(id);
+        currentStroke={id:'stroke_'+Date.now(), color:nb.drawColor||'#2563eb', width:nb.strokeWidth||4, points:[p]};
+        drawing=true; ev.preventDefault();
       };
-      const moveDraw = (ev) => { if(!drawing) return; const p=posCanvas(ev); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; ev.preventDefault(); };
-      const endDraw = () => { if(!drawing) return; drawing=false; ctx.globalCompositeOperation='source-over'; saveCanvas(); };
+      const moveDraw = (ev) => {
+        const tool = getQuestionNotebook(id).tool || 'pen'; const p=posCanvas(ev);
+        if(dragStroke){
+          const nb=getQuestionNotebook(id); const dx=p.x-dragStroke.start.x, dy=p.y-dragStroke.start.y;
+          const strokes=(nb.strokes||[]).map(st=>st.id===dragStroke.id?Object.assign({},st,{points:dragStroke.orig.map(pt=>({x:pt.x+dx,y:pt.y+dy}))}):st);
+          state.questionNotebooks[id]=Object.assign(nb,{strokes}); redrawNotebookCanvas(id); ev.preventDefault(); return;
+        }
+        if(!drawing) return;
+        if(tool === 'eraser'){ eraseNotebookStrokes(id,p,getQuestionNotebook(id).eraserWidth||26); lastPoint=p; ev.preventDefault(); return; }
+        if(tool === 'pen' && currentStroke){ currentStroke.points.push(p); ctx.save(); ctx.strokeStyle=currentStroke.color; ctx.lineWidth=currentStroke.width; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.beginPath(); ctx.moveTo(currentStroke.points[currentStroke.points.length-2].x,currentStroke.points[currentStroke.points.length-2].y); ctx.lineTo(p.x,p.y); ctx.stroke(); ctx.restore(); ev.preventDefault(); }
+      };
+      const endDraw = () => {
+        if(dragStroke){ const nb=getQuestionNotebook(id); saveQuestionNotebook(id,{strokes:nb.strokes||[]}); dragStroke=null; redrawNotebookCanvas(id); return; }
+        if(!drawing) return; drawing=false;
+        if(currentStroke && currentStroke.points.length>1){ const nb=getQuestionNotebook(id); const strokes=(nb.strokes||[]).concat([currentStroke]); saveQuestionNotebook(id,{strokes,selectedStrokeId:''}); currentStroke=null; redrawNotebookCanvas(id); }
+      };
       canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', moveDraw); window.addEventListener('mouseup', endDraw);
       canvas.addEventListener('touchstart', startDraw, {passive:false}); canvas.addEventListener('touchmove', moveDraw, {passive:false}); canvas.addEventListener('touchend', endDraw);
       board.addEventListener('click', (ev)=>{ if((getQuestionNotebook(id).tool||'pen')==='text' && (ev.target===layer || ev.target===board)){ createNotebookTextBoxAt(id,posBoardPct(ev)); } });
@@ -2090,40 +2190,37 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
     function createNotebookTextBoxAt(id, pt){
       const nb = getQuestionNotebook(id);
-      const box = {id:'box_'+Date.now(), left:Math.max(1, Math.min(82, pt.x)), top:Math.max(1, Math.min(82, pt.y)), width:26, height:14, html:'Escribí acá…', fontSize:nb.fontSize||16, color:nb.textColor||'#0f172a', bg:nb.textBg||'#ffffffdd'};
+      const box = {id:'box_'+Date.now(), left:Math.max(1, Math.min(82, pt.x)), top:Math.max(1, Math.min(82, pt.y)), width:28, height:12, html:'Escribí acá…', fontSize:nb.fontSize||16, color:nb.textColor||'#0f172a', bg:nb.textBg||'transparent', border:false, borderColor:nb.textBorderColor||'#2563eb', borderWidth:nb.textBorderWidth||1};
       const layer = $('#noteTextLayer_'+id); if(!layer) return;
-      layer.insertAdjacentHTML('beforeend', renderNoteTextBox(id, box));
-      setupNotebookTextBoxEvents(id);
-      selectNoteBox(id, box.id);
+      layer.insertAdjacentHTML('beforeend', renderNoteTextBox(id, box)); setupNotebookTextBoxEvents(id); selectNoteBox(id, box.id);
       const el = layer.querySelector('[data-box-id="'+box.id+'"] .note-textbox');
       if(el){ el.focus(); document.execCommand && document.execCommand('selectAll', false, null); }
       saveNotebookTextBoxes(id);
     }
     function setupNotebookTextBoxEvents(id){
-      const layer = $('#noteTextLayer_'+id); if(!layer) return; if(layer.dataset.ready === '1') return;
+      const layer = $('#noteTextLayer_'+id); if(!layer || layer.dataset.ready === '1') return;
       layer.dataset.ready = '1';
       let drag=null;
-      layer.addEventListener('mousedown', (ev)=>{
-        const wrap = ev.target.closest('.note-textbox-wrap');
-        if(wrap) selectNoteBox(id, wrap.dataset.boxId);
-        const handle = ev.target.closest('.note-drag-handle');
-        if(!handle) return;
+      const startDrag = (ev)=>{
+        const wrap = ev.target.closest('.note-textbox-wrap'); if(!wrap) return;
+        selectNoteBox(id, wrap.dataset.boxId);
+        if((getQuestionNotebook(id).tool||'pen') !== 'move') return;
+        const p = ev.touches ? ev.touches[0] : ev;
         const rect = layer.getBoundingClientRect();
-        drag = {wrap, rect, sx:ev.clientX, sy:ev.clientY, left:parseFloat(wrap.style.left)||0, top:parseFloat(wrap.style.top)||0};
+        drag = {wrap, rect, sx:p.clientX, sy:p.clientY, left:parseFloat(wrap.style.left)||0, top:parseFloat(wrap.style.top)||0};
         ev.preventDefault();
-      });
-      window.addEventListener('mousemove', (ev)=>{
+      };
+      const moveDrag = (ev)=>{
         if(!drag) return;
-        const dx = (ev.clientX-drag.sx)/drag.rect.width*100;
-        const dy = (ev.clientY-drag.sy)/drag.rect.height*100;
-        drag.wrap.style.left = Math.max(0, Math.min(88, drag.left+dx))+'%';
-        drag.wrap.style.top = Math.max(0, Math.min(88, drag.top+dy))+'%';
-      });
-      window.addEventListener('mouseup', ()=>{ if(drag){ saveNotebookTextBoxes(id); drag=null; } });
-      layer.addEventListener('mouseup', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50));
-      layer.addEventListener('touchend', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50));
-      layer.addEventListener('input', ()=>saveNotebookTextBoxes(id));
-      layer.addEventListener('click', (ev)=>{ const wrap = ev.target.closest('.note-textbox-wrap'); if(wrap) selectNoteBox(id, wrap.dataset.boxId); });
+        const p = ev.touches ? ev.touches[0] : ev;
+        const dx = (p.clientX-drag.sx)/drag.rect.width*100; const dy = (p.clientY-drag.sy)/drag.rect.height*100;
+        drag.wrap.style.left = Math.max(0, Math.min(88, drag.left+dx))+'%'; drag.wrap.style.top = Math.max(0, Math.min(88, drag.top+dy))+'%'; ev.preventDefault();
+      };
+      const endDrag = ()=>{ if(drag){ saveNotebookTextBoxes(id); drag=null; } };
+      layer.addEventListener('mousedown', startDrag); window.addEventListener('mousemove', moveDrag); window.addEventListener('mouseup', endDrag);
+      layer.addEventListener('touchstart', startDrag, {passive:false}); window.addEventListener('touchmove', moveDrag, {passive:false}); window.addEventListener('touchend', endDrag);
+      layer.addEventListener('mouseup', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50)); layer.addEventListener('touchend', ()=>setTimeout(()=>saveNotebookTextBoxes(id), 50));
+      layer.addEventListener('input', ()=>saveNotebookTextBoxes(id)); layer.addEventListener('click', (ev)=>{ const wrap = ev.target.closest('.note-textbox-wrap'); if(wrap) selectNoteBox(id, wrap.dataset.boxId); });
     }
     function goldenRuleDefaultHint(q){
       const hasAns = q.ans && q.opts?.[q.ans];
@@ -2157,6 +2254,134 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       try {
         if(session){ const q=getSessionQuestions()[session.idx]; const selected = q ? questionSessionSelection(q) : ''; if(q && selected && session.mode !== 'exam' && session.mode !== 'revenge') setupQuestionNotebook(q.id); }
       } catch(e) {}
+    };
+
+
+    /* === ResidenciAPP v2.7 · NeuroPREP adaptive layer ===
+       Sección nueva: diagnóstico cognitivo, razonamiento antes de opciones,
+       interleaving automático y examen predictivo. Funciona localmente sobre
+       el banco y el progreso actual, sin requerir backend ni IA privada.
+    */
+    function ensureNeuroState(){ state.neuroprep ||= {reasoning:{}, confidence:{}, diagnosticHistory:[], lastPlan:null}; }
+    function neuroQuestionScore(q){
+      const ans = answerFor(q); const mistake = state.mistakes?.[q.id]; const scheduled = state.scheduled?.[q.id] || state.retention?.[q.id];
+      let score = 0;
+      if(mistake) score += 9;
+      if(scheduled && scheduled.due <= todayKey()) score += 6;
+      if(!ans) score += 2;
+      if(ans && ans.selected !== q.ans) score += 5;
+      if(isUpdatableQuestion?.(q)) score += 1;
+      const temaStats = topicAccuracy(q.tema);
+      if(temaStats.answered && temaStats.acc < 60) score += 4;
+      if(temaStats.answered && temaStats.acc < 80) score += 2;
+      return score + Math.random();
+    }
+    function topicAccuracy(tema){
+      const qs = QUESTIONS.filter(q=>q.tema===tema); const answered = qs.filter(q=>answerFor(q)).length; const correct = qs.filter(q=>isCorrect(q)).length;
+      return {answered, total:qs.length, correct, acc: answered ? Math.round(correct/answered*100) : 0};
+    }
+    function weakestTopics(limit=6){
+      const temas = [...new Set(QUESTIONS.map(q=>q.tema).filter(Boolean))];
+      return temas.map(t=>Object.assign({tema:t},topicAccuracy(t))).filter(x=>x.answered>0).sort((a,b)=>a.acc-b.acc || b.answered-a.answered).slice(0,limit);
+    }
+    function activeMistakeReasonSummary(){
+      const counts = {};
+      Object.values(state.mistakes||{}).forEach(m=>{ const r=m.reason||m.errorReason||m.category||'sin_clasificar'; counts[r]=(counts[r]||0)+1; });
+      return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({id:k,label:ERROR_REASONS.find(r=>r.id===k)?.label || label(k), count:v}));
+    }
+    function pickDistinctQuestions(count=10, opts={}){
+      const usedTema = new Set(); const usedEje = new Set();
+      const sorted = QUESTIONS.slice().sort((a,b)=>neuroQuestionScore(b)-neuroQuestionScore(a));
+      const out=[];
+      sorted.forEach(q=>{
+        if(out.length>=count) return;
+        if(opts.distinctEje && usedEje.has(q.eje)) return;
+        if(opts.distinctTema && usedTema.has(q.tema) && out.length < Math.min(count, 8)) return;
+        out.push(q); usedTema.add(q.tema); usedEje.add(q.eje);
+      });
+      if(out.length<count){
+        sorted.forEach(q=>{ if(out.length<count && !out.some(x=>x.id===q.id)) out.push(q); });
+      }
+      return out.slice(0,count);
+    }
+    function startNeuroDiagnostic(){
+      ensureNeuroState();
+      const qs = pickDistinctQuestions(3,{distinctEje:true});
+      if(!qs.length) return alert('No hay preguntas disponibles para diagnóstico.');
+      state.neuroprep.lastPlan = {type:'diagnostic', at:Date.now(), ids:qs.map(q=>q.id)}; saveState();
+      setSession(qs, 'NeuroPREP · Diagnóstico rápido', '3 preguntas · razonamiento sin opciones + confianza', 'razonamiento', true, {mode:'practice'});
+      session.neuroprepType = 'diagnostic'; state.session=session; saveState();
+    }
+    function startNeuroReasoning(){
+      ensureNeuroState(); const qs = pickDistinctQuestions(10,{distinctTema:true});
+      setSession(qs, 'NeuroPREP · Razonamiento guiado', '10 preguntas · primero hipótesis, después ABCD', 'razonamiento', true, {mode:'practice'});
+      session.neuroprepType = 'reasoning'; state.session=session; saveState();
+    }
+    function startNeuroInterleaving(){
+      ensureNeuroState(); const qs = pickDistinctQuestions(15,{distinctTema:true});
+      setSession(qs, 'NeuroPREP · Interleaving automático', '15 preguntas mezcladas por ejes y temas', 'preguntas', true, {mode:'practice'});
+      session.neuroprepType = 'interleaving'; state.session=session; saveState();
+    }
+    function startNeuroPredictiveExam(){
+      ensureNeuroState(); const qs = pickDistinctQuestions(Math.min(40, QUESTIONS.length),{distinctTema:true});
+      setSession(qs, 'NeuroPREP · Examen predictivo', qs.length+' preguntas · timer 1:30 por pregunta', 'simulacro', true, {mode:'exam', secondsPerQuestion:90});
+      session.neuroprepType = 'predictive_exam'; state.session=session; saveState();
+    }
+    function startNeuroRecommended(){
+      const mistakes = Object.keys(state.mistakes||{}).length; const due = dueReviewItems ? dueReviewItems().length : dueQuestions().length;
+      if(due >= 8) return startDueSession();
+      if(mistakes >= 8) return startMistakesRevengeSession ? startMistakesRevengeSession() : startMistakesSession();
+      return startNeuroReasoning();
+    }
+    function renderNeuroprep(){
+      const root = $('#neuroprepView'); if(!root) return; ensureNeuroState();
+      const answered = globalAnsweredQuestions().length; const acc = globalAccuracy(); const avg = formatDuration(averageQuestionTime());
+      const mistakes = Object.keys(state.mistakes||{}).length; const due = dueReviewItems ? dueReviewItems().length : dueQuestions().length;
+      const weak = weakestTopics(4); const reasons = activeMistakeReasonSummary();
+      const stateLabel = answered < 20 ? 'Exploración inicial' : acc >= 80 && mistakes < 8 ? 'Afilado' : due > 10 ? 'Necesita consolidación' : mistakes > 10 ? 'Reparar errores' : 'Entrenamiento mixto';
+      const recommendation = due > 10 ? 'Repaso espaciado vencido' : mistakes > 10 ? 'Revancha de errores' : weak.length ? 'Razonamiento guiado en temas débiles' : 'Interleaving automático';
+      const stateCard = $('#neuroStateCard');
+      if(stateCard) stateCard.innerHTML = '<p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Estado cognitivo estimado</p><h4 class="mt-2 font-display text-3xl font-extrabold">'+esc(stateLabel)+'</h4><div class="mt-4 grid grid-cols-2 gap-3 text-sm">'
+        + '<div class="rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/60"><p class="text-xs font-black uppercase text-slate-400">Precisión</p><p class="text-2xl font-black">'+acc+'%</p></div>'
+        + '<div class="rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/60"><p class="text-xs font-black uppercase text-slate-400">Tiempo medio</p><p class="text-2xl font-black">'+esc(avg)+'</p></div>'
+        + '<div class="rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/60"><p class="text-xs font-black uppercase text-slate-400">Errores</p><p class="text-2xl font-black">'+mistakes+'</p></div>'
+        + '<div class="rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/60"><p class="text-xs font-black uppercase text-slate-400">Vencidas</p><p class="text-2xl font-black">'+due+'</p></div></div>'
+        + '<p class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-400"><strong>Recomendación:</strong> '+esc(recommendation)+'.</p>';
+      const rec = $('#neuroRecommendation');
+      if(rec) rec.innerHTML = '<div class="rounded-3xl border border-indigo-100 bg-indigo-50 p-4 dark:border-indigo-900/60 dark:bg-indigo-950/20"><p class="text-sm font-black text-indigo-800 dark:text-indigo-200">Próximo bloque sugerido</p><h4 class="mt-1 font-display text-2xl font-extrabold">'+esc(recommendation)+'</h4><p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">El algoritmo prioriza esfuerzo de recuperación por encima de relectura. Si estás cansado, elegí diagnóstico rápido; si estás afilado, examen predictivo.</p><button class="mt-4 rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white" onclick="startNeuroRecommended()">Iniciar recomendado</button></div>'
+        + '<div class="mt-4 grid gap-3">'+(reasons.length?reasons.slice(0,4).map(r=>'<div class="flex items-center justify-between rounded-2xl border border-slate-200 p-3 dark:border-slate-700"><span class="text-sm font-bold">'+esc(r.label)+'</span><span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">'+r.count+'</span></div>').join(''):'<p class="rounded-2xl border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-500 dark:border-slate-700">Todavía no hay patrón de error suficiente. Hacé un diagnóstico rápido.</p>')+'</div>';
+      const graph = $('#neuroGraph');
+      if(graph){
+        const topics = weak.length ? weak : SPRINTS.slice(0,6).map(s=>({tema:s.tema, acc:topicAccuracy(s.tema).acc, answered:topicAccuracy(s.tema).answered,total:topicAccuracy(s.tema).total}));
+        graph.innerHTML = '<div class="neuro-graph-canvas">'+topics.slice(0,6).map((t,i)=>{ const size = 92 + Math.min(50, (t.total||10)); const color = !t.answered ? 'slate' : t.acc>=80?'emerald':t.acc>=60?'amber':'rose'; return '<button class="neuro-node neuro-node-'+color+'" style="--x:'+(8+(i%3)*31)+'%;--y:'+(14+Math.floor(i/3)*42)+'%;--s:'+Math.min(142,size)+'px" onclick="focusSprintByTema(\''+esc(t.tema).replace(/'/g,'&#039;')+'\')"><span>'+esc(t.tema)+'</span><b>'+(t.answered?t.acc+'%':'nuevo')+'</b></button>'; }).join('')+'<svg class="neuro-lines" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M20 25 C40 10 56 42 78 25 M20 68 C38 48 58 88 78 68 M20 25 C25 42 25 54 20 68 M50 25 C50 42 50 54 50 68 M78 25 C72 42 72 54 78 68"/></svg></div>';
+      }
+    }
+    function focusSprintByTema(tema){ showView('dashboard'); const tf=$('#temaFilter'); if(tf){ const eje = SPRINTS.find(s=>s.tema===tema)?.eje || ''; if($('#ejeFilter')){ $('#ejeFilter').value=eje; updateTemaFilter(); } tf.value=tema; renderSprints(); } }
+    function saveNeuroReasoning(qid){
+      ensureNeuroState(); if(!session) return;
+      const txt = $('#neuroHypothesis_'+qid)?.value || '';
+      const conf = document.querySelector('input[name="neuroConf_'+qid+'"]:checked')?.value || 'sin_calibrar';
+      state.neuroprep.reasoning[qid] = {text:txt, confidence:conf, at:Date.now()};
+      session.reasoningUnlocked ||= {}; session.reasoningUnlocked[qid]=true; state.session=session; saveState(); renderQuestion();
+    }
+    const __v27QuestionTemplate = questionTemplate;
+    function neuroReasoningGateTemplate(q){
+      const prev = state.neuroprep?.reasoning?.[q.id] || {};
+      return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">NeuroPREP</span><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">Razonamiento antes de opciones</span></div><span class="text-xs font-black uppercase tracking-[.16em] text-indigo-500">sin ABCD todavía</span></div>'
+        + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+highlightTriggerWords(q.q)+'</h3>' + (dataUpdateWarning?.(q) || '')
+        + '<div class="mt-5 rounded-[1.75rem] border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-900/60 dark:bg-indigo-950/20"><p class="text-xs font-black uppercase tracking-[.18em] text-indigo-700 dark:text-indigo-300">Paso 1 · recuperación activa</p><h4 class="mt-1 font-display text-xl font-extrabold">Antes de ver opciones, escribí tu hipótesis</h4><textarea id="neuroHypothesis_'+esc(q.id)+'" class="mt-4 min-h-32 w-full rounded-2xl border border-indigo-200 bg-white p-4 text-sm font-semibold leading-6 outline-none focus:border-indigo-400 dark:border-indigo-800 dark:bg-slate-950" placeholder="Diagnóstico/conducta probable, dato clave y por qué…">'+esc(prev.text||'')+'</textarea><div class="mt-4 grid gap-2 sm:grid-cols-3"><label class="rounded-2xl border border-white/70 bg-white/70 p-3 text-sm font-black dark:border-slate-700 dark:bg-slate-900"><input type="radio" name="neuroConf_'+esc(q.id)+'" value="seguro" '+(prev.confidence==='seguro'?'checked':'')+'> Seguro</label><label class="rounded-2xl border border-white/70 bg-white/70 p-3 text-sm font-black dark:border-slate-700 dark:bg-slate-900"><input type="radio" name="neuroConf_'+esc(q.id)+'" value="dudaba" '+(prev.confidence==='dudaba'?'checked':'')+'> Dudaba</label><label class="rounded-2xl border border-white/70 bg-white/70 p-3 text-sm font-black dark:border-slate-700 dark:bg-slate-900"><input type="radio" name="neuroConf_'+esc(q.id)+'" value="adivine" '+(prev.confidence==='adivine'?'checked':'')+'> Adiviné</label></div><button class="mt-4 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-indigo-700" onclick="saveNeuroReasoning(\''+esc(q.id)+'\')">Guardar hipótesis y mostrar opciones</button></div>'
+        + '<div class="mt-6 flex flex-wrap justify-between gap-3"><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-slate-800" '+(session.idx===0?'disabled':'')+' onclick="prevQuestion()">← Anterior</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="nextQuestion()">Saltar →</button></div>';
+    }
+    questionTemplate = function(q, selected, showExplanation){
+      ensureNeuroState();
+      if(session?.method === 'razonamiento' && session?.mode !== 'exam' && !selected && !session?.reasoningUnlocked?.[q.id]) return neuroReasoningGateTemplate(q);
+      let html = __v27QuestionTemplate(q, selected, showExplanation);
+      const r = state.neuroprep?.reasoning?.[q.id];
+      if(session?.method === 'razonamiento' && r && !html.includes('data-neuro-reasoning-summary')){
+        const box = '<div data-neuro-reasoning-summary class="mb-5 rounded-3xl border border-indigo-200 bg-indigo-50 p-4 text-sm font-semibold leading-6 text-indigo-950 dark:border-indigo-900/60 dark:bg-indigo-950/20 dark:text-indigo-100"><p class="text-xs font-black uppercase tracking-[.16em] text-indigo-700 dark:text-indigo-300">Tu hipótesis previa · confianza: '+esc(label(r.confidence||'sin calibrar'))+'</p><p class="mt-2 whitespace-pre-wrap">'+esc(r.text||'Sin texto guardado')+'</p></div>';
+        html = html.replace('<h3 class="font-display', box+'<h3 class="font-display');
+      }
+      return html;
     };
 
     function init(){

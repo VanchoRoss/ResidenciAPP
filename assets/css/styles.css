@@ -411,3 +411,121 @@ body.sidebar-collapsed #sidebar { transform: translateX(-100%) !important; }
   .note-board-hint{display:none}
   .note-textbox-wrap{min-width:130px}
 }
+
+/* ResidenciAPP v2.6 · Pizarrón tipo OneNote avanzado */
+.note-tool.is-ghost{
+  background:#fff;color:#4c1d95;border-color:rgba(139,92,246,.32);
+}
+.dark .note-tool.is-ghost{background:rgba(15,23,42,.9);color:#ddd6fe;border-color:rgba(139,92,246,.5)}
+body.note-fullscreen-active{overflow:hidden}
+[data-question-notebook].note-fullscreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
+  overflow:auto!important;
+  border-radius:0!important;
+  margin:0!important;
+  padding:1rem!important;
+  background:linear-gradient(135deg,#ffffff,#f5f3ff)!important;
+}
+.dark [data-question-notebook].note-fullscreen{background:linear-gradient(135deg,#020617,#111827)!important}
+[data-question-notebook].note-fullscreen .note-board{min-height:calc(100vh - 270px)}
+[data-question-notebook].note-fullscreen .note-board-shell{max-width:1500px;margin-inline:auto}
+[data-question-notebook].note-fullscreen .note-ribbon{position:sticky;top:.75rem;z-index:30;backdrop-filter:blur(14px)}
+.note-board{min-height:560px;background:
+  linear-gradient(rgba(37,99,235,.08) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(90deg,rgba(37,99,235,.08) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(#fff,#fff)!important;
+}
+.dark .note-board{background:
+  linear-gradient(rgba(37,99,235,.12) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(90deg,rgba(37,99,235,.12) 1px,transparent 1px) 0 0/28px 28px,
+  linear-gradient(#f8fafc,#f8fafc)!important;
+}
+.note-board[data-tool="move"]{cursor:default}
+.note-textbox-wrap{
+  border-style:solid!important;
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  resize:both;
+  overflow:visible!important;
+  min-width:110px;
+  min-height:46px;
+  border-radius:.45rem!important;
+  padding:0!important;
+}
+.note-textbox-wrap[data-bordered="1"]{
+  border-color:var(--note-border,#2563eb)!important;
+  background:rgba(255,255,255,.12)!important;
+}
+.note-textbox-wrap.is-selected{
+  outline:2px dashed rgba(37,99,235,.45)!important;
+  outline-offset:5px;
+}
+.note-textbox-bar{display:none!important}
+.note-drag-handle{display:none!important}
+.note-box-delete{
+  position:absolute;
+  top:-.75rem;
+  right:-.75rem;
+  z-index:8;
+  display:none;
+  width:1.35rem;
+  height:1.35rem;
+  padding:0!important;
+  border:1px solid rgba(244,63,94,.25)!important;
+  background:#fff!important;
+  color:#be123c!important;
+  box-shadow:0 8px 18px rgba(15,23,42,.12);
+}
+.note-textbox-wrap.is-selected .note-box-delete{display:block}
+.note-textbox{
+  min-height:100%!important;
+  padding:.18rem .25rem!important;
+  border-radius:.35rem!important;
+  background:transparent;
+  line-height:1.35!important;
+  cursor:text;
+}
+.note-board[data-tool="move"] .note-textbox{cursor:move;user-select:none}
+.note-board[data-tool="move"] .note-textbox-wrap{cursor:move}
+.note-board[data-tool="move"] .note-textbox-wrap.is-selected .note-textbox{user-select:none}
+.note-board-hint{
+  background:rgba(255,255,255,.68)!important;
+  color:#475569!important;
+  border-color:rgba(99,102,241,.18)!important;
+}
+.note-toolgroup .note-color[style*="ffffff"]{box-shadow:0 0 0 1px rgba(15,23,42,.24), inset 0 0 0 1px rgba(15,23,42,.15)}
+.note-textbox mark,
+.note-textbox span[style*="background"]{
+  border-radius:.18rem;
+  padding:0 .05em;
+}
+@media(max-width:900px){
+  [data-question-notebook].note-fullscreen{padding:.7rem!important}
+  [data-question-notebook].note-fullscreen .note-board{min-height:calc(100vh - 330px)}
+  .note-board{min-height:470px}
+}
+@media(max-width:640px){
+  .note-board{min-height:420px}
+  [data-question-notebook].note-fullscreen .note-board{min-height:calc(100vh - 370px)}
+  .note-textbox-wrap{min-width:96px}
+}
+
+/* === NeuroPREP v2.7 === */
+.neuro-card{position:relative;overflow:hidden;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+.neuro-card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,.45);box-shadow:0 16px 42px rgba(79,70,229,.12)}
+.neuro-graph-canvas{position:relative;min-height:360px;border-radius:1.75rem;background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.12),transparent 30%),radial-gradient(circle at 80% 80%,rgba(14,165,233,.10),transparent 28%),linear-gradient(135deg,rgba(248,250,252,.9),rgba(255,255,255,.92));border:1px solid rgba(148,163,184,.25);overflow:hidden}
+.dark .neuro-graph-canvas{background:radial-gradient(circle at 20% 20%,rgba(99,102,241,.18),transparent 30%),radial-gradient(circle at 80% 80%,rgba(14,165,233,.12),transparent 28%),linear-gradient(135deg,rgba(15,23,42,.95),rgba(2,6,23,.92));border-color:rgba(51,65,85,.8)}
+.neuro-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.28}
+.neuro-lines path{fill:none;stroke:#6366f1;stroke-width:.7;stroke-linecap:round;stroke-dasharray:2 2}
+.neuro-node{--s:118px;position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);transform:translate(-50%,-50%);border-radius:999px;border:1px solid rgba(148,163,184,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);box-shadow:0 16px 45px rgba(15,23,42,.10);transition:transform .16s ease, box-shadow .16s ease;z-index:2}
+.neuro-node:hover{transform:translate(-50%,-50%) scale(1.04);box-shadow:0 22px 55px rgba(79,70,229,.16)}
+.dark .neuro-node{background:rgba(15,23,42,.86);border-color:rgba(71,85,105,.75)}
+.neuro-node span{font-size:.78rem;font-weight:900;line-height:1.15;color:#0f172a;max-width:100%;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dark .neuro-node span{color:#e2e8f0}
+.neuro-node b{margin-top:.35rem;font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.neuro-node-emerald{border-color:rgba(16,185,129,.35);box-shadow:0 16px 45px rgba(16,185,129,.11)}
+.neuro-node-emerald b{color:#059669}.neuro-node-amber{border-color:rgba(245,158,11,.38);box-shadow:0 16px 45px rgba(245,158,11,.11)}.neuro-node-amber b{color:#d97706}.neuro-node-rose{border-color:rgba(244,63,94,.38);box-shadow:0 16px 45px rgba(244,63,94,.12)}.neuro-node-rose b{color:#e11d48}.neuro-node-slate b{color:#64748b}
+@media(max-width:640px){.neuro-graph-canvas{min-height:460px}.neuro-node{--s:108px}.neuro-node span{font-size:.72rem}}
