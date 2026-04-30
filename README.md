@@ -91,3 +91,6 @@ Nodos incluidos:
 - Rotura prematura de membranas
 
 Cada nodo combina explicación narrativa, algoritmos, trampas de examen y preguntas reales.
+
+## v2.8
+Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y plan correctivo; además consolida el pizarrón local con pantalla completa, selección/movimiento de textos y trazos, colores, resaltado y bordes opcionales.

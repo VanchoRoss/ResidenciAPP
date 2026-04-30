@@ -2384,6 +2384,104 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       return html;
     };
 
+
+    /* === ResidenciAPP Tutor v2.8 · Pizarrón avanzado consolidado + NeuroPREP funcional ===
+       Consolida lo pedido: pizarrón con pantalla completa robusta, texto sin rebordes por defecto,
+       selección/movimiento de textos y trazos, y NeuroPREP operativo con diagnóstico, reflexión
+       post-respuesta, plan correctivo y registro local de sesiones.
+    */
+    function neuroTodayHistory(){ ensureNeuroState(); const day=todayKey(); return (state.neuroprep.diagnosticHistory||[]).filter(x=>String(x.date||'').slice(0,10)===day || String(new Date(x.at||0).toISOString()).slice(0,10)===day); }
+    function neuroDueQuestions(){ return (typeof dueReviewItems === 'function' ? dueReviewItems() : dueQuestions()).map(x=>x.question || x).filter(Boolean); }
+    function neuroMistakeQuestions(){ return Object.keys(state.mistakes||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean); }
+    function neuroConfidenceStats(ids){
+      ensureNeuroState();
+      const out={seguro:{total:0,ok:0},dudaba:{total:0,ok:0},adivine:{total:0,ok:0},sin_calibrar:{total:0,ok:0}};
+      (ids||[]).forEach(id=>{
+        const q=QUESTIONS.find(x=>x.id===id); if(!q) return;
+        const r=state.neuroprep?.reasoning?.[id]||{};
+        const c=r.confidence||'sin_calibrar';
+        const s=state.answers?.[id]?.selected || session?.selected?.[id] || '';
+        if(!out[c]) out[c]={total:0,ok:0};
+        out[c].total++; if(s && s===q.ans) out[c].ok++;
+      });
+      return out;
+    }
+    function neuroCalibrationText(stats){
+      const segura=stats.seguro||{total:0,ok:0};
+      if(segura.total>=2){ const pct=Math.round(segura.ok/segura.total*100); if(pct<70) return 'Sobreconfianza: marcaste “seguro” pero fallaste más de lo esperado. Próximo bloque: razonamiento lento y distractores.'; if(pct>=90) return 'Buena calibración: cuando marcás “seguro”, tu respuesta suele ser correcta. Podés subir dificultad.'; }
+      const dudosa=stats.dudaba||{total:0,ok:0};
+      if(dudosa.total>=2 && Math.round(dudosa.ok/dudosa.total*100)>=70) return 'Duda productiva: aunque dudabas, acertaste. Conviene entrenar confianza y velocidad.';
+      return 'Aún falta muestra para calibrar. Seguí usando “Seguro / Dudaba / Adiviné” antes de ver opciones.';
+    }
+    function neuroBuildTrainingPlan(failed=[], skipped=0, acc=0){
+      const mistakes = neuroMistakeQuestions(); const due = neuroDueQuestions(); const weak = weakestTopics(4); const reasons = activeMistakeReasonSummary();
+      const items=[];
+      if(due.length) items.push({icon:'🔁',title:'Repaso espaciado vencido',body:'Resolver '+Math.min(due.length,12)+' preguntas vencidas antes de sumar contenido nuevo.',action:'startDueSession()'});
+      if(mistakes.length) items.push({icon:'🥊',title:'Revancha de errores',body:'Hacer revancha sin feedback. Si acertás, el error sale de la bandeja.',action:'startMistakesRevengeSession()'});
+      if(weak.length) items.push({icon:'🧬',title:'Razonamiento guiado focal',body:'Entrenar hipótesis previa en: '+weak.slice(0,2).map(x=>x.tema).join(' · ')+'.',action:'startNeuroReasoning()'});
+      if(acc>=75 && failed.length<=3) items.push({icon:'🔀',title:'Interleaving automático',body:'Mezclar temas para reforzar discriminación clínica y evitar comodidad por bloque.',action:'startNeuroInterleaving()'});
+      if(!items.length) items.push({icon:'⏱️',title:'Examen predictivo',body:'Simulacro de 40 preguntas con timer para medir rendimiento real.',action:'startNeuroPredictiveExam()'});
+      const pattern = reasons[0] ? ('Patrón dominante: '+reasons[0].label+' ('+reasons[0].count+').') : 'Todavía no hay patrón dominante de error.';
+      return {items:items.slice(0,4), pattern};
+    }
+    function neuroPlanHtml(plan){
+      return '<div class="mt-6 rounded-[2rem] border border-indigo-200 bg-indigo-50 p-5 shadow-soft dark:border-indigo-900/60 dark:bg-indigo-950/20"><p class="text-xs font-black uppercase tracking-[.18em] text-indigo-700 dark:text-indigo-300">NeuroPREP · plan correctivo</p><h4 class="mt-1 font-display text-2xl font-extrabold">Próximos 7 días: reparar el circuito, no solo hacer más preguntas</h4><p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">'+esc(plan.pattern)+'</p><div class="mt-4 grid gap-3 md:grid-cols-2">'+plan.items.map(it=>'<button class="rounded-3xl border border-white/70 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-700 dark:bg-slate-900/80" onclick="'+it.action+'"><p class="text-2xl">'+it.icon+'</p><h5 class="mt-2 font-display text-lg font-extrabold">'+esc(it.title)+'</h5><p class="mt-1 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-400">'+esc(it.body)+'</p></button>').join('')+'</div></div>';
+    }
+    function neuroSaveReflection(qid){ ensureNeuroState(); const val=$('#neuroReflection_'+qid)?.value||''; state.neuroprep.reflections ||= {}; state.neuroprep.reflections[qid]={text:val,at:Date.now()}; saveState(); const b=$('#neuroReflectionSaved_'+qid); if(b) b.textContent='Guardado'; }
+    function neuroPostAnswerPanel(q){
+      if(session?.method !== 'razonamiento' || session?.mode === 'exam') return '';
+      const r=state.neuroprep?.reasoning?.[q.id]||{};
+      const refl=state.neuroprep?.reflections?.[q.id]?.text||'';
+      return '<div class="mt-5 rounded-[1.75rem] border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-5 dark:border-indigo-900/60 dark:from-indigo-950/30 dark:to-slate-900"><div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-indigo-700 dark:text-indigo-300">Paso 3 · interrogación elaborativa</p><h4 class="mt-1 font-display text-xl font-extrabold">Ahora explicá por qué tu razonamiento funcionó o falló</h4><p class="mt-1 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-400">Esto obliga a comparar hipótesis, opciones y distractores. Es el corazón del modo NeuroPREP.</p></div><span class="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 dark:bg-slate-900 dark:text-indigo-300">Confianza previa: '+esc(label(r.confidence||'sin calibrar'))+'</span></div><div class="mt-4 grid gap-4 lg:grid-cols-2"><div class="rounded-2xl bg-white/75 p-4 dark:bg-slate-950/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Hipótesis previa</p><p class="mt-2 whitespace-pre-wrap text-sm font-semibold leading-6">'+esc(r.text||'Sin hipótesis guardada')+'</p></div><div><textarea id="neuroReflection_'+esc(q.id)+'" class="min-h-36 w-full rounded-2xl border border-indigo-200 bg-white p-4 text-sm font-semibold leading-6 outline-none focus:border-indigo-400 dark:border-indigo-800 dark:bg-slate-950" placeholder="¿Qué dato clave decidía la pregunta? ¿Qué distractor era más peligroso? ¿Qué regla usarías la próxima vez?">'+esc(refl)+'</textarea><div class="mt-2 flex items-center justify-between"><span id="neuroReflectionSaved_'+esc(q.id)+'" class="text-xs font-black uppercase tracking-[.12em] text-slate-400">local</span><button class="rounded-2xl bg-indigo-600 px-4 py-2 text-xs font-black text-white" onclick="neuroSaveReflection(\''+esc(q.id)+'\')">Guardar reflexión</button></div></div></div></div>';
+    }
+    const __v28QuestionTemplate = questionTemplate;
+    questionTemplate = function(q, selected, showExplanation){
+      let html = __v28QuestionTemplate(q, selected, showExplanation);
+      if(selected && session?.method === 'razonamiento' && session?.mode !== 'exam' && !html.includes('Paso 3 · interrogación elaborativa')){
+        html = html.replace('<div class="mt-6 flex flex-wrap justify-between gap-3">', neuroPostAnswerPanel(q)+'<div class="mt-6 flex flex-wrap justify-between gap-3">');
+      }
+      return html;
+    };
+    const __v28FinishSession = finishSession;
+    finishSession = function(reason='manual'){
+      const oldSession = session ? JSON.parse(JSON.stringify(session)) : null;
+      __v28FinishSession(reason);
+      try{
+        if(oldSession && oldSession.neuroprepType){
+          ensureNeuroState();
+          const qs = (oldSession.questions||[]).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+          const answered = qs.filter(q=>oldSession.selected?.[q.id] || answerFor(q)).length;
+          const correct = qs.filter(q=>{ const s=oldSession.selected?.[q.id] || answerFor(q)?.selected; return s && s===q.ans; }).length;
+          const failed = qs.filter(q=>{ const s=oldSession.selected?.[q.id] || answerFor(q)?.selected; return s && q.ans && s!==q.ans; });
+          const skipped = qs.length-answered; const acc=answered?Math.round(correct/answered*100):0;
+          const conf=neuroConfidenceStats(qs.map(q=>q.id));
+          const record={type:oldSession.neuroprepType, at:Date.now(), date:todayKey(), ids:qs.map(q=>q.id), answered, correct, failed:failed.map(q=>q.id), skipped, acc, confidence:conf};
+          state.neuroprep.diagnosticHistory ||= []; state.neuroprep.diagnosticHistory.push(record); state.neuroprep.diagnosticHistory=state.neuroprep.diagnosticHistory.slice(-40);
+          state.neuroprep.lastPlan = neuroBuildTrainingPlan(failed, skipped, acc);
+          saveState();
+          const content=$('#resultsContent'); if(content){ content.insertAdjacentHTML('beforeend','<div class="mt-6 rounded-[2rem] border border-indigo-200 bg-white p-5 shadow-soft dark:border-indigo-900/60 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Calibración NeuroPREP</p><h4 class="mt-1 font-display text-2xl font-extrabold">'+esc(neuroCalibrationText(conf))+'</h4><div class="mt-4 grid gap-3 sm:grid-cols-3">'+Object.entries(conf).map(([k,v])=>'<div class="rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/50"><p class="text-xs font-black uppercase text-slate-400">'+esc(label(k))+'</p><p class="text-xl font-black">'+(v.total?Math.round(v.ok/v.total*100)+'%':'—')+'</p><p class="text-xs font-bold text-slate-500">'+v.ok+'/'+v.total+'</p></div>').join('')+'</div></div>'+neuroPlanHtml(state.neuroprep.lastPlan)); }
+        }
+      }catch(e){ console.warn('NeuroPREP finish hook', e); }
+    };
+    const __v28RenderNeuroprep = renderNeuroprep;
+    renderNeuroprep = function(){
+      __v28RenderNeuroprep();
+      ensureNeuroState();
+      const today=neuroTodayHistory(); const last=(state.neuroprep.diagnosticHistory||[]).slice(-1)[0]; const plan=state.neuroprep.lastPlan || neuroBuildTrainingPlan([],0,globalAccuracy());
+      const root=$('#neuroprepView'); if(!root || root.querySelector('[data-neuro-v28-panel]')) return;
+      const block='<section data-neuro-v28-panel class="mt-6 grid gap-5 xl:grid-cols-[1fr_1fr]"><article class="rounded-[2rem] border border-indigo-200 bg-white p-5 shadow-soft dark:border-indigo-900/60 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Método NeuroPREP operativo</p><h3 class="mt-1 font-display text-2xl font-extrabold">Secuencia obligatoria: hipótesis → confianza → opciones → reflexión</h3><ol class="mt-4 space-y-3 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300"><li><strong>1.</strong> Recuperás desde memoria antes de ver ABCD.</li><li><strong>2.</strong> Declarás confianza para medir calibración.</li><li><strong>3.</strong> Recién ahí respondés.</li><li><strong>4.</strong> Después explicás el distractor y la regla que usarías en examen.</li></ol><div class="mt-5 flex flex-wrap gap-2"><button class="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white" onclick="startNeuroDiagnostic()">Hacer diagnóstico</button><button class="rounded-2xl border border-indigo-200 px-4 py-3 text-sm font-black text-indigo-700 dark:border-indigo-900/60 dark:text-indigo-300" onclick="startNeuroReasoning()">Entrenar razonamiento</button></div></article><article class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Historial y plan</p><h3 class="mt-1 font-display text-2xl font-extrabold">Hoy: '+today.length+' bloques · Último: '+(last?last.acc+'%':'sin datos')+'</h3><p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-400">'+esc(plan.pattern||'El plan se actualizará al terminar un bloque NeuroPREP.')+'</p><div class="mt-4 grid gap-2">'+(plan.items||[]).map(it=>'<button class="rounded-2xl border border-slate-200 p-3 text-left hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="'+it.action+'"><span class="text-lg">'+it.icon+'</span> <strong>'+esc(it.title)+'</strong><br><span class="text-xs font-semibold text-slate-500">'+esc(it.body)+'</span></button>').join('')+'</div></article></section>';
+      const after=root.querySelector('.mt-6.grid.gap-6'); if(after) after.insertAdjacentHTML('beforebegin', block); else root.insertAdjacentHTML('beforeend', block);
+    };
+    function exitNotebookFullscreen(){ document.querySelectorAll('.note-fullscreen').forEach(el=>el.classList.remove('note-fullscreen')); document.body.classList.remove('note-fullscreen-active'); document.querySelectorAll('[id^="noteFullscreenBtn_"]').forEach(b=>b.textContent='Pantalla completa'); }
+    document.addEventListener('keydown', (ev)=>{ if(ev.key==='Escape' && document.body.classList.contains('note-fullscreen-active')) exitNotebookFullscreen(); });
+    const __v28NotebookHighlight = notebookHighlightText;
+    notebookHighlightText = function(id){
+      const selected = getSelectedNoteBox(id); if(!selected) return alert('Seleccioná un cuadro y marcá letras o palabras para resaltar.');
+      selected.focus();
+      try { document.execCommand('hiliteColor', false, '#fef08a'); } catch(e) { try{ document.execCommand('backColor', false, '#fef08a'); }catch(_){} }
+      saveNotebookTextBoxes(id);
+    };
+
     function init(){
       initSelects();
       session = state.session || null;
