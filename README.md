@@ -94,3 +94,9 @@ Cada nodo combina explicación narrativa, algoritmos, trampas de examen y pregun
 
 ## v2.8
 Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y plan correctivo; además consolida el pizarrón local con pantalla completa, selección/movimiento de textos y trazos, colores, resaltado y bordes opcionales.
+
+
+## v2.9
+- Navegación Anterior/Siguiente arriba en sesiones de práctica, simulacro, revancha y NeuroPREP.
+- Pizarrón local plegado por defecto para que la pregunta y opciones sean el foco inicial.
+- Pantalla completa del pizarrón con scroll interno más estable.

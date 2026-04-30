@@ -549,3 +549,53 @@ body.note-fullscreen-active{overflow:hidden}
 [data-question-notebook].note-fullscreen .note-board-hint{display:block;position:fixed;right:1rem;bottom:1rem;z-index:60;background:rgba(15,23,42,.88);color:#fff;border-radius:999px;padding:.65rem 1rem;box-shadow:0 12px 30px rgba(15,23,42,.25)}
 [data-neuro-v28-panel] article{position:relative;overflow:hidden}
 [data-neuro-v28-panel] article:before{content:'';position:absolute;right:-4rem;top:-4rem;width:12rem;height:12rem;border-radius:999px;background:rgba(99,102,241,.09);filter:blur(18px);pointer-events:none}
+
+
+/* === ResidenciAPP Tutor v2.9 · sesión y pizarrón estable === */
+.session-top-nav{
+  position: sticky;
+  top: .75rem;
+  z-index: 35;
+}
+.note-panel-body.hidden{display:none!important}
+.note-panel-body{animation:notePanelIn .18s ease-out both}
+@keyframes notePanelIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+body.note-fullscreen-active{
+  overflow:hidden!important;
+}
+[data-question-notebook].note-fullscreen{
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  scroll-behavior:smooth;
+}
+[data-question-notebook].note-fullscreen .note-ribbon{
+  top:0!important;
+  border-radius:1.25rem;
+  max-height:none;
+}
+[data-question-notebook].note-fullscreen .note-board-shell{
+  max-width:1600px;
+  margin-inline:auto;
+  overflow:visible;
+  padding-bottom:2rem;
+}
+[data-question-notebook].note-fullscreen .note-board{
+  min-height:calc(100dvh - 300px)!important;
+  max-height:none!important;
+}
+[data-question-notebook].note-fullscreen .note-canvas{
+  touch-action:none;
+}
+.note-board-shell{
+  overflow:hidden;
+}
+@media(max-width:640px){
+  .session-top-nav{top:.35rem;border-radius:1.15rem!important;padding:.65rem!important}
+  [data-question-notebook].note-fullscreen{padding:.55rem!important}
+  [data-question-notebook].note-fullscreen .note-board{min-height:calc(100dvh - 360px)!important}
+  [data-question-notebook].note-fullscreen .note-ribbon{position:relative!important;top:auto!important}
+}

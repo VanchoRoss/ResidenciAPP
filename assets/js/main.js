@@ -2482,6 +2482,73 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       saveNotebookTextBoxes(id);
     };
 
+
+
+    /* === ResidenciAPP Tutor v2.9 · navegación superior + pizarrón desplegable estable ===
+       Ajustes solicitados:
+       - Botones Anterior/Siguiente arriba en sesiones libres, revancha, NeuroPREP y simulacros.
+       - La pregunta y las opciones quedan como foco principal; el pizarrón queda plegado y se abre solo si el usuario lo desea.
+       - Pantalla completa del pizarrón más estable, con scroll interno y sin bloquear navegación vertical.
+    */
+    function sessionNavigationTemplate(){
+      if(!session) return '';
+      const arr = getSessionQuestions();
+      if(!arr.length) return '';
+      const isLast = session.idx >= arr.length - 1;
+      const modeLabel = session.method === 'simulacro' || session.mode === 'exam' ? 'Modo simulacro' : session.mode === 'revenge' ? 'Modo revancha' : session.method === 'razonamiento' ? 'NeuroPREP' : 'Práctica libre';
+      return '<div class="session-top-nav mb-4 rounded-[1.55rem] border border-slate-200 bg-white/92 p-3 shadow-soft backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">'
+        + '<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">'
+        + '<div class="flex items-center gap-2"><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(modeLabel)+'</span><span class="text-xs font-black uppercase tracking-[.14em] text-slate-400">'+(session.idx+1)+'/'+arr.length+'</span></div>'
+        + '<div class="flex flex-wrap gap-2"><button class="rounded-2xl border border-slate-200 px-4 py-2.5 text-xs font-black hover:bg-slate-50 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-slate-800" '+(session.idx===0?'disabled':'')+' onclick="prevQuestion()">← Anterior</button><button class="rounded-2xl bg-medical-600 px-4 py-2.5 text-xs font-black text-white hover:bg-medical-700" onclick="nextQuestion()">'+(isLast?'Terminar':'Siguiente →')+'</button></div>'
+        + '</div></div>';
+    }
+    function removeBottomSessionNavigation(html){
+      return String(html||'').replace(/<div class="mt-6 flex flex-wrap justify-between gap-3"><button[\s\S]*?onclick="prevQuestion\(\)"[\s\S]*?onclick="nextQuestion\(\)"[\s\S]*?<\/button><\/div>/g, '');
+    }
+    const __v29QuestionTemplate = questionTemplate;
+    questionTemplate = function(q, selected, showExplanation){
+      let html = __v29QuestionTemplate(q, selected, showExplanation);
+      html = removeBottomSessionNavigation(html);
+      return sessionNavigationTemplate() + html;
+    };
+
+    const __v29QuestionNotebookTemplate = questionNotebookTemplate;
+    questionNotebookTemplate = function(q){
+      let html = __v29QuestionNotebookTemplate(q);
+      const id = esc(q.id);
+      if(!html.includes('data-v29-notebook-toggle')){
+        html = html.replace('<div class="note-ribbon mt-4">', '<div data-v29-notebook-toggle class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-violet-100 bg-violet-50/70 p-3 dark:border-violet-900/60 dark:bg-violet-950/20"><div><p class="text-xs font-black uppercase tracking-[.14em] text-violet-700 dark:text-violet-300">Pizarrón opcional</p><p class="text-xs font-semibold text-slate-500 dark:text-slate-400">La pregunta y las opciones quedan primero. Abrí este espacio solo cuando quieras esquematizar.</p></div><button id="notebookToggleBtn_'+id+'" class="rounded-2xl bg-violet-600 px-4 py-2.5 text-xs font-black text-white hover:bg-violet-700" onclick="toggleNotebookPanel(\''+id+'\')">Abrir pizarrón</button></div><div id="notebookBody_'+id+'" class="note-panel-body hidden"><div class="note-ribbon mt-4">');
+        html = html.replace(/<\/section>\s*$/, '</div></section>');
+      }
+      return html;
+    };
+    function toggleNotebookPanel(id){
+      const body = $('#notebookBody_'+id);
+      if(!body) return;
+      const open = body.classList.toggle('hidden') === false;
+      const btn = $('#notebookToggleBtn_'+id);
+      if(btn) btn.textContent = open ? 'Ocultar pizarrón' : 'Abrir pizarrón';
+      if(open){
+        try { setupQuestionNotebook(id); redrawNotebookCanvas(id); } catch(e) { console.warn('notebook open', e); }
+        setTimeout(()=>redrawNotebookCanvas(id), 120);
+      }
+    }
+    const __v29ToggleNotebookFullscreen = toggleNotebookFullscreen;
+    toggleNotebookFullscreen = function(id){
+      const body = $('#notebookBody_'+id);
+      if(body && body.classList.contains('hidden')) toggleNotebookPanel(id);
+      const sec = document.querySelector('[data-question-notebook="'+id+'"]');
+      if(!sec) return;
+      const on = !sec.classList.contains('note-fullscreen');
+      document.querySelectorAll('.note-fullscreen').forEach(el=>el.classList.remove('note-fullscreen'));
+      document.body.classList.toggle('note-fullscreen-active', on);
+      sec.classList.toggle('note-fullscreen', on);
+      const btn = $('#noteFullscreenBtn_'+id);
+      if(btn) btn.textContent = on ? 'Salir de pantalla completa' : 'Pantalla completa';
+      if(on) sec.scrollTop = 0;
+      setTimeout(()=>{ try{ setupQuestionNotebook(id); redrawNotebookCanvas(id); }catch(e){} }, 140);
+    };
+
     function init(){
       initSelects();
       session = state.session || null;
