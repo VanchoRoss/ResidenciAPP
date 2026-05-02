@@ -2965,7 +2965,6 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       if($('#v34GlobalCoverageLabel')) $('#v34GlobalCoverageLabel').textContent = coverage+'%';
       if($('#v34GlobalBar')) $('#v34GlobalBar').style.width = coverage+'%';
       renderV34ContinueCard();
-      renderV34AuditCard();
       renderV34QuickActions();
     }
     const __v34RenderStats = renderStats;
@@ -2994,6 +2993,101 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     nextQuestion = function(){ __v34NextQuestion(); renderV34Dashboard(); };
     const __v34PrevQuestion = prevQuestion;
     prevQuestion = function(){ __v34PrevQuestion(); renderV34Dashboard(); };
+
+
+    /* === ResidenciAPP v34.1 · Clean UX + repaso espaciado claro ===
+       - Inicio con menos ruido visual.
+       - Sin módulo visible de auditoría ni exportación JSON de base.
+       - Repasos vencidos desaparecen del bloque de hoy al responderse.
+       - Revancha sin panel de rendimiento.
+       - Retención avanzada sin botón Feynman redundante.
+    */
+    const __v341RenderDueTodayHero = renderDueTodayHero;
+    renderDueTodayHero = function(){
+      ensureAdvancedState?.();
+      const el = $('#dueTodayHero'); if(!el) return;
+      const due = dueReviewItems();
+      if(!due.length){ el.innerHTML = ''; return; }
+      const topics = dueTopicCount();
+      const label = topics===1 ? 'tema' : 'temas';
+      el.innerHTML = '<div class="micro-pop rounded-[1.5rem] border border-medical-200 bg-medical-50/80 p-4 dark:border-medical-900/60 dark:bg-medical-950/30">'
+        + '<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:text-medical-300">Repaso espaciado de hoy</p><h4 class="mt-1 font-display text-xl font-extrabold">'+topics+' '+label+' pendientes</h4><p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">'+due.length+' preguntas vencidas. Al responderlas, salen automáticamente de este bloque.</p></div>'
+        + '<button class="native-tap rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="startDueSession()">Repasar ahora</button></div></div>';
+    };
+
+    function v341RepasoAutoMove(id, selected){
+      if(!id) return;
+      ensureAdvancedState?.();
+      const q = QUESTIONS.find(x=>x.id===id); if(!q) return;
+      const isCorrect = q.ans && selected === q.ans;
+      const difficulty = isCorrect ? 'easy' : 'hard';
+      const cfg = difficultyConfig(difficulty);
+      const prev = state.retention?.[id] || {reps:0};
+      const due = addDays(cfg.days);
+      state.retention[id] = Object.assign({}, prev, {
+        id, difficulty, label:cfg.label, ease:cfg.ease,
+        reps:(prev.reps||0)+1,
+        due, intervalDays:cfg.days,
+        reviewedAt:Date.now(), updatedAt:Date.now(),
+        tema:q.tema, sprint:q.sprint, eje:q.eje, source:q.source
+      });
+      state.scheduled[id] = {
+        id, due, days:cfg.days, difficulty, label:cfg.label,
+        at:Date.now(), reviewedAt:Date.now(), tema:q.tema, sprint:q.sprint, eje:q.eje
+      };
+    }
+
+    const __v341SelectAnswer = selectAnswer;
+    selectAnswer = function(id, selected){
+      const wasDueReview = session?.method === 'repaso' || /repasos vencidos|repaso espaciado/i.test(String(session?.title||'')+' '+String(session?.meta||''));
+      __v341SelectAnswer(id, selected);
+      if(wasDueReview){
+        v341RepasoAutoMove(id, selected);
+        saveState();
+        renderReview?.();
+        renderDueTodayHero?.();
+        renderAdvancedFlashcards?.();
+        renderV34Dashboard?.();
+      }
+    };
+
+    const __v341RenderPerformancePanel = renderPerformancePanel;
+    renderPerformancePanel = function(){
+      const panel = $('#performancePanel');
+      if(session?.mode === 'revenge'){
+        if(panel){ panel.innerHTML = ''; panel.classList.add('hidden'); }
+        return;
+      }
+      if(panel) panel.classList.remove('hidden');
+      __v341RenderPerformancePanel();
+    };
+
+    const __v341ExplanationTemplate = explanationTemplate;
+    explanationTemplate = function(q, selected){
+      let html = __v341ExplanationTemplate(q, selected);
+      html = html.replace(/<button class="native-tap rounded-2xl border border-medical-200[\s\S]*?¿Podés explicarlo\?<\/button>/g, '');
+      return html;
+    };
+
+    const __v341RenderReview = renderReview;
+    renderReview = function(){
+      const mistakes = Object.keys(state.mistakes||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const due = dueQuestions();
+      const fav = Object.keys(state.favorites||{}).map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+      const panel = (title, icon, qs, buttons, note='') => '<section class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="flex items-start justify-between gap-3"><div><p class="text-2xl">'+icon+'</p><h4 class="mt-1 font-display text-xl font-extrabold">'+title+'</h4><p class="text-sm font-bold text-slate-500">'+qs.length+' preguntas</p>'+(note?'<p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+note+'</p>':'')+'</div></div><div class="mt-4 flex flex-wrap gap-2">'+buttons+'</div><div class="mt-4 space-y-2">'+qs.slice(0,5).map(q=>'<div class="rounded-2xl bg-slate-50 p-3 text-xs font-semibold leading-5 dark:bg-slate-950/60">'+esc(q.q.slice(0,130))+(q.q.length>130?'…':'')+'</div>').join('')+'</div></section>';
+      const duePanel = due.length
+        ? panel('Repasos vencidos','🔁',due,'<button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white" onclick="startDueSession()">Iniciar</button>','Al responder, la pregunta sale de vencidas. Correcta: vuelve en 4 días. Incorrecta: vuelve mañana. Si marcás dificultad, la app respeta esa dificultad.')
+        : '<section class="rounded-[2rem] border border-emerald-200 bg-emerald-50 p-5 shadow-soft dark:border-emerald-900/60 dark:bg-emerald-950/20"><p class="text-2xl">🔁</p><h4 class="mt-1 font-display text-xl font-extrabold">Repaso espaciado al día</h4><p class="mt-1 text-sm font-semibold leading-6 text-emerald-800 dark:text-emerald-200">No hay preguntas vencidas para hoy. Cuando marques una pregunta como difícil, dudosa o fácil, aparecerá acá en la fecha correspondiente.</p></section>';
+      $('#reviewPanels').innerHTML = panel('Errores activos','🧾',mistakes,'<button class="rounded-2xl bg-rose-600 px-3 py-2 text-xs font-black text-white" onclick="startMistakesRevengeSession()">Revancha</button><button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startMistakesSession()">Repaso guiado</button>','Revancha no muestra feedback. Si acertás, el error desaparece del listado.') + duePanel + panel('Favoritas','⭐',fav,'<button class="rounded-2xl bg-medical-600 px-3 py-2 text-xs font-black text-white" onclick="startFavoritesSession()">Iniciar</button>');
+      renderAdvancedFlashcards?.();
+    };
+
+    const __v341RenderV34Dashboard = renderV34Dashboard;
+    renderV34Dashboard = function(){
+      const audit = $('#v34AuditCard');
+      if(audit) audit.remove();
+      __v341RenderV34Dashboard();
+    };
 
     function init(){
       initSelects();

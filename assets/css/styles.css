@@ -820,3 +820,26 @@ main{ padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{ scroll-behavior:auto !important; animation-duration:.001ms !important; transition-duration:.001ms !important; }
 }
+
+
+/* v34.1 · inicio más limpio */
+#dashboardView > .grid:first-child > div:first-child{
+  min-height: 0;
+}
+#dashboardView h3{
+  text-wrap: balance;
+}
+#dueTodayHero:empty{
+  display:none;
+}
+#v34Overview .v34-continue-card{
+  max-width: none;
+}
+#performancePanel.hidden{
+  display:none;
+}
+@media (min-width:1280px){
+  #dashboardView > .grid:first-child{
+    grid-template-columns: minmax(0,1.35fr) minmax(260px,.55fr);
+  }
+}
