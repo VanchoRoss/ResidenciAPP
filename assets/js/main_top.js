@@ -54,8 +54,8 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       return {id:btoa(unescape(encodeURIComponent(key))).replace(/=+$/,''), key, eje, tema, sprint, total:qs.length, questions:qs};
     }).sort((a,b)=> a.eje.localeCompare(b.eje) || a.tema.localeCompare(b.tema) || a.sprint.localeCompare(b.sprint));
 
-    const SOURCE_LABELS = { clinica:'Clínica', cirugia:'Cirugía', gineco:'Gineco-Obstetricia', pediatria:'Pediatría' };
-    const SOURCE_ORDER = ['clinica','cirugia','gineco','pediatria'];
+    const SOURCE_LABELS = { clinica:'Clínica', cirugia:'Cirugía', pediatria:'Pediatría', gineco_obstetricia:'Gineco-Obstetricia', gineco:'Gineco-Obstetricia', salud_publica:'Salud Pública' };
+    const SOURCE_ORDER = ['clinica','cirugia','pediatria','gineco_obstetricia','salud_publica'];
     function sourceLabel(src){ return SOURCE_LABELS[src] || label(src || 'Sin fuente'); }
     function areaLightClasses(acc, answered){
       if(!answered) return 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300';
@@ -222,9 +222,9 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function renderStats(){
-      const answered = Object.keys(state.answers).length;
+      const answered = QUESTIONS.filter(q=>answerFor(q)).length;
       const correct = QUESTIONS.filter(q=>isCorrect(q)).length;
-      const mistakes = Object.keys(state.mistakes).length;
+      const mistakes = QUESTIONS.filter(q=>state.mistakes?.[q.id]).length;
       const due = dueQuestions().length;
       const acc = answered ? Math.round(correct/answered*100) : 0;
       const items = [

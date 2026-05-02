@@ -100,3 +100,10 @@ Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y
 - Navegación Anterior/Siguiente arriba en sesiones de práctica, simulacro, revancha y NeuroPREP.
 - Pizarrón local plegado por defecto para que la pregunta y opciones sean el foco inicial.
 - Pantalla completa del pizarrón con scroll interno más estable.
+
+
+## v3.3 Banco 974 corregido
+
+- Banco integrado actualizado a 974 preguntas.
+- Semáforo por áreas: Clínica 457, Cirugía 63, Pediatría 200, Gineco-Obstetricia 186 y Salud Pública 68.
+- Se preservan IDs conservados para mantener el progreso local.
