@@ -1,3 +1,7 @@
+# ResidenciAPP v34.2 Premium Clean UX
+
+Versión Banco 974 con reporte PDF de progreso, juegos de memoria y calendario de vacunación en blanco.
+
 # ResidenciAPP
 
 Plataforma de estudio activo para residencia médica: banco de preguntas por temario, sprints, repaso espaciado, flashcards, error log, modo Feynman y colaboración sin GitHub para usuarios comunes.

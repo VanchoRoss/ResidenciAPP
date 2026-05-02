@@ -3089,6 +3089,270 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       __v341RenderV34Dashboard();
     };
 
+
+
+    /* === ResidenciAPP v34.2 · Reporte PDF + Juegos + repaso más limpio === */
+    const V34_2_VERSION = 'v34.2-premium-clean-ux';
+
+    function v342FormatDate(d=new Date()){
+      return d.toLocaleDateString('es-AR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    }
+    function v342ShortDate(d=new Date()){
+      const pad = n => String(n).padStart(2,'0');
+      return pad(d.getDate())+'-'+pad(d.getMonth()+1)+'-'+d.getFullYear();
+    }
+    function v342AreaSummary(){
+      return getPerformanceAreas().map(a => ({
+        area:a.label, total:a.total, respondidas:a.answered, correctas:a.correct,
+        pendientes: Math.max(a.total - a.answered, 0), rendimiento:a.answered?a.acc:0, cobertura:v34Pct(a.answered, a.total)
+      }));
+    }
+    function downloadProgressPDF(){
+      const now = new Date();
+      const areas = v342AreaSummary();
+      const answered = globalAnsweredQuestions().length;
+      const correct = globalCorrectCount();
+      const acc = globalAccuracy();
+      const due = dueQuestions().length;
+      const mistakes = Object.keys(state.mistakes||{}).length;
+      const coverage = v34Pct(answered, QUESTIONS.length);
+      const makeTextReport = () => {
+        const lines = [];
+        lines.push('ResidenciAPP - Reporte de progreso');
+        lines.push('Fecha de consulta: '+v342FormatDate(now));
+        lines.push('Banco integrado: '+QUESTIONS.length+' preguntas · 36 sprints · 5 áreas');
+        lines.push('');
+        lines.push('Resumen general');
+        lines.push('- Respondidas: '+answered+' / '+QUESTIONS.length+' ('+coverage+'% de cobertura)');
+        lines.push('- Correctas: '+correct);
+        lines.push('- Precisión global: '+(answered?acc+'%':'sin respuestas'));
+        lines.push('- Errores activos: '+mistakes);
+        lines.push('- Repasos vencidos hoy: '+due);
+        lines.push('');
+        lines.push('Progreso por área');
+        areas.forEach(a=> lines.push('- '+a.area+': '+a.respondidas+'/'+a.total+' respondidas · '+a.correctas+' correctas · rendimiento '+(a.respondidas?a.rendimiento+'%':'sin muestra')+' · cobertura '+a.cobertura+'%'));
+        lines.push('');
+        lines.push('Nota: el rendimiento mide correctas/respondidas. La cobertura mide respondidas/total del área.');
+        return lines.join('\n');
+      };
+      const fileName = 'ResidenciAPP_reporte_progreso_'+v342ShortDate(now)+'.pdf';
+      try{
+        const lib = window.jspdf || window.jsPDF;
+        const jsPDF = lib?.jsPDF || lib;
+        if(!jsPDF) throw new Error('jsPDF no disponible');
+        const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+        const pageW = doc.internal.pageSize.getWidth();
+        const margin = 14;
+        let y = 18;
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('ResidenciAPP', margin, y);
+        doc.setFontSize(12); doc.setTextColor(24,119,214); doc.text('Reporte de progreso por área', margin, y+7);
+        doc.setTextColor(15,23,42); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        doc.text('Fecha de consulta: '+v342FormatDate(now), margin, y+15);
+        y += 27;
+        const card = (x, title, value, caption) => {
+          doc.setDrawColor(226,232,240); doc.setFillColor(248,250,252); doc.roundedRect(x, y, 42, 24, 3, 3, 'FD');
+          doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(100,116,139); doc.text(String(title).toUpperCase(), x+4, y+6);
+          doc.setFontSize(15); doc.setTextColor(15,23,42); doc.text(String(value), x+4, y+15);
+          doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(100,116,139); doc.text(String(caption), x+4, y+21);
+        };
+        card(margin, 'Banco', QUESTIONS.length, 'preguntas');
+        card(margin+46, 'Respondidas', answered, coverage+'% cobertura');
+        card(margin+92, 'Precisión', answered?acc+'%':'-', correct+' correctas');
+        card(margin+138, 'Repaso', due, mistakes+' errores activos');
+        y += 36;
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(15,23,42); doc.text('Progreso por área', margin, y); y += 7;
+        doc.setFontSize(8); doc.setTextColor(100,116,139);
+        doc.text('Área', margin, y); doc.text('Respondidas', 72, y); doc.text('Correctas', 108, y); doc.text('Rend.', 140, y); doc.text('Cobertura', 166, y); y += 3;
+        doc.setDrawColor(226,232,240); doc.line(margin, y, pageW-margin, y); y += 6;
+        areas.forEach(a=>{
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(15,23,42); doc.text(a.area, margin, y);
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.text(a.respondidas+' / '+a.total, 76, y, {align:'center'});
+          doc.text(String(a.correctas), 116, y, {align:'center'});
+          doc.text(a.respondidas?a.rendimiento+'%':'-', 146, y, {align:'center'});
+          doc.text(a.cobertura+'%', 176, y, {align:'center'});
+          y += 6;
+          const barX = margin, barY = y, barW = pageW - 2*margin;
+          doc.setFillColor(226,232,240); doc.roundedRect(barX, barY, barW, 2.2, 1, 1, 'F');
+          doc.setFillColor(24,119,214); doc.roundedRect(barX, barY, barW*(a.cobertura/100), 2.2, 1, 1, 'F');
+          y += 8;
+        });
+        y += 4;
+        doc.setDrawColor(226,232,240); doc.line(margin, y, pageW-margin, y); y += 8;
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,116,139);
+        doc.text(doc.splitTextToSize('Lectura: rendimiento = correctas/respondidas; cobertura = respondidas/total. Un rendimiento alto con baja cobertura se interpreta como muestra inicial, no como dominio completo.', pageW-2*margin), margin, y);
+        doc.save(fileName);
+      }catch(err){
+        const blob = new Blob([makeTextReport()], {type:'text/plain;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName.replace(/\.pdf$/,'.txt');
+        a.click(); URL.revokeObjectURL(a.href);
+        alert('No se pudo generar PDF en este navegador. Descargué un reporte TXT como respaldo.');
+      }
+    }
+
+    const VACCINE_ROWS = [
+      ['rn','Recién nacido'], ['2m','2 meses'], ['3m','3 meses'], ['4m','4 meses'], ['5m','5 meses'], ['6m','6 meses'],
+      ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos en 2021'], ['2015','Nacidos en 2015'],
+      ['15plus','A partir de los 15 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
+    ];
+    const VACCINE_COLS = [
+      ['bcg','BCG'], ['hepb','Hepatitis B'], ['neumo','Neumococo conjugada'], ['penta','Quíntuple / Pentavalente'], ['ipv','IPV'], ['rota','Rotavirus'],
+      ['menacwy','Meningococo ACWY'], ['gripe','Antigripal'], ['hepa','Hepatitis A'], ['triviral','Triple viral'], ['varicela','Varicela'], ['dtpc','Triple bacteriana celular'],
+      ['dtpa','Triple bacteriana acelular'], ['vph','VPH'], ['db','Doble bacteriana'], ['vsr','VSR'], ['fa','Fiebre amarilla'], ['fha','Fiebre hemorrágica arg.']
+    ];
+    const VACCINE_ANSWERS = {
+      'rn|bcg':'única dosis', 'rn|hepb':'dosis neonatal',
+      '2m|neumo':'1° dosis', '2m|penta':'1° dosis', '2m|ipv':'1° dosis', '2m|rota':'1° dosis',
+      '3m|menacwy':'1° dosis',
+      '4m|neumo':'2° dosis', '4m|penta':'2° dosis', '4m|ipv':'2° dosis', '4m|rota':'2° dosis',
+      '5m|menacwy':'2° dosis',
+      '6m|penta':'3° dosis', '6m|ipv':'3° dosis', '6m|gripe':'dosis anual',
+      '12m|neumo':'refuerzo', '12m|gripe':'dosis anual', '12m|hepa':'única dosis', '12m|triviral':'1° dosis',
+      '15m|menacwy':'refuerzo', '15m|gripe':'dosis anual', '15m|varicela':'1° dosis',
+      '18m|penta':'1° refuerzo', '18m|gripe':'dosis anual', '18m|triviral':'2° dosis', '18m|fa':'1° dosis',
+      '24m|gripe':'dosis anual',
+      '2021|ipv':'refuerzo', '2021|triviral':'2° dosis', '2021|varicela':'2° dosis', '2021|dtpc':'2° refuerzo',
+      '2015|menacwy':'única dosis', '2015|dtpa':'refuerzo', '2015|vph':'única dosis', '2015|fa':'refuerzo',
+      '15plus|triviral':'iniciar/completar esquema', '15plus|fha':'única dosis',
+      'adultos|hepb':'iniciar/completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar/completar esquema', 'adultos|db':'refuerzo cada 10 años',
+      'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
+      'puerperas|gripe':'una dosis', 'puerperas|triviral':'iniciar/completar esquema',
+      'salud|gripe':'dosis anual', 'salud|dtpa':'una dosis'
+    };
+    let vaccineGameFinished = false;
+    function renderVaccineGame(){
+      const board = $('#vaccineGameBoard'); if(!board) return;
+      vaccineGameFinished = false;
+      const head = '<thead><tr><th class="sticky left-0 z-10 bg-slate-100 p-2 text-left text-[11px] font-black uppercase tracking-[.08em] dark:bg-slate-800">Vacunas / Edad</th>'+VACCINE_COLS.map(c=>'<th class="min-w-[120px] p-2 text-center text-[10px] font-black uppercase tracking-[.05em]">'+esc(c[1])+'</th>').join('')+'</tr></thead>';
+      const body = '<tbody>'+VACCINE_ROWS.map(r=>'<tr><th class="sticky left-0 z-10 bg-white p-2 text-left text-xs font-black dark:bg-slate-900">'+esc(r[1])+'</th>'+VACCINE_COLS.map(c=>{
+        const key = r[0]+'|'+c[0];
+        return '<td class="vaccine-cell border border-slate-200 p-1 align-top dark:border-slate-700" data-key="'+key+'"><textarea aria-label="'+esc(r[1]+' '+c[1])+'" class="vaccine-input h-16 w-full resize-none rounded-lg bg-transparent p-1 text-[11px] font-bold outline-none" placeholder=""></textarea></td>';
+      }).join('')+'</tr>').join('')+'</tbody>';
+      board.innerHTML = '<table class="min-w-[2200px] border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
+      updateVaccineGameCounter();
+    }
+    function updateVaccineGameCounter(){
+      const counter = $('#vaccineGameCounter'); if(!counter) return;
+      const marked = $$('.vaccine-input').filter(i=>i.value.trim()).length;
+      counter.textContent = marked+' celdas marcadas · '+Object.keys(VACCINE_ANSWERS).length+' dosis correctas';
+    }
+    document.addEventListener('input', e => { if(e.target?.classList?.contains('vaccine-input')) updateVaccineGameCounter(); });
+    function resetVaccineGame(){
+      vaccineGameFinished = false;
+      $$('.vaccine-cell').forEach(td=>{ td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed'); td.removeAttribute('title'); });
+      $$('.vaccine-input').forEach(i=>{ i.value=''; i.readOnly=false; i.placeholder=''; });
+      const score = $('#vaccineGameScore'); if(score){ score.classList.add('hidden'); score.innerHTML=''; }
+      updateVaccineGameCounter();
+    }
+    function finishVaccineGame(){
+      if(!$('#vaccineGameBoard table')) renderVaccineGame();
+      vaccineGameFinished = true;
+      let correctMarked=0, wrongMarked=0, missed=0;
+      $$('.vaccine-cell').forEach(td=>{
+        const key = td.dataset.key;
+        const input = td.querySelector('.vaccine-input');
+        const marked = !!input.value.trim();
+        const expected = VACCINE_ANSWERS[key] || '';
+        td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed');
+        input.readOnly = true;
+        if(marked && expected){ correctMarked++; td.classList.add('vaccine-ok'); input.value = expected; td.title = 'Correcta: '+expected; }
+        else if(marked && !expected){ wrongMarked++; td.classList.add('vaccine-bad'); td.title = 'Acá no iba una dosis'; }
+        else if(!marked && expected){ missed++; td.classList.add('vaccine-missed'); input.placeholder = expected; td.title = 'Faltó: '+expected; }
+      });
+      const total = Object.keys(VACCINE_ANSWERS).length;
+      const errors = wrongMarked + missed;
+      const scorePct = Math.max(0, Math.round((correctMarked / total) * 100));
+      const errorPct = Math.round((errors / total) * 100);
+      const score = $('#vaccineGameScore');
+      if(score){
+        score.classList.remove('hidden');
+        score.innerHTML = '<p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">Resultado</p><p class="mt-1 font-display text-4xl font-extrabold">'+scorePct+'%</p><p class="mt-1 text-sm font-bold text-slate-600 dark:text-slate-300">'+correctMarked+' ubicaciones correctas de '+total+' dosis. Errores totales: '+errors+' ('+errorPct+'%).</p><div class="mt-3 grid gap-2 text-xs font-bold sm:grid-cols-3"><span class="rounded-xl bg-emerald-50 p-2 text-emerald-700">Verde: correcta</span><span class="rounded-xl bg-rose-50 p-2 text-rose-700">Rojo: no iba dosis</span><span class="rounded-xl bg-amber-50 p-2 text-amber-700">Amarillo: faltó dosis</span></div>';
+      }
+      updateVaccineGameCounter();
+    }
+
+    function renderTodayProposalStrip(){
+      const box = $('#todayProposalStrip'); if(!box) return;
+      const due = dueQuestions().length;
+      const mistakes = Object.keys(state.mistakes||{}).length;
+      const answered = globalAnsweredQuestions().length;
+      const cards = [
+        {k:'1', t: state.session ? 'Retomar sesión' : 'Empezar bloque', d: state.session ? 'Tenés una sesión abierta para continuar.' : 'Arrancá con el banco completo o elegí sprint abajo.', a:'resumeOrStart()'},
+        {k:'2', t: due ? 'Repaso del día' : 'Repaso al día', d: due ? due+' preguntas vencidas para consolidar.' : 'No hay vencidas ahora. Podés repasar errores.', a: due ? 'startDueSession()' : 'showView(\'review\')'},
+        {k:'3', t:'Juego rápido', d:'Entrená calendario de vacunación sin feedback hasta finalizar.', a:'showView(\'games\')'}
+      ];
+      box.innerHTML = cards.map(c=>'<button class="v342-proposal rounded-[1.25rem] border border-slate-200 bg-white/75 p-3 text-left shadow-sm hover:bg-white dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="'+c.a+'"><span class="inline-grid h-7 w-7 place-items-center rounded-xl bg-medical-50 text-xs font-black text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">'+c.k+'</span><h4 class="mt-2 font-display text-sm font-extrabold">'+esc(c.t)+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+esc(c.d)+'</p></button>').join('');
+    }
+
+    const __v342ShowView = showView;
+    showView = function(name){
+      __v342ShowView(name);
+      if(name==='games') renderVaccineGame();
+      const titles={games:'Juegos de memoria'};
+      if(titles[name] && $('#viewTitle')) $('#viewTitle').textContent = titles[name];
+    };
+
+    const __v342RenderAll = renderAll;
+    renderAll = function(){ __v342RenderAll(); renderTodayProposalStrip(); if(!$('#gamesView')?.classList.contains('hidden')) renderVaccineGame(); };
+
+    const __v342RenderV34Dashboard = renderV34Dashboard;
+    renderV34Dashboard = function(){ __v342RenderV34Dashboard(); renderTodayProposalStrip(); };
+
+    const __v342RenderV34QuickActions = renderV34QuickActions;
+    renderV34QuickActions = function(){
+      const box = $('#v34QuickActions'); if(!box) return __v342RenderV34QuickActions?.();
+      const due = dueQuestions().length;
+      const mistakes = Object.keys(state.mistakes||{}).length;
+      const actions = [
+        ['🧠','Sesión activa','Retomá o empezá un bloque.','resumeOrStart()'],
+        ['🔁','Repaso inteligente', due+' vencidas para hoy.','showView(\'review\')'],
+        ['🎮','Juegos','Calendario de vacunas en blanco.','showView(\'games\')'],
+        ['📄','Reporte PDF','Descargá tus métricas con fecha.','downloadProgressPDF()'],
+        ['🧾','Errores activos', mistakes+' para revancha.','startMistakesSession()'],
+        ['⏱️','Simulacro','Modo examen con feedback final.','startGlobalSimulation()']
+      ];
+      box.innerHTML = actions.map(a=>'<button class="v34-action-btn rounded-[1.35rem] border border-slate-200 p-4 text-left dark:border-slate-800" onclick="'+a[3]+'"><div class="text-2xl">'+a[0]+'</div><h4 class="mt-2 font-display text-lg font-extrabold">'+a[1]+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+a[2]+'</p></button>').join('');
+    };
+
+    const __v342QuestionSessionSelection = questionSessionSelection;
+    questionSessionSelection = function(q){
+      if(session?.mode === 'exam' || session?.mode === 'revenge' || session?.method === 'repaso') return session.selected?.[q.id] || '';
+      return __v342QuestionSessionSelection(q);
+    };
+    const __v342SelectedForScoring = selectedForScoring;
+    selectedForScoring = function(q, oldSession){
+      if(oldSession?.mode === 'exam' || oldSession?.mode === 'revenge' || oldSession?.method === 'repaso') return oldSession.selected?.[q.id] || '';
+      return __v342SelectedForScoring(q, oldSession);
+    };
+
+    const __v342FinishSession = finishSession;
+    finishSession = function(reason='manual'){
+      const old = session;
+      __v342FinishSession(reason);
+      if(old?.method === 'repaso'){
+        renderReview?.(); renderDueTodayHero?.(); renderV34Dashboard?.();
+      }
+    };
+
+    const __v342ToggleSidebar = toggleSidebar;
+    toggleSidebar = function(){
+      __v342ToggleSidebar();
+      if(window.innerWidth >= 1024){ state.sidebarOpen = !document.body.classList.contains('sidebar-collapsed'); saveState(); }
+    };
+    const __v342OpenMobileMenu = openMobileMenu;
+    openMobileMenu = function(){
+      __v342OpenMobileMenu();
+      if(window.innerWidth >= 1024){ state.sidebarOpen = true; saveState(); }
+    };
+    function applyInitialSidebarPreference(){
+      if(window.innerWidth >= 1024){
+        const open = state.sidebarOpen === true;
+        document.body.classList.toggle('sidebar-collapsed', !open);
+      }
+    }
+    window.addEventListener('resize', () => applyInitialSidebarPreference());
+
     function init(){
       initSelects();
       session = state.session || null;
@@ -3097,6 +3361,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       ensureCollaborationState();
       mergeEmbeddedCollaborationData();
       loadApprovedCollaborationData();
+      applyInitialSidebarPreference?.();
       renderAll();
       renderCollaborationControls();
       initAccessGate();

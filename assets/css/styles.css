@@ -843,3 +843,27 @@ main{ padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
     grid-template-columns: minmax(0,1.35fr) minmax(260px,.55fr);
   }
 }
+
+
+/* v34.2 · reporte, juegos y sidebar cerrado por defecto */
+.v342-proposal{ transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.v342-proposal:hover{ transform: translateY(-2px); border-color: rgba(24,119,214,.25) !important; box-shadow: 0 12px 28px rgba(15,23,42,.08); }
+.vaccine-game-board table th,
+.vaccine-game-board table td{ border-color: rgba(148,163,184,.38); }
+.vaccine-game-board thead th{ background: #f1f5f9; color:#334155; position: sticky; top:0; z-index: 8; }
+.dark .vaccine-game-board thead th{ background:#1e293b; color:#e2e8f0; }
+.vaccine-cell{ min-width: 120px; height: 72px; transition: background-color .16s ease, box-shadow .16s ease; }
+.vaccine-cell:focus-within{ box-shadow: inset 0 0 0 2px rgba(24,119,214,.38); background: rgba(239,246,255,.85); }
+.dark .vaccine-cell:focus-within{ background: rgba(30,41,59,.85); }
+.vaccine-input{ color:#0f172a; }
+.dark .vaccine-input{ color:#f8fafc; }
+.vaccine-ok{ background: rgba(16,185,129,.16) !important; box-shadow: inset 0 0 0 2px rgba(16,185,129,.72); }
+.vaccine-bad{ background: rgba(244,63,94,.16) !important; box-shadow: inset 0 0 0 2px rgba(244,63,94,.72); }
+.vaccine-missed{ background: rgba(245,158,11,.18) !important; box-shadow: inset 0 0 0 2px rgba(245,158,11,.75); }
+.vaccine-missed .vaccine-input::placeholder{ color:#92400e; opacity:1; }
+.dark .vaccine-missed .vaccine-input::placeholder{ color:#fcd34d; }
+@media(max-width:640px){
+  #todayProposalStrip{ grid-template-columns: 1fr; }
+  .vaccine-cell{ min-width: 106px; height: 66px; }
+  .vaccine-input{ font-size: 10px; }
+}
