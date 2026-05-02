@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crecimiento, Desarrollo y Nutrición — Nodo de Examen</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a18;font-size:13px;line-height:1.5}
+.container{max-width:960px;margin:0 auto;padding:16px}
+h1{font-size:18px;font-weight:600;margin-bottom:4px}
+.subtitle{font-size:12px;color:#6b6b66;margin-bottom:16px}
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid #d3d1c7;padding-bottom:8px}
+.tab{padding:5px 12px;font-size:11px;font-weight:500;border:1px solid #d3d1c7;border-radius:6px;cursor:pointer;background:#e8e6e0;color:#6b6b66;transition:all .15s}
+.tab.active{background:#fff;color:#1a1a18;border-color:#888}
+.pane{display:none}.pane.active{display:block}
+.sec{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.card{background:#fff;border:1px solid #d3d1c7;border-radius:10px;padding:12px 14px}
+.card-sm{background:#f5f4ef;border:1px solid #d3d1c7;border-radius:7px;padding:9px 12px}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;margin-bottom:5px}
+.b-red{background:#f7c1c1;color:#791f1f}.b-amber{background:#fac775;color:#633806}
+.b-blue{background:#b5d4f4;color:#0c447c}.b-teal{background:#9fe1cb;color:#085041}
+.b-purple{background:#cecbf6;color:#3c3489}.b-coral{background:#f5c4b3;color:#712b13}
+.b-green{background:#c0dd97;color:#27500a}.b-gray{background:#d3d1c7;color:#444}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;margin:2px 2px 0 0}
+.t-red{background:#f7c1c1;color:#791f1f}.t-amber{background:#fac775;color:#633806}
+.t-blue{background:#b5d4f4;color:#0c447c}.t-teal{background:#9fe1cb;color:#085041}
+.trap{border-left:3px solid #e24b4a;padding:5px 10px;background:#fcebeb;border-radius:0 6px 6px 0;font-size:11.5px;margin:4px 0;color:#501313}
+.ok{border-left:3px solid #1d9e75;padding:5px 10px;background:#e1f5ee;border-radius:0 6px 6px 0;font-size:11.5px;margin:4px 0;color:#04342c}
+.warn{border-left:3px solid #ba7517;padding:5px 10px;background:#faeeda;border-radius:0 6px 6px 0;font-size:11.5px;margin:4px 0;color:#412402}
+.divider{height:1px;background:#d3d1c7;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{background:#f0ede6;padding:5px 8px;text-align:left;font-weight:600;font-size:10.5px;border:1px solid #d3d1c7}
+td{padding:5px 8px;border:1px solid #d3d1c7;vertical-align:top;line-height:1.45}
+tr:nth-child(even) td{background:#f8f7f3}
+.hl td{background:#faeeda!important}
+.star td:first-child{font-weight:700;color:#185fa5}
+h3{font-size:13px;font-weight:600;margin-bottom:4px}
+h4{font-size:12px;font-weight:600;margin-bottom:3px}
+ul{padding-left:14px}
+li{margin-bottom:2px;color:#444;font-size:12px}
+p{font-size:12px;color:#444}
+.rule{border:1px solid #d3d1c7;border-radius:6px;padding:8px 12px;background:#f5f4ef;font-size:12px;line-height:1.5}
+.q-box{background:#fff;border:1px solid #d3d1c7;border-radius:10px;padding:12px 14px;margin:8px 0}
+.q-stem{font-size:12.5px;font-weight:600;color:#1a1a18;margin-bottom:8px;line-height:1.4}
+.q-opt{font-size:11.5px;padding:5px 10px;border-radius:5px;cursor:pointer;margin:3px 0;border:1px solid #d3d1c7;background:#f5f4ef;display:block;width:100%;text-align:left;font-family:inherit}
+.q-opt:hover{background:#e8e6e0}
+.q-opt.correct{background:#e1f5ee;border-color:#1d9e75;color:#04342c;font-weight:600}
+.q-opt.wrong{background:#fcebeb;border-color:#e24b4a;color:#501313}
+.q-feedback{font-size:11.5px;margin-top:6px;padding:7px 10px;border-radius:6px;display:none;background:#f0ede6;line-height:1.5}
+.show{display:block!important}
+strong{font-weight:600;color:#1a1a18}
+.alarm{color:#a32d2d;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📊 Crecimiento, Desarrollo y Nutrición Pediátrica</h1>
+<p class="subtitle">Nodo completo — banco histórico 2016-2025 · Examen CABA + Integrador 2026</p>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab('mapa')">🗺 Mapa</button>
+  <button class="tab" onclick="showTab('hitos')">📅 Hitos</button>
+  <button class="tab" onclick="showTab('alarma')">🚨 Alarmas</button>
+  <button class="tab" onclick="showTab('crec')">📏 Crecimiento</button>
+  <button class="tab" onclick="showTab('nutri')">🍼 Nutrición</button>
+  <button class="tab" onclick="showTab('pub')">🔬 Pubertad</button>
+  <button class="tab" onclick="showTab('patol')">⚕️ Patologías</button>
+  <button class="tab" onclick="showTab('banco')">📝 Banco</button>
+</div>
+
+<!-- MAPA -->
+<div class="pane active" id="pane-mapa">
+  <div class="card" style="border-left:3px solid #534ab7;margin-bottom:12px">
+    <span class="badge b-purple">Idea madre</span>
+    <h3>El examen pregunta la edad por la pauta, o la pauta por la edad</h3>
+    <p>Patrón invariante: descripción de conducta → ¿qué edad tiene? o ¿qué pauta NO corresponde a esta edad? El <strong>lenguaje</strong> es el área más preguntada y el mejor predictor del desarrollo intelectual. Motricidad gruesa puede retrasarse sola sin implicar retardo global.</p>
+  </div>
+  <div class="grid2">
+    <div class="card-sm">
+      <span class="badge b-blue">4 áreas del desarrollo</span>
+      <ul>
+        <li><strong>Motricidad gruesa</strong> — postura, marcha, salto</li>
+        <li><strong>Motricidad fina</strong> — prensión, pinza, dibujo</li>
+        <li><strong>Lenguaje</strong> — fonemas → palabras → oraciones → PREDICTOR INTELECTUAL</li>
+        <li><strong>Socio-adaptativo</strong> — juego, interacción, autonomía</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <span class="badge b-amber">Frecuencia en el banco 2016-2025</span>
+      <table>
+        <tr><th>Tema</th><th>Frecuencia</th></tr>
+        <tr><td>Hitos madurativos por edad</td><td><strong>≥8 preguntas</strong></td></tr>
+        <tr><td>Nutrición / LM / inicio AC</td><td>≥5 preguntas</td></tr>
+        <tr><td>Pubertad / Tanner</td><td>3-4 preguntas</td></tr>
+        <tr><td>DEC / esfínteres / audición</td><td>2-3 preguntas</td></tr>
+        <tr><td>Obesidad / desnutrición</td><td>2-3 preguntas</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="rule"><strong>Frase compresiva:</strong> "12 meses = pinza fina + 1 palabra + camina de la mano. 18 meses = señala con dedo + 10 palabras. 24 meses = 50 palabras + oraciones de 2. 4 años = salta en un pie + nombre completo + dibuja formas. 5 años = figura humana completa. El lenguaje predice el intelecto; la motricidad gruesa sola no."</div>
+</div>
+
+<!-- HITOS -->
+<div class="pane" id="pane-hitos">
+  <div class="sec">Tabla maestra — hitos por edad y área</div>
+  <div style="overflow-x:auto">
+  <table>
+    <thead>
+      <tr><th style="min-width:70px">Edad</th><th style="min-width:130px">Motricidad gruesa</th><th style="min-width:130px">Motricidad fina</th><th style="min-width:140px">Lenguaje</th><th style="min-width:150px">Socio-adaptativo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>2 meses</td><td>Levanta cabeza en prono. Reflejos arcaicos presentes</td><td>Sigue objeto 90°. Manos cerradas</td><td>Sonidos guturales. Llanto diferenciado</td><td>Sonrisa social (ya no refleja). Fija la mirada</td></tr>
+      <tr class="hl"><td>4 meses</td><td>Sostén cefálico completo. Apoya en antebrazos</td><td>Agarra objeto con ambas manos. Prensión palmar</td><td>Vocalización. Gorjeos. Ríe a carcajadas</td><td>Reconoce padres. Juega con sus manos</td></tr>
+      <tr><td>6 meses</td><td>Se sienta con apoyo. Se da vuelta. Bipedestación con sostén</td><td>Pasa objeto mano a mano. Prensión palmar</td><td>Balbuceos (pa-pa, ma-ma sin significado)</td><td>Distingue extraños. Come con cuchara</td></tr>
+      <tr class="hl"><td>9 meses</td><td>Se sienta solo estable. Gatea. Bipedestación con apoyo</td><td>Pinza inferior (3 dedos). Busca objeto oculto</td><td>Dada/mamá CON significado. Entiende "no"</td><td>Busca y da objeto. Resiste quiten juguete. <span class="alarm">NO juega escondidas aún</span></td></tr>
+      <tr class="star hl"><td>12 meses ★</td><td>Camina de la mano. Algunos pasos solos</td><td><strong>Pinza fina pulgar-índice</strong></td><td><strong>1-3 palabras con significado</strong> (mamá, papá, agua)</td><td>Juega escondidas. Señala con dedo índice. Juego en paralelo</td></tr>
+      <tr><td>15 meses</td><td>Camina solo bien. Sube escaleras con apoyo</td><td>Torre de 2 cubos. Garabato espontáneo</td><td>4-6 palabras. Jerga. Señala partes del cuerpo</td><td>Bebe de taza. Come solo (parcial)</td></tr>
+      <tr class="star hl"><td>18 meses ★</td><td>Corre. Sube escaleras gateando. Patea pelota</td><td>Torre de 3-4 cubos. Pasa páginas</td><td><strong>10-20 palabras. Señala imágenes en libro</strong></td><td><strong>Sigue instrucción 1 paso. <span class="alarm">Señala con índice lo que quiere (joint attention)</span></strong></td></tr>
+      <tr class="star"><td>24 meses ★</td><td>Corre bien. Sube/baja escaleras un paso. Patea con precisión</td><td>Torre 6 cubos. Imita línea vertical</td><td><strong>≥50 palabras. Oraciones 2 palabras.</strong> Pronombre "yo"</td><td>Avisa que moja el pañal. Juego simbólico. Control esfínter diurno inicia</td></tr>
+      <tr class="hl"><td>3 años</td><td>Sube escaleras alternando. Triciclo. <strong>Salta con 2 pies</strong></td><td><strong>Dibuja círculo. Toma lápiz en trípode.</strong> Torre 9 cubos</td><td>Oraciones 3-4 palabras. Pregunta "¿qué es?". 200-300 palabras</td><td>Juego simbólico complejo. Viste solo. Control diurno completo</td></tr>
+      <tr class="star hl"><td>4 años ★</td><td><strong>Salta en un pie</strong>. Baja escaleras alternando. Para en un pie 5 seg</td><td>Dibuja cruz (+) y <strong>algunas formas</strong>. NO figura humana completa aún</td><td><strong>Sabe nombre completo.</strong> Oraciones 4-5 palabras. Cuenta hasta 4</td><td>Juego cooperativo. Reglas simples. Distingue fantasía-realidad</td></tr>
+      <tr><td>5 años</td><td>Salta en un pie 8-10 veces. Camina en línea</td><td><strong>Dibuja figura humana completa</strong> (cabeza, cuerpo, extremidades). Copia cuadrado</td><td>Sabe nombre, dirección, edad. Cuenta hasta 10</td><td>Juego en grupo con reglas. Independencia básica</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Lo que el banco confunde más</div>
+      <table>
+        <tr><th>Edad</th><th>SÍ corresponde</th><th style="color:#a32d2d">NO corresponde aún</th></tr>
+        <tr><td>9 meses</td><td>Busca/da objeto</td><td style="color:#a32d2d">Jugar escondidas</td></tr>
+        <tr><td>12 meses</td><td>Juega escondidas, pinza fina</td><td style="color:#a32d2d">Oraciones de 2 palabras</td></tr>
+        <tr><td>18 meses</td><td>Señala con índice</td><td style="color:#a32d2d">Control de esfínteres</td></tr>
+        <tr><td>2 años</td><td>Avisa que moja, 50 palabras</td><td style="color:#a32d2d">Salta en un pie</td></tr>
+        <tr><td>4 años</td><td>Salta en un pie, dibuja formas, nombre completo</td><td style="color:#a32d2d">Figura humana completa (eso = 5 años)</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="sec">Resumen mnemotécnico 12-24-36-48-60</div>
+      <div class="card-sm">
+        <ul>
+          <li><strong>12 m:</strong> 1 palabra + pinza + camina de la mano</li>
+          <li><strong>18 m:</strong> 10 palabras + señala + 1 instrucción</li>
+          <li><strong>24 m:</strong> 50 palabras + 2-word oraciones + esfínter inicia</li>
+          <li><strong>36 m:</strong> círculo + 3-4 palabras/oración + salta 2 pies</li>
+          <li><strong>48 m:</strong> nombre completo + salta 1 pie + formas</li>
+          <li><strong>60 m:</strong> figura humana + cuenta 10 + copia cuadrado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALARMAS -->
+<div class="pane" id="pane-alarma">
+  <div class="card" style="border-left:3px solid #e24b4a;margin-bottom:12px">
+    <span class="badge b-red">Señal de alarma más preguntada — banco directo 2021</span>
+    <h3>Ausencia de señalar con el dedo índice a los 18 meses</h3>
+    <p>La atención conjunta (joint attention) es el primer marcador conductual de TEA. Su ausencia a los 18 meses requiere derivación a neuropediatría. La pregunta exacta del banco: "¿cuál es señal de alarma en un niño de 18 meses?" → respuesta: NO sigue un dedo que señala un objeto.</p>
+  </div>
+  <table>
+    <thead><tr><th>Edad</th><th>Señal de alarma (ausencia de...)</th><th>Áreas</th><th>Implicancia</th></tr></thead>
+    <tbody>
+      <tr><td>2 meses</td><td>Sonrisa social. Sostén cefálico</td><td>Social/Motor</td><td>Hipotonía. Problema visual</td></tr>
+      <tr><td>6 meses</td><td>No se sienta con apoyo. Sin balbuceo</td><td>Motor/Lenguaje</td><td>Hipotonía. Hipoacusia</td></tr>
+      <tr><td>12 meses</td><td>Sin palabras con significado. Sin pinza. No camina con apoyo</td><td>Lenguaje/Motor</td><td>Retraso global, hipoacusia</td></tr>
+      <tr style="background:#faeeda"><td><strong>18 meses ★</strong></td><td><strong>No señala con índice. Sin "mamá". Sin instrucción 1 paso</strong></td><td>Socio/Lenguaje</td><td><strong>Marcador TEA. Retraso lenguaje</strong></td></tr>
+      <tr><td>2 años</td><td>Sin oraciones de 2 palabras. &lt;50 palabras. No camina bien</td><td>Lenguaje/Motor</td><td>Retraso lenguaje grave</td></tr>
+      <tr style="background:#faeeda"><td><strong>3.5 años ★</strong></td><td><strong>No dibuja círculo. No toma lápiz. Sin oraciones</strong></td><td>Motor fino/Lenguaje</td><td><strong>Retardo madurativo probable</strong> (banco 2022)</td></tr>
+      <tr><td>5 años</td><td>No dibuja figura humana. No cuenta hasta 10</td><td>Motor fino/Cognitivo</td><td>Derivar neurología</td></tr>
+    </tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Retardo madurativo vs retraso aislado</div>
+      <div class="ok">Retardo madurativo = retraso en <strong>≥2 áreas</strong>. Si el retraso es solo en motricidad gruesa con lenguaje normal → NO es retardo global. Derivar kinesiólogo, NO psicopedagoga.</div>
+      <div class="trap">Retraso motor grueso aislado + lenguaje normal → NO indica retraso intelectual. El lenguaje normal es el mejor factor protector pronóstico.</div>
+    </div>
+    <div>
+      <div class="sec">Audiología — tipo de estudio según edad</div>
+      <table>
+        <tr><th>Edad</th><th>Estudio</th></tr>
+        <tr><td>RN</td><td>Otoemisiones acústicas (OEA)</td></tr>
+        <tr><td>&lt;6 meses</td><td>PEAT (potenciales auditivos)</td></tr>
+        <tr><td>6 m - 2.5 años</td><td>Audiometría conductual con refuerzo visual (VRA)</td></tr>
+        <tr style="background:#faeeda"><td><strong>3-5 años ★</strong></td><td><strong>Audiometría de juego</strong></td></tr>
+        <tr><td>≥5-6 años</td><td>Audiometría tonal convencional</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CRECIMIENTO -->
+<div class="pane" id="pane-crec">
+  <div class="sec">Parámetros — valores clave para el examen</div>
+  <div class="grid2">
+    <div class="card">
+      <span class="badge b-blue">Peso</span>
+      <table>
+        <tr><th>Edad</th><th>Peso</th></tr>
+        <tr><td>RN término</td><td>~3200-3400 g (normal 2500-4000)</td></tr>
+        <tr><td>3-4 días</td><td>Pérdida 5-10% = normal fisiológica</td></tr>
+        <tr><td>10-14 días</td><td>Recupera peso al nacer</td></tr>
+        <tr style="background:#e1f5ee"><td>4-5 meses</td><td><strong>Duplica peso al nacer</strong> (~6.5 kg)</td></tr>
+        <tr style="background:#e1f5ee"><td>12 meses</td><td><strong>Triplica peso al nacer</strong> (~9.5 kg)</td></tr>
+        <tr style="background:#e1f5ee"><td>2 años</td><td><strong>Cuadriplica</strong> (~12-13 kg)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <span class="badge b-teal">Talla y PC</span>
+      <table>
+        <tr><th>Parámetro</th><th>Valor</th></tr>
+        <tr><td>Talla RN</td><td>~50 cm</td></tr>
+        <tr><td>Talla 12 meses</td><td>~75 cm (+25 cm en el 1er año)</td></tr>
+        <tr><td>Talla 4 años</td><td>~102 cm (duplica talla al nacer)</td></tr>
+        <tr><td>PC al nacer</td><td>34-35 cm</td></tr>
+        <tr><td>PC 12 meses</td><td>46-47 cm</td></tr>
+        <tr><td>PC 2 años</td><td>48-49 cm</td></tr>
+        <tr><td>PC adulto</td><td>~55-57 cm (90% vol. cerebral a los 3 años)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div>
+      <div class="sec">Percentiles — definiciones del examen</div>
+      <table>
+        <tr><th>Pc</th><th>Interpretación</th></tr>
+        <tr><td>&gt;Pc 97</td><td>Alto / Obesidad (IMC &gt;Pc 97 en ≥2 años)</td></tr>
+        <tr><td>Pc 85-97</td><td>Sobrepeso (IMC Pc 85-97)</td></tr>
+        <tr><td>Pc 10-85</td><td>Normal</td></tr>
+        <tr><td>&lt;Pc 3</td><td>Muy bajo — derivar</td></tr>
+      </table>
+      <div class="trap" style="margin-top:6px">Obesidad ≥2 años = IMC &gt;Pc97 (NO peso &gt;Pc90). Banco 2020 lo preguntó directamente.</div>
+    </div>
+    <div>
+      <div class="sec">Displasia evolutiva de cadera (DEC)</div>
+      <div class="card-sm">
+        <h4>Factores de riesgo (banco 2021)</h4>
+        <ul>
+          <li>Sexo femenino (♀ 6x más)</li>
+          <li><strong>Presentación podálica</strong></li>
+          <li>Primogénita</li>
+          <li>Historia familiar de DEC</li>
+          <li>Deformidades en los pies asociadas</li>
+        </ul>
+        <div class="ok" style="margin-top:6px">Ecografía: solo en niños con <strong>factores de riesgo hasta los 2 meses</strong> (no a todos).</div>
+        <div class="trap">Cesárea y presentación cefálica NO son factores de riesgo.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NUTRICIÓN -->
+<div class="pane" id="pane-nutri">
+  <div class="sec">Lactancia materna</div>
+  <div class="grid2">
+    <div class="card">
+      <span class="badge b-teal">LM exclusiva recomendada: primeros 6 meses</span>
+      <ul style="margin-bottom:8px">
+        <li>A demanda, sin restricciones de frecuencia</li>
+        <li>Vitamina D 400 UI/día desde el nacimiento</li>
+        <li>Continuar LM hasta los 2 años o más con AC</li>
+      </ul>
+      <h4>Contraindicaciones absolutas (pocas)</h4>
+      <ul>
+        <li>Galactosemia del RN</li>
+        <li>TBC activa no tratada</li>
+        <li>Quimioterapia activa</li>
+        <li>HIV (Argentina: "no recomendada" con alternativa disponible)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge b-green">SÍ continuar LM — banco lo pregunta</span>
+      <ul>
+        <li><strong>Mastitis unilateral:</strong> continuar en esa mama (banco 2019)</li>
+        <li>Fiebre materna sin foco</li>
+        <li>Hepatitis B materna + vacunación correcta del RN</li>
+        <li>Hepatitis C materna</li>
+        <li>CMV materno (bebé ya expuesto)</li>
+      </ul>
+      <div class="trap" style="margin-top:6px">VIH NO es contraindicación absoluta en Argentina (ETMI Plus 2025). Es "no recomendada con enfoque individualizado disponible".</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div class="card-sm">
+      <span class="badge b-amber">Alimentación complementaria (AC)</span>
+      <ul>
+        <li>Inicio a los <strong>6 meses</strong> (no antes de 4, no después de 7)</li>
+        <li>Continuar LM simultáneamente</li>
+        <li>No agregar sal, azúcar ni miel &lt;1 año (botulismo)</li>
+        <li>No leche de vaca como bebida &lt;1 año</li>
+        <li>No restricción de grupos alimentarios (ni pescado, ni huevo, ni maní)</li>
+      </ul>
+    </div>
+    <div class="card-sm">
+      <span class="badge b-blue">Hierro — prevención anemia</span>
+      <ul>
+        <li>RN término LM exclusiva: hierro medicamentoso desde el <strong>4to mes</strong></li>
+        <li>RN pretérmino / bajo peso: hierro desde el <strong>1er mes</strong></li>
+        <li>Diagnóstico: Hb &lt;11 g/dL + VCM bajo</li>
+        <li>Tratamiento: Fe elemental 3-6 mg/kg/día × 3 meses post corrección</li>
+      </ul>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Desnutrición y Obesidad</div>
+  <div class="grid2">
+    <div class="card-sm">
+      <h4>Desnutrición — tipos</h4>
+      <table>
+        <tr><th>Tipo</th><th>Parámetro</th><th>Clínica clave</th></tr>
+        <tr><td>Marasmo</td><td>Peso muy bajo (déficit calórico)</td><td>Emaciación, alerta, llanto intenso</td></tr>
+        <tr><td>Kwashiorkor</td><td>Edema + hipoproteinemia</td><td>Edema, pelo rojizo, apático, dermatosis</td></tr>
+        <tr><td>Mixta</td><td>Ambos</td><td>Más frecuente en práctica</td></tr>
+      </table>
+    </div>
+    <div class="card-sm">
+      <h4>Obesidad &gt;2 años = IMC &gt;Pc 97</h4>
+      <p style="margin-bottom:6px">Estudio inicial:</p>
+      <ul>
+        <li>Glucemia + insulinemia en ayunas</li>
+        <li>Perfil lipídico</li>
+        <li>TSH (causa secundaria)</li>
+        <li>Tensión arterial</li>
+        <li>Si talla baja asociada: buscar causa secundaria (hipotiroidismo, Cushing)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PUBERTAD -->
+<div class="pane" id="pane-pub">
+  <div class="sec">Secuencia puberal normal — banco directo 2019</div>
+  <div class="grid2">
+    <div class="card" style="border-top:3px solid #d4537e">
+      <span class="badge b-coral">Secuencia femenina ♀</span>
+      <div class="ok"><strong>Botón mamario → Vello pubiano → Pico de crecimiento → Menarca</strong></div>
+      <ul style="margin-top:8px">
+        <li>Inicio normal: 8-13 años (telarquia)</li>
+        <li>Pico de crecimiento: Tanner 2-3, <strong>ANTES de la menarca</strong></li>
+        <li>Menarca: 2-3 años después del botón mamario</li>
+      </ul>
+      <div class="trap" style="margin-top:6px">El pico de crecimiento en ♀ ocurre ANTES de la menarca. Si ya tuvo menarca, el pico ya pasó.</div>
+    </div>
+    <div class="card" style="border-top:3px solid #185fa5">
+      <span class="badge b-blue">Secuencia masculina ♂</span>
+      <div class="ok"><strong>Aumento testicular → Vello pubiano → Pico de crecimiento → Cambio de voz</strong></div>
+      <ul style="margin-top:8px">
+        <li>Inicio normal: 9-14 años (volumen testicular ≥4 mL)</li>
+        <li>Pico de crecimiento: más tardío que en ♀ (Tanner 3-4)</li>
+        <li>Primera señal: crecimiento testicular (NO vello pubiano)</li>
+      </ul>
+      <div class="trap" style="margin-top:6px">El primer signo en ♂ es el aumento del volumen testicular, NO el vello pubiano.</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Escala de Tanner</div>
+  <table>
+    <thead><tr><th>Estadio</th><th>Mamas ♀</th><th>Vello pubiano (ambos)</th><th>Genitales ♂</th></tr></thead>
+    <tbody>
+      <tr><td><strong>T1</strong> prepuberal</td><td>Sin tejido mamario</td><td>Sin vello</td><td>Testes &lt;4 mL. Pene infantil</td></tr>
+      <tr><td><strong>T2</strong> inicio</td><td>Botón mamario. Areola ↑</td><td>Escaso, lacio, base</td><td>Testes 4-8 mL</td></tr>
+      <tr><td><strong>T3</strong> intermedio</td><td>Mama y areola ↑ sin separación</td><td>Oscuro, rizado, pubis</td><td>Testes 8-15 mL. Pene ↑ longitud</td></tr>
+      <tr><td><strong>T4</strong> avanzado</td><td>Areola proyecta sobre mama</td><td>Adulto, no llega a muslos</td><td>Testes 15-20 mL. Pene ↑ diámetro</td></tr>
+      <tr><td><strong>T5</strong> adulto</td><td>Areola en plano de mama</td><td>Distribución adulta (muslos)</td><td>Testes &gt;20 mL</td></tr>
+    </tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div class="card-sm">
+      <span class="badge b-red">Pubertad precoz central — banco 2022</span>
+      <h4>Definición</h4>
+      <ul>
+        <li>♀: caracteres secundarios &lt;8 años</li>
+        <li>♂: caracteres secundarios &lt;9 años</li>
+      </ul>
+      <div class="ok" style="margin-top:6px">Caso del banco: niña 7 a 4 m con botón mamario T3 + vello T2 + talla Pc90-97 = <strong>PP central idiopática</strong>.</div>
+      <p style="margin-top:6px">Distractores: quiste ovárico (solo telarquia, no avanza), estrógenos exógenos (no avance T), tumor (poco frecuente en ♀).</p>
+    </div>
+    <div class="card-sm">
+      <span class="badge b-amber">Control de esfínteres</span>
+      <table>
+        <tr><th>Señal / Hito</th><th>Edad</th></tr>
+        <tr><td><strong>Primera señal</strong>: avisa que MOJA los pañales</td><td>~20-24 meses</td></tr>
+        <tr><td>Control diurno completo</td><td>~2-3 años</td></tr>
+        <tr><td>Control nocturno</td><td>~3-5 años</td></tr>
+        <tr><td>Enuresis nocturna</td><td>&gt;5 años = evaluación</td></tr>
+      </table>
+      <div class="trap" style="margin-top:6px">Banco: primera señal = <strong>avisa que MOJA</strong> (no que se despierta seco).</div>
+    </div>
+  </div>
+</div>
+
+<!-- PATOLOGÍAS -->
+<div class="pane" id="pane-patol">
+  <div class="grid2">
+    <div class="card">
+      <span class="badge b-purple">Síndrome de Down — banco 2021</span>
+      <h3>Principal causa de DI en la infancia</h3>
+      <p style="margin-bottom:6px">Banco: "causa más común de discapacidad intelectual" → SD (no parálisis cerebral, no mielomeningocele).</p>
+      <h4>Estudio neonatal obligado (banco directo):</h4>
+      <div class="ok"><strong>Ecocardiograma</strong> (40-50% tienen cardiopatía: CIA, CIV, canal AV).</div>
+      <p style="margin-top:6px">También: TSH, audición, oftalmología, evaluación del neurodesarrollo.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-teal">Celíaquía</span>
+      <h3>Diarrea crónica + falla de crecimiento</h3>
+      <p>Clínica: heces pálidas y fétidas + distensión + pérdida de peso + irritabilidad.</p>
+      <h4 style="margin-top:6px">Screening correcto (banco 2021):</h4>
+      <div class="ok"><strong>IgA antitransglutaminasa + IgA total</strong> (para descartar déficit IgA).</div>
+      <div class="trap">IgA antigliadina = ya no es primera elección (baja especificidad).</div>
+    </div>
+    <div class="card">
+      <span class="badge b-blue">Dolores de crecimiento — banco 2019</span>
+      <h3>Diagnóstico por exclusión</h3>
+      <p>Patrón: dolor muscular en MMII, al final del día/noche, recurrente, cede con masajes, SIN fiebre, SIN artritis, buen estado general.</p>
+      <div class="ok" style="margin-top:6px">No requieren estudios si la clínica es típica.</div>
+      <div class="trap">Fiebre + calor local + artritis → NO son dolores de crecimiento → derivar (artritis séptica, Perthes).</div>
+    </div>
+    <div class="card">
+      <span class="badge b-amber">Muerte súbita — banco 2016</span>
+      <h3>Bebé de 25 días, abrigado en exceso → ¿qué enfatizar?</h3>
+      <div class="ok"><strong>Prevención de muerte súbita del lactante</strong> (no el chupete, no las pautas horarias).</div>
+      <ul style="margin-top:6px">
+        <li>Posición supina para dormir</li>
+        <li>Colchón firme, sin almohadas ni peluches</li>
+        <li>Sin exceso de abrigo</li>
+        <li>Ambiente libre de tabaco</li>
+        <li>LM protege contra muerte súbita</li>
+      </ul>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">Accidentes — consejo por edad (banco 2022)</div>
+  <table>
+    <tr><th>Edad</th><th>Riesgo principal</th><th>Consejo clave</th></tr>
+    <tr><td>6 meses ★</td><td>Accidente eléctrico, intoxicación</td><td><strong>Tapas en enchufes y disyuntor</strong> (respuesta correcta banco 2022)</td></tr>
+    <tr><td>1-3 años</td><td>Intoxicación, ahogamiento</td><td>Asegurar medicamentos y piscinas</td></tr>
+    <tr><td>3-6 años</td><td>Atropellamiento, quemaduras</td><td>Supervisión vial permanente</td></tr>
+  </table>
+</div>
+
+<!-- BANCO -->
+<div class="pane" id="pane-banco">
+  <div class="sec">Banco histórico 2016-2025 — preguntas interactivas</div>
+
+  <div class="q-box" id="q1">
+    <div class="q-stem">📝 Banco 2023: Niño que sabe su nombre completo, dibuja algunas formas, salta en un pie, pero no dibuja figura humana completa. ¿Qué edad tiene?</div>
+    <button class="q-opt" onclick="ansQ('q1',this,'wrong')">a) 6 años</button>
+    <button class="q-opt" onclick="ansQ('q1',this,'correct')">b) 4 años</button>
+    <button class="q-opt" onclick="ansQ('q1',this,'wrong')">c) 3 años</button>
+    <button class="q-opt" onclick="ansQ('q1',this,'wrong')">d) 2 años</button>
+    <div class="q-feedback" id="fb-q1"><span class="ok">✓ 4 años: sabe nombre completo + salta en un pie + dibuja algunas formas pero NO figura humana completa (eso = 5 años). Trampa: la figura humana completa se instala a los 5 años y es la respuesta para preguntas sobre ese hito. A los 3 años: dibuja círculo pero NO salta en un pie todavía.</span></div>
+  </div>
+
+  <div class="q-box" id="q2">
+    <div class="q-stem">📝 Banco 2022: Niño de 2 años, retraso leve en motricidad gruesa, lenguaje normal (oraciones de 3-4 palabras), neurológico normal. Madre preocupada por el desempeño escolar futuro. ¿Qué le explica?</div>
+    <button class="q-opt" onclick="ansQ('q2',this,'wrong')">a) El retraso motor grueso se asocia al desarrollo intelectual</button>
+    <button class="q-opt" onclick="ansQ('q2',this,'correct')">b) El desarrollo del lenguaje es el factor pronóstico de la función intelectual</button>
+    <button class="q-opt" onclick="ansQ('q2',this,'wrong')">c) Indica kinesiólogo para evaluar el desarrollo motor grueso</button>
+    <button class="q-opt" onclick="ansQ('q2',this,'wrong')">d) Indica psicopedagoga para evaluar función intelectual</button>
+    <div class="q-feedback" id="fb-q2"><span class="ok">✓ El lenguaje es el predictor más sólido de función intelectual. Retraso aislado de motricidad gruesa + lenguaje normal = NO indica retraso cognitivo. No se deriva a psicopedagoga; si hay preocupación por la motricidad → kinesiólogo. En este caso el lenguaje es incluso avanzado para los 2 años (oraciones de 3-4 palabras > 2 palabras esperadas).</span></div>
+  </div>
+
+  <div class="q-box" id="q3">
+    <div class="q-stem">📝 Banco 2021: Señal de alarma en un niño de 18 meses. ¿Cuál es la que más preocupa?</div>
+    <button class="q-opt" onclick="ansQ('q3',this,'correct')">a) No sigue un dedo que señala un objeto</button>
+    <button class="q-opt" onclick="ansQ('q3',this,'wrong')">b) No dice mamá u otras palabras simples</button>
+    <button class="q-opt" onclick="ansQ('q3',this,'wrong')">c) No camina</button>
+    <button class="q-opt" onclick="ansQ('q3',this,'wrong')">d) No sube escaleras gateando</button>
+    <div class="q-feedback" id="fb-q3"><span class="ok">✓ La atención conjunta (señalar con índice para compartir interés) es el primer marcador del espectro autista. Su ausencia a los 18 meses es el signo de alarma comunicativa más importante. Nota: en el banco la respuesta correcta preferida es la atención conjunta sobre el lenguaje verbal, porque es más específica para TEA.</span></div>
+  </div>
+
+  <div class="q-box" id="q4">
+    <div class="q-stem">📝 Banco 2021: Niño de 3 años y medio que no puede dibujar círculos, no toma el lápiz correctamente y no construye una oración. ¿Cómo valorás el examen madurativo?</div>
+    <button class="q-opt" onclick="ansQ('q4',this,'wrong')">a) Examen madurativo normal</button>
+    <button class="q-opt" onclick="ansQ('q4',this,'wrong')">b) No es posible valorarlo, hay que esperar los 4 años</button>
+    <button class="q-opt" onclick="ansQ('q4',this,'wrong')">c) Retraso de una pauta madurativa aislada</button>
+    <button class="q-opt" onclick="ansQ('q4',this,'correct')">d) Probablemente tiene retardo madurativo</button>
+    <div class="q-feedback" id="fb-q4"><span class="ok">✓ A los 3 años: debe dibujarse círculo (motricidad fina) Y construir oraciones de 3-4 palabras (lenguaje). Ausencia de ambas = ≥2 áreas comprometidas = retardo madurativo. La opción b es el distractor: nunca se "espera para ver después" cuando hay datos objetivos de retraso en múltiples áreas.</span></div>
+  </div>
+
+  <div class="q-box" id="q5">
+    <div class="q-stem">📝 Banco 2020: Paciente que camina de la mano, da algunos pasos, dice mamá/papá/agua, pinza pulgar-índice. ¿Qué edad tiene?</div>
+    <button class="q-opt" onclick="ansQ('q5',this,'correct')">a) 12 meses</button>
+    <button class="q-opt" onclick="ansQ('q5',this,'wrong')">b) 8 meses</button>
+    <button class="q-opt" onclick="ansQ('q5',this,'wrong')">c) 24 meses</button>
+    <button class="q-opt" onclick="ansQ('q5',this,'wrong')">d) 18 meses</button>
+    <div class="q-feedback" id="fb-q5"><span class="ok">✓ 12 meses: pinza fina pulgar-índice + 1-3 palabras con significado + camina de la mano (no solo aún). A los 8 meses: sin pinza ni palabras. A los 18 meses: ya camina solo (no de la mano) + 10-20 palabras. La clave es que camina "de la mano" todavía = no independiente = 12 meses.</span></div>
+  </div>
+
+  <div class="q-box" id="q6">
+    <div class="q-stem">📝 Banco 2019: Niña de 3 años con sospecha de hipoacusia (OEA normales al nacer). ¿Qué estudio indicás?</div>
+    <button class="q-opt" onclick="ansQ('q6',this,'wrong')">a) Continuar controles habituales</button>
+    <button class="q-opt" onclick="ansQ('q6',this,'wrong')">b) Audiometría de comportamiento con refuerzo visual</button>
+    <button class="q-opt" onclick="ansQ('q6',this,'correct')">c) Audiometría de juego</button>
+    <button class="q-opt" onclick="ansQ('q6',this,'wrong')">d) Audiometría tonal</button>
+    <div class="q-feedback" id="fb-q6"><span class="ok">✓ 3-5 años = audiometría de juego (play audiometry). Las OEA normales al nacer no excluyen hipoacusia adquirida. La audiometría de comportamiento con refuerzo visual (opción b) es para 6 meses-2.5 años. La tonal (opción d) requiere cooperación plena = ≥5-6 años.</span></div>
+  </div>
+
+  <div class="q-box" id="q7">
+    <div class="q-stem">📝 Banco 2018: Niño de 9 meses en control. ¿Qué pauta socio-adaptativa NO corresponde para su edad?</div>
+    <button class="q-opt" onclick="ansQ('q7',this,'correct')">a) Juega a las escondidas</button>
+    <button class="q-opt" onclick="ansQ('q7',this,'wrong')">b) Busca y da un objeto</button>
+    <button class="q-opt" onclick="ansQ('q7',this,'wrong')">c) Se resiste a que le quiten un juguete</button>
+    <button class="q-opt" onclick="ansQ('q7',this,'wrong')">d) El 90% tiene sonrisa social no refleja</button>
+    <div class="q-feedback" id="fb-q7"><span class="ok">✓ Jugar a las escondidas (peek-a-boo) corresponde a los 12 meses, no a los 9. Requiere permanencia del objeto más consolidada. A los 9 meses: busca objeto oculto, da objeto, resiste quiten juguetes → todo lo demás es correcto para esa edad.</span></div>
+  </div>
+
+  <div class="q-box" id="q8">
+    <div class="q-stem">📝 Banco 2019: ¿Cuál es la secuencia de desarrollo puberal normal en una niña?</div>
+    <button class="q-opt" onclick="ansQ('q8',this,'wrong')">a) Vello pubiano → Botón mamario → Menarca → Pico de crecimiento</button>
+    <button class="q-opt" onclick="ansQ('q8',this,'wrong')">b) Botón mamario → Vello pubiano → Menarca → Pico de crecimiento</button>
+    <button class="q-opt" onclick="ansQ('q8',this,'wrong')">c) Vello pubiano → Pico de crecimiento → Botón mamario → Menarca</button>
+    <button class="q-opt" onclick="ansQ('q8',this,'correct')">d) Botón mamario → Vello pubiano → Pico de crecimiento → Menarca</button>
+    <div class="q-feedback" id="fb-q8"><span class="ok">✓ Secuencia femenina: botón mamario (primera señal) → vello pubiano → pico de crecimiento (antes de la menarca, en Tanner 2-3) → menarca. Trampa clásica: las opciones b y d son casi iguales, la diferencia es si el pico va antes o después de la menarca. El pico siempre PRECEDE a la menarca.</span></div>
+  </div>
+
+  <div class="q-box" id="q9">
+    <div class="q-stem">📝 Banco 2020: ¿Cómo se define la obesidad en niños mayores de 2 años?</div>
+    <button class="q-opt" onclick="ansQ('q9',this,'wrong')">a) IMC mayor a Pc 85</button>
+    <button class="q-opt" onclick="ansQ('q9',this,'wrong')">b) Peso para la edad mayor a Pc 97</button>
+    <button class="q-opt" onclick="ansQ('q9',this,'correct')">c) IMC mayor a Pc 97</button>
+    <button class="q-opt" onclick="ansQ('q9',this,'wrong')">d) Peso para la edad mayor a Pc 90</button>
+    <div class="q-feedback" id="fb-q9"><span class="ok">✓ Obesidad ≥2 años = IMC &gt;Pc 97 (OMS 2007). Pc 85-97 = sobrepeso. El "peso para la edad" es el parámetro para &lt;2 años o en desnutrición. IMC &gt;Pc 85 es solo sobrepeso. El criterio adulto (IMC &gt;30) NO se usa en pediatría.</span></div>
+  </div>
+</div>
+
+</div>
+<script>
+function showTab(id){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+function ansQ(qid,el,result){
+  const box=document.getElementById(qid);
+  box.querySelectorAll('.q-opt').forEach(o=>{o.onclick=null;o.style.cursor='default';});
+  el.classList.add(result);
+  const fb=document.getElementById('fb-'+qid);
+  fb.style.display='block';fb.classList.add('show');
+}
+</script>
+</body>
+</html>

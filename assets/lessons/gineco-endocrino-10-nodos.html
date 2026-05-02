@@ -1,0 +1,603 @@
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<style>
+:root{--nc:#1D9E75;--na:#0F6E56;--nb:#E1F5EE;--nt:#085041;--warn:#BA7517;--warnb:#FAEEDA;--err:#A32D2D;--errb:#FCEBEB;--inf:#185FA5;--infb:#E6F1FB;--pur:#534AB7;--purb:#EEEDFE;}
+*{box-sizing:border-box;margin:0;padding:0;}
+.wrap{font-family:var(--font-sans,sans-serif);font-size:14px;color:var(--color-text-primary);max-width:680px;}
+.header{padding:16px 0 8px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.header-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.badge-eje{background:var(--nb);color:var(--nt);font-size:11px;padding:2px 8px;border-radius:12px;font-weight:500;border:0.5px solid var(--nc);}
+.header h1{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.header p{font-size:12px;color:var(--color-text-secondary);}
+.tabs-scroll{overflow-x:auto;padding-bottom:2px;}
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);min-width:640px;}
+.tab{padding:8px 10px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--color-text-secondary);border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;}
+.tab:hover{color:var(--color-text-primary);}
+.tab.active{color:var(--nc);border-bottom-color:var(--nc);}
+.node-card{padding:14px 0;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+.row1{margin-bottom:10px;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg,12px);padding:12px 14px;}
+.card-madre{border-left:3px solid var(--nc);background:var(--nb);}
+.card-madre .clabel{color:var(--na);}
+.card-trap{border-left:3px solid var(--warn);background:var(--warnb);}
+.card-trap .clabel{color:var(--warn);}
+.card-exam{border-left:3px solid var(--inf);background:var(--infb);}
+.card-exam .clabel{color:var(--inf);}
+.card-alg{border-left:3px solid var(--pur);background:var(--purb);}
+.card-alg .clabel{color:var(--pur);}
+.card-err{border-left:3px solid var(--err);background:var(--errb);}
+.card-err .clabel{color:var(--err);}
+.clabel{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.card h3{font-size:13px;font-weight:500;margin-bottom:4px;}
+.card p,.card li{font-size:12px;line-height:1.6;color:var(--color-text-secondary);}
+.card ul{padding-left:14px;}
+.card b{font-weight:500;color:var(--color-text-primary);}
+.frase{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md,8px);padding:10px 14px;margin-top:10px;font-size:12px;font-style:italic;color:var(--color-text-secondary);text-align:center;}
+.frase span{font-weight:500;color:var(--color-text-primary);font-style:normal;}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin:2px 2px 0 0;font-weight:500;}
+.tag-green{background:var(--nb);color:var(--nt);}
+.tag-blue{background:var(--infb);color:var(--inf);}
+.tag-amber{background:var(--warnb);color:var(--warn);}
+.tag-purple{background:var(--purb);color:var(--pur);}
+.alg-step{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+.alg-step:last-child{border-bottom:none;}
+.alg-n{width:20px;height:20px;border-radius:50%;background:var(--pur);color:#fff;font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.alg-text{font-size:12px;color:var(--color-text-secondary);line-height:1.5;}
+.alg-text b{color:var(--color-text-primary);font-weight:500;}
+.q-bank{background:var(--color-background-secondary);border-radius:var(--border-radius-md,8px);padding:8px 12px;margin:4px 0;font-size:11px;color:var(--color-text-secondary);border-left:2px solid var(--nc);}
+.q-bank b{color:var(--color-text-primary);font-weight:500;}
+.conecta{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+</style>
+<div class="wrap">
+<h2 class="sr-only">Nodos cognitivos ginecológicos: fisiología hormonal, ciclo menstrual, amenorreas, SOP, metrorragias, infertilidad, endometriosis, menopausia y climaterio</h2>
+<div class="header">
+  <div class="header-top">
+    <span class="badge-eje">Salud integral de las mujeres</span>
+    <span style="font-size:11px;color:var(--color-text-secondary);">Examen Integrador + CABA 2026</span>
+  </div>
+  <h1>10 nodos cognitivos — ginecología endocrinológica</h1>
+  <p>Red semántica construida desde el banco histórico 2016–2025 · Ordenado por rentabilidad</p>
+</div>
+<div class="tabs-scroll"><div class="tabs" id="tabs"></div></div>
+<div id="node-content" class="node-card"></div>
+</div>
+<script>
+const nodes=[
+{id:0,label:"Fisiología hormonal",short:"Fisio H",color:"green",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Eje hipotálamo-hipofiso-ovárico</h3>
+<p>El hipotálamo pulsa <b>GnRH</b> → la hipófisis libera <b>FSH y LH</b> → el ovario produce <b>estrógenos y progesterona</b>. Todo el sistema funciona por <b>feedback negativo</b> (estrógenos bajos frenan FSH/LH) y un único momento de <b>feedback positivo</b> (pico de estrógenos el día 12-13 dispara el pico de LH → ovulación).</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Más preguntable del examen</div>
+<h3>Menopausia = FSH ↑ + Estradiol ↓</h3>
+<p>La pregunta del banco lo pregunta directo:</p>
+<div class="q-bank"><b>Preg. 16:</b> "¿Qué es lo característico de la menopausia?" → <b>FSH elevado y Estradiol bajo</b> ✓<br>Los distractores: prolactina alta, LH normal, FSH normal. Todas falsas.</div>
+<p style="margin-top:6px;">La lógica: sin ovario funcional, no hay retrocontrol negativo sobre hipófisis → FSH se dispara. Sin folículos, no hay estradiol.</p>
+</div>
+<div class="card">
+<div class="clabel">Cascada hormonal clave</div>
+<h3>Orden de síntesis</h3>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Colesterol</b> → precursor universal</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Pregnenolona</b> → en mitocondria</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text"><b>Progesterona</b> → vía Δ4</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text"><b>Androstenediona</b> → teca ovárica</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text"><b>Estradiol</b> → granulosa (aromatasa)</div></div>
+</div>
+</div>
+<div class="row2">
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<h3>Las 3 confusiones clásicas</h3>
+<ul>
+<li><b>Inhibina</b> (no GnRH) es la que frena FSH principalmente en fase lútea</li>
+<li><b>El pico de LH</b> ocurre ~36hs antes de la ovulación, no el día de la ovulación</li>
+<li>Progesterona: es el marcador de que <b>hubo ovulación</b> (sube en fase lútea)</li>
+</ul>
+</div>
+<div class="card">
+<div class="clabel">Conexiones del nodo</div>
+<h3>Se conecta con</h3>
+<div class="conecta">
+<span class="tag tag-green">Ciclo menstrual</span>
+<span class="tag tag-green">Menopausia</span>
+<span class="tag tag-amber">SOP</span>
+<span class="tag tag-blue">Amenorrea</span>
+<span class="tag tag-purple">Hiperprolactinemia</span>
+</div>
+<p style="margin-top:8px;">La fisiología hormonal es el nodo raíz. Todos los otros nodos son alteraciones de este eje.</p>
+</div>
+</div>
+<div class="frase"><span>Regla madre:</span> Sin ovario → sin freno → FSH sube. Sin folículo → sin estradiol. Menopausia = FSH alto + E2 bajo.</div>
+`},
+
+{id:1,label:"Ciclo menstrual",short:"Ciclo M",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>4 fases, 1 protagonista por fase</h3>
+<p>El ciclo normal dura <b>21–35 días</b> (media 28), la menstruación <b>2–7 días</b>. Cada fase tiene una hormona dominante y un evento clave: <b>folicular</b> (FSH + crecimiento folicular), <b>ovulatoria</b> (pico LH + ovulación), <b>lútea</b> (progesterona + preparación endometrial), <b>menstrual</b> (caída de ambas + descamación).</p>
+</div></div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Algoritmo por fase</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Días 1-5:</b> Menstruación. FSH comienza a subir. Endometrio se descama.</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Días 6-13:</b> Fase folicular. FSH estimula folículo dominante. Estradiol sube progresivamente.</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text"><b>Día 12-13:</b> Pico de estradiol → feedback positivo → <b>pico de LH</b> (24-36hs antes de ovulación).</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text"><b>Día 14:</b> Ovulación. El folículo dominante libera el ovocito.</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text"><b>Días 15-28:</b> Fase lútea. Cuerpo lúteo produce <b>progesterona</b>. Endometrio secretor.</div></div>
+<div class="alg-step"><div class="alg-n">6</div><div class="alg-text">Si no hay embarazo: cuerpo lúteo involuciona, progesterona cae → menstruación.</div></div>
+</div>
+<div class="card">
+<div class="clabel">Marcadores hormonales por fase</div>
+<h3>Lo que medir y cuándo</h3>
+<ul>
+<li><b>FSH/LH basal:</b> día 2-3 del ciclo</li>
+<li><b>Progesterona:</b> día 21 (7 días postovulación) → confirma ovulación si >3 ng/mL</li>
+<li><b>Estradiol basal:</b> día 2-3 del ciclo → reserva ovárica</li>
+<li><b>AMH:</b> cualquier día → mejor marcador de reserva ovárica</li>
+</ul>
+<div class="q-bank" style="margin-top:8px;"><b>Conexión examen:</b> En infertilidad se pide FSH + LH + estradiol + progesterona día 21</div>
+</div>
+</div>
+<div class="row2">
+<div class="card card-trap">
+<div class="clabel">Trampas frecuentes</div>
+<ul>
+<li><b>Moco cervical:</b> máxima filancia en la ovulación (no en fase lútea)</li>
+<li><b>Temperatura basal:</b> SUBE después de ovular (por progesterona), no antes</li>
+<li><b>Endometrio proliferativo = estrógenos; secretor = progesterona</b></li>
+<li>La fase lútea dura siempre ~14 días; lo que varía es la fase folicular</li>
+</ul>
+</div>
+<div class="card card-exam">
+<div class="clabel">Preguntable en contexto</div>
+<h3>Conexión con sangrado</h3>
+<p>El sangrado de supresión post-ACO simula menstruación pero NO es ovulatoria. El spotting (sangrado intermenstrual) en ACO nuevas → <b>continuar y controlar 2 meses</b> (pregunta directa del banco: Q75).</p>
+</div>
+</div>
+<div class="frase"><span>Frase compresiva:</span> FSH madura el folículo → estradiol dispara LH → ovulación día 14 → progesterona transforma el endometrio → sin embarazo → menstruación.</div>
+`},
+
+{id:2,label:"Alteraciones hormonales",short:"Alt H",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Tres ejes de alteración</h3>
+<p>Las alteraciones hormonales ginecológicas se organizan en tres ejes: <b>exceso androgénico</b> (hirsutismo, acné, SOP), <b>déficit estrogénico</b> (amenorrea, menopausia, anorexia) y <b>exceso prolactínico</b> (galactorrea, amenorrea hiperprolactinémica). Cada uno tiene su laboratorio inicial específico.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Pregunta directa del banco — muy rentable</div>
+<h3>Hirsutismo: panel hormonal inicial</h3>
+<div class="q-bank"><b>Preg. 57:</b> Mujer de 23 años con hirsutismo moderado → estudios basales:<br><b>Testosterona + DHEA-S + 17-hidroxiprogesterona</b> ✓</div>
+<p style="margin-top:6px;"><b>¿Por qué este panel?</b></p>
+<ul>
+<li><b>Testosterona total:</b> andrógenos ováricos (SOP, tumor virilizante)</li>
+<li><b>DHEA-S:</b> andrógenos suprarrenales exclusivamente</li>
+<li><b>17-OH-progesterona:</b> hiperplasia suprarrenal congénita no clásica (HSANC)</li>
+</ul>
+<p style="margin-top:4px;">Los distractores: DHEA (no DHEA-S), cortisol basal, SHBG → <b>ninguno es el panel correcto</b>.</p>
+</div>
+<div class="card">
+<div class="clabel">Hiperprolactinemia</div>
+<h3>Síndrome galactorrea + amenorrea</h3>
+<ul>
+<li><b>Fisiología:</b> prolactina inhibe GnRH → no hay pulsos → amenorrea</li>
+<li><b>Causas:</b> microprolactinoma (más frec), fármacos (antipsicóticos, metoclopramida), hipotiroidismo</li>
+<li><b>Diagnóstico:</b> prolactina sérica + RMN hipofisaria</li>
+<li><b>Trampa:</b> siempre descartar embarazo primero</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-trap">
+<div class="clabel">Trampas por sistema</div>
+<h3>Confusiones frecuentes</h3>
+<ul>
+<li><b>DHEA vs DHEA-S:</b> el examen siempre pide DHEA-<b>S</b> (sulfato), no DHEA libre</li>
+<li><b>Hipotiroidismo:</b> causa amenorrea por ↑TRH → ↑prolactina (vía indirecta)</li>
+<li><b>17-OH-P >2 ng/mL:</b> sospechar HSANC → confirmar con test de ACTH</li>
+<li><b>SHBG baja:</b> más andrógenos libres (SOP, obesidad) pero NO es el estudio inicial</li>
+</ul>
+</div>
+<div class="card card-alg">
+<div class="clabel">Algoritmo de hirsutismo</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text">Historia clínica: inicio, velocidad, signos de virilización</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Panel basal:</b> Testosterona + DHEA-S + 17-OH-P</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text">Si 17-OH-P elevada → test de ACTH → HSANC</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text">Si testosterona muy alta (>2 ng/mL) → descartar tumor ovárico/suprarrenal</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text">Si panel con criterios SOP → manejo SOP</div></div>
+</div>
+</div>
+<div class="frase"><span>Regla de oro:</span> Hirsutismo → primero Testosterona + DHEA-S + 17-OH-P. No cortisol, no SHBG, no DHEA libre.</div>
+`},
+
+{id:3,label:"Amenorreas",short:"Amenor",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Primaria vs secundaria: distintos ejes, distinta causa dominante</h3>
+<p><b>Amenorrea primaria</b> = nunca menstruó (ausencia a los 15 años con desarrollo puberal, o 13 años sin ningún desarrollo). <b>Amenorrea secundaria</b> = interrumpió menstruación ≥3 meses. La causa más frecuente de amenorrea secundaria siempre es <b>embarazo</b> → se descarta primero con β-hCG.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Pregunta directa del banco</div>
+<h3>Amenorrea primaria: causa principal</h3>
+<div class="q-bank"><b>Preg. 18:</b> "¿Cuál afirmación caracteriza a la amenorrea primaria?"<br><b>El 50% de los casos se debe a disgenesias gonadales</b> ✓<br>(Ej: Síndrome de Turner 45,X0)</div>
+<p style="margin-top:6px;">Distractores: hipotalámica, agenesia mülleriana, hipofisaria → todas menores frecuencia.</p>
+<div class="q-bank" style="margin-top:6px;"><b>Preg. 2:</b> Mujer 28 años, 3 meses amenorrea + pérdida de peso + cansancio + libido disminuida → <b>Trastorno alimentario (anorexia nerviosa)</b> ✓<br>Mecanismo: desnutrición → ↓kisspeptina → ↓GnRH → amenorrea hipotalámica funcional</div>
+</div>
+<div class="card">
+<div class="clabel">Clasificación anatómica</div>
+<h3>Los 4 niveles del eje</h3>
+<ul>
+<li><b>Hipotalámica:</b> anorexia, estrés, ejercicio excesivo, tumores. FSH/LH bajas.</li>
+<li><b>Hipofisaria:</b> prolactinoma, Sheehan (necrosis postparto), Cushing</li>
+<li><b>Ovárica:</b> Falla ovárica prematura (FOH). FSH muy alta. Turner, quimio, autoinmune</li>
+<li><b>Uterina:</b> Síndrome de Asherman (sinequias). Ciclos normales pero no sangra.</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Algoritmo diagnóstico</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Siempre primero:</b> β-hCG (descartar embarazo)</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text">TSH + prolactina (causas endócrinas frecuentes)</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text">FSH + LH + estradiol: distingue origen ovárico vs central</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text">Si FSH muy alta → falla ovárica. Si FSH baja → hipotalámica o hipofisaria</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text">Test de progesterona: si sangra → endometrio respondedor, eje parcialmente funcional</div></div>
+<div class="alg-step"><div class="alg-n">6</div><div class="alg-text">Si no sangra con P → evaluar estrógeno + P → si tampoco → origen uterino o ovárico</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li><b>Amenorrea primaria ≠ causa uterina</b> más frecuente → es DISGENESIA GONADAL (Turner)</li>
+<li><b>Anorexia nerviosa</b> → amenorrea hipotalámica funcional (no ovárica)</li>
+<li><b>Síndrome de Asherman</b> → test de progesterona negativo (no sangra), FSH normal</li>
+<li><b>FOH (falla ovárica):</b> FSH >40 mUI/mL en menores de 40 años = falla ovárica prematura</li>
+<li>En paciente con anorexia: no llamarla "falla ovárica" → es hipotalámica funcional (reversible)</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Regla diagnóstica:</span> Amenorrea → β-hCG primero, siempre. Luego TSH + prolactina. Luego FSH para ubicar el nivel del eje.</div>
+`},
+
+{id:4,label:"SOP",short:"SOP",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Diagnóstico de exclusión por criterios de Rotterdam</h3>
+<p>El SOP es la endocrinopatía más frecuente en mujeres en edad reproductiva. Se diagnostica con <b>2 de 3 criterios de Rotterdam</b>: (1) oligoovulación/anovulación, (2) hiperandrogenismo clínico o bioquímico, (3) ovarios poliquísticos en ecografía. Siempre hay que <b>excluir otras causas</b> de hiperandrogenismo primero.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Más preguntable</div>
+<h3>Criterios de Rotterdam + laboratorio</h3>
+<p><b>2 de 3 criterios:</b></p>
+<ul>
+<li>Oligomenorrea o anovulación</li>
+<li>Hiperandrogenismo (clínico: hirsutismo, acné / bioquímico: ↑testosterona)</li>
+<li>Ovarios poliquísticos en ecografía (≥12 folículos 2-9mm o vol. ovárico >10mL)</li>
+</ul>
+<p style="margin-top:6px;"><b>Laboratorio básico:</b> FSH, LH, testosterona, DHEA-S, 17-OH-progesterona, glucemia en ayunas, insulina basal, TSH, prolactina (para excluir otras causas).</p>
+<div class="q-bank" style="margin-top:6px;"><b>Conexión directa:</b> Preg. 57: Hirsutismo → Testosterona + DHEA-S + 17-OH-P ✓ (estudio de entrada en el espectro SOP)</div>
+</div>
+<div class="card">
+<div class="clabel">Mecanismo fisiopatológico</div>
+<h3>El circuito del SOP</h3>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Resistencia insulínica</b> → hiperinsulinemia</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text">Insulina estimula teca → <b>↑andrógenos ováricos</b></div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text">Andrógenos excesivos → freno del crecimiento folicular → <b>anovulación</b></div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text">Sin ovulación → sin progesterona → endometrio expuesto solo a estrógenos → <b>riesgo Ca endometrio</b></div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text">LH/FSH ratio >2 es sugestivo pero NO diagnóstico por sí solo</div></div>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Tratamiento según objetivo</div>
+<div class="alg-step"><div class="alg-n">R</div><div class="alg-text"><b>Regular ciclo (sin deseo fertilidad):</b> ACO combinados. Acetato de ciproterona + EE: doble efecto (antiandrogénico + progestágeno)</div></div>
+<div class="alg-step"><div class="alg-n">F</div><div class="alg-text"><b>Deseo de fertilidad:</b> Citrato de clomifeno (inductor ovulación 1ª línea). Si falla: gonadotrofinas</div></div>
+<div class="alg-step"><div class="alg-n">M</div><div class="alg-text"><b>Resistencia insulínica + obesidad:</b> Metformina. No es 1ª línea para inducir ovulación</div></div>
+<div class="alg-step"><div class="alg-n">H</div><div class="alg-text"><b>Hirsutismo:</b> ACO + espironolactona (antiandrogénico)</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li><b>No se diagnostica por ecografía sola</b> → la eco es solo 1 de 3 criterios</li>
+<li><b>LH/FSH >2</b> es orientativo pero no es criterio diagnóstico oficial</li>
+<li><b>17-OH-P elevada</b> → pensar HSANC (no SOP) hasta descartarla</li>
+<li><b>Metformina</b> mejora resistencia insulínica pero no es el mejor inductor de ovulación</li>
+<li>SOP + anovulación crónica = endometrio sin protección progestínica = <b>riesgo de hiperplasia/Ca endometrio</b></li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Regla de Rotterdam:</span> 2 de 3: (1) Oligo/anovulación + (2) hiperandrogenismo + (3) eco poliquístico. Siempre excluir HSANC, hiperprolactinemia, hipotiroidismo.</div>
+`},
+
+{id:5,label:"Metrorragias",short:"Metro",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>La edad y el contexto son la clave diagnóstica</h3>
+<p>En metrorragia, la edad orienta la causa más probable: adolescentes → anovulación; edad reproductiva → mioma, pólipo, embarazo, anovulación; perimenopausia → mioma, hiperplasia; <b>postmenopausia → cáncer de endometrio hasta demostrar lo contrario</b>. La clasificación PALM-COEIN ordena causas estructurales vs funcionales.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Preguntas directas del banco — muy rentable</div>
+<h3>3 escenarios clave</h3>
+<div class="q-bank"><b>Preg. 96:</b> Mujer 65 años, obesa, sin TRH, metrorragia 1 semana → <b>Cáncer de endometrio</b> ✓<br>Obesa + postmenopáusica = doble riesgo (conversión periférica andrógenos → estrógenos)</div>
+<div class="q-bank" style="margin-top:6px;"><b>Preg. 17:</b> Mioma submucoso 2cm sintomático + deseo fertilidad → <b>Miomectomía histeroscópica</b> ✓<br>El submucoso se trata por vía histeroscópica siempre que sea posible</div>
+<div class="q-bank" style="margin-top:6px;"><b>Preg. 81:</b> Mujer 52 años, menopáusica, metrorragia + histeroscopia: <b>hiperplasia con atipia</b> → <b>Anexohisterectomía</b> ✓<br>Atipia = riesgo alto de carcinoma → cirugía. Sin atipia → progestágenos</div>
+</div>
+<div class="card">
+<div class="clabel">Clasificación PALM-COEIN</div>
+<h3>Estructurales vs funcionales</h3>
+<p><b>PALM (estructurales):</b></p>
+<ul>
+<li><b>P</b>ólipo endometrial/cervical</li>
+<li><b>A</b>denomiosois</li>
+<li><b>L</b>eiomioma (mioma): submucoso (SM) es el más sintomático</li>
+<li><b>M</b>alignidad e hiperplasia</li>
+</ul>
+<p style="margin-top:6px;"><b>COEIN (funcionales):</b></p>
+<ul>
+<li><b>C</b>oagulopatía, <b>O</b>vulatoria (anovulación), <b>E</b>ndometrial, <b>I</b>atrogénica (ACO, anticoagulantes), <b>N</b>o clasificada</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Algoritmo según edad</div>
+<div class="alg-step"><div class="alg-n">→</div><div class="alg-text"><b>Toda edad:</b> β-hCG primero (siempre excluir embarazo/ectópico)</div></div>
+<div class="alg-step"><div class="alg-n">R</div><div class="alg-text"><b>Edad reproductiva:</b> Eco TV → define causa estructural. Luego conducta según hallazgo</div></div>
+<div class="alg-step"><div class="alg-n">P</div><div class="alg-text"><b>Peri/postmenopausia:</b> Eco TV + grosor endometrial. Endometrio >4mm postmenopáusica → biopsia</div></div>
+<div class="alg-step"><div class="alg-n">Au</div><div class="alg-text"><b>Gold standard dx Ca endometrio:</b> Legrado fraccionado + histeroscopia (no sola la biopsia aspirativa)</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li>Mujer obesa postmenopáusica + sangrado = <b>Ca endometrio</b> hasta demostrar lo contrario</li>
+<li><b>Hiperplasia SIN atipia:</b> progestágenos. <b>CON atipia:</b> cirugía</li>
+<li>Mioma <b>subseroso</b> no causa sangrado; el <b>submucoso</b> sí</li>
+<li>Gold standard Ca endometrio = <b>legrado fraccionado + histeroscopia</b> (no solo la biopsia aspirativa Pipelle)</li>
+<li>Adenomiosis → útero globuloso, doloroso, eco heterogénea; no se opera salvo fallo tratamiento médico</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Regla postmenopáusica:</span> Todo sangrado postmenopáusico = Ca endometrio hasta demostrar lo contrario. Eco + grosor endometrial + legrado fraccionado + histeroscopia.</div>
+`},
+
+{id:6,label:"Infertilidad",short:"Infert",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Tiempo + edad + estudio de pareja</h3>
+<p><b>Infertilidad</b>: incapacidad de lograr embarazo tras 12 meses de coitos regulares sin anticoncepción (menores de 35 años) o <b>6 meses</b> (mayores de 35 años). Siempre es un diagnóstico de <b>pareja</b>: el espermograma es el primer estudio a pedir porque es el más simple y el más rentable.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Pregunta directa del banco</div>
+<h3>Cuándo iniciar estudio en >35 años</h3>
+<div class="q-bank"><b>Preg. 5:</b> "¿En qué circunstancias iniciar estudio básico de infertilidad?"<br>Mujeres <b>mayores de 35 años</b>, luego de <b>6 meses</b> de coitos regulares (2-3 x semana) sin anticonceptivos ✓</div>
+<p style="margin-top:6px;"><b>Distractores del banco:</b> 3 meses, 12 meses, 18 meses → todas incorrectas para >35.</p>
+<p>Para <b>menores de 35 años:</b> 12 meses antes de iniciar estudio.</p>
+<p style="margin-top:6px;"><b>Inicio inmediato</b> si: amenorrea conocida, antecedente de enfermedad pélvica, cirugía tubaria, endometriosis, factor masculino conocido.</p>
+</div>
+<div class="card">
+<div class="clabel">Estudio básico de pareja</div>
+<h3>Lo que se pide y por qué</h3>
+<ul>
+<li><b>1. Espermograma:</b> factor masculino (40% de las causas). Siempre primer estudio</li>
+<li><b>2. Eco TV:</b> anatomía uterina, ovárica, folículos antrales (reserva ovárica)</li>
+<li><b>3. HSG (histerosalpingografía):</b> permeabilidad tubaria</li>
+<li><b>4. Laboratorio hormonal:</b> FSH, LH, estradiol (día 2-3), AMH, prolactina, TSH</li>
+<li><b>5. Progesterona día 21:</b> confirma ovulación</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Causas por frecuencia</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Factor masculino:</b> 35-40%. Espermograma primero.</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Factor ovulatorio:</b> 25-30%. SOP es la causa más frecuente.</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text"><b>Factor tubario:</b> 20-25%. Secuela de EPI, cirugías, endometriosis.</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text"><b>Factor uterino:</b> miomas submucosos, pólipos, Asherman.</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text"><b>Inexplicada:</b> ~15%. Todo normal pero no conciben.</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li><b>Espermograma = siempre primer estudio</b>, no eco ni HSG</li>
+<li>Para >35 años: <b>6 meses</b> (no 12, no 3)</li>
+<li>AMH es el mejor marcador de reserva ovárica (no FSH basal aislada)</li>
+<li>La HSG es diagnóstica Y terapéutica (puede desobstruir trompas)</li>
+<li>Endometriosis moderada-severa → causa frecuente de infertilidad por distorsión anatómica + inflamación peritoneal</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Regla del examen:</span> >35 años + 6 meses → iniciar estudio. Primer paso siempre: <b>espermograma</b>. Es el más rentable y el menos invasivo.</div>
+`},
+
+{id:7,label:"Endometriosis",short:"Endome",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Tríada: dismenorrea + dispareunia + infertilidad</h3>
+<p>Presencia de tejido endometrial funcionante fuera de la cavidad uterina. La tríada clásica es <b>dismenorrea secundaria progresiva</b> (se agrava con el tiempo), <b>dispareunia profunda</b> e <b>infertilidad</b>. El endometrioma ovárico ("quiste de chocolate") es su forma más reconocible. El diagnóstico definitivo es <b>laparoscópico</b>.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">3 preguntas directas del banco</div>
+<h3>Conductas clave</h3>
+<div class="q-bank"><b>Preg. 21:</b> "¿Cuál es el tratamiento médico de elección en endometriosis?"<br><b>Dienogest</b> ✓ (progestágeno selectivo)<br>Distractores: danazol, análogos GnRH, ACO combinados → incorrectos como 1ª línea médica</div>
+<div class="q-bank" style="margin-top:6px;"><b>Preg. 26:</b> Paciente 32 años, dismenorrea progresiva, eco: quiste ovárico contenido particulado 7cm + CA-125 50 U/mL<br>→ <b>Laparoscopía diagnóstica y terapéutica</b> ✓<br>Endometrioma >4cm → cirugía (no solo observar)</div>
+<div class="q-bank" style="margin-top:6px;"><b>Conexión:</b> CA-125 elevado → no es diagnóstico (también en Ca ovario, EPI) pero apoya el cuadro</div>
+</div>
+<div class="card">
+<div class="clabel">Clasificación y diagnóstico</div>
+<h3>Estadios y herramientas</h3>
+<p><b>Estadios ASRM:</b> I (mínima) → II (leve) → III (moderada) → IV (severa, endometrioma)</p>
+<ul>
+<li><b>Eco TV:</b> endometrioma = imagen quística con contenido finamente particulado ("vidrio esmerilado")</li>
+<li><b>CA-125:</b> elevado (inespecífico), útil para seguimiento no diagnóstico</li>
+<li><b>RMN:</b> mejor que eco para endometriosis profunda</li>
+<li><b>Laparoscopía:</b> gold standard diagnóstico y terapéutico</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Algoritmo de manejo</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Sospecha clínica:</b> dismenorrea progresiva + dispareunia + eco compatible</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Sin deseo fertilidad:</b> Dienogest 2mg/día (1ª línea médica) o ACO continuo</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text"><b>Endometrioma &lt;4cm:</b> tratamiento médico. <b>&gt;4cm:</b> laparoscopía</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text"><b>Con deseo fertilidad:</b> laparoscopía + consejería en técnicas de reproducción asistida</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text"><b>Endometriosis profunda infiltrante:</b> RMN + cirugía multidisciplinaria</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li><b>Dienogest, no análogos GnRH</b> ni danazol como primera línea médica (más efectivo, mejor tolerado)</li>
+<li>CA-125 no es diagnóstico → también sube en Ca ovario, EPI, peritonitis</li>
+<li>Endometrioma <b>&gt;4cm = laparoscopía</b>, no solo observación ni CA-125 seriado</li>
+<li>La dispareunia en endometriosis es <b>profunda</b> (no superficial como en vaginismo o vulvodinia)</li>
+<li>Endometriosis ≠ adenomiosis (aunque coexisten): adenomiosis = endometrio dentro del miometrio → útero globuloso, sin quistes ováricos</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Frase ancla:</span> Dismenorrea progresiva + quiste "vidrio esmerilado" &gt;4cm → laparoscopía. Sin cirugía: Dienogest es la 1ª línea médica.</div>
+`},
+
+{id:8,label:"Menopausia",short:"Menop",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Cese definitivo de menstruación + FSH elevada + E2 baja</h3>
+<p><b>Menopausia</b> = 12 meses consecutivos de amenorrea sin otra causa. Promedio en Argentina: 51 años. El diagnóstico es <b>clínico y retrospectivo</b>. La causa: agotamiento del pool folicular → sin estrógenos → sin freno del eje → <b>FSH disparada</b>. Todos los síntomas derivan del hipoestrogenismo.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">4 preguntas directas del banco</div>
+<h3>Lo que el examen pregunta sobre menopausia</h3>
+<div class="q-bank"><b>Preg. 16:</b> Perfil hormonal de la menopausia → <b>FSH elevado + Estradiol bajo</b> ✓</div>
+<div class="q-bank" style="margin-top:4px;"><b>Preg. 3:</b> Mujer 50 años, sofocos + cambios de ánimo + alt. sueño (perimenopausia) → causa → <b>Disminución de la producción de estrógenos</b> ✓</div>
+<div class="q-bank" style="margin-top:4px;"><b>Preg. 55:</b> TRH en climaterio → <b>Se debe utilizar durante el menor tiempo posible</b> ✓<br>(No: iniciarla ante cualquier síntoma, no: incluir progestágeno continuo siempre, no: todas pueden recibirla)</div>
+<div class="q-bank" style="margin-top:4px;"><b>Preg. 98:</b> Mujer 54 años, dispareunia + ardor vaginal, examen: mucosa pálida, pH 5.5, leucocitos sin tricomonas → <b>Óvulos con estrógenos</b> ✓ (atrofia vaginal = vaginitis atrófica)</div>
+</div>
+<div class="card">
+<div class="clabel">Síntomas por sistemas</div>
+<h3>Hipoestrogenismo en cada órgano</h3>
+<ul>
+<li><b>Vasomotor:</b> sofocos (hot flashes), sudoración nocturna, palpitaciones</li>
+<li><b>Genitourinario (GSM):</b> atrofia vaginal, dispareunia, incontinencia urinaria, ITU recurrentes</li>
+<li><b>SNC:</b> insomnio, irritabilidad, ansiedad, labilidad emocional, dificultad concentración</li>
+<li><b>Metabólico:</b> ↑peso central, ↑LDL, ↑riesgo cardiovascular</li>
+<li><b>Óseo:</b> osteopenia → osteoporosis (↑2-3% pérdida anual los primeros 5 años)</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">TRH: indicaciones y reglas</div>
+<div class="alg-step"><div class="alg-n">I</div><div class="alg-text"><b>Indicación:</b> síntomas vasomotores moderados-severos que afectan calidad de vida. NO se inicia ante cualquier síntoma</div></div>
+<div class="alg-step"><div class="alg-n">T</div><div class="alg-text"><b>Tiempo:</b> menor tiempo posible a la dosis más baja eficaz</div></div>
+<div class="alg-step"><div class="alg-n">P</div><div class="alg-text"><b>Progestágeno:</b> OBLIGATORIO si tiene útero (protege endometrio). NO si está histerectomizada</div></div>
+<div class="alg-step"><div class="alg-n">CI</div><div class="alg-text"><b>Contraindicaciones absolutas:</b> Ca mama (actual o previo), Ca endometrio, TEP activo, enfermedad hepática activa</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li>TRH "por el menor tiempo posible" → no indefinidamente</li>
+<li><b>NO todas las mujeres pueden recibirla</b> (Ca mama = contraindicación absoluta)</li>
+<li>Progestágeno continuo NO siempre → solo si tiene útero</li>
+<li>Vaginitis atrófica → <b>estrógenos locales</b>, no metronidazol, no clotrimazol</li>
+<li>pH vaginal postmenopáusico: sube a 5-7 (ácido normal = &lt;4.5). No confundir con vaginosis (también pH alto pero tiene aminas)</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Regla maestra:</span> Menopausia = FSH ↑ + E2 ↓. Síntomas = hipoestrogenismo. TRH = menor tiempo posible. Vaginitis atrófica = estrógenos locales.</div>
+`},
+
+{id:9,label:"Climaterio",short:"Climat",
+content:`
+<div class="row1"><div class="card card-madre">
+<div class="clabel">Idea madre</div>
+<h3>Transición, no evento: pre → peri → postmenopausia</h3>
+<p>El <b>climaterio</b> es el período de transición entre la vida reproductiva y la no reproductiva. Incluye la <b>perimenopausia</b> (variabilidad menstrual, síntomas vasomotores, ciclos anovulatorios) y la <b>postmenopausia</b> (tras 12 meses de amenorrea). El examen pregunta sobre manejo de síntomas, TRH y prevención de complicaciones a largo plazo.</p>
+</div></div>
+<div class="row2">
+<div class="card card-exam">
+<div class="clabel">Lo más preguntable del climaterio</div>
+<h3>Perimenopausia y sus trampas</h3>
+<p><b>Fases del climaterio:</b></p>
+<ul>
+<li><b>Premenopausia:</b> función ovárica normal, ciclos regulares</li>
+<li><b>Perimenopausia:</b> 2-8 años antes hasta 1 año después de la FUM. Ciclos irregulares, sofocos, aún puede embarazarse</li>
+<li><b>Postmenopausia temprana:</b> 1-6 años tras FUM. Síntomas vasomotores máximos</li>
+<li><b>Postmenopausia tardía:</b> síntomas vasomotores disminuyen, prevalecen cambios genitourinarios y metabólicos</li>
+</ul>
+<div class="q-bank" style="margin-top:6px;"><b>Clave clínica:</b> En perimenopausia la mujer PUEDE seguir ovulando → puede embarazarse → necesita anticoncepción hasta 12 meses de amenorrea confirmada</div>
+</div>
+<div class="card">
+<div class="clabel">Complicaciones a largo plazo</div>
+<h3>Lo que se previene</h3>
+<ul>
+<li><b>Osteoporosis:</b> pérdida acelerada de masa ósea los primeros 5 años post-menopausia. Prevención: calcio + vitamina D + ejercicio físico de carga. Tamizaje: densitometría ósea</li>
+<li><b>Enfermedad cardiovascular:</b> ↑LDL, ↓HDL, ↑obesidad central, ↑HTA. Principal causa de mortalidad postmenopáusica</li>
+<li><b>Síndrome genitourinario (GSM):</b> atrofia, dispareunia, ITU recurrentes</li>
+<li><b>Cognitivo:</b> posible ↑riesgo demencia (debatido)</li>
+</ul>
+</div>
+</div>
+<div class="row2">
+<div class="card card-alg">
+<div class="clabel">Manejo integral del climaterio</div>
+<div class="alg-step"><div class="alg-n">1</div><div class="alg-text"><b>Siempre:</b> consejería sobre estilo de vida: dieta, ejercicio, abstención tabaco, calcio (1200mg), vitamina D (800-1000 UI)</div></div>
+<div class="alg-step"><div class="alg-n">2</div><div class="alg-text"><b>Síntomas vasomotores leves:</b> medidas no farmacológicas, fitoestrógenos, isoflavonas</div></div>
+<div class="alg-step"><div class="alg-n">3</div><div class="alg-text"><b>Síntomas moderados-severos:</b> evaluar TRH. Siempre menor tiempo posible, reevaluar anualmente</div></div>
+<div class="alg-step"><div class="alg-n">4</div><div class="alg-text"><b>GSM:</b> estrógenos locales (óvulos, crema, anillo vaginal). No tienen contraindicaciones sistémicas relativas</div></div>
+<div class="alg-step"><div class="alg-n">5</div><div class="alg-text"><b>Osteoporosis instalada:</b> bifosfonatos (primera línea). TRH es alternativa si hay contraindicación a bifosfonatos</div></div>
+</div>
+<div class="card card-trap">
+<div class="clabel">Trampas del examen</div>
+<ul>
+<li><b>Perimenopausia ≠ menopausia:</b> puede ovular y embarazarse</li>
+<li>TRH no es obligatoria ante cualquier síntoma → solo si afecta calidad de vida y no hay contraindicaciones</li>
+<li>Estrógenos locales para GSM → tienen escasa absorción sistémica, pueden usarse incluso con contraindicaciones relativas a TRH sistémica</li>
+<li><b>Densitometría ósea:</b> indicada en todas las mujeres postmenopáusicas</li>
+<li>Sofocos pueden durar <b>7-10 años</b> (no "pocos meses")</li>
+</ul>
+</div>
+</div>
+<div class="frase"><span>Diferencia clave:</span> Climaterio = período completo de transición. Menopausia = punto (12 meses amenorrea). Perimenopausia = zona peligrosa donde puede embarazarse.</div>
+`}
+];
+
+const tabsEl=document.getElementById('tabs');
+const contentEl=document.getElementById('node-content');
+let active=0;
+
+function render(i){
+  active=i;
+  tabsEl.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  contentEl.innerHTML=nodes[i].content;
+}
+
+nodes.forEach((n,i)=>{
+  const btn=document.createElement('button');
+  btn.className='tab'+(i===0?' active':'');
+  btn.textContent=n.short;
+  btn.onclick=()=>render(i);
+  tabsEl.appendChild(btn);
+});
+
+render(0);
+</script>

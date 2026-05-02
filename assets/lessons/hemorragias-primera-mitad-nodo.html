@@ -1,0 +1,595 @@
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ab:#E6F1FB;--ab2:#185FA5;--ab3:#0C447C;--ec:#FCEBEB;--ec2:#A32D2D;--ec3:#791F1F;--et:#EAF3DE;--et2:#3B6D11;--et3:#27500A;--tr:#FAEEDA;--tr2:#854F0B;--tr3:#633806}
+body{font-family:var(--font-sans,sans-serif)}
+.wrap{padding:0 0 2rem}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:0}
+.tab{padding:7px 14px;font-size:13px;cursor:pointer;border:0.5px solid transparent;border-radius:var(--border-radius-md) var(--border-radius-md) 0 0;color:var(--color-text-secondary);background:transparent;transition:all .15s;margin-bottom:-0.5px;white-space:nowrap}
+.tab:hover{background:var(--color-background-secondary)}
+.tab.on{border-color:var(--color-border-secondary);border-bottom-color:var(--color-background-primary);background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500}
+.panel{display:none}.panel.on{display:block}
+.sect{font-size:11px;font-weight:500;letter-spacing:.07em;color:var(--color-text-tertiary);margin:1.25rem 0 .5rem;text-transform:uppercase}
+.card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem}
+.card-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:.4rem}
+.card-body{font-size:13px;color:var(--color-text-secondary);line-height:1.6}
+.pill{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;margin-right:4px;margin-bottom:3px}
+.pill-ab{background:var(--ab);color:var(--ab3)}
+.pill-ec{background:var(--ec);color:var(--ec3)}
+.pill-et{background:var(--et);color:var(--et3)}
+.pill-tr{background:var(--tr);color:var(--tr3)}
+.pill-g{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)}
+.entity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1rem}
+.ent{border-radius:var(--border-radius-lg);padding:1rem;border:0.5px solid}
+.ent-ab{background:var(--ab);border-color:#B5D4F4;color:var(--ab3)}
+.ent-ec{background:var(--ec);border-color:#F7C1C1;color:var(--ec3)}
+.ent-et{background:var(--et);border-color:#C0DD97;color:var(--et3)}
+.ent h3{font-size:14px;font-weight:500;margin-bottom:.5rem}
+.ent p{font-size:12px;line-height:1.55;opacity:.85}
+.ent .tag{font-size:11px;font-weight:500;opacity:.7;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:500;font-size:12px;color:var(--color-text-secondary);padding:8px 10px;border-bottom:0.5px solid var(--color-border-secondary);white-space:nowrap}
+td{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-primary);line-height:1.45;font-size:12px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.badge{display:inline-block;padding:2px 7px;border-radius:12px;font-size:11px;font-weight:500}
+.b-ab{background:var(--ab);color:var(--ab3)}
+.b-ec{background:var(--ec);color:var(--ec3)}
+.b-g{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.algo-box{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem}
+.algo-head{background:var(--color-background-secondary);padding:.75rem 1rem;font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.algo-row{display:flex;align-items:flex-start;padding:.75rem 1rem;border-top:0.5px solid var(--color-border-tertiary);gap:.75rem}
+.step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.sn-ab{background:var(--ab);color:var(--ab3)}
+.sn-ec{background:var(--ec);color:var(--ec3)}
+.algo-content{flex:1}
+.algo-content strong{font-size:13px;font-weight:500;display:block;color:var(--color-text-primary);margin-bottom:2px}
+.algo-content span{font-size:12px;color:var(--color-text-secondary)}
+.trap{background:var(--tr);border:0.5px solid #FAC775;border-radius:var(--border-radius-lg);padding:.9rem 1rem;margin-bottom:.6rem}
+.trap-label{font-size:11px;font-weight:500;color:var(--tr3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.trap-wrong{font-size:13px;color:#A32D2D;margin-bottom:.2rem}
+.trap-right{font-size:13px;color:#3B6D11;margin-bottom:.2rem}
+.trap-why{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.q-card{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);margin-bottom:.75rem;overflow:hidden}
+.q-head{padding:.75rem 1rem;background:var(--color-background-secondary);display:flex;align-items:flex-start;gap:.5rem;cursor:pointer}
+.q-year{font-size:11px;font-weight:500;padding:2px 7px;border-radius:10px;background:var(--color-background-primary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px}
+.q-text{font-size:13px;color:var(--color-text-primary);line-height:1.45;flex:1}
+.q-body{padding:.75rem 1rem;border-top:0.5px solid var(--color-border-tertiary)}
+.q-opt{font-size:12px;padding:3px 0;color:var(--color-text-secondary)}
+.q-opt.right{color:#3B6D11;font-weight:500}
+.q-opt.wrong{color:#A32D2D;text-decoration:line-through;opacity:.7}
+.analysis{font-size:12px;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.6rem .8rem;margin-top:.6rem;line-height:1.5}
+.key-var{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);margin-bottom:.5rem;font-size:13px}
+.kv-label{font-weight:500;color:var(--color-text-primary);min-width:130px}
+.kv-val{color:var(--color-text-secondary)}
+.frase{font-size:14px;font-style:italic;color:var(--color-text-secondary);border-left:2px solid var(--color-border-secondary);padding:.5rem .9rem;margin:1rem 0;line-height:1.6}
+.node-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:500px){.node-grid{grid-template-columns:1fr}.entity-grid{grid-template-columns:1fr}}
+.tag-row{margin-bottom:.6rem}
+.sub{font-size:12px;color:var(--color-text-secondary);margin-top:.2rem}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Nodo conceptual: Hemorragias de la primera mitad del embarazo</h2>
+
+<div class="tabs">
+  <button class="tab on" onclick="show('activador',this)">Activador</button>
+  <button class="tab" onclick="show('nodo',this)">Nodo conceptual</button>
+  <button class="tab" onclick="show('tabla',this)">Tabla comparativa</button>
+  <button class="tab" onclick="show('algoritmo',this)">Algoritmos</button>
+  <button class="tab" onclick="show('trampas',this)">Trampas</button>
+  <button class="tab" onclick="show('banco',this)">Banco histórico</button>
+</div>
+
+<div id="activador" class="panel on">
+  <p class="sect">Pregunta de activación — antes de leer el nodo</p>
+  <div class="card">
+    <div class="card-title">Caso clínico de examen</div>
+    <div class="card-body">Mujer de 24 años, amenorrea de 8 semanas, test de embarazo positivo. Consulta en guardia por dolor abdominal difuso y permanente de 72 horas de evolución. PA 80/50 mmHg, FC 124 lpm. Eco TV: líquido libre en cavidad, formación tubárica derecha 5×7 cm compatible con embarazo ectópico. Hto 23%.</div>
+  </div>
+  <div class="card" style="border-color:#F7C1C1">
+    <div class="card-title" style="color:var(--ec2)">¿Cuál es la conducta más adecuada?</div>
+    <div class="card-body" style="margin-bottom:.7rem">
+      <div style="font-size:13px;padding:4px 0">A) Tratamiento médico con metotrexato 50mg/m²</div>
+      <div style="font-size:13px;padding:4px 0">B) Anexectomía laparoscópica</div>
+      <div style="font-size:13px;padding:4px 0;color:#3B6D11;font-weight:500">C) Salpingectomía laparoscópica ✓</div>
+      <div style="font-size:13px;padding:4px 0">D) Laparotomía mediana xifopubiana</div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary);padding-top:.6rem;line-height:1.5">
+      La variable clave es la inestabilidad hemodinámica → cirugía. Entre las opciones quirúrgicas, la vía laparoscópica es preferible a la laparotomía (igual eficacia, menor morbilidad) y se preserva el ovario (salpingectomía, no anexectomía) salvo compromiso ovárico. MTX está contraindicado en pacientes inestables.
+    </div>
+  </div>
+  <div class="frase">"En el ectópico: la hemodinamia decide la vía, la vía decide el abordaje."</div>
+</div>
+
+<div id="nodo" class="panel">
+  <p class="sect">Idea madre</p>
+  <div class="card">
+    <div class="card-title">Red conceptual central</div>
+    <div class="card-body">Las hemorragias de la primera mitad del embarazo (hasta las 20 semanas) se agrupan en tres entidades con lógicas diagnósticas completamente distintas. La clave de diferenciación inicial es: <strong style="color:var(--color-text-primary)">¿hay confirmación de saco intrauterino?</strong> y <strong style="color:var(--color-text-primary)">¿cuál es la estabilidad hemodinámica?</strong></div>
+  </div>
+
+  <div class="entity-grid">
+    <div class="ent ent-ab">
+      <div class="tag">Aborto espontáneo</div>
+      <h3>Pérdida del embarazo intrauterino</h3>
+      <p>Variable clave: estado del cuello uterino → define el tipo y determina la conducta.<br><br>Fisiología: fallo de la implantación o anomalía cromosómica (causa más frecuente: trisomía).</p>
+    </div>
+    <div class="ent ent-ec">
+      <div class="tag">Embarazo ectópico</div>
+      <h3>Implantación fuera de la cavidad uterina</h3>
+      <p>Variable clave: estabilidad hemodinámica → decide entre MTX o cirugía.<br><br>Sitio más frecuente: región ampular de la tuba (70%).</p>
+    </div>
+    <div class="ent ent-et">
+      <div class="tag">Enfermedad trofoblástica</div>
+      <h3>Proliferación anormal del trofoblasto</h3>
+      <p>Variable clave: β-HCG muy elevada + imagen en "tormenta de nieve".<br><br>Riesgo: transformación maligna (coriocarcinoma). Seguimiento con β-HCG hasta negativización.</p>
+    </div>
+  </div>
+
+  <p class="sect">Aborto espontáneo — tipos según cuello</p>
+  <div class="algo-box">
+    <div class="algo-head">Clasificación por estado del orificio cervical interno (OCI)</div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">1</div>
+      <div class="algo-content">
+        <strong>Amenaza de aborto — OCI cerrado</strong>
+        <span>Sangrado + dolor leve, OCI cerrado, saco IN SITU en eco. → Conducta: expectante ambulatoria. NO evacuar.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">2</div>
+      <div class="algo-content">
+        <strong>Aborto en curso / inevitable — OCI abierto</strong>
+        <span>Sangrado importante, OCI abierto, expulsión inminente. → Conducta: completar la evacuación (AMEU o médica según EG y protocolo).</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">3</div>
+      <div class="algo-content">
+        <strong>Aborto incompleto — OCI abierto o cerrado, restos</strong>
+        <span>Material ovular parcialmente expulsado, restos en eco. → Conducta: evacuación instrumental (AMEU) o médica (misoprostol).</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">4</div>
+      <div class="algo-content">
+        <strong>Aborto completo — OCI cerrado, cavidad libre</strong>
+        <span>Material completamente expulsado, síntomas cedieron, eco sin restos. → Conducta: expectante. Evaluar inmunoglobulina anti-Rho si EG ≥ 9 sem y Rh negativo.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">5</div>
+      <div class="algo-content">
+        <strong>Aborto retenido (frustro) — OCI cerrado, embrión muerto</strong>
+        <span>Sin actividad cardíaca fetal, sin expulsión. → Conducta: misoprostol o AMEU según EG.</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="sect">Embarazo ectópico — algoritmo por estabilidad</p>
+  <div class="algo-box">
+    <div class="algo-head">La hemodinamia es la variable decisora</div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">1</div>
+      <div class="algo-content">
+        <strong>Inestable hemodinámicamente</strong>
+        <span>Hipotensión, taquicardia, abdomen en tabla, hemoperitoneo → Salpingectomía laparoscópica de urgencia. Si laparoscopia no disponible: laparotomía.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">2</div>
+      <div class="algo-content">
+        <strong>Estable, masa &lt; 4 cm, β-HCG &lt; 5000, sin actividad cardíaca fetal</strong>
+        <span>Tratamiento médico: Metotrexato 50 mg/m² IM dosis única. Seguimiento con β-HCG hasta caída ≥ 15% del día 4 al día 7.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">3</div>
+      <div class="algo-content">
+        <strong>Estable, masa &gt; 4 cm o β-HCG &gt; 5000</strong>
+        <span>Salpingectomía laparoscópica programada. Preservar ovario salvo compromiso directo.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-grid">
+    <div class="card">
+      <div class="card-title">Inmunoglobulina anti-Rho — regla</div>
+      <div class="card-body">Indicada en paciente Rh negativa con aborto espontáneo si EG ≥ 9 semanas (según protocolo MSAL / IVE-ILE 2022). Dosis: 300 mcg IM. Administrar antes o durante el procedimiento de evacuación, o post-expulsión espontánea.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Muerte materna por aborto</div>
+      <div class="card-body">La causa más frecuente de muerte materna postaborto es la <strong style="color:var(--color-text-primary)">infección</strong> (no la hemorragia). Esto es un dato altamente preguntable y contraintuitivo.</div>
+    </div>
+  </div>
+
+  <div class="frase">"En el aborto, el OCI abierto o cerrado te dice qué hacer. En el ectópico, la presión arterial te dice cuándo."</div>
+</div>
+
+<div id="tabla" class="panel">
+  <p class="sect">Tabla comparativa — las 3 entidades</p>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Parámetro</th>
+        <th><span class="badge b-ab">Aborto</span></th>
+        <th><span class="badge b-ec">Ectópico</span></th>
+        <th><span class="badge" style="background:var(--et);color:var(--et3)">ETG / Mola</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Síntoma cardinal</strong></td>
+        <td>Metrorragia ± cólico hipogástrico</td>
+        <td>Dolor abdominal ± metrorragia oscura ± síncope</td>
+        <td>Metrorragia + útero mayor que EG + náuseas intensas</td>
+      </tr>
+      <tr>
+        <td><strong>Examen físico clave</strong></td>
+        <td>Estado OCI → abierto o cerrado</td>
+        <td>Signos de irritación peritoneal; estabilidad HD</td>
+        <td>Útero muy grande, no se ausculta LCF, dolor a la palpación ovárica (quistes teca-luteínicos)</td>
+      </tr>
+      <tr>
+        <td><strong>Ecografía</strong></td>
+        <td>Saco intrauterino (presente o en curso de expulsión)</td>
+        <td>Ausencia de saco intrauterino + masa anexial</td>
+        <td>"Tormenta de nieve" / imagen en panal. Sin embrión visible</td>
+      </tr>
+      <tr>
+        <td><strong>β-HCG</strong></td>
+        <td>Baja o en descenso</td>
+        <td>Variable (normal o ligeramente elevada)</td>
+        <td>Extremadamente elevada (>100.000 mUI/ml frecuente)</td>
+      </tr>
+      <tr>
+        <td><strong>Variable decisora</strong></td>
+        <td>Estado del cuello (OCI)</td>
+        <td>Estabilidad hemodinámica</td>
+        <td>β-HCG post-evacuación (seguimiento a la negativización)</td>
+      </tr>
+      <tr>
+        <td><strong>Conducta de urgencia</strong></td>
+        <td>Expectante si amenaza; evacuar si incompleto/retenido</td>
+        <td>Quirúrgica inmediata si inestable</td>
+        <td>Evacuación uterina (aspiración); NO quimioterapia inicial</td>
+      </tr>
+      <tr>
+        <td><strong>Complicación temida</strong></td>
+        <td>Infección (sepsis postaborto)</td>
+        <td>Hemoperitoneo, shock hemorrágico</td>
+        <td>Transformación maligna (coriocarcinoma)</td>
+      </tr>
+      <tr>
+        <td><strong>Mortalidad materna</strong></td>
+        <td>Causa 1°: infección (no hemorragia)</td>
+        <td>Causa principal: hemorragia por rotura</td>
+        <td>Baja si tratada; alta si coriocarcinoma no tratado</td>
+      </tr>
+      <tr>
+        <td><strong>Signo clínico trampa</strong></td>
+        <td>OCI cerrado NO descarta aborto incompleto (puede estar cerrándose)</td>
+        <td>Puede presentarse sin metrorragia</td>
+        <td>Puede simular embarazo múltiple en eco precoz</td>
+      </tr>
+      <tr>
+        <td><strong>Frase compresiva</strong></td>
+        <td>"El cuello decide la conducta"</td>
+        <td>"La presión decide cuándo y cómo operar"</td>
+        <td>"La HCG decide el seguimiento"</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="sect" style="margin-top:1.25rem">Comparativo de conducta quirúrgica en ectópico</p>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Situación</th>
+        <th>Conducta</th>
+        <th>Justificación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Inestable, hemoperitoneo</td>
+        <td style="color:#3B6D11;font-weight:500">Salpingectomía laparoscópica</td>
+        <td>Urgencia; preservar ovario; laparoscopia es de elección si disponible</td>
+      </tr>
+      <tr>
+        <td>Inestable, sin laparoscopio</td>
+        <td style="color:#3B6D11;font-weight:500">Laparotomía</td>
+        <td>No hay tiempo para otra vía de acceso</td>
+      </tr>
+      <tr>
+        <td>Estable, masa &lt;4cm, HCG &lt;5000</td>
+        <td style="color:#3B6D11;font-weight:500">Metotrexato 50mg/m² IM</td>
+        <td>Tratamiento conservador de elección; preserva fertilidad</td>
+      </tr>
+      <tr>
+        <td>Estable, masa grande</td>
+        <td style="color:#3B6D11;font-weight:500">Salpingectomía laparoscópica electiva</td>
+        <td>MTX insuficiente para masas grandes o HCG alta</td>
+      </tr>
+      <tr>
+        <td>Compromiso del ovario</td>
+        <td style="color:#854F0B">Anexectomía</td>
+        <td>Solo cuando el ovario está comprometido; no es la regla</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div id="algoritmo" class="panel">
+  <p class="sect">Algoritmo — aborto espontáneo</p>
+  <div class="algo-box">
+    <div class="algo-head">Ingresa paciente con sangrado en 1° mitad del embarazo</div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">1</div>
+      <div class="algo-content">
+        <strong>Confirmar embarazo intrauterino (eco TV)</strong>
+        <span>¿Saco en cavidad uterina? Sí → aborto espontáneo. No → sospechar ectópico.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">2</div>
+      <div class="algo-content">
+        <strong>Evaluar estado del cuello — OCI abierto o cerrado</strong>
+        <span>OCI cerrado + saco íntegro → amenaza o retenido. OCI abierto → en curso o incompleto.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">3</div>
+      <div class="algo-content">
+        <strong>Evaluar si el material fue expulsado</strong>
+        <span>¿Material expulsado + síntomas aliviados + cavidad libre? → Aborto completo. Conducta expectante.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">4</div>
+      <div class="algo-content">
+        <strong>Si necesita evacuación: ¿método?</strong>
+        <span>AMEU (aspiración manual endouterina) o misoprostol según edad gestacional y disponibilidad del centro.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ab">5</div>
+      <div class="algo-content">
+        <strong>Inmunoglobulina anti-Rho</strong>
+        <span>Si paciente Rh negativa y EG ≥ 9 semanas. Antes o durante el procedimiento.</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="sect">Algoritmo — embarazo ectópico</p>
+  <div class="algo-box">
+    <div class="algo-head">Sospecha de ectópico (saco uterino ausente + amenorrea + sangrado/dolor)</div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">1</div>
+      <div class="algo-content">
+        <strong>Evaluar estabilidad hemodinámica INMEDIATAMENTE</strong>
+        <span>PA, FC, estado de consciencia. Es lo primero siempre. Si inestable → sala de operaciones sin demora.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">2</div>
+      <div class="algo-content">
+        <strong>Si inestable: salpingectomía laparoscópica de urgencia</strong>
+        <span>No esperar más estudios. Laparotomía solo si laparoscopia no disponible. NO metotrexato.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">3</div>
+      <div class="algo-content">
+        <strong>Si estable: confirmar diagnóstico con eco TV + β-HCG</strong>
+        <span>Masa &lt;4cm + HCG &lt;5000 + sin actividad cardíaca → candidata a MTX.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">4</div>
+      <div class="algo-content">
+        <strong>MTX: 50 mg/m² IM dosis única</strong>
+        <span>Seguimiento con β-HCG día 4 y día 7. Si caída &lt;15% → segunda dosis o cirugía.</span>
+      </div>
+    </div>
+    <div class="algo-row">
+      <div class="step-num sn-ec">5</div>
+      <div class="algo-content">
+        <strong>Si estable pero masa grande o HCG alta: cirugía electiva</strong>
+        <span>Salpingectomía laparoscópica programada. Preservar ovario.</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="sect">Variables clave — síntesis para examen</p>
+  <div class="key-var"><span class="kv-label">Aborto → variable</span><span class="kv-val">Estado del OCI (abierto / cerrado)</span></div>
+  <div class="key-var"><span class="kv-label">Ectópico → variable</span><span class="kv-val">Estabilidad hemodinámica (PA / FC)</span></div>
+  <div class="key-var"><span class="kv-label">ETG → variable</span><span class="kv-val">β-HCG post-evacuación (seguimiento)</span></div>
+  <div class="key-var"><span class="kv-label">Ectópico → sitio más frecuente</span><span class="kv-val">Ampular (70%) &gt; ístmico &gt; intersticial</span></div>
+  <div class="key-var"><span class="kv-label">Muerte postaborto → causa 1°</span><span class="kv-val">Infección (no hemorragia)</span></div>
+  <div class="key-var"><span class="kv-label">MTX → dosis</span><span class="kv-val">50 mg/m² de superficie corporal IM</span></div>
+</div>
+
+<div id="trampas" class="panel">
+  <p class="sect">Catálogo de trampas históricas — banco 2016-2025</p>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 1 — Ectópico inestable</div>
+    <div class="trap-wrong">✗ Respuesta trampa: metotrexato 50mg/m² IM</div>
+    <div class="trap-right">✓ Correcto: salpingectomía laparoscópica</div>
+    <div class="trap-why">El examen siempre presenta un caso con inestabilidad (taquicardia, hipotensión, hemoperitoneo) y la opción MTX aparece atractiva porque es "el tratamiento del ectópico". Pero MTX solo se usa en pacientes estables. En inestable → cirugía inmediata.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 2 — Ectópico: anexectomía vs salpingectomía</div>
+    <div class="trap-wrong">✗ Respuesta trampa: anexectomía laparoscópica</div>
+    <div class="trap-right">✓ Correcto: salpingectomía laparoscópica</div>
+    <div class="trap-why">Se remueve la tuba, NO el ovario. La anexectomía (tuba + ovario) solo está indicada cuando hay compromiso ovárico directo. Esta distinción aparece explícitamente en el banco.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 3 — Ectópico: sitio más frecuente</div>
+    <div class="trap-wrong">✗ Respuesta trampa: región ístmica</div>
+    <div class="trap-right">✓ Correcto: región ampular</div>
+    <div class="trap-why">El itsmo tiene mayor riesgo de rotura precoz (por ser más estrecho), lo que genera confusión. Pero el sitio más FRECUENTE es la ampolla (70% de los casos). Frecuencia ≠ gravedad.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 4 — Muerte materna postaborto</div>
+    <div class="trap-wrong">✗ Respuesta trampa: hemorragia</div>
+    <div class="trap-right">✓ Correcto: infección</div>
+    <div class="trap-why">La muerte por hemorragia es más dramática y visible clínicamente, por eso parece la respuesta obvia. Sin embargo, la infección (sepsis postaborto) es la primera causa de muerte materna postaborto según datos epidemiológicos argentinos.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 5 — Aborto completo: ¿evacuar o no?</div>
+    <div class="trap-wrong">✗ Respuesta trampa: AMEU inmediata</div>
+    <div class="trap-right">✓ Correcto: conducta expectante (+ evaluar anti-Rho)</div>
+    <div class="trap-why">Cuando el material fue completamente expulsado (síntomas cedieron, cuello cerrado, eco sin restos), NO se evacúa. Evacuación de una cavidad vacía implica riesgo de sinequias y perforación. La trampa es confundir aborto completo con incompleto.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 6 — Inmunoglobulina anti-Rho: ¿cuándo?</div>
+    <div class="trap-wrong">✗ Respuesta trampa: independiente de la EG / siempre / 72hs post</div>
+    <div class="trap-right">✓ Correcto: EG ≥ 9 semanas, antes o durante el procedimiento</div>
+    <div class="trap-why">El protocolo MSAL/IVE-ILE 2022 establece: indicar si EG ≥ 9 semanas. Administrar antes o durante el procedimiento de evacuación (no 72hs después como en la isoinmunización Rh del embarazo avanzado). Cada detalle de timing es una trampa potencial.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 7 — MTX: dosis</div>
+    <div class="trap-wrong">✗ Respuesta trampa: 600 mg/m² IV / 200 mg IM / adriamicina</div>
+    <div class="trap-right">✓ Correcto: metotrexato 50 mg/m² de superficie corporal IM</div>
+    <div class="trap-why">La dosis aparece literalmente en el banco histórico. La superficie corporal (no el peso) y la vía IM son los detalles que diferencian las opciones correctas de las incorrectas.</div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-label">Trampa 8 — IVE con misoprostol: control a las 48hs</div>
+    <div class="trap-wrong">✗ Respuesta trampa: aborto finalizado / ergonovina IM / AMEU</div>
+    <div class="trap-right">✓ Correcto: segunda serie con misoprostol</div>
+    <div class="trap-why">Si a las 48hs hay sangrado escaso que cedió, NO significa éxito completo. El protocolo indica verificar con eco y, si no se completó, administrar segunda serie de misoprostol antes de recurrir a instrumentación.</div>
+  </div>
+</div>
+
+<div id="banco" class="panel">
+  <p class="sect">Preguntas históricas del banco — 2016-2025 analizadas</p>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">¿Cuál es la dosis recomendada para el tratamiento médico del embarazo ectópico?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) Fluorouracilo 200 mg 2 dosis IV</div>
+      <div class="q-opt right">B) Metotrexato 50 mg/m² de superficie corporal IM ✓</div>
+      <div class="q-opt wrong">C) Metotrexato 600 mg/m² de superficie corporal IM</div>
+      <div class="q-opt wrong">D) Adriamicina 600 mg 2 dosis IV</div>
+      <div class="analysis">Patrón: dosis exacta. Distractores: misma droga dosis incorrecta (600 mg) y drogas incorrectas. La clave es superficie corporal (no peso), 50 mg (no 600), y vía IM (no IV). Frecuencia: aparece directamente y como opción en casos clínicos.</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">Paciente con ectópico, hemoperitoneo, PA 80/50, FC 124. ¿Cuál es la conducta?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) Metotrexato 50 mg/m² IM</div>
+      <div class="q-opt wrong">B) Anexectomía laparoscópica</div>
+      <div class="q-opt right">C) Salpingectomía laparoscópica ✓</div>
+      <div class="q-opt wrong">D) Laparotomía mediana xifopubiana</div>
+      <div class="analysis">Patrón clásico. MTX excluido por inestabilidad. Laparotomía es trampa: laparoscopia es preferible. Anexectomía excluida porque el ovario está sano. La respuesta correcta requiere saber: (1) cirugía porque inestable, (2) laparoscópica porque es de elección, (3) salpingectomía porque preservamos ovario.</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">¿Cuál es el sitio de implantación tubaria más frecuente en el embarazo ectópico?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) Ístmico</div>
+      <div class="q-opt right">B) Ampular ✓</div>
+      <div class="q-opt wrong">C) Infundibular</div>
+      <div class="q-opt wrong">D) Intersticial</div>
+      <div class="analysis">Pregunta de dato puro. El ístmico es trampa porque tiene más riesgo de rotura (por ser más estrecho) y se menciona más en clase. Pero frecuencia ≠ gravedad. Ampular = 70% de casos.</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">Mujer 19 años, sangrado vaginal 72hs, test positivo en domicilio, PA 110/70, FC 75, cuello cerrado, eco: coágulos aislados en cavidad uterina. ¿Conducta más adecuada?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) Internación y evacuación con tratamiento médico</div>
+      <div class="q-opt wrong">B) Internación y evacuación inmediata instrumental</div>
+      <div class="q-opt wrong">C) Tratamiento médico ambulatorio</div>
+      <div class="q-opt right">D) Conducta expectante y evaluar inmunoglobulina anti-Rho ✓</div>
+      <div class="analysis">Cuello cerrado + coágulos aislados = probable aborto completo. La trampa es evacuar (opciones A y B). Si la cavidad tiene solo coágulos y el cuello está cerrado, el aborto puede haberse completado. Conducta expectante es correcta + siempre evaluar anti-Rho en Rh negativa.</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">Paciente G3P3, 10 semanas, expulsó material, síntomas aliviados, cuello a un pulpejo al externo, Rh negativa. ¿Cuál es la conducta respecto a la inmunoglobulina anti-Rho?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) No administrar por ser &lt;12 semanas</div>
+      <div class="q-opt right">B) Administrar por ser EG &gt; 9 semanas ✓</div>
+      <div class="q-opt wrong">C) Administrar siempre independientemente de la EG</div>
+      <div class="q-opt wrong">D) No administrar porque ya recibió profilaxis antes</div>
+      <div class="analysis">Referencia explícita: Protocolo IVE/ILE MSAL 2022. Corte en 9 semanas (no 12). La opción A usa el corte 12 semanas (incorrecto). La D es trampa: los embarazos previos no eximen de nueva profilaxis. La C es incorrecta porque sí hay un corte de EG.</div>
+    </div>
+  </div>
+
+  <div class="q-card">
+    <div class="q-head" onclick="toggleQ(this)">
+      <span class="q-year">Banco</span>
+      <span class="q-text">¿Cuál de las siguientes es la causa más frecuente de muerte materna postaborto?</span>
+    </div>
+    <div class="q-body" style="display:none">
+      <div class="q-opt wrong">A) Hemorragia</div>
+      <div class="q-opt wrong">B) Intoxicaciones o lesiones por acción cáustica</div>
+      <div class="q-opt wrong">C) Lesiones traumáticas</div>
+      <div class="q-opt right">D) Infección ✓</div>
+      <div class="analysis">Contraintuitivo. La hemorragia es la causa más visible e inmediata, pero la infección (sepsis) es la que más mata. Dato de salud pública que el examen pone como distractor claro.</div>
+    </div>
+  </div>
+
+  <p class="sect">Conexiones con otros nodos</p>
+  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.25rem">
+    <span class="pill pill-ab">IVE/ILE (protocolo 2022)</span>
+    <span class="pill pill-ab">Incompatibilidad Rh</span>
+    <span class="pill pill-ec">Urgencias ginecológicas</span>
+    <span class="pill pill-ec">Shock hemorrágico</span>
+    <span class="pill pill-et">Seguimiento β-HCG</span>
+    <span class="pill pill-g">ETMI Plus 2025</span>
+    <span class="pill pill-g">Salud reproductiva</span>
+    <span class="pill pill-g">Hemorragias 3° trimestre</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+function toggleQ(el){
+  const body=el.nextElementSibling;
+  body.style.display=body.style.display==='none'?'block':'none';
+}
+</script>

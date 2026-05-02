@@ -1,0 +1,606 @@
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,'Anthropic Sans',sans-serif);color:var(--color-text-primary)}
+.root{padding:8px 0 24px}
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:8px}
+.tab{padding:5px 12px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .15s}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.pane{display:none}.pane.active{display:block}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px}
+.card-sm{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:var(--border-radius-md);margin-bottom:6px}
+.b-red{background:#FCEBEB;color:#A32D2D}.b-amber{background:#FAEEDA;color:#854F0B}
+.b-blue{background:#E6F1FB;color:#185FA5}.b-teal{background:#E1F5EE;color:#0F6E56}
+.b-purple{background:#EEEDFE;color:#534AB7}.b-coral{background:#FAECE7;color:#993C1D}
+.b-gray{background:#F1EFE8;color:#5F5E5A}.b-green{background:#EAF3DE;color:#3B6D11}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;margin:2px 2px 2px 0}
+.t-red{background:#F7C1C1;color:#791F1F}.t-amber{background:#FAC775;color:#633806}
+.t-blue{background:#B5D4F4;color:#0C447C}.t-teal{background:#9FE1CB;color:#085041}
+.t-purple{background:#CECBF6;color:#3C3489}.t-green{background:#C0DD97;color:#27500A}
+.t-gray{background:#D3D1C7;color:#444441}.t-coral{background:#F5C4B3;color:#712B13}
+h3{font-size:14px;font-weight:500;margin-bottom:4px}
+h4{font-size:13px;font-weight:500;margin-bottom:3px}
+p,li{font-size:12.5px;line-height:1.6;color:var(--color-text-secondary)}
+ul{padding-left:14px}
+.rule{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px;background:var(--color-background-secondary);font-size:12px;line-height:1.5}
+.rule strong{font-weight:500;color:var(--color-text-primary)}
+.trap{border-left:3px solid #E24B4A;padding:6px 10px;background:#FCEBEB;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;font-size:12px;margin:4px 0;color:#501313}
+.ok{border-left:3px solid #1D9E75;padding:6px 10px;background:#E1F5EE;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;font-size:12px;margin:4px 0;color:#04342C}
+.q-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px;margin:8px 0}
+.q-stem{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.q-opt{font-size:12px;padding:4px 8px;border-radius:var(--border-radius-md);cursor:pointer;margin:2px 0;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.q-opt:hover{background:var(--color-background-primary)}
+.q-opt.correct{background:#E1F5EE;border-color:#1D9E75;color:#04342C}
+.q-opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#501313}
+.q-feedback{font-size:12px;margin-top:6px;padding:6px 10px;border-radius:var(--border-radius-md);display:none}
+.show{display:block!important}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:12px 0}
+.horiz{display:flex;gap:8px;flex-wrap:wrap}
+.algo-step{display:flex;align-items:flex-start;gap:8px;margin:6px 0}
+.step-num{min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;background:var(--color-background-info,#E6F1FB);color:var(--color-text-info,#185FA5)}
+.step-txt{font-size:12.5px;line-height:1.5;color:var(--color-text-secondary)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--color-background-secondary);padding:6px 10px;text-align:left;font-weight:500;font-size:11px;border:0.5px solid var(--color-border-tertiary)}
+td{padding:6px 10px;border:0.5px solid var(--color-border-tertiary);vertical-align:top;line-height:1.5}
+tr:nth-child(even) td{background:var(--color-background-secondary)}
+.acord-btn{width:100%;text-align:left;padding:8px 12px;font-size:13px;font-weight:500;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-primary);margin:4px 0;display:flex;justify-content:space-between;align-items:center}
+.acord-btn:hover{background:var(--color-background-primary)}
+.acord-content{display:none;padding:0 4px}
+.acord-content.open{display:block}
+.arrow-ico{font-size:12px;transition:transform .2s}
+.rotated{transform:rotate(90deg)}
+</style>
+<div class="root">
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">Nodo completo de infecciones perinatales: TORCH, peripartum y neonatal precoz con sífilis congénita y adquirida</h2>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab('map')">🗺 Mapa del nodo</button>
+  <button class="tab" onclick="showTab('torch')">🔬 TORCH</button>
+  <button class="tab" onclick="showTab('peri')">🤰 Periparto</button>
+  <button class="tab" onclick="showTab('neo')">👶 Neonatal precoz</button>
+  <button class="tab" onclick="showTab('sif')">🦠 Sífilis completa</button>
+  <button class="tab" onclick="showTab('etmi')">📋 ETMI + algoritmo</button>
+  <button class="tab" onclick="showTab('trampas')">⚠️ Trampas</button>
+  <button class="tab" onclick="showTab('banco')">📝 Banco histórico</button>
+</div>
+
+<!-- MAPA DEL NODO -->
+<div class="pane active" id="pane-map">
+  <div class="card" style="margin-bottom:12px;border-left:3px solid #534AB7">
+    <span class="badge b-purple">Idea madre</span>
+    <h3>Infecciones perinatales: 3 vías, 1 principio</h3>
+    <p>El examen pregunta <strong style="color:var(--color-text-primary)">vía de transmisión → momento → consecuencia → conducta</strong>. Todo el nodo gira alrededor de cuándo el patógeno cruza la barrera madre-hijo y qué hace.</p>
+  </div>
+  <div class="grid3">
+    <div class="card-sm" style="border-top:3px solid #E24B4A">
+      <span class="badge b-red">A) Transplacentaria</span>
+      <h4>TORCH + otras</h4>
+      <ul><li>Toxoplasma</li><li>Otras (Sífilis, Chagas, HIV, Varicela, B19)</li><li>Rubéola</li><li>CMV</li><li>Herpes simple</li></ul>
+      <div style="margin-top:6px"><span class="tag t-red">Sangre mamá</span><span class="tag t-red">→ Placenta</span><span class="tag t-red">→ Sangre RN</span></div>
+    </div>
+    <div class="card-sm" style="border-top:3px solid #BA7517">
+      <span class="badge b-amber">B) Periparto</span>
+      <h4>Canal del parto</h4>
+      <ul><li>HIV (carga viral alta)</li><li>Herpes simple</li><li>Varicela (parto cercano)</li><li>Hepatitis B</li><li>N. gonorrhoeae</li><li>Clamidia</li></ul>
+      <div style="margin-top:6px"><span class="tag t-amber">Secreciones maternas</span><span class="tag t-amber">Canal cervico-vaginal</span></div>
+    </div>
+    <div class="card-sm" style="border-top:3px solid #185FA5">
+      <span class="badge b-blue">C) Neonatal precoz</span>
+      <h4>Flora materna invasora</h4>
+      <ul><li>S. agalactiae (GBS)</li><li>E. coli</li><li>Listeria</li><li>Klebsiella</li></ul>
+      <div style="margin-top:6px"><span class="tag t-blue">Posparto</span><span class="tag t-blue">0-7 días</span><span class="tag t-blue">Bacterias</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Síndrome madre del nodo completo</div>
+  <div class="grid2">
+    <div class="rule"><strong>RN sintomático al nacer</strong> + tríada TORCH (PEG + hepatoesplenomegalia + calcificaciones/lesiones oculares/cutáneas) → pensar infección congénita, ordenar estudio según agente sospechado</div>
+    <div class="rule"><strong>RN séptico en las primeras 48-72 h</strong> sin causa clara → pensar neonatal precoz → GBS, E. coli, Listeria → hemocultivo + PL + ATB empírico</div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Frase compresiva</div>
+  <div class="card" style="background:var(--color-background-secondary)">
+    <p style="font-size:13px;font-style:italic;color:var(--color-text-primary)">"TORCH cruza placenta (congénita), el canal del parto contamine en el parto (periparto) y las bacterias maternas invaden al nacer (precoz). La sífilis es la única que hace las tres."</p>
+  </div>
+</div>
+
+<!-- TORCH -->
+<div class="pane" id="pane-torch">
+  <div class="section-title">Transplacentarias (TORCH) — comparativo de examen</div>
+  <table>
+    <thead><tr><th>Agente</th><th>Clínica neonatal típica (tríada o patrón)</th><th>Diagnóstico en el RN</th><th>Conducta / tratamiento</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>CMV</strong> <span class="tag t-blue">+frecuente</span></td>
+        <td>Microcefalia, hepatoesplenomegalia, petequias, trombocitopenia, calcificaciones periventri­culares, hipoacusia, restricción crecimiento</td>
+        <td>PCR-DNA en orina o saliva (primeras 3 semanas); IgM CMV (baja sensibilidad)</td>
+        <td>Ganciclovir EV o valganciclovir VO; no cura, limita secuelas</td>
+      </tr>
+      <tr>
+        <td><strong>Toxoplasma</strong></td>
+        <td>Tríada clásica: coriorretinitis + hidrocefalia + calcificaciones intracraneales difusas. Muchos asintomáticos al nacer.</td>
+        <td>IgM/IgA sérica neonatal; PCR LCR; fondo de ojo</td>
+        <td>Pirimetamina + sulfadiazina + ácido folínico × 12 meses</td>
+      </tr>
+      <tr>
+        <td><strong>Rubéola</strong></td>
+        <td>Cataratas, cardiopatía congénita (DAP, EP), sordera neurosensorial. "Blueberry muffin" (eritropoyesis dérmica)</td>
+        <td>IgM específica; aislamiento viral (nasofaringe, orina)</td>
+        <td>No hay tratamiento específico. Prevención = vacuna MMR (pregestacional)</td>
+      </tr>
+      <tr>
+        <td><strong>Herpes (HSV)</strong></td>
+        <td>3 formas: SNC (encefalitis), diseminada (shock + hepatitis + CID), localizada (piel-ojo-boca). Vesículas en piel</td>
+        <td>PCR-DNA HSV en LCR, sangre, lesiones de piel</td>
+        <td>Aciclovir EV × 14–21 días según forma clínica</td>
+      </tr>
+      <tr>
+        <td><strong>Varicela</strong></td>
+        <td>Embriopatía varicela: cicatrices cutáneas en zigzag, hipoplasia miembros, coriorretinitis. Neonatal grave si parto en día −5/+2</td>
+        <td>PCR VZV; clínica</td>
+        <td>VZIG al RN si madre con varicela peripartum; aciclovir si enfermedad activa</td>
+      </tr>
+      <tr>
+        <td><strong>Sífilis</strong> <span class="tag t-red">ETMI</span></td>
+        <td>Ver pestaña Sífilis completa</td>
+        <td>Ver pestaña Sífilis completa</td>
+        <td>Ver pestaña Sífilis completa</td>
+      </tr>
+      <tr>
+        <td><strong>Chagas</strong> <span class="tag t-red">ETMI</span></td>
+        <td>Mayoría asintomáticos. Hepatoesplenomegalia, trombocitopenia, anemia; meningoencefalitis (grave)</td>
+        <td>&lt;9 meses: microhematocrito/gota gruesa (directa). ≥9-10 meses: serología (2 técnicas)</td>
+        <td>Benznidazol × 60 días</td>
+      </tr>
+      <tr>
+        <td><strong>HIV</strong> <span class="tag t-red">ETMI</span></td>
+        <td>Habitualmente asintomático al nacer. Screening madre en CPN define riesgo.</td>
+        <td>&lt;18 meses: PCR-DNA viral (×2). No sirve ELISA/WB (anticuerpos maternos)</td>
+        <td>Profilaxis ARV RN (AZT ± NVP según riesgo). No lactancia / enfoque individualizado</td>
+      </tr>
+      <tr>
+        <td><strong>Hep. B</strong> <span class="tag t-red">ETMI</span></td>
+        <td>RN generalmente asintomático. Riesgo 70-90% de cronificación si infección perinatal</td>
+        <td>HBsAg a los 9 meses (3 meses post última dosis) + anti-HBs cuantitativo</td>
+        <td>Vacuna HB &lt;12 h + IGHB &lt;12-48 h. Confirmar seroconversión</td>
+      </tr>
+      <tr>
+        <td><strong>Parvovirus B19</strong></td>
+        <td>Hidrops fetal no inmune (anemia hemolítica), muerte intrauterina. RN sobreviviente: anemia</td>
+        <td>IgM maternal; PCR líquido amniótico; eco prenatal (hidrops)</td>
+        <td>Transfusión intrauterina si hidrops fetal</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="grid2">
+    <div>
+      <div class="section-title">Patrón de pregunta CMV (banco histórico)</div>
+      <div class="rule">RN con <strong>microcefalia + hepatoesplenomegalia + petequias</strong> = CMV hasta demostrar lo contrario. Distractores: adenovirus, VHC, Coxsackie B.</div>
+    </div>
+    <div>
+      <div class="section-title">Regla diagnóstica clave</div>
+      <div class="rule"><strong>Directa antes de los 9 meses</strong> (Chagas). <strong>PCR-DNA antes de los 18 meses</strong> (HIV). <strong>IgM/IgA desde el nacimiento</strong> (Toxo, CMV). La serología IgG no sirve en el RN porque refleja anticuerpos maternos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PERIPARTO -->
+<div class="pane" id="pane-peri">
+  <div class="section-title">Transmisión periparto — canal del parto</div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="card">
+      <span class="badge b-amber">Mecanismo</span>
+      <h3>¿Por qué el canal del parto?</h3>
+      <p>Secreciones cervico-vaginales, sangre materna y lesiones activas contactan directamente al RN durante el parto. La mayoría de estas infecciones se previenen modificando la vía del parto o con profilaxis al RN.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-blue">Principio de examen</span>
+      <h3>Pregunta tipo = decisión de vía del parto</h3>
+      <p>La variable decisiva es siempre la <strong style="color:var(--color-text-primary)">carga viral / presencia de lesión activa</strong>. Si hay riesgo, se opera. Si fue tratada adecuadamente, parto vaginal puede ser seguro.</p>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Agente</th><th>Riesgo periparto</th><th>Conducta preventiva</th><th>Profilaxis al RN</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>HIV</strong></td>
+        <td>Carga viral detectable o desconocida = alto riesgo</td>
+        <td>Cesárea electiva si CV &gt;1000 cp/mL o desconocida. Parto vaginal si CV &lt;50 cp/mL + tratamiento adecuado</td>
+        <td>AZT VO × 4-6 semanas ± NVP según riesgo</td>
+      </tr>
+      <tr>
+        <td><strong>Herpes simple</strong></td>
+        <td>Lesión activa genital al momento del parto = riesgo muy alto</td>
+        <td>Cesárea si lesión activa o pródromos. Aciclovir supresor desde sem 36</td>
+        <td>Aciclovir EV si exposición documentada</td>
+      </tr>
+      <tr>
+        <td><strong>Varicela</strong></td>
+        <td>Madre con varicela en días −5 a +2 del parto = riesgo neonatal grave</td>
+        <td>Retrasar el parto si es posible. IGHV a la madre</td>
+        <td>VZIG al RN; aciclovir si varicela neonatal</td>
+      </tr>
+      <tr>
+        <td><strong>Hepatitis B</strong></td>
+        <td>HBsAg(+) = transmisión 70-90% sin profilaxis</td>
+        <td>Parto vaginal aceptable con profilaxis correcta. Cesárea no reduce riesgo si se da inmunoprofilaxis</td>
+        <td>Vacuna HB &lt;12 h de vida + IGHB &lt;12-48 h</td>
+      </tr>
+      <tr>
+        <td><strong>N. gonorrhoeae</strong></td>
+        <td>Conjuntivitis neonatal (oftalmía gonoc.)</td>
+        <td>Tratamiento materno durante embarazo</td>
+        <td>Profilaxis ocular con nitrato de plata 1% o eritromicina 0.5% (ambos fármacos tópicos previenen principalmente gonococo)</td>
+      </tr>
+      <tr>
+        <td><strong>Clamidia</strong></td>
+        <td>Conjuntivitis + neumonía afebril a los 3-12 sem</td>
+        <td>Tratamiento materno con azitromicina o amoxicilina</td>
+        <td>La profilaxis ocular estándar no protege completamente contra clamidia</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="divider"></div>
+  <div class="section-title">Trampa clásica periparto</div>
+  <div class="trap">La profilaxis ocular con nitrato de plata o eritromicina previene <strong>principalmente N. gonorrhoeae</strong>, NO a Clamidia con la misma eficacia. El banco histórico pregunta esto directamente (Pediátría 2018).</div>
+  <div class="trap">Cesárea profiláctica en HIV solo cuando CV &gt;1000 cp/mL o desconocida. Si CV indetectable + TARV adecuado → parto vaginal es aceptable según ETMI Plus 2025.</div>
+</div>
+
+<!-- NEONATAL PRECOZ -->
+<div class="pane" id="pane-neo">
+  <div class="card" style="border-left:3px solid #185FA5;margin-bottom:12px">
+    <span class="badge b-blue">Definición temporal</span>
+    <h3>Sepsis neonatal precoz = primeras 72 h de vida (algunos protocolos: ≤7 días)</h3>
+    <p>Mecanismo: colonización materna → bacterias ascienden por canal del parto (o están presentes al nacer) → ingresan al RN por piel, mucosas, umbiligo o aspiración de líquido amniótico infectado.</p>
+  </div>
+  <div class="section-title">Los 4 agentes principales</div>
+  <div class="grid2">
+    <div class="card">
+      <span class="badge b-red">Agente #1 — Streptococcus agalactiae (GBS)</span>
+      <h4>Streptococcus grupo B</h4>
+      <p style="margin-bottom:6px">Coloniza el tracto genital materno. Principal causa de sepsis, neumonía y meningitis neonatal precoz en Argentina.</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">CLÍNICA:</strong> Distress respiratorio precoz, shock séptico, meningitis (dentro de las 48-72 h)</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">SCREENING MATERNAL:</strong> Cultivo recto-vaginal semana 35-37</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">PROFILAXIS INTRAPARTO:</strong> Penicilina G EV (alternativa: ampicilina). Si alergia grave: clindamicina o vancomicina</p>
+    </div>
+    <div class="card">
+      <span class="badge b-blue">Agente #2 — Escherichia coli</span>
+      <h4>E. coli K1</h4>
+      <p style="margin-bottom:6px">Segunda causa más frecuente. Serotipo K1 con cápsula polisacárida → resistente a fagocitosis → meningitis grave.</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">CLÍNICA:</strong> Similar a GBS. Alta mortalidad si hay meningitis.</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">ATB empírico:</strong> Ampicilina + gentamicina (1er escalón). Cefotaxime si meningitis.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-teal">Agente #3 — Listeria monocytogenes</span>
+      <h4>Listeria</h4>
+      <p style="margin-bottom:6px">Transmisión por alimentos o transplacentaria. Clínica: granulomatosis infantiséptica (forma grave con granulomas viscerales), neumonía, meningitis.</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">CLAVE:</strong> Las cefalosporinas NO cubren Listeria → usar ampicilina. Error clásico.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-gray">Agente #4 — Klebsiella pneumoniae</span>
+      <h4>Klebsiella</h4>
+      <p style="margin-bottom:6px">Frecuente en infecciones nosocomiales neonatales. BLEE frecuente. Asociado a bajo peso y prematurez.</p>
+      <p><strong style="font-size:11px;color:var(--color-text-primary)">ATB:</strong> Carbapenems si BLEE. Cobertura empírica ampliada en contexto hospitalario.</p>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Algoritmo de conducta ante sospecha de sepsis neonatal precoz</div>
+  <div class="algo-step"><div class="step-num">1</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Clínica sugestiva:</strong> Fiebre o hipotermia, quejido, mala perfusión, rechazo del alimento, alteración del sensorio en RN.</div></div>
+  <div class="algo-step"><div class="step-num">2</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Estudios inmediatos:</strong> Hemocultivo (×2), punción lumbar (si estable), hemograma, PCR/IL-6, radiografía de tórax.</div></div>
+  <div class="algo-step"><div class="step-num">3</div><div class="step-txt"><strong style="color:var(--color-text-primary)">ATB empírico sin demora:</strong> Ampicilina + gentamicina (cubren GBS + E. coli + Listeria). Si meningitis: ampicilina + cefotaxime.</div></div>
+  <div class="algo-step"><div class="step-num">4</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Ajuste a las 48-72 h</strong> según cultivos y antibiograma.</div></div>
+  <div class="trap" style="margin-top:8px">Cefotaxime cubre GBS y E. coli pero <strong>NO LISTERIA</strong>. Si se sospecha Listeria (madre con bacteremia, granulomas) siempre incluir ampicilina.</div>
+</div>
+
+<!-- SÍFILIS COMPLETA -->
+<div class="pane" id="pane-sif">
+  <div class="tab-bar" style="margin-bottom:12px">
+    <button class="tab active" onclick="showSubTab('adq')">Sífilis adquirida</button>
+    <button class="tab" onclick="showSubTab('cong')">Sífilis congénita (RN)</button>
+  </div>
+  <!-- ADQUIRIDA -->
+  <div id="sub-adq" class="pane active">
+    <div class="section-title">Estadios de la sífilis adquirida</div>
+    <table>
+      <thead><tr><th>Estadio</th><th>Tiempo desde infección</th><th>Clínica característica</th><th>Diagnóstico</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Primaria (I)</strong></td>
+          <td>Manifestación precoz ≤1 año</td>
+          <td>Chancro primario: úlcera indurada, indolora, bordes definidos en genitales / ano / boca. Adenopatía regional indolora.</td>
+          <td>Microscopia campo oscuro (directo del chancro) o PCR. Serología puede ser negativa aún.</td>
+        </tr>
+        <tr>
+          <td><strong>Secundaria (II)</strong></td>
+          <td>Semanas-meses luego del chancro</td>
+          <td>Exantema: <strong>máculas primero</strong> → pápulas → pústulas (recurrente). Afecta palmas y plantas (clave). Alopecia en "mordida de polilla". Condilomas planos. Placas mucosas.</td>
+          <td>VDRL reactivo (títulos altos: 1:16 - 1:32). FTA-abs o TPPA positivos.</td>
+        </tr>
+        <tr>
+          <td><strong>Latente temprana</strong></td>
+          <td>&lt;1 año desde infección. Asintomática</td>
+          <td>Sin síntomas. Solo serología reactiva.</td>
+          <td>VDRL reactivo sin síntomas. Epidemiología + serología.</td>
+        </tr>
+        <tr>
+          <td><strong>Latente tardía</strong></td>
+          <td>&gt;1 año desde infección. Asintomática</td>
+          <td>Sin síntomas. Mayor duración = menor transmisibilidad sexual pero riesgo terciaria.</td>
+          <td>VDRL reactivo (a veces títulos bajos).</td>
+        </tr>
+        <tr>
+          <td><strong>Terciaria (III)</strong></td>
+          <td>Años luego de latencia</td>
+          <td>Cardiovascular: aortitis (aorta ascendente, insuf. aórtica). Gomosa: gomas en cualquier órgano. Neurosífilis (ver abajo).</td>
+          <td>VDRL puede ser bajo o negativo. FTA-abs positivo. VDRL + FTA-abs en LCR para neurosífilis.</td>
+        </tr>
+        <tr>
+          <td><strong>Neurosífilis</strong></td>
+          <td>Puede ocurrir en cualquier estadio</td>
+          <td>Tabés dorsal (ataxia, Argyll Robertson), demencia, meningitis sifilítica, uveítis, sordera.</td>
+          <td>VDRL-LCR (alta especificidad, baja sensibilidad) + FTA-abs LCR + pleocitosis + proteínas ↑.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="divider"></div>
+    <div class="section-title">Tratamiento adquirida</div>
+    <div class="grid2">
+      <div class="card-sm">
+        <h4>Penicilina benzatínica (droga de elección)</h4>
+        <ul>
+          <li>Primaria/Secundaria/Latente temprana: <strong>2.4M UI IM × 1 dosis</strong></li>
+          <li>Latente tardía / terciaria no neurológica: <strong>2.4M UI IM × 3 dosis (semanal)</strong></li>
+          <li>Neurosífilis: <strong>Penicilina G cristalina EV × 10-14 días</strong></li>
+        </ul>
+      </div>
+      <div class="card-sm">
+        <h4>Seguimiento — solo VDRL/PNT</h4>
+        <ul>
+          <li>Control con VDRL/PNT a los 3, 6 y 12 meses</li>
+          <li>Éxito terapéutico: caída ×4 en títulos (ej: de 1:32 a 1:8)</li>
+          <li>FTA-abs puede quedar positivo de por vida → no usar para seguimiento</li>
+        </ul>
+        <div class="trap" style="margin-top:6px">FTA-abs / TPPA para seguimiento → SIEMPRE INCORRECTO</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">Notificación (banco histórico)</div>
+    <div class="ok">Úlcera indurada indolora en genitales = sospecha clínica sífilis primaria → notificar <strong>"sífilis temprana"</strong> sin esperar confirmación de laboratorio.</div>
+  </div>
+
+  <!-- CONGÉNITA -->
+  <div id="sub-cong" class="pane">
+    <div class="section-title">Sífilis congénita — organización temporal</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="card" style="border-top:3px solid #E24B4A">
+        <span class="badge b-red">Precoz (≤2 años de vida)</span>
+        <h4>Manifestaciones precoces</h4>
+        <ul>
+          <li>Rinitis persistente (sifilítica, "snuffles") — precede exantema</li>
+          <li>Hepatoesplenomegalia</li>
+          <li>Pénfigo sifilítico palmo-plantar (vesículas)</li>
+          <li>Osteocondritis y periostitis (dolorosa, pseudoparálisis de Parrot)</li>
+          <li>Ictericia, anemia hemolítica, trombocitopenia</li>
+          <li>Condilomas planos</li>
+          <li>Linfadenopatías</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid #854F0B">
+        <span class="badge b-amber">Tardía (&gt;2 años de vida)</span>
+        <h4>Manifestaciones tardías</h4>
+        <ul>
+          <li>Tríada de Hutchinson: queratitis intersticial + sordera nerviosa + incisivos de Hutchinson (en destornillador)</li>
+          <li>Nariz en silla de montar</li>
+          <li>Tibia en sable (osteocondritis)</li>
+          <li>Articulaciones de Clutton (sinovitis)</li>
+          <li>Frente olímpica</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section-title">Diagnóstico en el RN — el nodo más preguntado</div>
+    <table>
+      <thead><tr><th>Situación</th><th>Prueba diagnóstica</th><th>Conducta</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>RN asintomático con VDRL (+) y madre tratada adecuadamente ≥30 días antes del parto</td>
+          <td>VDRL cuantitativo RN. Comparar con título materno.</td>
+          <td>Si VDRL RN ≤ VDRL madre Y asintomático Y pareja tratada → <strong>solo seguimiento clínico y serológico</strong> (1, 2, 3, 6, 12 meses)</td>
+        </tr>
+        <tr>
+          <td>RN asintomático con VDRL (−) pero madre tratada &lt;30 días antes del parto o con ceftriaxona (no penicilina)</td>
+          <td>VDRL puede ser falsamente negativo</td>
+          <td><strong>Penicilina benzatínica 50.000 UI/kg IM dosis única</strong> + seguimiento VDRL a los 3, 6, 12 meses</td>
+        </tr>
+        <tr>
+          <td>RN sintomático (hallazgos clínicos sugestivos)</td>
+          <td>Hemograma, LCR (VDRL + FTA-abs + citología), Rx huesos largos, fondo de ojo</td>
+          <td><strong>Penicilina G cristalina EV 100.000–150.000 UI/kg/día × 10-14 días</strong></td>
+        </tr>
+        <tr>
+          <td>RN con VDRL positivo y PL indicada</td>
+          <td>VDRL en LCR (si (+) = neurosífilis congénita)</td>
+          <td>Penicilina G cristalina EV (dosis neurosífilis)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="divider"></div>
+    <div class="section-title">Reglas de decisión del banco histórico</div>
+    <div class="ok">Madre tratada ≥4 semanas antes del parto + pareja tratada + RN asintomático + VDRL RN ≤ VDRL madre → <strong>Solo seguimiento, NO tratar</strong>. (Pregunta repetida ×4 en diferentes años: Pediatría + Clínica)</div>
+    <div class="trap">Madre tratada &lt;30 días antes del parto (aunque sea correctamente) → igual tratar RN con penicilina benzatínica, porque no hubo tiempo para que la placenta elimine la infección.</div>
+    <div class="trap">Madre tratada con ceftriaxona (alérgica a penicilina) → el RN igual recibe penicilina benzatínica (ceftriaxona no es adecuada para el feto).</div>
+  </div>
+</div>
+
+<!-- ETMI + ALGORITMO -->
+<div class="pane" id="pane-etmi">
+  <div class="card" style="border-left:3px solid #534AB7;margin-bottom:12px">
+    <span class="badge b-purple">Fuente oficial</span>
+    <h3>ETMI Plus 2025 (MSAL) — Eliminación de Transmisión Materno-Infantil</h3>
+    <p>Norma que integra screening, tratamiento y seguimiento de HIV, sífilis, Hepatitis B y Chagas en el embarazo. Es la <strong style="color:var(--color-text-primary)">fuente de verdad para todo lo relacionado con infecciones en el CPN</strong>.</p>
+  </div>
+  <div class="section-title">Los 4 ejes del ETMI Plus</div>
+  <div class="grid2">
+    <div class="card-sm"><span class="tag t-red">HIV</span><h4>HIV en el embarazo</h4><ul><li>Screening: ELISA confirmatorio (2 técnicas) en semana 14, 24-28 y al momento del parto</li><li>ARV: DTG + TDF/FTC sin restricción por EG (primera línea)</li><li>Parto: vaginal si CV &lt;50 cp/mL estable. Cesárea si CV &gt;1000 o desconocida</li><li>Lactancia: "no recomendada con enfoque individualizado disponible" (≠ contraindicada absoluta)</li><li>RN: AZT × 4-6 sem ± NVP según riesgo. PCR-DNA HIV a las 48 h, 4-6 semanas, 4-6 meses</li></ul></div>
+    <div class="card-sm"><span class="tag t-amber">Sífilis</span><h4>Sífilis en el embarazo</h4><ul><li>Screening: VDRL en 1er CPN, semana 28 y al parto</li><li>Tratamiento: penicilina benzatínica 2.4M UI IM. Latente tardía: ×3 dosis semanales</li><li>Seguimiento: VDRL mensual hasta el parto (solo VDRL, nunca FTA-abs)</li><li>Pareja: tratar siempre</li><li>RN: conducta según situación clínica (ver pestaña Sífilis)</li></ul></div>
+    <div class="card-sm"><span class="tag t-blue">Hepatitis B</span><h4>Hepatitis B en el embarazo</h4><ul><li>Screening: HBsAg en 1er CPN y al parto</li><li>Si HBsAg(+): notificar, evaluar carga viral (HBV-DNA), considerar tenofovir si ADN alto</li><li>RN: vacuna HB dentro de las 12 h + IGHB dentro de las 48 h</li><li>Control: HBsAg + anti-HBs cuantitativo a los 9 meses del RN (3 m post-última dosis)</li><li>Lactancia: permitida si RN recibió inmunoprofilaxis completa</li></ul></div>
+    <div class="card-sm"><span class="tag t-purple">Chagas</span><h4>Chagas en el embarazo</h4><ul><li>Screening: 2 técnicas serológicas distintas (zona endémica o madre con antecedentes)</li><li>No tratar durante el embarazo (benznidazol contraindicado)</li><li>RN: microhematocrito/gota gruesa al nacer, 1 y 2 meses (&lt;9 meses). Serología a los 10 meses</li><li>Si (+): benznidazol × 60 días</li></ul></div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Algoritmo integrador — CPN con ETMI Plus</div>
+  <div class="algo-step"><div class="step-num">1</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Primer CPN (cualquier EG):</strong> VDRL + HIV + HBsAg + Chagas (si indicado) + Toxoplasma IgG/IgM + Rubéola IgG</div></div>
+  <div class="algo-step"><div class="step-num">2</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Semana 28:</strong> Repetir VDRL + HIV (nuevas exposiciones). Glucemia para screening DBT gestacional.</div></div>
+  <div class="algo-step"><div class="step-num">3</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Parto:</strong> VDRL + HIV al ingreso (si no hay resultados recientes). Define conducta inmediata.</div></div>
+  <div class="algo-step"><div class="step-num">4</div><div class="step-txt"><strong style="color:var(--color-text-primary)">Posparto inmediato (RN):</strong> Vacuna HB + vitamina K + profilaxis ocular + evaluación TORCH según antecedentes maternos.</div></div>
+</div>
+
+<!-- TRAMPAS -->
+<div class="pane" id="pane-trampas">
+  <div class="section-title">Catálogo de trampas — banco histórico 2016-2025</div>
+  <div class="grid2">
+    <div>
+      <button class="acord-btn" onclick="toggleAcord('t1')">Sífilis — trampas de seguimiento <span class="arrow-ico" id="ico-t1">▶</span></button>
+      <div class="acord-content" id="t1">
+        <div class="trap">FTA-abs para seguimiento de sífilis tratada → SIEMPRE INCORRECTO. Solo VDRL/PNT.</div>
+        <div class="trap">VDRL puede quedar positivo bajo de por vida ("cicatriz serológica") → no indica fracaso si títulos cayeron ×4.</div>
+        <div class="ok">Control correcto post-tratamiento: VDRL a los 3, 6, 12 meses con descenso ×4 como criterio de cura.</div>
+      </div>
+      <button class="acord-btn" onclick="toggleAcord('t2')">RN de madre sifilítica — cuándo tratar <span class="arrow-ico" id="ico-t2">▶</span></button>
+      <div class="acord-content" id="t2">
+        <div class="trap">Si madre trató &lt;30 días antes del parto → RN debe recibir penicilina benzatínica aunque esté asintomático.</div>
+        <div class="trap">Si madre trató con ceftriaxona (alergia) → RN igual recibe penicilina. La ceftriaxona materna no protege al feto.</div>
+        <div class="ok">Solo se hace seguimiento sin tratamiento si madre trató correctamente ≥30 días antes del parto + pareja trató + RN asintomático + VDRL RN ≤ VDRL madre.</div>
+      </div>
+      <button class="acord-btn" onclick="toggleAcord('t3')">Profilaxis ocular — confusión gonococo vs clamidia <span class="arrow-ico" id="ico-t3">▶</span></button>
+      <div class="acord-content" id="t3">
+        <div class="trap">Pregunta directa: "la profilaxis ocular estándar (nitrato de plata / eritromicina) previene principalmente..." → Respuesta correcta: <strong>Neisseria gonorrhoeae</strong>. Clamidia es distractor.</div>
+        <div class="ok">La eritromicina tópica tiene cierta actividad contra Clamidia pero la indicación primaria de la profilaxis sistemática es gonococo.</div>
+      </div>
+    </div>
+    <div>
+      <button class="acord-btn" onclick="toggleAcord('t4')">HIV en RN — cuándo usar PCR vs serología <span class="arrow-ico" id="ico-t4">▶</span></button>
+      <div class="acord-content" id="t4">
+        <div class="trap">ELISA/Western blot en RN &lt;18 meses → detecta anticuerpos MATERNOS no propios → resultado positivo no confirma infección.</div>
+        <div class="ok">Diagnóstico de HIV en menores de 18 meses: PCR-DNA o PCR-RNA viral (virológica). Dos resultados negativos con adecuada técnica excluyen infección.</div>
+      </div>
+      <button class="acord-btn" onclick="toggleAcord('t5')">Chagas en RN — el corte de edad <span class="arrow-ico" id="ico-t5">▶</span></button>
+      <div class="acord-content" id="t5">
+        <div class="trap">Chagas en RN de 30 días → banco histórico preguntó: "¿cuándo haría serología?" → respuesta: a los 10 meses. Antes usar diagnóstico directo (microhematocrito).</div>
+        <div class="ok">Antes de los 9 meses: diagnóstico directo (microhematocrito, gota gruesa). A los 10 meses: serología (anticuerpos propios). La serología antes de los 9-10 meses puede ser positiva por anticuerpos maternos.</div>
+      </div>
+      <button class="acord-btn" onclick="toggleAcord('t6')">CMV — tríada de examen <span class="arrow-ico" id="ico-t6">▶</span></button>
+      <div class="acord-content" id="t6">
+        <div class="ok">RN con microcefalia + hepatoesplenomegalia + petequias + calcificaciones periventriculares = <strong>CMV</strong>. Es la infección congénita más frecuente. Preguntado en banco histórico 2023.</div>
+        <div class="trap">Calcificaciones intracraneales difusas (NO periventriculares) + hidrocefalia + coriorretinitis = Toxoplasma. Localización de las calcificaciones es la clave diferencial.</div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="section-title">Tabla diferencial rápida — calcificaciones intracraneales</div>
+  <table>
+    <thead><tr><th>Patología</th><th>Localización calcificaciones</th><th>Otra clave diferencial</th></tr></thead>
+    <tbody>
+      <tr><td>CMV</td><td>Periventriculares (zona subependimaria)</td><td>Microcefalia prominente, petequias</td></tr>
+      <tr><td>Toxoplasma</td><td>Difusas (parenquimatosas)</td><td>Hidrocefalia + coriorretinitis</td></tr>
+      <tr><td>Rubéola</td><td>Vasos cerebrales (patrón "candelabro")</td><td>Cataratas + cardiopatía</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- BANCO HISTÓRICO -->
+<div class="pane" id="pane-banco">
+  <div class="section-title">Preguntas del banco histórico — interactivas</div>
+  <div class="q-box" id="q1">
+    <div class="q-stem">📝 Banco 2023 (Pediatría): RN de 2 kg al nacer con microcefalia, hepatoesplenomegalia, petequias. Apgar 4/6. Ingresa por dificultad respiratoria. A las 24 h convulsiona. Laboratorio: trombocitopenia, anemia, transaminasas elevadas, hiperbilirrubinemia. ¿Diagnóstico más probable?</div>
+    <div class="q-opt" onclick="answerQ('q1',this,'wrong')">a) Adenovirus</div>
+    <div class="q-opt" onclick="answerQ('q1',this,'correct')">b) Citomegalovirus</div>
+    <div class="q-opt" onclick="answerQ('q1',this,'wrong')">c) Virus Hepatitis C</div>
+    <div class="q-opt" onclick="answerQ('q1',this,'wrong')">d) Coxsackie B</div>
+    <div class="q-feedback" id="fb-q1"><span class="ok">✓ CMV: tríada microcefalia + hepatoesplenomegalia + petequias, con calcificaciones periventriculares (subependimarias). Es la infección congénita más frecuente. El diagnóstico se hace con PCR-DNA en orina/saliva en las primeras 3 semanas de vida.</span></div>
+  </div>
+  <div class="q-box" id="q2">
+    <div class="q-stem">📝 Banco 2019 (Obstetricia y Pediatría): Madre diagnosticada con sífilis en semana 30. Recibió 3 dosis de penicilina benzatínica separadas 1 semana. Pareja tratada. Parto vaginal semana 37. RN: peso adecuado, examen físico normal. Madre y RN: VDRL 2 diluciones. ¿Conducta con el RN?</div>
+    <div class="q-opt" onclick="answerQ('q2',this,'wrong')">a) Penicilina benzatínica 500.000 UI/kg + seguimiento VDRL mensual</div>
+    <div class="q-opt" onclick="answerQ('q2',this,'wrong')">b) Penicilina G EV 100.000-150.000 UI/kg/día × 10 días</div>
+    <div class="q-opt" onclick="answerQ('q2',this,'wrong')">c) PL + penicilina G EV + control VDRL mensual</div>
+    <div class="q-opt" onclick="answerQ('q2',this,'correct')">d) Seguimiento clínico y serológico a los 1, 2, 3, 6 y 12 meses</div>
+    <div class="q-feedback" id="fb-q2"><span class="ok">✓ Madre trató &gt;30 días antes del parto (última dosis semana 33, parto semana 37 = 4 semanas). Pareja tratada. RN asintomático. VDRL RN (2 dils) = VDRL madre (2 dils), no superado. → Solo seguimiento. Esta misma pregunta aparece en al menos 4 exámenes distintos (Pediatría 2019, Clínica 2019, 2021).</span></div>
+  </div>
+  <div class="q-box" id="q3">
+    <div class="q-stem">📝 Banco 2022 (Pediatría): RN de 39 sem, 3500 g. Madre diagnosticada con sífilis 20 días antes del parto y tratada con ceftriaxona (alergia a penicilina). RN: examen físico normal, VDRL negativo. ¿Conducta?</div>
+    <div class="q-opt" onclick="answerQ('q3',this,'wrong')">a) Ceftriaxona + seguimiento VDRL al 6° mes y al año</div>
+    <div class="q-opt" onclick="answerQ('q3',this,'correct')">b) Penicilina benzatínica dosis única + VDRL al 3°, 6° y 12° mes</div>
+    <div class="q-opt" onclick="answerQ('q3',this,'wrong')">c) Sin tratamiento. Control VDRL al 3°, 6° y 12° mes</div>
+    <div class="q-opt" onclick="answerQ('q3',this,'wrong')">d) Punción lumbar + tratar según resultado</div>
+    <div class="q-feedback" id="fb-q3"><span class="ok">✓ Dos razones para tratar: (1) madre trató &lt;30 días antes del parto, (2) madre trató con ceftriaxona (no penicilina = no adecuado para el feto). VDRL negativo en RN puede ser falso negativo. La ceftriaxona materna no reemplaza el tratamiento del RN. Penicilina benzatínica 50.000 UI/kg IM dosis única.</span></div>
+  </div>
+  <div class="q-box" id="q4">
+    <div class="q-stem">📝 Banco 2018 (Pediatría): RN recibe profilaxis ocular tópica con nitrato de plata y eritromicina. ¿Cuál de las siguientes infecciones es más probable que se prevenga con dicha profilaxis?</div>
+    <div class="q-opt" onclick="answerQ('q4',this,'wrong')">a) Chlamydia trachomatis</div>
+    <div class="q-opt" onclick="answerQ('q4',this,'correct')">b) Neisseria gonorrhoeae</div>
+    <div class="q-opt" onclick="answerQ('q4',this,'wrong')">c) Estreptococo grupo B</div>
+    <div class="q-opt" onclick="answerQ('q4',this,'wrong')">d) Staphylococcus aureus</div>
+    <div class="q-feedback" id="fb-q4"><span class="ok">✓ La profilaxis ocular neonatal está indicada principalmente para prevenir la oftalmía gonocócica (Neisseria gonorrhoeae), causa de conjuntivitis neonatal grave con riesgo de ceguera. La opción A es el distractor más común.</span></div>
+  </div>
+  <div class="q-box" id="q5">
+    <div class="q-stem">📝 Banco 2017 (Pediatría): Niño de 30 días, hijo de madre con enfermedad de Chagas, sin estudios realizados aún. ¿Cuándo solicitaría serología para descartar infección?</div>
+    <div class="q-opt" onclick="answerQ('q5',this,'wrong')">a) En esta consulta (30 días)</div>
+    <div class="q-opt" onclick="answerQ('q5',this,'wrong')">b) A los 2 meses de edad</div>
+    <div class="q-opt" onclick="answerQ('q5',this,'wrong')">c) A los 6 meses de edad</div>
+    <div class="q-opt" onclick="answerQ('q5',this,'correct')">d) A los 10 meses de edad</div>
+    <div class="q-feedback" id="fb-q5"><span class="ok">✓ Antes de los 9-10 meses: los anticuerpos contra Chagas detectados pueden ser maternos (IgG transplacentaria). La serología propia del lactante recién es confiable a partir de los 10 meses, cuando los anticuerpos maternos se eliminaron. Antes de esa edad: diagnóstico directo (microhematocrito, gota gruesa).</span></div>
+  </div>
+  <div class="q-box" id="q6">
+    <div class="q-stem">📝 Banco 2020 (Obstetricia): ¿Cómo haría el seguimiento serológico de una embarazada de 28 semanas que recibió tratamiento para sífilis en el primer trimestre?</div>
+    <div class="q-opt" onclick="answerQ('q6',this,'wrong')">a) FTA-abs mensual hasta el parto</div>
+    <div class="q-opt" onclick="answerQ('q6',this,'correct')">b) VDRL mensual hasta el parto</div>
+    <div class="q-opt" onclick="answerQ('q6',this,'wrong')">c) VDRL en cada trimestre hasta el parto</div>
+    <div class="q-opt" onclick="answerQ('q6',this,'wrong')">d) FTA-abs y VDRL mensual hasta el parto</div>
+    <div class="q-feedback" id="fb-q6"><span class="ok">✓ Seguimiento post-tratamiento de sífilis en embarazo: solo VDRL mensual hasta el parto (ETMI Plus 2025). FTA-abs queda positivo de por vida y no sirve para monitorear respuesta. La opción D es la trampa más común (combinar ambas pruebas).</span></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+function showSubTab(id) {
+  document.querySelectorAll('#pane-sif .pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#pane-sif .tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sub-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+function answerQ(qid, el, result) {
+  const box = document.getElementById(qid);
+  box.querySelectorAll('.q-opt').forEach(o => {
+    o.onclick = null;
+    o.style.cursor = 'default';
+  });
+  el.classList.add(result);
+  const fb = document.getElementById('fb-'+qid);
+  fb.classList.add('show');
+  if(result === 'wrong') {
+    const opts = box.querySelectorAll('.q-opt');
+    opts.forEach(o => { if(o.innerHTML !== el.innerHTML) {} });
+  }
+}
+function toggleAcord(id) {
+  const content = document.getElementById(id);
+  const ico = document.getElementById('ico-'+id);
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open', !isOpen);
+  ico.classList.toggle('rotated', !isOpen);
+}
+</script>

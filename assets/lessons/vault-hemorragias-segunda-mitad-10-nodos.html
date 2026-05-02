@@ -1,0 +1,472 @@
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:14px}
+.root{display:grid;grid-template-columns:205px 1fr;min-height:620px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden}
+.sidebar{background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-secondary);padding:.5rem 0}
+.shead{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.08em;text-transform:uppercase;padding:.5rem .75rem .2rem}
+.scat{font-size:10px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;padding:.6rem .75rem .15rem;margin-top:.1rem}
+.nb{display:flex;align-items:center;gap:.45rem;padding:.42rem .75rem;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;font-size:12px;line-height:1.3;transition:background .1s;border-left:2px solid transparent}
+.nb:hover{background:var(--color-background-primary)}
+.nb.on{background:var(--color-background-primary);font-weight:500;border-left-color:currentColor}
+.nn{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.main{padding:1.25rem;overflow:auto;max-height:700px}
+.np{display:none}.np.on{display:block}
+.nh{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.9rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.nbadge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.ntitle{font-size:15px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.nsub{font-size:12px;color:var(--color-text-secondary);margin-top:.15rem}
+.frase{font-style:italic;color:var(--color-text-secondary);border-left:2px solid var(--color-border-secondary);padding:.4rem .7rem;margin:.65rem 0;font-size:13px;line-height:1.55}
+.s{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin:.85rem 0 .35rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.55rem}
+.bx{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.65rem .8rem}
+.bx strong{font-size:12px;font-weight:500;display:block;color:var(--color-text-primary);margin-bottom:.2rem}
+.bx p,.bx span{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.kv{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .7rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:.35rem;border:0.5px solid var(--color-border-tertiary)}
+.kk{font-size:12px;font-weight:500;color:var(--color-text-primary);min-width:145px;flex-shrink:0;padding-top:1px}
+.kv-v{font-size:12px;color:var(--color-text-secondary);line-height:1.45}
+.sl{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden;margin-bottom:.55rem}
+.sl-h{background:var(--color-background-secondary);padding:.5rem .75rem;font-size:12px;font-weight:500;color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-secondary)}
+.sr{display:flex;gap:.55rem;padding:.55rem .7rem;border-top:0.5px solid var(--color-border-tertiary);align-items:flex-start}
+.sr:first-child{border-top:none}
+.sn{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.sc{flex:1}.sc strong{font-size:12px;font-weight:500;color:var(--color-text-primary);display:block}
+.sc span{font-size:11px;color:var(--color-text-secondary);line-height:1.45}
+.tr{border-left:2px solid #EF9F27;padding:.45rem .65rem;margin-bottom:.4rem;background:var(--color-background-secondary);border-radius:0 var(--border-radius-md) var(--border-radius-md) 0}
+.tw{font-size:12px;color:#A32D2D;margin-bottom:.12rem}
+.tg{font-size:12px;color:#3B6D11;margin-bottom:.12rem;font-weight:500}
+.tw2{font-size:11px;color:var(--color-text-tertiary);line-height:1.4}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{text-align:left;padding:5px 8px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)}
+.tbl td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:top;line-height:1.4}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.ok{color:#3B6D11;font-weight:500}.no{color:#A32D2D}
+.hl{background:var(--color-background-info);color:var(--color-text-info);border-radius:var(--border-radius-md);padding:.45rem .65rem;font-size:12px;margin:.45rem 0;line-height:1.5}
+.wn{background:var(--color-background-warning);color:var(--color-text-warning);border-radius:var(--border-radius-md);padding:.45rem .65rem;font-size:12px;margin:.45rem 0;line-height:1.5}
+.dg{background:var(--color-background-danger);color:var(--color-text-danger);border-radius:var(--border-radius-md);padding:.45rem .65rem;font-size:12px;margin:.45rem 0;line-height:1.5}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:12px;margin:2px;font-weight:500}
+.cw{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.2rem}
+/* color themes */
+.c-dp{color:#A32D2D}.nb-dp{background:#FCEBEB;color:#791F1F}
+.c-pp{color:#854F0B}.nb-pp{background:#FAEEDA;color:#633806}
+.c-vp{color:#3C3489}.nb-vp{background:#EEEDFE;color:#26215C}
+.c-ru{color:#791F1F}.nb-ru{background:#F7C1C1;color:#501313}
+.c-hc{color:#534AB7}.nb-hc{background:#EEEDFE;color:#26215C}
+.c-at{color:#0C447C}.nb-at{background:#E6F1FB;color:#0C447C}
+.c-tr2{color:#085041}.nb-tr2{background:#E1F5EE;color:#04342C}
+.c-tej{color:#27500A}.nb-tej{background:#EAF3DE;color:#173404}
+.c-cid{color:#633806}.nb-cid{background:#FAEEDA;color:#412402}
+.c-int{color:#3C3489}.nb-int{background:#EEEDFE;color:#26215C}
+</style>
+
+<div class="root">
+<nav class="sidebar">
+  <div class="shead">10 nodos — 2ª mitad</div>
+
+  <div class="scat">Anteparto (20–40 sem)</div>
+  <button class="nb c-dp on" onclick="go(1,this)"><span class="nn nb-dp">1</span>DPPNI</button>
+  <button class="nb c-pp" onclick="go(2,this)"><span class="nn nb-pp">2</span>Placenta previa</button>
+  <button class="nb c-vp" onclick="go(3,this)"><span class="nn nb-vp">3</span>Vasa previa</button>
+  <button class="nb c-ru" onclick="go(4,this)"><span class="nn nb-ru">4</span>Rotura uterina</button>
+
+  <div class="scat">Hemorragia postparto</div>
+  <button class="nb c-hc" onclick="go(5,this)"><span class="nn nb-hc">5</span>HPP: concepto y 4T</button>
+  <button class="nb c-at" onclick="go(6,this)"><span class="nn nb-at">6</span>Atonía uterina</button>
+  <button class="nb c-tr2" onclick="go(7,this)"><span class="nn nb-tr2">7</span>Trauma del canal</button>
+  <button class="nb c-tej" onclick="go(8,this)"><span class="nn nb-tej">8</span>Retención y acretismo</button>
+  <button class="nb c-cid" onclick="go(9,this)"><span class="nn nb-cid">9</span>Coagulopatía / CID</button>
+
+  <div class="scat">Integración</div>
+  <button class="nb c-int" onclick="go(10,this)"><span class="nn nb-int">10</span>Algoritmo integrador</button>
+</nav>
+
+<div class="main">
+
+<!-- N1: DPPNI -->
+<div id="n1" class="np on">
+  <div class="nh"><span class="nbadge nb-dp">Nodo 1</span><div><div class="ntitle">DPPNI — desprendimiento prematuro de placenta normoinserta</div><div class="nsub">Separación de la placenta antes del nacimiento del feto — triángulo clínico diagnóstico</div></div></div>
+  <div class="frase">"Dolor + hipertonía + sangrado oscuro = DPPNI. El dolor es el síntoma cardinal que lo distingue de placenta previa."</div>
+
+  <div class="s">Triángulo clínico diagnóstico</div>
+  <div class="g3">
+    <div class="bx"><strong>1 — Dolor</strong><span>Abdominal intenso, brusco, continuo (no contráctil). Es el síntoma más específico. La PP no duele.</span></div>
+    <div class="bx"><strong>2 — Hipertonía uterina</strong><span>Útero "de madera" o en tabla. Permanente entre contracciones. Característica del DPPNI.</span></div>
+    <div class="bx"><strong>3 — Metrorragia</strong><span>Sangrado rojo oscuro (coágulos). Puede ser escaso o ausente (hematoma retroplacentario oculto). Variable.</span></div>
+  </div>
+
+  <div class="s">Formas clínicas — según extensión del desprendimiento</div>
+  <table class="tbl">
+    <thead><tr><th>Grado</th><th>Clínica</th><th>Vitalidad fetal</th><th>Conducta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Leve (I)</strong></td><td>Sangrado escaso, útero normal o levemente tenso</td><td>Normal</td><td>Hospitalizar, monitoreo fetal</td></tr>
+      <tr><td><strong>Moderado (II)</strong></td><td>Hipertonía, sangrado moderado, sufrimiento fetal</td><td>Comprometida</td><td>Finalización urgente del embarazo</td></tr>
+      <tr><td><strong>Severo (III)</strong></td><td>Útero en tabla, shock hemorrágico, CID. Puede no haber sangrado externo (oculto)</td><td>Fetal muerto o muy comprometido</td><td class="no">Cirugía inmediata, UCI</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Factores de riesgo — orientan sospecha diagnóstica</div>
+  <div class="g2">
+    <div class="bx"><strong>Principales</strong><span>HTA / preeclampsia (causa 1°), trauma abdominal, multiparidad, tabaquismo, DPPNI previo, consumo de cocaína, trombofilia.</span></div>
+    <div class="bx"><strong>Relación con HTA</strong><span>La HTA es el factor de riesgo más importante. El vasoespasmo de los vasos deciduales genera isquemia y desprendimiento. Siempre buscar HTA en el contexto.</span></div>
+  </div>
+
+  <div class="s">Complicaciones temidas</div>
+  <div class="dg">Útero de Couvelaire: sangre infiltra la pared muscular uterina. El útero pierde contractilidad → atonía secundaria + CID. Complicación más grave del DPPNI severo.</div>
+  <div class="kv"><span class="kk">Complicación hematológica</span><span class="kv-v">CID obstétrica: el tromboplastina liberada por el hematoma retroplacentario activa la cascada de coagulación → consumo de factores → sangrado incoagulable.</span></div>
+
+  <div class="s">Trampas del banco histórico</div>
+  <div class="tr"><div class="tw">✗ Tono uterino aumentado + sangrado oscuro → placenta previa</div><div class="tg">✓ Hipertonía + sangrado oscuro = DPPNI siempre</div><div class="tw2">La PP sangra sin dolor y con útero relajado. El tono aumentado es el diferenciador clave entre DPPNI y PP en el examen. Aparece literalmente en Q14 del banco.</div></div>
+  <div class="tr"><div class="tw">✗ Ausencia de metrorragia descarta DPPNI</div><div class="tg">✓ El DPPNI puede ser oculto (hematoma retroplacentario sin sangrado externo)</div><div class="tw2">El hematoma queda atrapado entre la placenta y la pared uterina. El sangrado externo puede ser mínimo o nulo, mientras el cuadro clínico es catastrófico.</div></div>
+  <div class="tr"><div class="tw">✗ Q62: dolor + útero tenso + no LCF → placenta previa</div><div class="tg">✓ Muerte fetal + hipertonía = DPPNI severo</div><div class="tw2">Cuando no se auscultan latidos fetales y el útero está tenso → DPPNI grave. La PP raramente causa muerte fetal directa por el mecanismo de sangrado.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-dp">↔ N2 Placenta previa (diagnóstico diferencial)</span><span class="pill nb-cid">→ N9 CID obstétrico (complicación)</span><span class="pill nb-at">→ N6 Atonía (útero de Couvelaire)</span><span class="pill nb-int">→ N10 Algoritmo integrador</span></div>
+</div>
+
+<!-- N2: Placenta previa -->
+<div id="n2" class="np">
+  <div class="nh"><span class="nbadge nb-pp">Nodo 2</span><div><div class="ntitle">Placenta previa</div><div class="nsub">Implantación placentaria sobre o cerca del orificio cervical interno</div></div></div>
+  <div class="frase">"Sangrado indoloro, rojo rutilante, en el 3er trimestre, con útero blando = placenta previa. La regla de oro: NO hacer tacto vaginal."</div>
+
+  <div class="s">Clasificación según relación con OCI</div>
+  <table class="tbl">
+    <thead><tr><th>Tipo</th><th>Definición</th><th>Parto posible</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Oclusiva total</strong></td><td>Cubre completamente el OCI</td><td class="no">Cesárea siempre</td></tr>
+      <tr><td><strong>Oclusiva parcial</strong></td><td>Cubre parcialmente el OCI</td><td class="no">Cesárea</td></tr>
+      <tr><td><strong>Marginal</strong></td><td>Borde placentario alcanza el OCI</td><td>Posible vaginal según EG y clínica</td></tr>
+      <tr><td><strong>De inserción baja</strong></td><td>A &lt;2cm del OCI sin cubrirlo</td><td class="ok">Vaginal generalmente</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Clínica cardinal — lo que la distingue del DPPNI</div>
+  <div class="g2">
+    <div class="bx"><strong>Metrorragia</strong><span>Rojo vivo, rutilante, brusca, indolora. Episodios repetidos que aumentan en frecuencia e intensidad. "Hemorragia centinela".</span></div>
+    <div class="bx"><strong>Útero relajado</strong><span>Sin hipertonía, sin dolor. Latidos fetales presentes. La madre sangra, el feto inicialmente no se compromete.</span></div>
+  </div>
+  <div class="dg">REGLA ABSOLUTA: NO realizar tacto vaginal ante sospecha de placenta previa. El tacto puede desencadenar hemorragia masiva. Diagnóstico: ecografía transvaginal (de elección).</div>
+
+  <div class="s">Factores de riesgo</div>
+  <div class="kv"><span class="kk">Principales</span><span class="kv-v">Cesárea previa (factor más importante), multiparidad, edad materna avanzada, tabaquismo, cirugía uterina previa, PP previa, gestación múltiple.</span></div>
+  <div class="kv"><span class="kk">Relación con acretismo</span><span class="kv-v">PP + cicatriz de cesárea previa = alto riesgo de placenta ácreta/íncreta/pércreta. La placenta se implanta sobre la cicatriz donde falta decidua → invasión miometrial.</span></div>
+
+  <div class="s">Conducta según situación clínica</div>
+  <div class="sl">
+    <div class="sl-h">Decisión terapéutica en placenta previa</div>
+    <div class="sr"><div class="sn nb-pp">1</div><div class="sc"><strong>Estable + pretérmino</strong><span>Hospitalizar, reposo, corticoides para maduración pulmonar si &lt;34 sem. Evitar tacto vaginal.</span></div></div>
+    <div class="sr"><div class="sn nb-pp">2</div><div class="sc"><strong>Inestable o sangrado activo importante</strong><span>Cesárea de urgencia independientemente de la EG.</span></div></div>
+    <div class="sr"><div class="sn nb-pp">3</div><div class="sc"><strong>PP oclusiva a término</strong><span>Cesárea electiva programada (semana 36-37). Sin trabajo de parto espontáneo previo de ser posible.</span></div></div>
+  </div>
+
+  <div class="s">Trampas del banco</div>
+  <div class="tr"><div class="tw">✗ PP → se puede hacer tacto vaginal para confirmar</div><div class="tg">✓ Nunca tacto vaginal en PP sospechada</div><div class="tw2">La eco TV es el estudio de elección. El tacto puede perforar la placenta y generar hemorragia masiva. Pregunta tipo: "¿cuál es el estudio de elección?" → ecografía.</div></div>
+  <div class="tr"><div class="tw">✗ PP + sangrado moderado + 32 sem → cesárea inmediata</div><div class="tg">✓ Si estable y pretérmino: conducta expectante con corticoides</div><div class="tw2">El objetivo es ganar semanas para maduración pulmonar si madre e hijo están estables. La prematurez tiene mortalidad importante. La cesárea no es automática si el cuadro es controlable.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-dp">↔ N1 DPPNI (diferencial)</span><span class="pill nb-tej">→ N8 Acretismo (complicación de PP + cesárea previa)</span><span class="pill nb-int">→ N10 Algoritmo</span></div>
+</div>
+
+<!-- N3: Vasa previa -->
+<div id="n3" class="np">
+  <div class="nh"><span class="nbadge nb-vp">Nodo 3</span><div><div class="ntitle">Vasa previa</div><div class="nsub">Vasos fetales sobre el OCI — el sangrado es sangre fetal</div></div></div>
+  <div class="frase">"Amniorrexis + sangrado rojo rutilante + bradicardia fetal instantánea = vasa previa. La sangre que se pierde es del feto."</div>
+
+  <div class="s">Mecanismo — por qué es diferente a todo lo demás</div>
+  <div class="hl">En la vasa previa, vasos fetales (umbilicales o de inserción velamentosa) cruzan el OCI sin protección placentaria ni gelatina de Wharton. Al romperse las membranas (espontánea o artificiamente), esos vasos se desgarra → la hemorragia es SANGRE FETAL. Pérdida mínima de sangre materna es pérdida máxima de volumen fetal.</div>
+
+  <div class="s">Triada diagnóstica clásica del banco</div>
+  <div class="g3">
+    <div class="bx"><strong>Amniorrexis</strong><span>El desencadenante. Ruptura espontánea o artificial de membranas corta los vasos.</span></div>
+    <div class="bx"><strong>Sangrado rojo rutilante</strong><span>Abundante. Contrasta con el sangrado oscuro del DPPNI. Vivo porque es arterial fetal.</span></div>
+    <div class="bx"><strong>Bradicardia fetal inmediata</strong><span>El feto pierde volemia rápidamente. La bradicardia es el signo de alarma fetal. La madre puede estar estable.</span></div>
+  </div>
+
+  <div class="s">Diferencias clave — tabla de examen</div>
+  <table class="tbl">
+    <thead><tr><th>Parámetro</th><th>Vasa previa</th><th>Placenta previa</th><th>DPPNI</th></tr></thead>
+    <tbody>
+      <tr><td>Dolor materno</td><td>No</td><td>No</td><td class="no">Sí (cardinal)</td></tr>
+      <tr><td>Tono uterino</td><td>Normal</td><td>Normal/relajado</td><td class="no">Aumentado</td></tr>
+      <tr><td>Color del sangrado</td><td class="ok">Rojo rutilante</td><td>Rojo vivo</td><td>Rojo oscuro</td></tr>
+      <tr><td>Origen de la sangre</td><td class="no">Fetal</td><td>Materna</td><td>Materna</td></tr>
+      <tr><td>Desencadenante típico</td><td>Amniorrexis</td><td>Espontáneo/TV</td><td>Variable</td></tr>
+      <tr><td>Compromiso fetal inmediato</td><td class="no">Máximo (fetal)</td><td>Tardío</td><td>Variable</td></tr>
+      <tr><td>Conducta</td><td class="no">Cesárea inmediata</td><td>Según EG/estabilidad</td><td>Según grado</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Conducta</div>
+  <div class="dg">Cesárea de urgencia inmediata. No hay tiempo para más estudios. Cada minuto aumenta la exsanguinación fetal. La mortalidad perinatal sin diagnóstico prenatal supera el 75%.</div>
+
+  <div class="s">Trampa del banco — Q6</div>
+  <div class="tr"><div class="tw">✗ Amniorrexis + sangrado rojo rutilante + bradicardia → placenta previa sangrante</div><div class="tg">✓ Vasa previa</div><div class="tw2">Q6 del banco: 37 semanas, dilatación 5cm, amniorrexis → sangrado rojo rutilante abundante + bradicardia sostenida. PP sangra sin amniorrexis necesaria y sin compromiso fetal tan inmediato. La bradicardia instantánea tras la rotura de membranas = vasa previa.</div></div>
+  <div class="tr"><div class="tw">✗ Rotura del seno marginal (aparece como distractor en Q6)</div><div class="tg">✓ El seno marginal causa sangrado materno leve, sin compromiso fetal</div><div class="tw2">El seno marginal es una variante menor de PP con sangrado materno escaso y buen pronóstico fetal. No tiene bradicardia ni urgencia quirúrgica inmediata.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-dp">↔ N1 DPPNI (diferencial urgente)</span><span class="pill nb-pp">↔ N2 PP (diferencial)</span><span class="pill nb-int">→ N10 Algoritmo</span></div>
+</div>
+
+<!-- N4: Rotura uterina -->
+<div id="n4" class="np">
+  <div class="nh"><span class="nbadge nb-ru">Nodo 4</span><div><div class="ntitle">Rotura uterina</div><div class="nsub">Solución de continuidad de la pared uterina — urgencia quirúrgica absoluta</div></div></div>
+  <div class="frase">"Dolor en cicatriz + taquicardia + hipotensión + desaparición de la dinámica uterina = rotura uterina hasta demostrar lo contrario."</div>
+
+  <div class="s">Presentación clínica — signos clásicos del banco</div>
+  <div class="g2">
+    <div class="bx"><strong>Síntomas prodrómicos</strong><span>Dolor intenso en cicatriz de cesárea previa durante el trabajo de parto. "Signo del anillo de Bandl" (banda transversal visible abdominalmente) en rotura inminente.</span></div>
+    <div class="bx"><strong>Rotura consumada</strong><span>Cese súbito del dolor (la pared se rompió). Desaparición de la dinámica uterina. Hemorragia intraperitoneal. Shock hipovolémico.</span></div>
+  </div>
+  <div class="kv"><span class="kk">Signos cardinales del examen</span><span class="kv-v">Dolor en cicatriz + hipotensión + taquicardia + metrorragia (puede ser interna) + desaparición de la presentación fetal (el feto pasa al abdomen).</span></div>
+
+  <div class="s">Factores de riesgo</div>
+  <div class="g2">
+    <div class="bx"><strong>Cicatriz uterina previa</strong><span>Cesárea previa es el factor más importante. Riesgo de dehiscencia en trabajo de parto. Mayor riesgo con cicatriz vertical o corporal que con transversa baja.</span></div>
+    <div class="bx"><strong>Otros factores</strong><span>Desproporción céfalo-pélvica, multiparidad extrema, uso inadecuado de oxitocina, maniobras obstétricas (presión fúndica excesiva), trauma.</span></div>
+  </div>
+
+  <div class="s">Conducta</div>
+  <div class="sl">
+    <div class="sl-h">Manejo de la rotura uterina</div>
+    <div class="sr"><div class="sn nb-ru">1</div><div class="sc"><strong>Laparotomía de urgencia inmediata</strong><span>Sin demora. Reanimación simultánea (2 vías periféricas, expansión de volumen, transfusión).</span></div></div>
+    <div class="sr"><div class="sn nb-ru">2</div><div class="sc"><strong>Reparación vs histerectomía</strong><span>Si los bordes son viables y la hemorragia controlable: sutura. Si no: histerectomía de urgencia. Decisión intraoperatoria.</span></div></div>
+    <div class="sr"><div class="sn nb-ru">3</div><div class="sc"><strong>No hay tiempo para más estudios</strong><span>El diagnóstico es clínico. La eco puede confirmar pero no debe demorar la cirugía.</span></div></div>
+  </div>
+
+  <div class="s">Trampas del banco</div>
+  <div class="tr"><div class="tw">✗ Rotura uterina: conducta = cesárea</div><div class="tg">✓ Laparotomía (no "cesárea"). La rotura ya ocurrió, no hay bebé que "sacar por cesárea electiva".</div><div class="tw2">Semánticamente importante en el examen. La operación es una laparotomía exploradora de urgencia para reparar el daño. El término "cesárea" implica parto programado.</div></div>
+  <div class="tr"><div class="tw">✗ Rotura uterina = igual que DPPNI (ambos con dolor y shock)</div><div class="tg">✓ Rotura: desaparece el dolor y la dinámica. DPPNI: persiste hipertonía.</div><div class="tw2">En el DPPNI el útero se contrae permanentemente (hipertonía). En la rotura consumada, la pared cede y el dolor cesa (paradójico), la dinámica desaparece y el feto puede palparse libre en el abdomen.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-dp">↔ N1 DPPNI (diferencial: dolor + shock)</span><span class="pill nb-at">→ N6 Atonía (puede coexistir post-rotura)</span><span class="pill nb-int">→ N10 Algoritmo</span></div>
+</div>
+
+<!-- N5: HPP concepto y 4T -->
+<div id="n5" class="np">
+  <div class="nh"><span class="nbadge nb-hc">Nodo 5</span><div><div class="ntitle">HPP — concepto, clasificación y las 4T</div><div class="nsub">Hemorragia postparto: el mayor determinante de mortalidad materna en el posparto</div></div></div>
+  <div class="frase">"HPP = 4T: Tono (atonía) es la causa más frecuente. Tejido (retención) segunda. Trauma (desgarros) tercera. Trombina (CID) cuarta."</div>
+
+  <div class="s">Definición operativa</div>
+  <div class="kv"><span class="kk">HPP primaria</span><span class="kv-v">Pérdida de sangre ≥500 mL en las primeras 24hs postparto vaginal (o ≥1000 mL postcesárea). Clínicamente: cualquier hemorragia que comprometa la estabilidad hemodinámica.</span></div>
+  <div class="kv"><span class="kk">HPP secundaria</span><span class="kv-v">Sangrado anormal entre las 24hs y las 12 semanas postparto. Causas: subinvolución uterina, retención de restos, infección.</span></div>
+
+  <div class="s">Las 4T — mnemotecnia fundamental del examen</div>
+  <table class="tbl">
+    <thead><tr><th>T</th><th>Causa</th><th>Frecuencia</th><th>Signo clave</th><th>Conducta inicial</th></tr></thead>
+    <tbody>
+      <tr><td><strong class="ok">Tono</strong></td><td>Atonía uterina</td><td class="ok"><strong>70–80% (más frecuente)</strong></td><td>Útero blando, supraumbilical</td><td>Masaje + oxitocina</td></tr>
+      <tr><td><strong>Tejido</strong></td><td>Retención placentaria/restos</td><td>~10%</td><td>Útero blando + placenta incompleta</td><td>Extracción manual/AMEU</td></tr>
+      <tr><td><strong>Trauma</strong></td><td>Desgarros canal, inversión/rotura</td><td>~10%</td><td>Útero contraído pero sangra</td><td>Sutura del desgarro</td></tr>
+      <tr><td><strong>Trombina</strong></td><td>Coagulopatía (CID)</td><td>~1%</td><td>Sangre incoagulable</td><td>Hemoderivados</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Dato de examen — causa más frecuente de HPP</div>
+  <div class="hl">La causa más frecuente de HPP es la atonía uterina (fallo del Tono). Representa el 70-80% de los casos. Aparece literalmente en el banco: "¿Cuál es la causa más frecuente de HPP?" → anomalías de la contractilidad uterina = atonía.</div>
+
+  <div class="s">Factores de riesgo de HPP</div>
+  <div class="g2">
+    <div class="bx"><strong>Para atonía</strong><span>Multiparidad, gestación múltiple, polihidramnios, parto prolongado, corioamnionitis, macrosomía fetal, uso de tocolíticos.</span></div>
+    <div class="bx"><strong>Para tejido/trauma</strong><span>Extracción manual de placenta, parto instrumental (fórceps), episiotomía, maniobras de parto.</span></div>
+  </div>
+
+  <div class="s">Trampas del banco</div>
+  <div class="tr"><div class="tw">✗ HPP con útero retraído + placenta íntegra → atonía</div><div class="tg">✓ Útero retraído + placenta íntegra = trauma (desgarro)</div><div class="tw2">Esta distinción es la clave del examen (Q55). Si el útero ESTÁ CONTRAÍDO (retraído), no es atonía. Si la placenta está íntegra, no es retención. Por eliminación: trauma del canal.</div></div>
+  <div class="tr"><div class="tw">✗ HPP = siempre atonía</div><div class="tg">✓ Identificar cuál de las 4T mediante examen físico sistemático</div><div class="tw2">El error diagnóstico más costoso. Usar los 3 datos: ¿útero blando o firme? ¿placenta completa? ¿canal íntegro? La respuesta a esas 3 preguntas da la T.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-at">→ N6 Atonía: tratamiento</span><span class="pill nb-tr2">→ N7 Trauma</span><span class="pill nb-tej">→ N8 Tejido/acretismo</span><span class="pill nb-cid">→ N9 Trombina/CID</span><span class="pill nb-int">→ N10 Algoritmo</span></div>
+</div>
+
+<!-- N6: Atonía -->
+<div id="n6" class="np">
+  <div class="nh"><span class="nbadge nb-at">Nodo 6</span><div><div class="ntitle">Atonía uterina — diagnóstico y tratamiento escalonado</div><div class="nsub">Primera causa de HPP — respuesta escalonada: masaje → fármacos → cirugía</div></div></div>
+  <div class="frase">"Útero blando y supraumbilical después del alumbramiento = atonía. Respuesta escalonada: masaje → oxitocina → misoprostol → ergonovina → prostaglandinas → cirugía."</div>
+
+  <div class="s">Diagnóstico — el signo del examen</div>
+  <div class="kv"><span class="kk">Signo cardinal</span><span class="kv-v">Útero blando, flácido, supraumbilical. No se contrae al masaje o se contrae y se relaja inmediatamente. Sangrado activo del lecho placentario.</span></div>
+  <div class="kv"><span class="kk">Confirmar diagnóstico</span><span class="kv-v">Examinar: (1) útero blando → atonía confirmada. (2) revisar placenta completa → si completa, no es tejido. (3) revisar canal → si íntegro, no es trauma.</span></div>
+
+  <div class="s">Tratamiento escalonado — datos de examen</div>
+  <div class="sl">
+    <div class="sl-h">Escala de respuesta terapéutica — de menor a mayor invasividad</div>
+    <div class="sr"><div class="sn nb-at">1</div><div class="sc"><strong>Masaje uterino bimanual</strong><span>Inmediato. Compresión física del útero para inducir contracción. Maniobra de primera línea.</span></div></div>
+    <div class="sr"><div class="sn nb-at">2</div><div class="sc"><strong>Oxitocina IV — primera línea farmacológica</strong><span>20-40 UI en 500mL SF, pasar rápido. O 80 mU/min según protocolo. Primera elección farmacológica. NUNCA bolo IV directo (colapso cardiovascular).</span></div></div>
+    <div class="sr"><div class="sn nb-at">3</div><div class="sc"><strong>Misoprostol rectal / sublingual</strong><span>400-800 mcg. Útil cuando oxitocina no disponible o como coadyuvante. Segunda línea o complemento.</span></div></div>
+    <div class="sr"><div class="sn nb-at">4</div><div class="sc"><strong>Ergonovina / metilergonovina IM</strong><span>Contraindicada en HTA. Potente uterotónico. No primera línea por efectos cardiovasculares.</span></div></div>
+    <div class="sr"><div class="sn nb-at">5</div><div class="sc"><strong>Ácido tranexámico IV</strong><span>1g IV en los primeros 3 minutos. Antifibrinolítico. Administrar dentro de las 3 horas del parto si hay HPP.</span></div></div>
+    <div class="sr"><div class="sn nb-at">6</div><div class="sc"><strong>Taponamiento intrauterino (balón de Bakri)</strong><span>Si fármacos fallan. Compresión mecánica desde adentro del útero. Previene laparotomía.</span></div></div>
+    <div class="sr"><div class="sn nb-at">7</div><div class="sc"><strong>Cirugía: sutura de B-Lynch, ligaduras vasculares, histerectomía</strong><span>Si todo lo anterior falla. Histerectomía es el último recurso definitivo.</span></div></div>
+  </div>
+
+  <div class="s">Trampas del banco — Q52 y Q23</div>
+  <div class="tr"><div class="tw">✗ Q52: multípara + útero blando supraumbilical + shock → balón de Bakri de entrada / laparotomía inmediata</div><div class="tg">✓ Conducta inicial: 2 vías periféricas calibre 16 + oxitocina 80 mU/min</div><div class="tw2">La estabilización hemodinámica y la uterotonia farmacológica preceden a las medidas mecánicas o quirúrgicas. La respuesta del banco (Q52) es explícita: "2 accesos venosos periféricos calibre 16 + oxitocina".</div></div>
+  <div class="tr"><div class="tw">✗ Q23: HPP no responde a uterotónicos + canal íntegro + sin restos → rotura / miomatosis</div><div class="tg">✓ Sigue siendo atonía (respuesta D del banco)</div><div class="tw2">La atonía puede ser refractaria. Si no responde a los fármacos, escalar a balón/cirugía. No cambiar el diagnóstico.</div></div>
+  <div class="tr"><div class="tw">✗ Oxitocina IV en bolo directo como primera medida</div><div class="tg">✓ Oxitocina en infusión diluida — NUNCA bolo IV directo</div><div class="tw2">El bolo IV de oxitocina causa hipotensión brusca y colapso cardiovascular. Siempre diluida en SF.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-hc">← N5 Las 4T</span><span class="pill nb-dp">← N1 DPPNI: atonía secundaria (útero de Couvelaire)</span><span class="pill nb-cid">→ N9 CID si atonía no controlada</span></div>
+</div>
+
+<!-- N7: Trauma -->
+<div id="n7" class="np">
+  <div class="nh"><span class="nbadge nb-tr2">Nodo 7</span><div><div class="ntitle">HPP por trauma — desgarros del canal de parto</div><div class="nsub">Útero contraído + sangrado activo = siempre buscar desgarro</div></div></div>
+  <div class="frase">"Útero retraído + placenta íntegra + sangrado = desgarro del canal de parto. Buscar en orden: cuello → vagina → periné → cuerpo uterino."</div>
+
+  <div class="s">Razonamiento diagnóstico — el dato del banco</div>
+  <div class="hl">La llave diagnóstica: si el útero está CONTRAÍDO (firme, retraído) y la placenta está ÍNTEGRA, la causa del sangrado no es atonía ni retención. Es trauma. Esta lógica aparece en Q55 del banco.</div>
+
+  <div class="s">Tipos de trauma obstétrico</div>
+  <table class="tbl">
+    <thead><tr><th>Lesión</th><th>Contexto típico</th><th>Signo</th><th>Conducta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Desgarro cervical</strong></td><td>Parto precipitado, primiparidad, parto instrumental</td><td>Sangrado activo con cuello lacerado en especuloscopía</td><td class="ok">Sutura del desgarro (Vicryl)</td></tr>
+      <tr><td><strong>Desgarro vaginal</strong></td><td>Macrosomía, fórceps, expulsivo rápido</td><td>Sangrado con vagina lacerada</td><td class="ok">Sutura</td></tr>
+      <tr><td><strong>Desgarro perineal</strong></td><td>Episiotomía mal suturada, desgarro espontáneo</td><td>Hemorragia vulvo-perineal</td><td class="ok">Sutura por planos</td></tr>
+      <tr><td><strong>Inversión uterina</strong></td><td>Tracción excesiva del cordón, alumbramiento forzado</td><td>Útero ausente al palpar abdomen, masa en vagina</td><td class="no">Reposición manual inmediata</td></tr>
+      <tr><td><strong>Rotura uterina</strong></td><td>Cicatriz previa, trabajo de parto obstruido</td><td>Shock + útero irreconocible a la palpación</td><td class="no">Laparotomía urgente (ver N4)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Clasificación de desgarros perineales</div>
+  <div class="kv"><span class="kk">Grado I</span><span class="kv-v">Solo piel y mucosa vaginal. Puede no requerir sutura.</span></div>
+  <div class="kv"><span class="kk">Grado II</span><span class="kv-v">Músculo perineal sin esfínter anal. Sutura por planos.</span></div>
+  <div class="kv"><span class="kk">Grado III</span><span class="kv-v">Esfínter anal externo (parcial o completo). Sutura especializada.</span></div>
+  <div class="kv"><span class="kk">Grado IV</span><span class="kv-v">Mucosa anal expuesta. Alto riesgo de fístula. Requiere cirujano.</span></div>
+
+  <div class="s">Trampas del banco</div>
+  <div class="tr"><div class="tw">✗ HPP inmediata + útero retraído + placenta íntegra → atonía</div><div class="tg">✓ Desgarro del cuello uterino (Q55 del banco)</div><div class="tw2">Si el útero está contraído (retraído), por definición no es atonía. Si la placenta es íntegra, no es tejido. El proceso de eliminación lleva al trauma. Q55 es una pregunta de razonamiento por exclusión.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-hc">← N5 Las 4T</span><span class="pill nb-at">↔ N6 Diferencial atonía vs trauma</span><span class="pill nb-int">→ N10 Algoritmo</span></div>
+</div>
+
+<!-- N8: Tejido/acretismo -->
+<div id="n8" class="np">
+  <div class="nh"><span class="nbadge nb-tej">Nodo 8</span><div><div class="ntitle">HPP por tejido — retención placentaria y acretismo</div><div class="nsub">Placenta incompleta o anormalmente adherida</div></div></div>
+  <div class="frase">"Placenta incompleta = extracción manual + AMEU. Acretismo = histerectomía. La cesárea previa + PP = alarma de acretismo."</div>
+
+  <div class="s">Retención placentaria simple</div>
+  <div class="kv"><span class="kk">Diagnóstico</span><span class="kv-v">Placenta no expulsada a los 30 minutos del parto (tercer período prolongado) o expulsada incompleta (cotiledones faltantes).</span></div>
+  <div class="kv"><span class="kk">Conducta</span><span class="kv-v">Extracción manual de placenta bajo anestesia. AMEU para restos. Oxitocina post-extracción para contracción uterina.</span></div>
+
+  <div class="s">Espectro del acretismo placentario</div>
+  <table class="tbl">
+    <thead><tr><th>Tipo</th><th>Profundidad de invasión</th><th>Conducta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Ácreta</strong></td><td>Vellosidades adheridas al miometrio (sin invasión)</td><td>Extracción manual posible / histerectomía según sangrado</td></tr>
+      <tr><td><strong>Íncreta</strong></td><td>Vellosidades invaden el miometrio</td><td>Histerectomía generalmente</td></tr>
+      <tr><td><strong>Pércreta</strong></td><td>Vellosidades atraviesan serosa (puede invadir vejiga)</td><td class="no">Histerectomía + cirugía multidisciplinaria urgente</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Factor de riesgo principal</div>
+  <div class="dg">Placenta previa + cicatriz de cesárea previa = combinación de máximo riesgo para acretismo. Por cada cesárea adicional en contexto de PP, el riesgo de acretismo aumenta exponencialmente (de 3% con 1 cesárea a 67% con 4+ cesáreas).</div>
+
+  <div class="s">Diagnóstico antenatal</div>
+  <div class="kv"><span class="kk">Ecografía</span><span class="kv-v">Placenta de inserción baja/previa + lagunas placentarias + pérdida del espacio retroplacentario hipoecogénico + protrusión hacia vejiga.</span></div>
+  <div class="kv"><span class="kk">Resonancia magnética</span><span class="kv-v">Mayor certeza que eco para invasión pércreta (vejiga/paramétrios). Complementaria.</span></div>
+
+  <div class="s">Trampas del banco</div>
+  <div class="tr"><div class="tw">✗ Acretismo: extracción manual agresiva primero</div><div class="tg">✓ No tracción: riesgo de hemorragia masiva. Histerectomía planificada o en equipo multidisciplinario.</div><div class="tw2">La tracción forzosa de una placenta ácreta puede desencadenar hemorragia catastrófica. El diagnóstico prenatal permite programar la cirugía con equipo adecuado.</div></div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-pp">← N2 PP (principal FR de acretismo)</span><span class="pill nb-hc">← N5 Las 4T (Tejido)</span><span class="pill nb-cid">→ N9 CID (complicación de acretismo)</span></div>
+</div>
+
+<!-- N9: Coagulopatía / CID -->
+<div id="n9" class="np">
+  <div class="nh"><span class="nbadge nb-cid">Nodo 9</span><div><div class="ntitle">Coagulopatía obstétrica — CID</div><div class="nsub">Trombina: la T menos frecuente pero más letal de la HPP</div></div></div>
+  <div class="frase">"Sangre que no coagula en el contexto de HPP = CID. Contextos: DPPNI severo, embolia de líquido amniótico, preeclampsia severa, sepsis, muerte fetal."</div>
+
+  <div class="s">¿Qué es la CID obstétrica?</div>
+  <div class="hl">La CID (coagulación intravascular diseminada) es la activación descontrolada de la cascada de coagulación con consumo de factores y plaquetas → sangrado incoagulable simultáneo con trombosis microvascular. En obstetricia es siempre secundaria a otro evento desencadenante.</div>
+
+  <div class="s">Desencadenantes obstétricos — los más preguntables</div>
+  <div class="g2">
+    <div class="bx"><strong>DPPNI severo</strong><span>Tromboplastina liberada por hematoma retroplacentario activa la coagulación. Es el desencadenante más frecuente de CID en obstetricia.</span></div>
+    <div class="bx"><strong>Embolia de líquido amniótico (ELA)</strong><span>Entrada de líquido amniótico a circulación materna. Cuadro catastrófico: colapso cardiovascular + CID + broncoespasmo. Alta mortalidad.</span></div>
+    <div class="bx"><strong>Preeclampsia severa / HELLP</strong><span>Endoteliopatía sistémica con consumo de plaquetas y activación de coagulación. HELLP: hemólisis + elevación enzimas hepáticas + plaquetopenia.</span></div>
+    <div class="bx"><strong>Sepsis obstétrica</strong><span>Endotoxinas bacterianas activan cascada de coagulación. Siempre buscar foco (aborto séptico, corioamnionitis, endometritis).</span></div>
+  </div>
+
+  <div class="s">Criterios diagnósticos clave</div>
+  <div class="kv"><span class="kk">Laboratorio</span><span class="kv-v">Plaquetas bajas (&lt;100.000), fibrinógeno bajo (&lt;200mg/dL), TP y APTT prolongados, D-dímero elevado, esquistocitos en frotis.</span></div>
+  <div class="kv"><span class="kk">Clínica</span><span class="kv-v">Sangrado de todos los sitios (puntos de venopunción, mucosas, herida quirúrgica). Sangre que no coagula en campo operatorio.</span></div>
+
+  <div class="s">Tratamiento</div>
+  <div class="sl">
+    <div class="sl-h">Manejo de CID obstétrica</div>
+    <div class="sr"><div class="sn nb-cid">1</div><div class="sc"><strong>Tratar la causa desencadenante</strong><span>Sin esto, el tratamiento de soporte es ineficaz. Evacuar útero si DPPNI/retención. ATB si sepsis. Finalizar embarazo si preeclampsia.</span></div></div>
+    <div class="sr"><div class="sn nb-cid">2</div><div class="sc"><strong>Reponer factores de coagulación</strong><span>Plasma fresco congelado (PFC) para factores. Crioprecipitado para fibrinógeno. Plaquetas si &lt;50.000.</span></div></div>
+    <div class="sr"><div class="sn nb-cid">3</div><div class="sc"><strong>Ácido tranexámico</strong><span>Si hay componente fibrinolítico. Dentro de las 3hs del sangrado.</span></div></div>
+  </div>
+
+  <div class="s">Conexiones</div>
+  <div class="cw"><span class="pill nb-dp">← N1 DPPNI (desencadenante más frecuente)</span><span class="pill nb-hc">← N5 Las 4T (Trombina)</span><span class="pill nb-at">↔ N6 Atonía + CID = catástrofe</span></div>
+</div>
+
+<!-- N10: Algoritmo integrador -->
+<div id="n10" class="np">
+  <div class="nh"><span class="nbadge nb-int">Nodo 10</span><div><div class="ntitle">Algoritmo integrador — diagnóstico diferencial completo</div><div class="nsub">Tres preguntas decisoras para cualquier hemorragia de la segunda mitad</div></div></div>
+  <div class="frase">"¿Anteparto o postparto? → ¿Duele el útero? → ¿Está contraído el útero? Estas tres preguntas en orden resuelven el 90% de las preguntas del banco."</div>
+
+  <div class="s">Árbol de decisión — hemorragia anteparto (20-40 sem)</div>
+  <div class="sl">
+    <div class="sl-h">Paciente con sangrado vaginal en la segunda mitad del embarazo</div>
+    <div class="sr"><div class="sn nb-int">?1</div><div class="sc"><strong>¿Hay dolor / hipertonía uterina?</strong><span>SÍ → DPPNI (N1) hasta demostrar lo contrario. NO → PP (N2) o vasa previa (N3).</span></div></div>
+    <div class="sr"><div class="sn nb-int">?2</div><div class="sc"><strong>Si no hay dolor: ¿cuándo comenzó el sangrado?</strong><span>Espontáneo → PP. Post-amniorrexis + bradicardia fetal → Vasa previa (N3) = cesárea inmediata.</span></div></div>
+    <div class="sr"><div class="sn nb-int">?3</div><div class="sc"><strong>¿Está inestable hemodinámicamente?</strong><span>SÍ → Cirugía inmediata (DPPNI severo, vasa previa, rotura uterina). NO → Estabilizar, diagnosticar, decidir según EG.</span></div></div>
+    <div class="sr"><div class="sn nb-int">?4</div><div class="sc"><strong>¿Dolor en cicatriz + dinámica que se detiene + desaparece presentación?</strong><span>→ Rotura uterina (N4) → Laparotomía urgente.</span></div></div>
+  </div>
+
+  <div class="s">Árbol de decisión — hemorragia postparto (HPP)</div>
+  <div class="sl">
+    <div class="sl-h">Sangrado postparto activo — 3 preguntas para las 4T</div>
+    <div class="sr"><div class="sn nb-int">?1</div><div class="sc"><strong>¿El útero está contraído (firme) o blando?</strong><span>BLANDO → atonía (N6). FIRME → continuar a ?2.</span></div></div>
+    <div class="sr"><div class="sn nb-int">?2</div><div class="sc"><strong>¿La placenta está completa?</strong><span>INCOMPLETA o NO EXPULSADA → retención de tejido (N8). COMPLETA → continuar a ?3.</span></div></div>
+    <div class="sr"><div class="sn nb-int">?3</div><div class="sc"><strong>¿El canal de parto está íntegro?</strong><span>DESGARRO visible → trauma (N7). CANAL ÍNTEGRO → coagulopatía/CID (N9). O reevaluar atonía refractaria.</span></div></div>
+  </div>
+
+  <div class="s">Tabla maestra de diferenciación — los 4 cuadros anteparto</div>
+  <table class="tbl">
+    <thead><tr><th>Parámetro</th><th>DPPNI</th><th>PP</th><th>Vasa previa</th><th>Rotura ut.</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dolor</strong></td><td class="no">Sí, brusco</td><td>No</td><td>No</td><td class="no">Sí → cesa</td></tr>
+      <tr><td><strong>Tono uterino</strong></td><td class="no">Aumentado</td><td>Normal</td><td>Normal</td><td class="no">Normal→cesa</td></tr>
+      <tr><td><strong>Sangrado</strong></td><td>Oscuro, variable</td><td>Rojo vivo, episódico</td><td>Rojo rutilante post-amniorrexis</td><td>Puede ser interno</td></tr>
+      <tr><td><strong>LCF</strong></td><td>Compromiso variable</td><td>Generalmente normal</td><td class="no">Bradicardia inmediata</td><td class="no">Compromiso grave</td></tr>
+      <tr><td><strong>FR principal</strong></td><td>HTA</td><td>Cesárea previa</td><td>Inserción velamentosa</td><td>Cicatriz uterina</td></tr>
+      <tr><td><strong>Conducta urgente</strong></td><td>Según grado/EG</td><td>NO tacto; eco</td><td class="no">Cesárea inmediata</td><td class="no">Laparotomía</td></tr>
+    </tbody>
+  </table>
+
+  <div class="s">Frases compresivas de todo el vault</div>
+  <div class="kv"><span class="kk">N1 DPPNI</span><span class="kv-v">Dolor + hipertonía + sangrado oscuro. HTA es el FR. CID = complicación temida.</span></div>
+  <div class="kv"><span class="kk">N2 PP</span><span class="kv-v">Sin dolor, rojo vivo, útero relajado. NUNCA tacto. Eco TV = diagnóstico.</span></div>
+  <div class="kv"><span class="kk">N3 Vasa previa</span><span class="kv-v">Amniorrexis + rojo rutilante + bradicardia = cesárea ya. La sangre es del feto.</span></div>
+  <div class="kv"><span class="kk">N4 Rotura</span><span class="kv-v">Dolor en cicatriz → cesa → shock + dinámica ausente → laparotomía urgente.</span></div>
+  <div class="kv"><span class="kk">N5 HPP-4T</span><span class="kv-v">Tono (70%) → Tejido → Trauma → Trombina. Las 3 preguntas: útero, placenta, canal.</span></div>
+  <div class="kv"><span class="kk">N6 Atonía</span><span class="kv-v">Útero blando → 2 vías + oxitocina → misoprostol → balón → B-Lynch → histerectomía.</span></div>
+  <div class="kv"><span class="kk">N7 Trauma</span><span class="kv-v">Útero firme + placenta íntegra + sangrado = desgarro. Buscar en orden: cuello, vagina, periné.</span></div>
+  <div class="kv"><span class="kk">N8 Tejido</span><span class="kv-v">Placenta incompleta → extracción. PP + cesárea previa = acretismo → histerectomía planificada.</span></div>
+  <div class="kv"><span class="kk">N9 CID</span><span class="kv-v">Sangre incoagulable. DPPNI severo = desencadenante 1°. Tratar causa + PFC + crioprecipitado.</span></div>
+  <div class="kv"><span class="kk">N10 Integrador</span><span class="kv-v">Anteparto: ¿dolor? → DPPNI. Postparto: ¿útero blando? → atonía. En ese orden.</span></div>
+</div>
+
+</div>
+</div>
+
+<script>
+function go(n,btn){
+  document.querySelectorAll('.np').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('n'+n).classList.add('on');
+  btn.classList.add('on');
+  document.querySelector('.main').scrollTop=0;
+}
+</script>

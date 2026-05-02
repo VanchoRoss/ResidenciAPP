@@ -1,0 +1,642 @@
+<style>
+:root{--font-sans:'IBM Plex Sans',Inter,system-ui,sans-serif;--color-text-primary:#1f2937;--color-text-secondary:#475569;--color-text-tertiary:#94a3b8;--color-text-info:#185fa5;--color-text-warning:#854f0b;--color-text-danger:#a32d2d;--color-text-success:#0f6e56;--color-background-primary:#ffffff;--color-background-secondary:#f8fafc;--color-background-info:#e6f1fb;--color-background-warning:#faeeda;--color-background-success:#eaf3de;--color-background-danger:#fcebeb;--color-border-primary:#94a3b8;--color-border-tertiary:#e5e7eb;--color-border-secondary:#cbd5e1;--color-border-info:#85b7eb;--border-radius-md:8px;--border-radius-lg:12px;}@media(prefers-color-scheme:dark){:root{--color-text-primary:#e2e8f0;--color-text-secondary:#94a3b8;--color-text-tertiary:#64748b;--color-text-info:#b5d4f4;--color-text-warning:#fac775;--color-text-danger:#f7c1c1;--color-text-success:#9fe1cb;--color-background-primary:#0f1117;--color-background-secondary:#161b25;--color-background-info:#042c53;--color-background-warning:#412402;--color-background-success:#173404;--color-background-danger:#501313;--color-border-primary:#64748b;--color-border-tertiary:#2a3347;--color-border-secondary:#364055;--color-border-info:#2a3d6a;}body{background:#0f1117!important;color:#e2e8f0!important}}
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:14px}
+.root{display:grid;grid-template-columns:200px 1fr;min-height:600px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden}
+.sidebar{background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-secondary);padding:.5rem 0;display:flex;flex-direction:column}
+.sidebar-title{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.07em;text-transform:uppercase;padding:.5rem .75rem .25rem}
+.nodo-btn{display:flex;align-items:center;gap:.5rem;padding:.45rem .75rem;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;color:var(--color-text-secondary);font-size:12px;line-height:1.3;transition:background .1s;border-left:2px solid transparent}
+.nodo-btn:hover{background:var(--color-background-primary)}
+.nodo-btn.active{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;border-left-color:currentColor}
+.nodo-num{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.main{padding:1.25rem;overflow:auto}
+.node-header{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.node-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.node-title{font-size:16px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.node-sub{font-size:12px;color:var(--color-text-secondary);margin-top:.2rem}
+.frase{font-style:italic;color:var(--color-text-secondary);border-left:2px solid var(--color-border-secondary);padding:.4rem .7rem;margin:.75rem 0;font-size:13px;line-height:1.55}
+.sect{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin:.9rem 0 .4rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
+.box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.7rem .85rem}
+.box strong{font-size:12px;font-weight:500;display:block;color:var(--color-text-primary);margin-bottom:.25rem}
+.box p,.box span{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.trap-row{border-left:2px solid #EF9F27;padding:.5rem .7rem;margin-bottom:.45rem;background:var(--color-background-secondary);border-radius:0 var(--border-radius-md) var(--border-radius-md) 0}
+.trap-wrong{font-size:12px;color:#A32D2D;margin-bottom:.15rem}
+.trap-right{font-size:12px;color:#3B6D11;margin-bottom:.15rem;font-weight:500}
+.trap-why{font-size:11px;color:var(--color-text-tertiary);line-height:1.45}
+.step-list{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+.step{display:flex;gap:.6rem;padding:.6rem .75rem;border-top:0.5px solid var(--color-border-tertiary);align-items:flex-start}
+.step:first-child{border-top:none}
+.snum{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:1px}
+.sc{flex:1}
+.sc strong{font-size:12px;font-weight:500;color:var(--color-text-primary);display:block}
+.sc span{font-size:11px;color:var(--color-text-secondary);line-height:1.45}
+.kv{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:.4rem;border:0.5px solid var(--color-border-tertiary)}
+.kv-k{font-size:12px;font-weight:500;color:var(--color-text-primary);min-width:140px;flex-shrink:0}
+.kv-v{font-size:12px;color:var(--color-text-secondary)}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:12px;margin:2px;font-weight:500}
+.conn-wrap{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.25rem}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{text-align:left;padding:5px 8px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;border-bottom:0.5px solid var(--color-border-secondary)}
+.tbl td{padding:5px 8px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:top;line-height:1.4}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.ok{color:#3B6D11;font-weight:500}.no{color:#A32D2D}
+.node-panel{display:none}.node-panel.active{display:block}
+.nb1{background:#E6F1FB;color:#0C447C}.nb2{background:#E6F1FB;color:#0C447C}.nb3{background:#FAEEDA;color:#633806}
+.nb4{background:#E1F5EE;color:#085041}.nb5{background:#E1F5EE;color:#085041}
+.nb6{background:#FAEEDA;color:#633806}
+.nb7{background:#FCEBEB;color:#791F1F}.nb8{background:#FCEBEB;color:#791F1F}
+.nb9{background:#EAF3DE;color:#27500A}.nb10{background:#EEEDFE;color:#26215C}
+.c1{color:#185FA5}.c2{color:#185FA5}.c3{color:#854F0B}
+.c4{color:#0F6E56}.c5{color:#0F6E56}.c6{color:#854F0B}
+.c7{color:#A32D2D}.c8{color:#A32D2D}.c9{color:#3B6D11}.c10{color:#534AB7}
+.hl{background:var(--color-background-info);color:var(--color-text-info);border-radius:var(--border-radius-md);padding:.5rem .7rem;font-size:12px;margin:.5rem 0;line-height:1.5}
+.warn{background:var(--color-background-warning);color:var(--color-text-warning);border-radius:var(--border-radius-md);padding:.5rem .7rem;font-size:12px;margin:.5rem 0;line-height:1.5}
+.algo-head{background:var(--color-background-secondary);padding:.5rem .75rem;font-size:12px;font-weight:500;color:var(--color-text-primary);border-bottom:0.5px solid var(--color-border-secondary)}
+</style>
+
+<div class="root">
+<nav class="sidebar">
+  <div class="sidebar-title">10 nodos del vault</div>
+
+  <button class="nodo-btn c1 active" onclick="goTo(1,this)">
+    <span class="nodo-num nb1">1</span>Clasificación del aborto espontáneo
+  </button>
+  <button class="nodo-btn c2" onclick="goTo(2,this)">
+    <span class="nodo-num nb2">2</span>Evacuación: AMEU y misoprostol
+  </button>
+  <button class="nodo-btn c3" onclick="goTo(3,this)">
+    <span class="nodo-num nb3">3</span>Complicaciones: sepsis e infección
+  </button>
+  <button class="nodo-btn c4" onclick="goTo(4,this)">
+    <span class="nodo-num nb4">4</span>IVE/ILE — protocolo MSAL 2022
+  </button>
+  <button class="nodo-btn c5" onclick="goTo(5,this)">
+    <span class="nodo-num nb5">5</span>Inmunoglobulina anti-Rho
+  </button>
+  <button class="nodo-btn c6" onclick="goTo(6,this)">
+    <span class="nodo-num nb6">6</span>β-HCG como herramienta diagnóstica
+  </button>
+  <button class="nodo-btn c7" onclick="goTo(7,this)">
+    <span class="nodo-num nb7">7</span>Ectópico: diagnóstico
+  </button>
+  <button class="nodo-btn c8" onclick="goTo(8,this)">
+    <span class="nodo-num nb8">8</span>Ectópico: tratamiento
+  </button>
+  <button class="nodo-btn c9" onclick="goTo(9,this)">
+    <span class="nodo-num nb9">9</span>Enfermedad trofoblástica gestacional
+  </button>
+  <button class="nodo-btn c10" onclick="goTo(10,this)">
+    <span class="nodo-num nb10">10</span>Algoritmo integrador
+  </button>
+</nav>
+
+<div class="main">
+
+<!-- NODO 1 -->
+<div id="n1" class="node-panel active">
+  <div class="node-header">
+    <span class="node-badge nb1">Nodo 1</span>
+    <div><div class="node-title">Clasificación del aborto espontáneo</div><div class="node-sub">Pérdida del embarazo intrauterino antes de las 20 semanas</div></div>
+  </div>
+  <div class="frase">"El estado del orificio cervical interno (OCI) es la variable que clasifica el tipo y determina la conducta."</div>
+
+  <div class="sect">Idea madre — la lógica del OCI</div>
+  <div class="hl">El aborto espontáneo no es una entidad, es un espectro. La clasificación clínica se basa en dos ejes: (1) ¿está el OCI abierto o cerrado? y (2) ¿fue expulsado el contenido ovular? Estos dos datos determinan completamente el manejo.</div>
+
+  <div class="sect">Tipos — tabla completa</div>
+  <table class="tbl">
+    <thead><tr><th>Tipo</th><th>OCI</th><th>Material expulsado</th><th>Eco</th><th>Conducta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Amenaza</strong></td><td>Cerrado</td><td>No</td><td>Saco íntegro, LCF +</td><td class="ok">Expectante ambulatoria</td></tr>
+      <tr><td><strong>Inevitable / en curso</strong></td><td>Abierto</td><td>En progreso</td><td>Saco descendido o ausente</td><td class="ok">Completar evacuación</td></tr>
+      <tr><td><strong>Incompleto</strong></td><td>Abierto (o cerrado)</td><td>Parcial</td><td>Restos en cavidad</td><td class="ok">AMEU o misoprostol</td></tr>
+      <tr><td><strong>Completo</strong></td><td>Cerrado</td><td>Total</td><td>Cavidad libre</td><td class="ok">Expectante. Evaluar anti-Rho</td></tr>
+      <tr><td><strong>Retenido / frustro</strong></td><td>Cerrado</td><td>No</td><td>Sin LCF, sin expulsión</td><td class="ok">Misoprostol o AMEU</td></tr>
+      <tr><td><strong>Séptico</strong></td><td>Variable</td><td>Variable</td><td>Variable</td><td class="no">ATB + evacuación urgente</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Causa más frecuente de aborto espontáneo</div>
+  <div class="kv"><span class="kv-k">Causa 1°</span><span class="kv-v">Anomalía cromosómica del embrión (trisomía) — 50-60% de los casos</span></div>
+  <div class="kv"><span class="kv-k">Trimestre más frecuente</span><span class="kv-v">1° trimestre (primeras 12 semanas)</span></div>
+  <div class="kv"><span class="kv-k">Prevalencia general</span><span class="kv-v">10-15% de los embarazos reconocidos</span></div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Aborto completo → evacuar igual para "asegurarse"</div>
+    <div class="trap-right">✓ Aborto completo = conducta expectante. No se evacúa.</div>
+    <div class="trap-why">Evacuar una cavidad vacía aumenta riesgo de sinequias (síndrome de Asherman) y perforación. Si la eco muestra cavidad libre y los síntomas cedieron: observar.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ OCI cerrado = siempre amenaza o aborto completo</div>
+    <div class="trap-right">✓ OCI puede cerrarse después de expulsión incompleta</div>
+    <div class="trap-why">El cuello puede estar empezando a cerrarse mientras aún hay restos. El dato de la eco es fundamental para diferenciar completo de incompleto cuando el OCI está cerrado.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Q banco: "OCI abierto + dolor + sangrado" → aborto inminente (amenaza)</div>
+    <div class="trap-right">✓ OCI abierto = inevitable o incompleto, NUNCA amenaza</div>
+    <div class="trap-why">La amenaza de aborto SIEMPRE tiene OCI cerrado. Si el OCI está abierto, el aborto ya no se puede detener: es inevitable o incompleto.</div>
+  </div>
+
+  <div class="sect">Conexiones con otros nodos</div>
+  <div class="conn-wrap">
+    <span class="pill nb2">→ Nodo 2: evacuación (AMEU/misoprostol)</span>
+    <span class="pill nb3">→ Nodo 3: sepsis postaborto</span>
+    <span class="pill nb4">→ Nodo 4: IVE/ILE</span>
+    <span class="pill nb5">→ Nodo 5: anti-Rho (toda pérdida ≥9sem)</span>
+  </div>
+</div>
+
+<!-- NODO 2 -->
+<div id="n2" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb2">Nodo 2</span>
+    <div><div class="node-title">Evacuación uterina: AMEU y misoprostol</div><div class="node-sub">Técnicas de vaciamiento en aborto e IVE/ILE</div></div>
+  </div>
+  <div class="frase">"La técnica de evacuación se elige por edad gestacional y disponibilidad. Misoprostol primero; AMEU cuando hay indicación precisa."</div>
+
+  <div class="sect">Misoprostol — datos de examen</div>
+  <div class="step-list">
+    <div class="step"><div class="snum nb2">1</div><div class="sc"><strong>¿Qué es?</strong><span>Análogo sintético de prostaglandina E1. Estimula contracciones uterinas. Permite evacuación médica (no quirúrgica).</span></div></div>
+    <div class="step"><div class="snum nb2">2</div><div class="sc"><strong>Vías y dosis según EG (protocolo IVE/ILE 2022)</strong><span>≤ 12 sem: misoprostol 800 mcg sublingual o vaginal. 13-20 sem: misoprostol 400 mcg vaginal cada 3-6hs hasta expulsión.</span></div></div>
+    <div class="step"><div class="snum nb2">3</div><div class="sc"><strong>Control a las 48hs</strong><span>Si a las 48hs hay sangrado escaso que cedió → NO asumir éxito. Confirmar con eco. Si no completó → segunda serie de misoprostol (no AMEU de entrada).</span></div></div>
+    <div class="step"><div class="snum nb2">4</div><div class="sc"><strong>¿Cuándo pasar a AMEU?</strong><span>Fracaso de segunda serie médica, hemorragia activa que no cede, o complicación (sepsis). NO es el primer paso.</span></div></div>
+  </div>
+
+  <div class="sect">AMEU — aspiración manual endouterina</div>
+  <div class="grid2" style="margin-bottom:.6rem">
+    <div class="box"><strong>¿Qué es?</strong><span>Técnica de aspiración endouterina con jeringa de vacío manual. No requiere anestesia general. Aplicable hasta ~14 semanas.</span></div>
+    <div class="box"><strong>Ventajas sobre legrado</strong><span>Menos dolor, menos riesgo de perforación, menos sinequias, realizable en primer nivel de atención con capacitación.</span></div>
+  </div>
+  <div class="kv"><span class="kv-k">AMEU vs legrado</span><span class="kv-v">AMEU es el estándar de referencia actual. El legrado instrumental cortante está en desuso por mayor morbilidad.</span></div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ IVE con misoprostol a 48hs con sangrado escaso → AMEU</div>
+    <div class="trap-right">✓ Segunda serie de misoprostol primero</div>
+    <div class="trap-why">Pregunta literal del banco 2016-2025. El sangrado escaso que cede no indica fracaso definitivo. El protocolo indica segunda serie antes de recurrir a instrumentación.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Misoprostol oral/IV</div>
+    <div class="trap-right">✓ Sublingual o vaginal (según EG y protocolo)</div>
+    <div class="trap-why">La vía es parte del dato examinable. Sublingual tiene absorción más rápida; vaginal es preferida en algunos protocolos por menor efecto sistémico.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Ergonovina IM como respuesta ante sangrado post-IVE</div>
+    <div class="trap-right">✓ Segunda serie de misoprostol / AMEU según situación</div>
+    <div class="trap-why">La ergonovina aparece como distractor en el banco. No es la conducta de primera línea ante aborto incompleto post-IVE.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb1">← Nodo 1: tipo de aborto determina si se evacúa</span>
+    <span class="pill nb4">→ Nodo 4: IVE/ILE usa misoprostol como técnica</span>
+    <span class="pill nb3">→ Nodo 3: sepsis requiere evacuación urgente</span>
+  </div>
+</div>
+
+<!-- NODO 3 -->
+<div id="n3" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb3">Nodo 3</span>
+    <div><div class="node-title">Complicaciones: sepsis e infección postaborto</div><div class="node-sub">La causa más frecuente de muerte materna postaborto</div></div>
+  </div>
+  <div class="frase">"La hemorragia llama la atención; la infección mata. Primera causa de muerte materna postaborto: infección."</div>
+
+  <div class="sect">Dato epidemiológico nuclear — el más preguntado</div>
+  <div class="warn">Causa más frecuente de muerte materna postaborto = INFECCIÓN (no hemorragia). Este dato aparece directamente en el banco histórico y es una trampa clásica por ser contraintuitivo.</div>
+
+  <div class="sect">Sepsis postaborto — clínica y conducta</div>
+  <div class="step-list">
+    <div class="step"><div class="snum nb3">1</div><div class="sc"><strong>Clínica</strong><span>Fiebre ≥38°C, dolor hipogástrico, descarga vaginal fétida, foco uterino a la palpación. Antecedente de aborto reciente (espontáneo o provocado).</span></div></div>
+    <div class="step"><div class="snum nb3">2</div><div class="sc"><strong>Gérmenes</strong><span>Infección polimicrobiana (enterobacterias + anaerobios). E. coli más frecuente. Clostridium en contexto de aborto inseguro.</span></div></div>
+    <div class="step"><div class="snum nb3">3</div><div class="sc"><strong>Conducta: antibióticos + evacuación del foco</strong><span>NO esperar mejoría con antibióticos solos. El foco (útero con restos infectados) debe evacuarse. Esquema: ampicilina + gentamicina + metronidazol.</span></div></div>
+    <div class="step"><div class="snum nb3">4</div><div class="sc"><strong>Complicación más grave</strong><span>Síndrome de Mondor: sepsis + shock + CID (coagulación intravascular diseminada). Alta mortalidad. Requiere UCI + soporte máximo.</span></div></div>
+  </div>
+
+  <div class="sect">Aborto inseguro — datos de salud pública</div>
+  <div class="grid2">
+    <div class="box"><strong>Contexto Argentina pre-legalización</strong><span>El aborto clandestino fue la primera causa de muerte materna evitable durante décadas. La legalización de la IVE (Ley 27.610) redujo los abortos inseguros.</span></div>
+    <div class="box"><strong>Pirámide de complicaciones</strong><span>Hemorragia → infección → sepsis → CID. La hemorragia es más frecuente; la infección es más letal. La sepsis no corregida lleva al shock.</span></div>
+  </div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Primera causa de muerte materna postaborto = hemorragia</div>
+    <div class="trap-right">✓ Infección</div>
+    <div class="trap-why">Pregunta directa en el banco histórico. La lógica es que la hemorragia tiene tratamiento más inmediato y visible; la infección puede demorarse en reconocerse y escalar a sepsis letal.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ ATB solos son suficientes en aborto séptico</div>
+    <div class="trap-right">✓ ATB + evacuación del foco siempre</div>
+    <div class="trap-why">El útero con restos infectados es el foco primario. Sin evacuación, los ATB no pueden erradicar la infección. Principio quirúrgico: "drenar el foco".</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb1">← Nodo 1: aborto séptico es un tipo de aborto</span>
+    <span class="pill nb2">← Nodo 2: evacuación es parte del tratamiento</span>
+    <span class="pill nb4">← Nodo 4: IVE/ILE reduce aborto inseguro = reduce infección</span>
+  </div>
+</div>
+
+<!-- NODO 4 -->
+<div id="n4" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb4">Nodo 4</span>
+    <div><div class="node-title">IVE/ILE — protocolo MSAL 2022</div><div class="node-sub">Ley 27.610 — Acceso a la interrupción voluntaria y legal del embarazo</div></div>
+  </div>
+  <div class="frase">"La IVE es un derecho legal hasta las 14 semanas. La ILE no tiene límite de EG. Ninguna puede ser negada."</div>
+
+  <div class="sect">Diferencia fundamental — dato de examen</div>
+  <div class="grid2" style="margin-bottom:.6rem">
+    <div class="box"><strong>IVE — interrupción voluntaria</strong><span>Hasta 14 semanas de gestación. Sin causa requerida. Derecho universal por voluntad de la persona gestante.</span></div>
+    <div class="box"><strong>ILE — interrupción legal</strong><span>Sin límite de EG. Causales: (1) violación, (2) riesgo para la salud/vida de la persona gestante, (3) malformación fetal incompatible con la vida extrauterina.</span></div>
+  </div>
+
+  <div class="sect">Técnica según edad gestacional</div>
+  <table class="tbl">
+    <thead><tr><th>EG</th><th>Técnica de elección</th><th>Misoprostol</th></tr></thead>
+    <tbody>
+      <tr><td>≤ 12 sem</td><td>Misoprostol sublingual/vaginal o AMEU</td><td>800 mcg sublingual o vaginal</td></tr>
+      <tr><td>13–20 sem</td><td>Misoprostol vaginal + eventual AMEU</td><td>400 mcg vaginal c/3-6h</td></tr>
+      <tr><td>&gt; 20 sem (ILE)</td><td>Centro de alta complejidad</td><td>Según protocolo específico</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Objeción de conciencia — reglas del examen</div>
+  <div class="step-list">
+    <div class="step"><div class="snum nb4">1</div><div class="sc"><strong>El profesional puede objetar su participación personal</strong><span>Solo objeción individual (nunca institucional). El estado y las instituciones no pueden objetar.</span></div></div>
+    <div class="step"><div class="snum nb4">2</div><div class="sc"><strong>La objeción NO exime de derivar</strong><span>El objetor debe derivar a otro profesional o institución que garantice la atención sin demora.</span></div></div>
+    <div class="step"><div class="snum nb4">3</div><div class="sc"><strong>Urgencia = sin objeción</strong><span>Si la vida o salud de la persona está en riesgo, la objeción no aplica. Se debe atender.</span></div></div>
+  </div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ La IVE está permitida hasta las 12 semanas</div>
+    <div class="trap-right">✓ Hasta las 14 semanas (Ley 27.610)</div>
+    <div class="trap-why">El corte de 12 semanas es el de muchos países o el que se recuerda incorrectamente. En Argentina desde 2021: 14 semanas para IVE.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ La ILE solo es para víctimas de violación</div>
+    <div class="trap-right">✓ Tres causales: violación + riesgo salud/vida + malformación fetal</div>
+    <div class="trap-why">El examen puede presentar un caso con riesgo de salud mental o física materna y preguntar si hay derecho a ILE: sí, en cualquier EG.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ La institución puede negarse por objeción de conciencia</div>
+    <div class="trap-right">✓ La objeción es solo individual, nunca institucional</div>
+    <div class="trap-why">Las instituciones del sistema de salud (públicas o privadas) no pueden negar la IVE/ILE. Solo el profesional individual puede objetar, y siempre debe derivar.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Control a 48hs con sangrado escaso → AMEU</div>
+    <div class="trap-right">✓ Segunda serie de misoprostol</div>
+    <div class="trap-why">Ver Nodo 2. Esto aparece específicamente en preguntas sobre IVE con misoprostol sublingual.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb2">← Nodo 2: técnica de evacuación</span>
+    <span class="pill nb5">→ Nodo 5: anti-Rho en IVE si ≥9 sem</span>
+    <span class="pill nb3">← Nodo 3: IVE segura previene sepsis</span>
+  </div>
+</div>
+
+<!-- NODO 5 -->
+<div id="n5" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb5">Nodo 5</span>
+    <div><div class="node-title">Inmunoglobulina anti-Rho (anti-D)</div><div class="node-sub">Profilaxis de isoinmunización Rh en la primera mitad del embarazo</div></div>
+  </div>
+  <div class="frase">"Paciente Rh negativa + cualquier pérdida ≥ 9 semanas = inmunoglobulina anti-Rho, antes o durante el procedimiento."</div>
+
+  <div class="sect">Cuándo indicar — regla del banco</div>
+  <div class="kv"><span class="kv-k">Corte de EG</span><span class="kv-v">≥ 9 semanas (protocolo MSAL/IVE-ILE 2022). No se indica antes de las 9 semanas.</span></div>
+  <div class="kv"><span class="kv-k">Dosis</span><span class="kv-v">300 mcg IM (dosis estándar en Argentina)</span></div>
+  <div class="kv"><span class="kv-k">Timing</span><span class="kv-v">Antes o durante el procedimiento de evacuación. No 72hs post (eso es para el 3er trimestre).</span></div>
+  <div class="kv"><span class="kv-k">¿Siempre que sea Rh negativa?</span><span class="kv-v">Sí, independientemente de embarazos previos. No hay "inmunidad" por haberla recibido antes.</span></div>
+  <div class="kv"><span class="kv-k">¿En IVE también?</span><span class="kv-v">Sí. Toda pérdida/procedimiento ≥ 9 semanas en Rh negativa.</span></div>
+
+  <div class="sect">Fisiopatología núcleo</div>
+  <div class="box" style="margin-bottom:.6rem"><strong>¿Por qué importa?</strong><span>Si la madre es Rh negativa y el feto es Rh positivo (herencia paterna), la exposición a glóbulos rojos fetales genera anticuerpos anti-D maternos. En el siguiente embarazo Rh+, esos anticuerpos cruzan la placenta y destruyen los GR fetales → enfermedad hemolítica perinatal. La inmunoglobulina previene la sensibilización.</span></div>
+
+  <div class="sect">Trampas de examen (todas del banco histórico)</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ EG &lt; 9 semanas = no indicar</div>
+    <div class="trap-right">✓ El corte es 9 semanas, no 12</div>
+    <div class="trap-why">La opción A del banco dice "no administrar por ser &lt;12 semanas" → incorrecta. El corte argentino según protocolo IVE/ILE 2022 es 9 semanas.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Ya recibió anti-Rho en embarazos previos → no indicar</div>
+    <div class="trap-right">✓ Cada evento requiere nueva profilaxis</div>
+    <div class="trap-why">La inmunoglobulina es de vida media corta (~3 semanas). No confiere protección para el siguiente evento. Cada pérdida/parto requiere nueva dosis.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Indicar siempre independientemente de la EG</div>
+    <div class="trap-right">✓ Solo si EG ≥ 9 semanas</div>
+    <div class="trap-why">Antes de las 9 semanas, los glóbulos rojos fetales no expresan suficiente antígeno Rh como para generar sensibilización significativa.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Administrar 72hs después del procedimiento (como en 3er trimestre)</div>
+    <div class="trap-right">✓ Antes o durante el procedimiento</div>
+    <div class="trap-why">En la primera mitad, el momento óptimo es perioperatorio (antes o durante). El esquema de 72hs aplica a la profilaxis del 3er trimestre (28 semanas) y postparto.</span></div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb1">← Nodo 1: todo tipo de aborto si ≥9sem + Rh-</span>
+    <span class="pill nb4">← Nodo 4: IVE/ILE en Rh negativa</span>
+    <span class="pill nb7">← Nodo 7: ectópico en Rh negativa</span>
+  </div>
+</div>
+
+<!-- NODO 6 -->
+<div id="n6" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb6">Nodo 6</span>
+    <div><div class="node-title">β-HCG como herramienta diagnóstica</div><div class="node-sub">Interpretación, zona discriminatoria y seguimiento</div></div>
+  </div>
+  <div class="frase">"La β-HCG cuantitativa orienta el diagnóstico y el seguimiento. Sola no diagnóstica; en conjunto con la eco, es decisiva."</div>
+
+  <div class="sect">Usos de la β-HCG en el examen</div>
+  <table class="tbl">
+    <thead><tr><th>Uso</th><th>Valor clave</th><th>Interpretación</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Confirmación de embarazo</strong></td><td>&gt; 5 mUI/mL</td><td>Embarazo presente (no indica localización)</td></tr>
+      <tr><td><strong>Zona discriminatoria</strong></td><td>&gt; 1500-2000 mUI/mL</td><td>Sin saco en eco TV → ectópico hasta demostrar lo contrario</td></tr>
+      <tr><td><strong>Embarazo viable</strong></td><td>Duplica cada 48hs</td><td>Buena progresión → embarazo intrauterino evolutivo probable</td></tr>
+      <tr><td><strong>Aborto en evolución</strong></td><td>Caída &gt;50% en 48hs</td><td>Compatible con aborto espontáneo en curso</td></tr>
+      <tr><td><strong>Seguimiento post-MTX</strong></td><td>Día 4 vs día 7</td><td>Caída ≥15% = éxito MTX. Si &lt;15% → 2ª dosis o cirugía</td></tr>
+      <tr><td><strong>ETG / Mola</strong></td><td>&gt;100.000 mUI/mL (frecuente)</td><td>HCG muy alta + eco "tormenta de nieve" = mola hasta demostrar lo contrario</td></tr>
+      <tr><td><strong>Seguimiento post-evacuación molar</strong></td><td>Negativización</td><td>Monitoreo hasta &lt;5 mUI/mL durante 2 años (mola completa)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Concepto de zona discriminatoria</div>
+  <div class="hl">Con β-HCG &gt; 1500-2000 mUI/mL, la ecografía transvaginal debe poder visualizar el saco intrauterino si el embarazo es intrauterino viable. Si a ese nivel de HCG no se ve saco → sospecha fuerte de ectópico. Si se ve → embarazo intrauterino (descarta ectópico con alta probabilidad).</div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ β-HCG alta descarta ectópico</div>
+    <div class="trap-right">✓ La HCG puede ser alta en ectópico también</div>
+    <div class="trap-why">El ectópico produce β-HCG, aunque en general con curva de ascenso más lenta. Una HCG alta sin saco intrauterino es el hallazgo más preocupante.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ En ectópico: "cuál es el estudio de mayor certeza diagnóstica" → β-HCG</div>
+    <div class="trap-right">✓ Laparoscopia (certeza diagnóstica definitiva) o eco TV + β-HCG (primera aproximación)</div>
+    <div class="trap-why">Pregunta literal del banco (Q87): mujer 8 semanas amenorrea + dolor difuso 72hs → mayor certeza diagnóstica. La laparoscopia es la respuesta si hay dudas diagnósticas persistentes.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb7">→ Nodo 7: zona discriminatoria en ectópico</span>
+    <span class="pill nb8">→ Nodo 8: seguimiento post-MTX</span>
+    <span class="pill nb9">→ Nodo 9: HCG muy alta = ETG</span>
+  </div>
+</div>
+
+<!-- NODO 7 -->
+<div id="n7" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb7">Nodo 7</span>
+    <div><div class="node-title">Embarazo ectópico — diagnóstico</div><div class="node-sub">Implantación fuera de la cavidad uterina</div></div>
+  </div>
+  <div class="frase">"Amenorrea + dolor + sangrado sin saco intrauterino = ectópico hasta demostrar lo contrario. El dolor puede preceder al sangrado."</div>
+
+  <div class="sect">Sitios de implantación — dato de examen</div>
+  <table class="tbl">
+    <thead><tr><th>Sitio</th><th>Frecuencia</th><th>Particularidad</th></tr></thead>
+    <tbody>
+      <tr><td><strong class="ok">Ampular (tuba)</strong></td><td class="ok"><strong>70% — más frecuente</strong></td><td>Mayor prevalencia; menor riesgo de rotura precoz</td></tr>
+      <tr><td>Ístmico (tuba)</td><td>12%</td><td>Rotura más precoz por lumen estrecho. Trampa: parece más frecuente</td></tr>
+      <tr><td>Intersticial / cornual</td><td>2-4%</td><td>Rotura tardía pero muy grave (hemorragia masiva)</td></tr>
+      <tr><td>Ovárico</td><td>3%</td><td>Diagnóstico difícil; puede confundirse con quiste</td></tr>
+      <tr><td>Abdominal</td><td>&lt;1%</td><td>Rarísimo; puede llegar al 2° trimestre</td></tr>
+      <tr><td>Cervical</td><td>&lt;1%</td><td>Hemorragia masiva como presentación; difícil tratamiento</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Clínica — la tríada clásica y sus variaciones</div>
+  <div class="grid3" style="margin-bottom:.6rem">
+    <div class="box"><strong>Amenorrea</strong><span>6-8 semanas de amenorrea típicamente. Puede ser poco notable si ciclos irregulares.</span></div>
+    <div class="box"><strong>Dolor abdominal</strong><span>Localizado en FII o FID, o difuso si hay hemoperitoneo. Puede ser leve hasta la rotura.</span></div>
+    <div class="box"><strong>Sangrado vaginal</strong><span>Variable. Puede ser escaso o incluso ausente. No es el síntoma más confiable.</span></div>
+  </div>
+  <div class="warn">Signo de Cullen o de Douglas (dolor a la palpación en fondo de saco posterior) en rotura con hemoperitoneo = urgencia quirúrgica inmediata.</div>
+
+  <div class="sect">Diagnóstico — pasos</div>
+  <div class="kv"><span class="kv-k">Paso 1</span><span class="kv-v">Test de embarazo positivo (β-HCG)</span></div>
+  <div class="kv"><span class="kv-k">Paso 2</span><span class="kv-v">Ecografía transvaginal: ausencia de saco intrauterino + masa anexial</span></div>
+  <div class="kv"><span class="kv-k">Paso 3</span><span class="kv-v">β-HCG cuantitativa: si &gt;1500 sin saco → ectópico hasta demostrar lo contrario</span></div>
+  <div class="kv"><span class="kv-k">Paso 4 (dudas)</span><span class="kv-v">Laparoscopia: mayor certeza diagnóstica (y también terapéutica)</span></div>
+
+  <div class="sect">Factores de riesgo — orientan sospecha</div>
+  <div class="grid2">
+    <div class="box"><strong>Más relevantes</strong><span>EPI previa, cirugía tubárica previa, DIU colocado (si embarazo ocurre), ectópico previo, uso de técnicas de reproducción asistida.</span></div>
+    <div class="box"><strong>Dato del banco (Q79)</strong><span>Mujer con DIU correctamente situado + amenorrea 2 meses + dolor → primera conducta: solicitar β-HCG cuantitativa (no retirar el DIU, no laparoscopia de entrada).</span></div>
+  </div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Sitio más frecuente: ístmico</div>
+    <div class="trap-right">✓ Ampular (70%)</div>
+    <div class="trap-why">El ítsmico es el que tiene mayor riesgo de rotura precoz (confusión frecuencia ≠ gravedad). En el banco, la pregunta es directa: más frecuente = ampular.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ DIU colocado descarta ectópico</div>
+    <div class="trap-right">✓ El DIU previene embarazo intrauterino más que ectópico</div>
+    <div class="trap-why">Si una mujer con DIU queda embarazada, el riesgo relativo de ectópico es mayor que en la población general.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb6">← Nodo 6: β-HCG zona discriminatoria</span>
+    <span class="pill nb8">→ Nodo 8: tratamiento según estabilidad</span>
+    <span class="pill nb5">→ Nodo 5: anti-Rho si Rh negativa</span>
+  </div>
+</div>
+
+<!-- NODO 8 -->
+<div id="n8" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb8">Nodo 8</span>
+    <div><div class="node-title">Embarazo ectópico — tratamiento</div><div class="node-sub">La hemodinamia decide cuándo y cómo operar</div></div>
+  </div>
+  <div class="frase">"Inestable → salpingectomía laparoscópica ahora. Estable + criterios → MTX 50mg/m². Sin criterios → cirugía electiva."</div>
+
+  <div class="sect">Algoritmo de decisión terapéutica</div>
+  <div class="step-list">
+    <div class="algo-head">Variante 1: paciente inestable hemodinámicamente</div>
+    <div class="step"><div class="snum nb8">→</div><div class="sc"><strong>Salpingectomía laparoscópica de urgencia</strong><span>No esperar más estudios. Si laparoscopia no disponible: laparotomía. MTX contraindicado (inestable).</span></div></div>
+  </div>
+  <div class="step-list" style="margin-top:.5rem">
+    <div class="algo-head">Variante 2: paciente estable con criterios para MTX</div>
+    <div class="step"><div class="snum nb8">✓</div><div class="sc"><strong>Criterios: masa &lt;4cm + HCG &lt;5000 + sin LCF + sin hemorragia activa</strong><span>Metotrexato 50 mg/m² de superficie corporal IM dosis única.</span></div></div>
+    <div class="step"><div class="snum nb8">→</div><div class="sc"><strong>Seguimiento con β-HCG día 4 y día 7</strong><span>Si caída ≥15% entre día 4 y 7 = éxito. Si caída &lt;15% = segunda dosis de MTX o cirugía.</span></div></div>
+  </div>
+  <div class="step-list" style="margin-top:.5rem">
+    <div class="algo-head">Variante 3: estable pero sin criterios para MTX</div>
+    <div class="step"><div class="snum nb8">→</div><div class="sc"><strong>Salpingectomía laparoscópica electiva</strong><span>Masa grande (&gt;4cm) o HCG alta o LCF presente. Preservar ovario salvo compromiso ovárico directo.</span></div></div>
+  </div>
+
+  <div class="sect">Salpingectomía vs anexectomía — distinción fundamental</div>
+  <table class="tbl">
+    <thead><tr><th>Cirugía</th><th>¿Qué se remueve?</th><th>¿Cuándo?</th></tr></thead>
+    <tbody>
+      <tr><td><strong class="ok">Salpingectomía</strong></td><td>Solo la tuba de Falopio</td><td class="ok">Estándar en ectópico. Preserva ovario.</td></tr>
+      <tr><td><strong>Salpingostomía</strong></td><td>Se incide la tuba y extrae el embarazo (conserva la tuba)</td><td>Solo en casos seleccionados con deseo de fertilidad y tuba contralateral comprometida</td></tr>
+      <tr><td class="no"><strong>Anexectomía</strong></td><td>Tuba + ovario</td><td class="no">Solo si hay compromiso ovárico directo. NO es la conducta estándar.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Contraindicaciones del MTX</div>
+  <div class="grid2">
+    <div class="box"><strong>Absolutas</strong><span>Inestabilidad hemodinámica. LCF positivo. Masa &gt;4cm. HCG &gt;5000 mUI/mL. Hepatopatía o nefropatía. Inmunosupresión.</span></div>
+    <div class="box"><strong>Trampa del banco</strong><span>MTX a dosis incorrectas: 200mg, 600mg/m², o por vía IV → siempre incorrectas. La dosis es 50 mg/m² de superficie corporal, IM, dosis única.</span></div>
+  </div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Ectópico inestable → MTX</div>
+    <div class="trap-right">✓ Salpingectomía laparoscópica (cirugía inmediata)</div>
+    <div class="trap-why">La trampa más repetida del banco. MTX es el atractivo porque "es el tratamiento del ectópico", pero solo aplica en estable con criterios específicos.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Ectópico quirúrgico → anexectomía laparoscópica</div>
+    <div class="trap-right">✓ Salpingectomía laparoscópica</div>
+    <div class="trap-why">Aparece literalmente en el banco. El ovario se preserva. La anexectomía implica retirar también el ovario, lo que reduce la reserva ovárica y solo se justifica con compromiso ovárico.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Ectópico inestable sin laparoscopio → esperar para cirugía laparoscópica</div>
+    <div class="trap-right">✓ Laparotomía si laparoscopia no disponible</div>
+    <div class="trap-why">La laparoscopia es de elección por menor morbilidad, pero la urgencia de la inestabilidad no admite espera. La laparotomía es la alternativa válida.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb7">← Nodo 7: diagnóstico</span>
+    <span class="pill nb6">← Nodo 6: HCG para criterios MTX y seguimiento</span>
+    <span class="pill nb5">→ Nodo 5: anti-Rho en Rh negativa post-cirugía</span>
+  </div>
+</div>
+
+<!-- NODO 9 -->
+<div id="n9" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb9">Nodo 9</span>
+    <div><div class="node-title">Enfermedad trofoblástica gestacional (ETG)</div><div class="node-sub">Mola hidatiforme y riesgo de transformación maligna</div></div>
+  </div>
+  <div class="frase">"β-HCG muy alta + útero mayor que EG + eco en tormenta de nieve = mola. La HCG post-evacuación es el marcador de seguimiento."</div>
+
+  <div class="sect">Clasificación</div>
+  <table class="tbl">
+    <thead><tr><th>Tipo</th><th>Cromosomas</th><th>Embrión</th><th>Riesgo malignización</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mola completa</strong></td><td>46XX (todo paterno)</td><td>Ausente</td><td>15-20%</td></tr>
+      <tr><td><strong>Mola parcial</strong></td><td>69XXY (triploide)</td><td>Presente (anormal)</td><td>1-5%</td></tr>
+      <tr><td><strong>Coriocarcinoma</strong></td><td>Variable</td><td>Ausente</td><td>100% (ya es maligno)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Presentación clínica</div>
+  <div class="grid2" style="margin-bottom:.6rem">
+    <div class="box"><strong>Síntomas característicos</strong><span>Metrorragia (a veces con vesículas). Hiperemesis gravídica intensa (por HCG muy alta que estimula receptores TSH). Útero grande para EG. No se ausculta LCF.</span></div>
+    <div class="box"><strong>Quistes teca-luteínicos</strong><span>Ovarios aumentados de tamaño (quistes bilaterales) por estimulación de HCG elevada. Pueden causar dolor pélvico. Se resuelven tras evacuación y caída de HCG.</span></div>
+  </div>
+
+  <div class="sect">Diagnóstico</div>
+  <div class="kv"><span class="kv-k">Eco TV</span><span class="kv-v">"Tormenta de nieve" o imagen en panal/racimo de uvas. Clásico de mola completa.</span></div>
+  <div class="kv"><span class="kv-k">β-HCG</span><span class="kv-v">Frecuentemente &gt;100.000 mUI/mL. Extremadamente elevada para la EG.</span></div>
+  <div class="kv"><span class="kv-k">Confirmación</span><span class="kv-v">Histopatología del material evacuado (diagnóstico definitivo).</span></div>
+
+  <div class="sect">Tratamiento y seguimiento</div>
+  <div class="step-list">
+    <div class="step"><div class="snum nb9">1</div><div class="sc"><strong>Evacuación uterina</strong><span>AMEU (aspiración) de elección. Legrado si no disponible. NO quimioterapia inicial (solo post-diagnóstico de malignidad).</span></div></div>
+    <div class="step"><div class="snum nb9">2</div><div class="sc"><strong>Seguimiento con β-HCG semanal</strong><span>Hasta negativización (&lt;5 mUI/mL) por 3 semanas consecutivas. Luego mensual hasta completar 2 años (mola completa).</span></div></div>
+    <div class="step"><div class="snum nb9">3</div><div class="sc"><strong>Anticonceptivos durante el seguimiento</strong><span>Evitar nuevo embarazo hasta completar seguimiento (no confundir ascenso de HCG por embarazo con recidiva molar).</span></div></div>
+    <div class="step"><div class="snum nb9">4</div><div class="sc"><strong>Si HCG no desciende o asciende post-evacuación</strong><span>Sospecha de neoplasia trofoblástica gestacional (NTG). Iniciar quimioterapia (metotrexato o actinomicina-D según riesgo).</span></div></div>
+  </div>
+
+  <div class="sect">Trampas de examen</div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ Mola → quimioterapia inmediata</div>
+    <div class="trap-right">✓ Evacuación (AMEU) primero; quimio solo si NTG confirmada</div>
+    <div class="trap-why">La QT no es el primer paso. Primero evacuar, luego monitorear con HCG. Si la HCG no desciende adecuadamente → entonces QT.</div>
+  </div>
+  <div class="trap-row">
+    <div class="trap-wrong">✗ HCG muy alta en embarazo normal</div>
+    <div class="trap-right">✓ HCG desproporcionadamente alta para EG → pensar en mola o embarazo múltiple</div>
+    <div class="trap-why">El nivel de HCG debe interpretarse siempre en función de la EG. Una HCG de 200.000 a las 8 semanas no es "normal" y obliga a buscar ETG o gemelaridad.</div>
+  </div>
+
+  <div class="sect">Conexiones</div>
+  <div class="conn-wrap">
+    <span class="pill nb6">← Nodo 6: β-HCG como marcador de seguimiento</span>
+    <span class="pill nb10">→ Nodo 10: incluida en diagnóstico diferencial del sangrado</span>
+  </div>
+</div>
+
+<!-- NODO 10 -->
+<div id="n10" class="node-panel">
+  <div class="node-header">
+    <span class="node-badge nb10">Nodo 10</span>
+    <div><div class="node-title">Algoritmo integrador — diagnóstico diferencial</div><div class="node-sub">Árbol de decisión completo para sangrado en la primera mitad</div></div>
+  </div>
+  <div class="frase">"Tres preguntas decisoras en orden: (1) ¿saco intrauterino? (2) ¿estabilidad hemodinámica? (3) ¿estado del cuello?"</div>
+
+  <div class="sect">Árbol de decisión — 3 preguntas en orden estricto</div>
+  <div class="step-list">
+    <div class="algo-head">Paciente con sangrado vaginal en primera mitad del embarazo</div>
+    <div class="step"><div class="snum nb10">?1</div><div class="sc"><strong>¿Hay saco gestacional intrauterino en la eco TV?</strong><span>NO → Ectópico (Nodo 7) o ETG (Nodo 9). Solicitar β-HCG urgente. SÍ → continuar a pregunta 2.</span></div></div>
+    <div class="step"><div class="snum nb10">?2</div><div class="sc"><strong>¿Está hemodinámicamente inestable? (taquicardia, hipotensión, lipotimia)</strong><span>SÍ → Cirugía de urgencia. Ectópico roto hasta demostrar lo contrario. SÍ + SACO UTERINO → pensar otra causa de shock. NO → continuar a pregunta 3.</span></div></div>
+    <div class="step"><div class="snum nb10">?3</div><div class="sc"><strong>¿Cuál es el estado del OCI? (para aborto)</strong><span>CERRADO + saco íntegro → amenaza (expectante). CERRADO + material expulsado → completo (expectante). ABIERTO → inevitable o incompleto (evacuar).</span></div></div>
+    <div class="step"><div class="snum nb10">β</div><div class="sc"><strong>En todos los casos: β-HCG orienta diagnóstico y seguimiento</strong><span>Desproporcionadamente alta → ETG. Zona discriminatoria sin saco → ectópico. Seguimiento post-MTX o post-evacuación molar.</span></div></div>
+    <div class="step"><div class="snum nb10">Rh</div><div class="sc"><strong>En todos los casos: evaluar anti-Rho</strong><span>Si Rh negativa + EG ≥ 9 semanas + cualquier pérdida/procedimiento → inmunoglobulina anti-Rho antes o durante.</span></div></div>
+  </div>
+
+  <div class="sect">Mapa de nodos — cómo se conecta todo</div>
+  <table class="tbl">
+    <thead><tr><th>Si el examen presenta…</th><th>Nodo principal</th><th>Nodos conectados</th></tr></thead>
+    <tbody>
+      <tr><td>Sangrado + OCI cerrado + saco íntegro</td><td>N1 amenaza</td><td>N5 anti-Rho</td></tr>
+      <tr><td>Sangrado + OCI abierto + restos</td><td>N1 incompleto → N2 AMEU</td><td>N3 (si fiebre), N5</td></tr>
+      <tr><td>Material expulsado + cavidad libre</td><td>N1 completo → expectante</td><td>N5 si Rh- ≥9sem</td></tr>
+      <tr><td>Dolor + sin saco + estable</td><td>N7 diagnóstico ectópico</td><td>N6 β-HCG, N8 MTX</td></tr>
+      <tr><td>Dolor + sin saco + inestable</td><td>N8 cirugía urgente</td><td>N5 si Rh-</td></tr>
+      <tr><td>HCG muy alta + tormenta de nieve</td><td>N9 ETG/mola</td><td>N6 seguimiento HCG</td></tr>
+      <tr><td>IVE solicitada hasta 14sem</td><td>N4 protocolo IVE</td><td>N2 técnica, N5 anti-Rho</td></tr>
+      <tr><td>Fiebre + aborto reciente</td><td>N3 sepsis</td><td>N2 evacuación urgente</td></tr>
+      <tr><td>Misoprostol 48hs + sangrado escaso</td><td>N2 segunda serie</td><td>N4 IVE/protocolo</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sect">Frases compresivas de todo el vault — para recordar</div>
+  <div class="kv"><span class="kv-k">Nodo 1</span><span class="kv-v">El OCI decide el tipo. El tipo decide la conducta.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 2</span><span class="kv-v">48hs misoprostol con sangrado escaso = segunda serie, no AMEU.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 3</span><span class="kv-v">Muerte postaborto = infección, no hemorragia.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 4</span><span class="kv-v">IVE hasta 14sem. ILE sin límite. Objeción solo individual, siempre derivar.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 5</span><span class="kv-v">Rh- + ≥9 sem = anti-Rho antes o durante. No 72hs post.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 6</span><span class="kv-v">HCG &gt;1500 sin saco = ectópico. Duplica en 48hs = viable.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 7</span><span class="kv-v">Sitio más frecuente = ampular. Sin saco + dolor = ectópico.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 8</span><span class="kv-v">Inestable = salpingectomía laparoscópica. Estable + criterios = MTX 50mg/m².</span></div>
+  <div class="kv"><span class="kv-k">Nodo 9</span><span class="kv-v">HCG muy alta + tormenta de nieve = mola. Evacuar, no QT. Seguir HCG.</span></div>
+  <div class="kv"><span class="kv-k">Nodo 10</span><span class="kv-v">Saco → OCI → estabilidad. En ese orden.</span></div>
+</div>
+
+</div><!-- .main -->
+</div><!-- .root -->
+
+<script>
+function goTo(n,btn){
+  document.querySelectorAll('.node-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nodo-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('n'+n).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.main').scrollTop=0;
+}
+</script>
