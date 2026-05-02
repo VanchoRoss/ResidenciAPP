@@ -2853,6 +2853,148 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         + '<div id="learningFeedbackBody_'+id+'" class="hidden">'+raw+'</div>'
         + '</section>';
     };
+
+    /* === ResidenciAPP v34 Premium Clean Dashboard ===
+       Capa de UX: dashboard limpio, semáforo por área con cobertura y auditoría del banco.
+       Respeta IDs, localStorage y todas las funciones existentes.
+    */
+    const V34_EXPECTED_TOTALS = { clinica:457, cirugia:63, pediatria:200, gineco_obstetricia:186, salud_publica:68 };
+    const V34_EXPECTED_TOTAL = 974;
+    const V34_EXPECTED_SPRINTS = 36;
+    function v34Pct(num, den){ return den ? Math.round((num/den)*100) : 0; }
+    function v34Status(acc, answered, total){
+      if(!answered) return 'empty';
+      const coverage = v34Pct(answered,total);
+      if(coverage < 12) return 'amber';
+      if(acc >= 85) return 'green';
+      if(acc >= 60) return 'amber';
+      return 'rose';
+    }
+    function v34StatusText(acc, answered, total){
+      if(!answered) return 'Pendiente';
+      const coverage = v34Pct(answered,total);
+      if(coverage < 12) return 'Muestra inicial';
+      if(acc >= 85) return 'Buen dominio';
+      if(acc >= 60) return 'Revisar errores';
+      return 'Prioridad alta';
+    }
+    function v34Bar(status){
+      return status==='green' ? 'bg-emerald-500' : status==='amber' ? 'bg-amber-500' : status==='rose' ? 'bg-rose-500' : 'bg-slate-300 dark:bg-slate-700';
+    }
+    function v34AreaCard(a){
+      const coverage = v34Pct(a.answered, a.total);
+      const status = v34Status(a.acc, a.answered, a.total);
+      const bar = v34Bar(status);
+      return '<article class="v34-area-card rounded-[1.45rem] border border-slate-200 p-4 dark:border-slate-800" data-status="'+status+'">'
+        + '<div class="flex items-start justify-between gap-3"><div><p class="text-[10px] font-black uppercase tracking-[.16em] text-slate-500 dark:text-slate-400">'+v34StatusText(a.acc,a.answered,a.total)+'</p><h4 class="mt-1 font-display text-lg font-extrabold leading-tight">'+esc(a.label)+'</h4></div><div class="text-right"><p class="font-display text-3xl font-extrabold">'+(a.answered?a.acc+'%':'—')+'</p><p class="text-[10px] font-black uppercase tracking-[.12em] text-slate-400">rend.</p></div></div>'
+        + '<div class="mt-4 space-y-3">'
+        + '<div class="v34-progress-row"><div class="flex justify-between text-[11px] font-black uppercase tracking-[.12em] text-slate-500 dark:text-slate-400"><span>Rendimiento</span><span>'+a.correct+'/'+a.answered+'</span></div><div class="v34-progress-track"><div class="v34-progress-fill '+bar+'" style="width:'+(a.answered?a.acc:0)+'%"></div></div></div>'
+        + '<div class="v34-progress-row"><div class="flex justify-between text-[11px] font-black uppercase tracking-[.12em] text-slate-500 dark:text-slate-400"><span>Cobertura</span><span>'+a.answered+'/'+a.total+'</span></div><div class="v34-progress-track"><div class="v34-progress-fill bg-medical-600" style="width:'+coverage+'%"></div></div></div>'
+        + '</div></article>';
+    }
+    function v34NextSprint(){
+      const scored = SPRINTS.map(sp=>({sp, st:sprintStats(sp)})).filter(x=>x.st.answered < x.sp.total);
+      scored.sort((a,b)=>{
+        const aStarted = a.st.answered>0 ? 0 : 1;
+        const bStarted = b.st.answered>0 ? 0 : 1;
+        if(aStarted !== bStarted) return aStarted-bStarted;
+        if(a.st.pct !== b.st.pct) return b.st.pct-a.st.pct;
+        return a.sp.total-b.sp.total;
+      });
+      return scored[0]?.sp || SPRINTS[0];
+    }
+    function renderV34ContinueCard(){
+      const box = $('#v34ContinueCard'); if(!box) return;
+      const active = state.session && (state.session.questions||[]).length;
+      const sp = v34NextSprint();
+      const globalAnswered = globalAnsweredQuestions().length;
+      const globalCoverage = v34Pct(globalAnswered, QUESTIONS.length);
+      if(active){
+        const total = state.session.questions.length;
+        const idx = Math.min((state.session.idx||0)+1, total);
+        const pct = v34Pct(idx-1,total);
+        box.innerHTML = '<div class="relative z-[1]"><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Continuar donde dejaste</p><h3 class="mt-1 font-display text-2xl font-extrabold">'+esc(state.session.title||'Sesión activa')+'</h3><p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-400">'+esc(state.session.meta||'Entrenamiento en curso')+'</p><div class="mt-5 rounded-3xl bg-slate-50 p-4 dark:bg-slate-950/60"><div class="flex items-center justify-between text-xs font-black uppercase tracking-[.14em] text-slate-500"><span>Pregunta '+idx+' de '+total+'</span><span>'+pct+'%</span></div><div class="mt-2 h-2.5 overflow-hidden rounded-full bg-white dark:bg-slate-800"><div class="h-full rounded-full bg-medical-600" style="width:'+pct+'%"></div></div></div><div class="mt-5 flex flex-wrap gap-2"><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="resumeOrStart()">Retomar sesión</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="showView(\'review\')">Ver repaso</button></div></div>';
+      } else {
+        const st = sp ? sprintStats(sp) : {answered:0,total:0,pct:0,acc:0};
+        box.innerHTML = '<div class="relative z-[1]"><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Plan de hoy</p><h3 class="mt-1 font-display text-2xl font-extrabold">'+(sp?'Siguiente sprint recomendado':'Banco listo')+'</h3><p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-400">Cobertura global actual: <strong>'+globalAnswered+'/'+QUESTIONS.length+'</strong> preguntas respondidas ('+globalCoverage+'%).</p>'
+        + (sp?'<div class="mt-5 rounded-3xl bg-slate-50 p-4 dark:bg-slate-950/60"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">'+esc(sp.eje)+'</p><h4 class="mt-1 font-display text-xl font-extrabold">'+esc(sp.sprint)+'</h4><p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">'+esc(sp.tema)+' · '+st.answered+'/'+sp.total+' respondidas</p><div class="mt-3 h-2.5 overflow-hidden rounded-full bg-white dark:bg-slate-800"><div class="h-full rounded-full bg-medical-600" style="width:'+st.pct+'%"></div></div></div><div class="mt-5 flex flex-wrap gap-2"><button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="startSprint(\''+sp.id+'\', state.method||\'preguntas\')">Empezar recomendado</button><button class="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startGlobalSession()">Entrenamiento global</button></div>':'')+'</div>';
+      }
+    }
+    function renderV34AuditCard(){
+      const box = $('#v34AuditCard'); if(!box) return;
+      const ids = QUESTIONS.map(q=>q.id);
+      const dupIds = ids.length - new Set(ids).size;
+      const missingAns = QUESTIONS.filter(q=>!q.ans).length;
+      const areas = getPerformanceAreas();
+      const countOk = QUESTIONS.length===V34_EXPECTED_TOTAL;
+      const sprintOk = SPRINTS.length===V34_EXPECTED_SPRINTS;
+      const areaOk = Object.entries(V34_EXPECTED_TOTALS).every(([src,total]) => QUESTIONS.filter(q=>(q.source||'')===src).length===total);
+      const ok = countOk && sprintOk && areaOk && dupIds===0;
+      const badge = ok ? '<span class="v34-audit-ok rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[.14em]">Banco validado</span>' : '<span class="v34-audit-warn rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[.14em]">Revisar banco</span>';
+      const mini = [
+        ['Total', QUESTIONS.length, V34_EXPECTED_TOTAL],
+        ['Sprints', SPRINTS.length, V34_EXPECTED_SPRINTS],
+        ['IDs duplicados', dupIds, 0],
+        ['Sin clave', missingAns, missingAns]
+      ].map(x=>'<div class="v34-pill rounded-2xl p-3"><p class="text-[10px] font-black uppercase tracking-[.14em] text-slate-400">'+x[0]+'</p><p class="mt-1 font-display text-2xl font-extrabold">'+x[1]+'</p></div>').join('');
+      const areaRows = areas.map(a=>{
+        const expected = V34_EXPECTED_TOTALS[a.src];
+        const mark = expected===a.total ? '✓' : '⚠️';
+        return '<div class="flex items-center justify-between gap-2 rounded-xl px-2 py-1.5 text-sm font-bold"><span>'+mark+' '+esc(a.label)+'</span><span>'+a.total+(expected?'/'+expected:'')+'</span></div>';
+      }).join('');
+      box.innerHTML = '<div class="flex items-start justify-between gap-3"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-slate-400">Control interno</p><h3 class="mt-1 font-display text-2xl font-extrabold">Auditoría v34</h3><p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Chequeo automático para evitar volver a 1003 por caché o metadata vieja.</p></div>'+badge+'</div><div class="mt-4 grid grid-cols-2 gap-3">'+mini+'</div><details class="mt-4 rounded-2xl bg-slate-50 p-3 dark:bg-slate-950/60"><summary class="cursor-pointer text-sm font-black">Ver distribución por área</summary><div class="mt-2">'+areaRows+'</div></details>';
+    }
+    function renderV34QuickActions(){
+      const box = $('#v34QuickActions'); if(!box) return;
+      const due = dueQuestions().length;
+      const mistakes = QUESTIONS.filter(q=>state.mistakes?.[q.id]).length;
+      const actions = [
+        ['🧠','Sesión activa','Retomá o empezá un bloque sin buscar menús.','resumeOrStart()'],
+        ['🔁','Repaso inteligente', due+' repasos vencidos para hoy.','showView(\'review\')'],
+        ['🧾','Errores activos', mistakes+' preguntas para revancha.','startMistakesSession()'],
+        ['⏱️','Simulacro global','Modo examen con feedback al final.','startGlobalSimulation()']
+      ];
+      box.innerHTML = actions.map(a=>'<button class="v34-action-btn rounded-[1.35rem] border border-slate-200 p-4 text-left dark:border-slate-800" onclick="'+a[3]+'"><div class="text-2xl">'+a[0]+'</div><h4 class="mt-2 font-display text-lg font-extrabold">'+a[1]+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+a[2]+'</p></button>').join('');
+    }
+    function renderV34Dashboard(){
+      const areas = getPerformanceAreas();
+      const areaBox = $('#v34AreaCards');
+      if(areaBox) areaBox.innerHTML = areas.map(v34AreaCard).join('');
+      const answered = globalAnsweredQuestions().length;
+      const coverage = v34Pct(answered, QUESTIONS.length);
+      if($('#v34GlobalCoverageLabel')) $('#v34GlobalCoverageLabel').textContent = coverage+'%';
+      if($('#v34GlobalBar')) $('#v34GlobalBar').style.width = coverage+'%';
+      renderV34ContinueCard();
+      renderV34AuditCard();
+      renderV34QuickActions();
+    }
+    const __v34RenderStats = renderStats;
+    renderStats = function(){
+      const answered = QUESTIONS.filter(q=>answerFor(q)).length;
+      const correct = QUESTIONS.filter(q=>isCorrect(q)).length;
+      const mistakes = QUESTIONS.filter(q=>state.mistakes?.[q.id]).length;
+      const due = dueQuestions().length;
+      const acc = answered ? Math.round(correct/answered*100) : 0;
+      const pending = Math.max(QUESTIONS.length - answered, 0);
+      const items = [
+        ['Banco integrado', QUESTIONS.length, '36 sprints · 5 áreas', '🗂️'],
+        ['Respondidas', answered, pending+' pendientes', '✅'],
+        ['Precisión', answered?acc+'%':'—', correct+' correctas', '🎯'],
+        ['Repaso', due, mistakes+' errores activos', '🔁']
+      ];
+      const target = $('#statCards');
+      if(!target) return __v34RenderStats();
+      target.innerHTML = items.map(([a,b,c,icon]) => '<div class="v34-clean-card rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="flex items-start justify-between gap-3"><p class="text-xs font-black uppercase tracking-[.17em] text-slate-400">'+a+'</p><span class="text-xl">'+icon+'</span></div><p class="mt-2 font-display text-4xl font-extrabold">'+b+'</p><p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">'+c+'</p></div>').join('');
+    };
+    const __v34RenderAll = renderAll;
+    renderAll = function(){ __v34RenderAll(); renderV34Dashboard(); };
+    const __v34SelectAnswer = selectAnswer;
+    selectAnswer = function(id, selected){ __v34SelectAnswer(id, selected); renderV34Dashboard(); };
+    const __v34NextQuestion = nextQuestion;
+    nextQuestion = function(){ __v34NextQuestion(); renderV34Dashboard(); };
+    const __v34PrevQuestion = prevQuestion;
+    prevQuestion = function(){ __v34PrevQuestion(); renderV34Dashboard(); };
+
     function init(){
       initSelects();
       session = state.session || null;

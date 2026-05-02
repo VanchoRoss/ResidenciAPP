@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ResidenciAPP · Plataforma de estudio para residencia médica</title>
+  <title>ResidenciAPP v34 · Plataforma de estudio para residencia médica</title>
   
   <meta name="description" content="ResidenciAPP es una plataforma de estudio activo para residencia médica: preguntas por sprints, repaso espaciado, flashcards, error log y colaboración." />
   <meta name="keywords" content="residencia médica, examen único, medicina, preguntas médicas, repaso espaciado, flashcards, Argentina" />
@@ -57,7 +57,7 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=33" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=34" />
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50">
 
@@ -183,6 +183,37 @@
 
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-1" id="statCards"></div>
       </div>
+
+      <section id="v34Overview" class="v34-overview mt-8 grid gap-5 xl:grid-cols-[1fr_.92fr]">
+        <div id="v34ContinueCard" class="v34-clean-card v34-continue-card rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"></div>
+        <div id="v34AuditCard" class="v34-clean-card rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"></div>
+      </section>
+
+      <section class="v34-clean-card mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+        <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Semáforo real del banco 974</p>
+            <h3 class="font-display text-2xl font-extrabold">Progreso por área</h3>
+            <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">Ahora separa rendimiento de cobertura para que el porcentaje no engañe cuando todavía respondiste pocas preguntas.</p>
+          </div>
+          <div class="min-w-[220px]">
+            <div class="flex items-center justify-between text-xs font-black uppercase tracking-[.14em] text-slate-400"><span>Cobertura global</span><span id="v34GlobalCoverageLabel">0%</span></div>
+            <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div id="v34GlobalBar" class="h-full rounded-full bg-medical-600 transition-all"></div></div>
+          </div>
+        </div>
+        <div id="v34AreaCards" class="grid gap-3 md:grid-cols-2 2xl:grid-cols-5"></div>
+      </section>
+
+      <section class="v34-clean-card mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+        <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-slate-400">Accesos rápidos</p>
+            <h3 class="font-display text-2xl font-extrabold">Entrar, estudiar y salir con claridad</h3>
+          </div>
+        </div>
+        <div id="v34QuickActions" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"></div>
+      </section>
+
 
       <div class="mt-8 grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
         <section class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
@@ -484,6 +515,17 @@
     </section>
   </main>
 
+  <nav id="v34BottomNav" class="v34-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/92 px-2 pb-[max(.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-18px_45px_rgba(15,23,42,.10)] backdrop-blur-xl lg:hidden dark:border-slate-800 dark:bg-slate-950/92">
+    <div class="grid grid-cols-5 gap-1 text-[11px] font-black">
+      <button class="v34-bottom-btn rounded-2xl px-2 py-2" onclick="showView('dashboard')"><span>🏠</span><small>Inicio</small></button>
+      <button class="v34-bottom-btn rounded-2xl px-2 py-2" onclick="showView('dashboard'); setTimeout(()=>document.querySelector('#searchInput')?.scrollIntoView({behavior:'smooth',block:'center'}),80)"><span>📚</span><small>Sprints</small></button>
+      <button class="v34-bottom-btn rounded-2xl px-2 py-2" onclick="resumeOrStart()"><span>🧠</span><small>Sesión</small></button>
+      <button class="v34-bottom-btn rounded-2xl px-2 py-2" onclick="showView('review')"><span>🔁</span><small>Repaso</small></button>
+      <button class="v34-bottom-btn rounded-2xl px-2 py-2" onclick="startGlobalSimulation()"><span>⏱️</span><small>Simulacro</small></button>
+    </div>
+  </nav>
+
+
   <div id="methodModal" class="fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/50 p-0 sm:items-center sm:p-5">
     <div class="max-h-[92vh] w-full max-w-3xl overflow-auto rounded-t-[2rem] bg-white p-5 shadow-2xl animate-scaleIn sm:rounded-[2rem] dark:bg-slate-900">
       <div class="mb-4 flex items-start justify-between gap-3">
@@ -519,11 +561,11 @@
     </div>
   </div>
 
-    <script src="./assets/js/config.js?v=33"></script>
-  <script src="./assets/data/questions.js?v=33"></script>
-  <script src="./assets/data/collabdata.js?v=33"></script>
-  <script src="./assets/data/lessons.js?v=33"></script>
-  <script src="./assets/js/main.js?v=33"></script>
+    <script src="./assets/js/config.js?v=34"></script>
+  <script src="./assets/data/questions.js?v=34"></script>
+  <script src="./assets/data/collabdata.js?v=34"></script>
+  <script src="./assets/data/lessons.js?v=34"></script>
+  <script src="./assets/js/main.js?v=34"></script>
 <!--
 ======================== RESIDENCIAPP · APORTES COLABORATIVOS SIN GITHUB ========================
 

@@ -107,3 +107,13 @@ Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y
 - Banco integrado actualizado a 974 preguntas.
 - Semáforo por áreas: Clínica 457, Cirugía 63, Pediatría 200, Gineco-Obstetricia 186 y Salud Pública 68.
 - Se preservan IDs conservados para mantener el progreso local.
+
+
+## v3.4 Premium Clean
+
+- Mantiene el Banco Integrado en 974 preguntas y preserva los IDs existentes.
+- Agrega dashboard limpio con continuidad de sesión, accesos rápidos y semáforo por área.
+- El semáforo distingue rendimiento de cobertura para evitar interpretaciones engañosas.
+- Incluye auditoría visual del banco: total, 36 sprints, distribución por área e IDs duplicados.
+- Agrega navegación inferior para celular y mejoras de lectura en modo pregunta.
+- Actualiza cache busting a `v=34` para evitar que GitHub Pages muestre datos viejos.
