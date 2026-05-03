@@ -3264,8 +3264,42 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         return '<td class="vaccine-cell border border-slate-200 align-top dark:border-slate-700" data-key="'+key+'">'+vaccineCellMarkup(r[1]+' '+c[1])+'</td>';
       }).join('')+'</tr>').join('')+'</tbody>';
       board.innerHTML = '<div class="vaccine-scroll-hint">↔ Deslizá para ver todo el calendario · tocá una celda para marcar/desmarcar</div><table class="border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
+      enableVaccineDragScroll(board);
       const score = $('#vaccineGameScore'); if(score){ score.classList.add('hidden'); score.innerHTML=''; }
       updateVaccineGameCounter();
+    }
+    function enableVaccineDragScroll(board){
+      if(!board || board.dataset.dragScrollBound === '1') return;
+      board.dataset.dragScrollBound = '1';
+      let down=false, sx=0, sy=0, sl=0, st=0, moved=false;
+      const endDrag = () => {
+        if(moved){
+          window.__vaccineJustDragged = true;
+          setTimeout(()=>{ window.__vaccineJustDragged = false; }, 90);
+        }
+        down=false; moved=false; board.classList.remove('is-dragging');
+      };
+      board.addEventListener('pointerdown', e => {
+        down=true; moved=false; sx=e.clientX; sy=e.clientY; sl=board.scrollLeft; st=board.scrollTop;
+        board.classList.add('is-dragging');
+        try{ board.setPointerCapture(e.pointerId); }catch(_){}
+      });
+      board.addEventListener('pointermove', e => {
+        if(!down) return;
+        const dx=e.clientX-sx, dy=e.clientY-sy;
+        if(Math.abs(dx)>4 || Math.abs(dy)>4){
+          moved=true;
+          board.scrollLeft = sl - dx;
+          board.scrollTop = st - dy;
+          e.preventDefault();
+        }
+      }, {passive:false});
+      board.addEventListener('pointerup', endDrag);
+      board.addEventListener('pointercancel', endDrag);
+      board.addEventListener('mouseleave', () => { if(down) endDrag(); });
+      board.addEventListener('wheel', e => {
+        if(Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.shiftKey){ board.scrollLeft += e.deltaY; e.preventDefault(); }
+      }, {passive:false});
     }
     function selectedVaccineCells(){ return $$('.vaccine-cell.is-selected'); }
     function updateVaccineGameCounter(){
@@ -3288,6 +3322,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       document.addEventListener('click', e => {
         const btn = e.target?.closest?.('.vaccine-tap');
         if(!btn || vaccineGameFinished) return;
+        if(window.__vaccineJustDragged){ e.preventDefault(); e.stopPropagation(); return; }
         const td = btn.closest('.vaccine-cell'); if(!td) return;
         td.classList.toggle('is-selected');
         const on = td.classList.contains('is-selected');

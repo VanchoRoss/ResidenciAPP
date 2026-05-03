@@ -1,4 +1,4 @@
-/* === ResidenciAPP v34.12 · Juegos + MedQuiz links cortos ===
+/* === ResidenciAPP v34.13 · Juegos + MedQuiz 5 ejes + mixes únicos ===
    Integra el flujo de desafío por link/base64 del MedQuiz externo dentro de la estética ResidenciAPP.
    Mantiene: calendario, banco local, API key localStorage, links sin backend y comparación por resultados.
 */
@@ -9,14 +9,17 @@
   const LS_API_KEY_COMPAT = 'mq_key';
   const LS_MODEL = 'RESIDENCIAPP_ANTHROPIC_MODEL';
   const LS_PLAYER = 'RESIDENCIAPP_CHALLENGE_PLAYER_NAME';
-  const VERSION = 12;
+  const VERSION = 13;
   const TIMER_SECONDS = 20;
+  const LS_USED_MIXES = 'RESIDENCIAPP_MEDQUIZ_USED_MIXES_V34_13';
+  const LS_MIX_COUNTERS = 'RESIDENCIAPP_MEDQUIZ_COUNTERS_V34_13';
 
   const AXES = [
-    {id:1, short:'APS', long:'Salud Pública & APS', color:'#22c55e', bg:'rgba(34,197,94,.10)', border:'rgba(34,197,94,.28)', text:'#16a34a'},
-    {id:2, short:'MUJ', long:'Salud de la Mujer', color:'#e879f9', bg:'rgba(232,121,249,.10)', border:'rgba(232,121,249,.28)', text:'#c026d3'},
-    {id:3, short:'NIN', long:'Niñez & Adolescencia', color:'#38bdf8', bg:'rgba(56,189,248,.10)', border:'rgba(56,189,248,.28)', text:'#0284c7'},
-    {id:4, short:'ADU', long:'Adultos & Adultos mayores', color:'#fb923c', bg:'rgba(251,146,60,.10)', border:'rgba(251,146,60,.28)', text:'#ea580c'}
+    {id:1, key:'clinica', short:'CLI', long:'Clínica médica', total:457, color:'#1877d6', bg:'rgba(24,119,214,.10)', border:'rgba(24,119,214,.28)', text:'#1260ad'},
+    {id:2, key:'pediatria', short:'PED', long:'Pediatría', total:200, color:'#38bdf8', bg:'rgba(56,189,248,.10)', border:'rgba(56,189,248,.28)', text:'#0284c7'},
+    {id:3, key:'gineco_obstetricia', short:'GIN', long:'Gineco-Obstetricia', total:186, color:'#e879f9', bg:'rgba(232,121,249,.10)', border:'rgba(232,121,249,.28)', text:'#c026d3'},
+    {id:4, key:'salud_publica', short:'SP', long:'Salud Pública', total:68, color:'#22c55e', bg:'rgba(34,197,94,.10)', border:'rgba(34,197,94,.28)', text:'#16a34a'},
+    {id:5, key:'cirugia', short:'CX', long:'Cirugía', total:63, color:'#fb923c', bg:'rgba(251,146,60,.10)', border:'rgba(251,146,60,.28)', text:'#ea580c'}
   ];
 
   const S = {
@@ -39,7 +42,7 @@
   const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
   const esc = (value='') => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const shuffle = arr => arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
-  const axisById = id => AXES.find(a => a.id === Number(id)) || AXES[3];
+  const axisById = id => AXES.find(a => a.id === Number(id)) || AXES[0];
   const uid = () => 'MQ-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
 
   function b64Encode(obj){
@@ -95,7 +98,7 @@
     const local = ids.length === (ch.questions || []).length;
     return {
       t:'mq', v:VERSION, i:ch.id || uid(), ca:ch.createdAt || new Date().toISOString(),
-      cn:ch.creatorName || '', on:ch.opponentName || '', d:ch.difficulty || 'Examen', s:local ? 'local' : (ch.source || 'Anthropic'),
+      cn:ch.creatorName || '', on:ch.opponentName || '', d:ch.difficulty || 'Examen', s:local ? 'local' : (ch.source || 'Anthropic'), m:ch.mixMode || '',
       qi: local ? ids : undefined,
       qs: local ? undefined : (ch.questions || []).map(compactAIQuestion),
       cs: ch.creatorScore ?? null, ce: compactAnswers(ch.creatorAnswers),
@@ -108,7 +111,7 @@
     const questions = obj.qi ? hydrateQuestionsFromIds(obj.qi) : (obj.qs || []).map(expandAIQuestion).filter(Boolean);
     return {
       type:'medquiz_challenge', v:obj.v || VERSION, id:obj.i || uid(), createdAt:obj.ca || new Date().toISOString(),
-      creatorName:obj.cn || '', opponentName:obj.on || '', topic:'Banco integrado', difficulty:obj.d || 'Examen', source:obj.s === 'local' ? 'Banco local' : (obj.s || 'Anthropic'),
+      creatorName:obj.cn || '', opponentName:obj.on || '', topic:'Banco integrado', difficulty:obj.d || 'Examen', source:obj.s === 'local' ? 'Banco local' : (obj.s || 'Anthropic'), mixMode:obj.m || '',
       questions,
       creatorScore: obj.cs ?? null, creatorAnswers: expandAnswers(obj.ce),
       challengerName: obj.hn || null, challengerScore: obj.hs ?? null, challengerAnswers: expandAnswers(obj.he)
@@ -273,7 +276,7 @@
   }
 
   function worldCards(){
-    return `<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">${AXES.map(a=>`
+    return `<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">${AXES.map(a=>`
       <article class="medquiz-world rounded-[1.45rem] border p-4" style="background:${a.bg};border-color:${a.border}">
         <div class="grid h-12 w-12 place-items-center rounded-2xl text-sm font-black" style="background:${a.color}1f;color:${a.text};border:1px solid ${a.border}">${a.short}</div>
         <h4 class="mt-3 text-sm font-black uppercase tracking-[.08em]" style="color:${a.text}">${a.long}</h4>
@@ -287,7 +290,7 @@
           <div>
             <p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">MedQuiz · Residencia Argentina 2026</p>
             <h3 class="mt-2 font-display text-4xl font-extrabold tracking-tight">Desafío médico por link</h3>
-            <p class="mt-3 max-w-3xl text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Creá un duelo de 8 preguntas, 2 por eje. Con banco local, el link viaja compacto usando solo IDs del Banco 974.</p>
+            <p class="mt-3 max-w-3xl text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Creá duelos con 5 ejes reales del banco: Clínica, Pediatría, Gineco-Obstetricia, Salud Pública y Cirugía. Los links del banco local viajan cortos porque solo guardan IDs.</p>
           </div>
           <div class="grid gap-2 sm:min-w-56">
             <button class="rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizGoCreate()">Crear desafío</button>
@@ -299,31 +302,45 @@
   }
 
   function renderCreateScreen(){
+    const summary = getMixUsageSummary();
     return `
       <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
         <button class="mb-4 rounded-2xl border border-slate-200 px-4 py-2 text-sm font-black dark:border-slate-700" onclick="medquizShow('home')">← Volver</button>
         <p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Nuevo desafío</p>
         <h3 class="mt-1 font-display text-3xl font-extrabold">Crear MedQuiz</h3>
-        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Genera automáticamente 8 preguntas balanceadas: 2 por APS, 2 por Mujer, 2 por Niñez y 2 por Adultos. No hace falta elegir tema.</p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">El sistema arma el mix automáticamente, sin elegir tema. Cada universo usa grupos únicos para evitar repetir preguntas dentro de su propio catálogo.</p>
         <div class="mt-5 grid gap-4 md:grid-cols-2">
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Tu nombre
-            <input id="mqCreator" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="${esc(S.playerName || '')}" />
+            <input id="mqCreator" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="" />
           </label>
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">A quién desafiás
-            <input id="mqOpponent" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="${esc('')}" />
+            <input id="mqOpponent" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="" />
           </label>
-          <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Dificultad
-            <select id="mqDifficulty" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950"><option>Examen</option><option>Repaso rápido</option><option>Difícil</option></select>
-          </label>
-          <div class="rounded-3xl bg-indigo-50 p-4 text-sm font-bold leading-6 text-indigo-800 dark:bg-indigo-950/30 dark:text-indigo-200">
-            <p>Formato fijo: <strong>8 preguntas</strong> · 2 por APS, Mujer, Niñez y Adultos.</p>
-          </div>
+        </div>
+
+        <div class="mt-5 grid gap-3 lg:grid-cols-2">
+          <article class="rounded-3xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-900/60 dark:bg-indigo-950/20">
+            <p class="text-xs font-black uppercase tracking-[.16em] text-indigo-700 dark:text-indigo-300">Universo 1 · ${summary.u1.used}/${summary.u1.total} usados</p>
+            <h4 class="mt-1 font-display text-2xl font-extrabold">31 mixes de 10 preguntas</h4>
+            <p class="mt-2 text-sm font-bold leading-6 text-indigo-900 dark:text-indigo-100">2 Clínica · 2 Pediatría · 2 Gineco-Obstetricia · 2 Salud Pública · 2 Cirugía.</p>
+            <button class="mt-4 w-full rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizCreateUniverse('u1')">Crear Universo 1</button>
+          </article>
+          <article class="rounded-3xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-900/60 dark:bg-cyan-950/20">
+            <p class="text-xs font-black uppercase tracking-[.16em] text-cyan-700 dark:text-cyan-300">Universo 2 · ${summary.u2.used}/${summary.u2.total} usados</p>
+            <h4 class="mt-1 font-display text-2xl font-extrabold">62 mixes de 6 preguntas</h4>
+            <p class="mt-2 text-sm font-bold leading-6 text-cyan-900 dark:text-cyan-100">2 Clínica · 2 Pediatría · 2 Gineco-Obstetricia. Usa el segundo bloque de preguntas sin repetir.</p>
+            <button class="mt-4 w-full rounded-2xl bg-cyan-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-cyan-700" onclick="medquizCreateUniverse('u2')">Crear Universo 2</button>
+          </article>
+        </div>
+
+        <div class="mt-4 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold leading-6 text-slate-600 dark:border-slate-700 dark:bg-slate-950/50 dark:text-slate-300">
+          <p><strong>Cobertura planificada:</strong> Universo 1 usa 62 preguntas por eje. Universo 2 usa 124 preguntas extra de Clínica, Pediatría y Gineco-Obstetricia. Remanente final: Clínica 271 · Pediatría 14 · Salud Pública 6 · Cirugía 1.</p>
         </div>
         <div id="mqStatus" class="mt-4 text-sm font-bold text-slate-500"></div>
         <div class="mt-5 flex flex-wrap gap-2">
-          <button class="rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizCreateLocal()">Crear mix automático</button>
-          <button class="rounded-2xl border border-slate-200 px-5 py-4 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="medquizCreateAI()">Generar con IA</button>
+          <button class="rounded-2xl border border-slate-200 px-5 py-4 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="medquizCreateAI()">Generar con IA · 10 preguntas</button>
           <button class="rounded-2xl border border-amber-200 px-5 py-4 text-sm font-black text-amber-700 hover:bg-amber-50 dark:border-amber-900/60 dark:text-amber-300 dark:hover:bg-amber-950/20" onclick="openChallengeSettings()">⚙ API</button>
+          <button class="rounded-2xl border border-rose-200 px-5 py-4 text-sm font-black text-rose-700 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/20" onclick="medquizResetMixHistory()">Reiniciar historial de mixes</button>
         </div>
       </section>`;
   }
@@ -344,7 +361,7 @@
       <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
         <p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Desafío creado</p>
         <h3 class="mt-1 font-display text-3xl font-extrabold">Compartí el link</h3>
-        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">El link compacto contiene los IDs de las 8 preguntas y los datos mínimos del desafío. Al abrirlo, la otra persona verá “${esc((S.challenge?.creatorName||'').toUpperCase())} TE DESAFIO”.</p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">El link compacto contiene solo los IDs de las preguntas y los datos mínimos del desafío. Al abrirlo, la otra persona verá “${esc((S.challenge?.creatorName||'').toUpperCase())} TE DESAFIO”.</p>
         <textarea id="mqShareLink" class="mt-5 min-h-28 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs font-semibold leading-5 dark:border-slate-700 dark:bg-slate-950" readonly>${esc(link)}</textarea>
         <div class="mt-4 flex flex-wrap gap-2">
           <button class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-black text-white dark:bg-white dark:text-slate-900" onclick="medquizCopy('mqShareLink')">Copiar link</button>
@@ -455,6 +472,7 @@
     }
     const rows = AXES.map(a=>{
       const idxs = (ch?.questions||[]).map((q,i)=>Number(q.axisId)===a.id?i:-1).filter(i=>i>=0);
+      if(!idxs.length) return '';
       const c1 = ch?.creatorAnswers ? idxs.filter(i=>ch.creatorAnswers[i]?.correct).length + '/' + idxs.length : '—/' + idxs.length;
       const c2 = ch?.challengerAnswers ? idxs.filter(i=>ch.challengerAnswers[i]?.correct).length + '/' + idxs.length : '—/' + idxs.length;
       return `<div class="flex items-center gap-3 rounded-2xl border border-slate-200 p-3 dark:border-slate-700"><span class="h-3 w-3 rounded-full" style="background:${a.color}"></span><span class="flex-1 text-sm font-bold text-slate-600 dark:text-slate-300">${a.long}</span><span class="font-display text-lg font-extrabold" style="color:${a.color}">${c1}</span><span class="text-xs font-black text-slate-400">vs</span><span class="font-display text-lg font-extrabold" style="color:${a.color}">${c2}</span></div>`;
@@ -497,31 +515,34 @@
   function medquizGoCreate(){ setMedQuizScreen('create'); }
   function goCreate(){ medquizGoCreate(); }
 
-  async function createChallenge(useAI){
+  async function createChallenge(useAI, mixMode='u1'){
     const creatorName = ($('#mqCreator')?.value || '').trim();
     const opponentName = ($('#mqOpponent')?.value || '').trim();
     const topic = '';
-    const difficulty = $('#mqDifficulty')?.value || 'Examen';
+    const difficulty = useAI ? 'Examen IA' : (mixMode === 'u2' ? 'Universo 2 · 6 preguntas' : 'Universo 1 · 10 preguntas');
     if(!creatorName){ setStatus('Ingresá tu nombre para continuar.', 'error'); return; }
     S.playerName = creatorName; localStorage.setItem(LS_PLAYER, creatorName);
     S.creatorMode = true; S.role = 'creator';
     setMedQuizScreen('generating');
     try{
-      const gen = $('#mqGenStatus'); if(gen) gen.textContent = useAI ? 'Generando 8 preguntas con IA…' : 'Armando 8 preguntas desde Banco 974…';
-      const questions = useAI ? await genQuestionsAI({topic, difficulty}) : genQuestionsLocal({topic, difficulty});
+      const gen = $('#mqGenStatus');
+      if(gen) gen.textContent = useAI ? 'Generando 10 preguntas con IA…' : (mixMode === 'u2' ? 'Armando Universo 2 desde Banco 974…' : 'Armando Universo 1 desde Banco 974…');
+      const questions = useAI ? await genQuestionsAI({topic, difficulty}) : genQuestionsLocal({mixMode});
       S.challenge = {
         type:'medquiz_challenge', v:VERSION, id:uid(), createdAt:new Date().toISOString(),
-        creatorName, opponentName, topic:'Banco integrado', difficulty, source:useAI?'Anthropic':'Banco local',
+        creatorName, opponentName, topic:'Banco integrado', difficulty, source:useAI?'Anthropic':'Banco local', mixMode,
         questions, creatorScore:null, creatorAnswers:null, challengerName:null, challengerScore:null, challengerAnswers:null
       };
+      if(!useAI) markMixAsUsed(mixMode, questions);
       setMedQuizScreen('share');
     }catch(err){
       setMedQuizScreen('create');
       setStatus(err.message || 'No pude crear el desafío.', 'error');
     }
   }
-  function medquizCreateAI(){ if(!getApiKey()){ openChallengeSettings(); setStatus('Primero pegá la Anthropic API key o usá banco local.', 'error'); return; } createChallenge(true); }
-  function medquizCreateLocal(){ createChallenge(false); }
+  function medquizCreateAI(){ if(!getApiKey()){ openChallengeSettings(); setStatus('Primero pegá la Anthropic API key o usá banco local.', 'error'); return; } createChallenge(true, 'ia'); }
+  function medquizCreateLocal(){ createChallenge(false, 'u1'); }
+  function medquizCreateUniverse(mode){ createChallenge(false, mode === 'u2' ? 'u2' : 'u1'); }
 
   async function callAnthropic(system, user, maxTokens=3500){
     const key = getApiKey();
@@ -547,43 +568,123 @@
 
   async function genQuestionsAI({topic, difficulty}){
     const system = 'Eres un generador de preguntas de examen de residencia medica argentina CABA e Integrado 2026. Responde UNICAMENTE con JSON valido sin markdown.';
-    const user = `Genera exactamente 8 preguntas multiple choice de residencia medica argentina CABA/Integrado 2026, balanceadas: 2 preguntas por cada eje.
+    const user = `Genera exactamente 10 preguntas multiple choice de residencia medica argentina CABA/Integrado 2026, balanceadas: 2 preguntas por cada eje.
 
 Ejes obligatorios:
-1 Salud Publica y APS: HTA, diabetes, EPOC, tuberculosis, screening oncologico, vacunas adultos, tabaco, alcohol, epidemiologia, factores de riesgo CV.
-2 Salud de la Mujer: control prenatal, hemorragias embarazo, RPM, eclampsia, IVE/ILE, anticoncepcion, PAP/colposcopia, infecciones perinatales, parto, puerperio, SOP.
-3 Ninez y Adolescencia: calendario de vacunas, neonatologia, crecimiento/desarrollo, diarrea pediatrica, neumonia pediatrica, anemia infantil, lactancia, adolescencia, maltrato.
-4 Adultos y Adultos Mayores: SCA, IC, neumonia adulto, HIV, diabetes complicaciones, EPOC agudizado, ACV, sepsis, cirrosis, polifarmacia geriatrica.
+1 Clínica médica: cardiología, neumonología, infectología, endocrinología, nefrología, hematología, gastroenterología, neurología, psiquiatría, toxicología y geriatría clínica.
+2 Pediatría: vacunas, neonatología, crecimiento/desarrollo, diarrea, neumonía pediátrica, anemia, lactancia, adolescencia y maltrato.
+3 Gineco-Obstetricia: control prenatal, hemorragias, RPM, eclampsia, IVE/ILE, anticoncepción, PAP/colposcopía, infecciones perinatales, parto, puerperio, SOP y oncoginecología.
+4 Salud Pública: APS, epidemiología, rastreos, prevención, inmunizaciones en adultos, factores de riesgo y programas sanitarios.
+5 Cirugía: abdomen agudo, trauma, preoperatorio, postoperatorio, cirugía digestiva, torácica, vascular y oncología quirúrgica.
 
-Tema sugerido del usuario: ${topic || 'libre / banco general'}.
 Dificultad: ${difficulty || 'Examen'}.
 
 Formato JSON estricto:
-{"questions":[{"axisId":1,"axisName":"Salud Publica y APS","question":"Paciente de...","options":["opcion A","opcion B","opcion C","opcion D"],"correctIndex":0,"explanation":"La opcion A es correcta porque... Las otras son incorrectas porque...","topic":"HTA"}]}
+{"questions":[{"axisId":1,"axisName":"Clínica médica","question":"Paciente de...","options":["opcion A","opcion B","opcion C","opcion D"],"correctIndex":0,"explanation":"La opcion A es correcta porque... Las otras son incorrectas porque...","topic":"Cardiología"}]}
 
-OBLIGATORIO: exactamente 2 con axisId=1, 2 con axisId=2, 2 con axisId=3, 2 con axisId=4. Casos clinicos breves. Distractores plausibles. Una sola respuesta correcta.`;
+OBLIGATORIO: exactamente 2 con axisId=1, 2 con axisId=2, 2 con axisId=3, 2 con axisId=4 y 2 con axisId=5. Casos clinicos breves. Distractores plausibles. Una sola respuesta correcta.`;
     const txt = await callAnthropic(system, user);
     const parsed = JSON.parse(txt);
     return normalizeGeneratedQuestions(parsed.questions || []);
   }
 
-  function genQuestionsLocal(){
-    const bank = (window.RESIDENCIAPP_DATA?.questions || []);
-    const out = [];
-    for(const ax of AXES){
-      const pool = shuffle(bank.filter(q => axisFromBankQuestion(q) === ax.id)).slice(0,2);
-      out.push(...pool.map(q => normalizeBankQuestion(q, ax.id)));
-    }
-    if(out.length < 8) throw new Error('No pude armar 8 preguntas balanceadas desde el banco local.');
+  function bankQuestions(){ return (window.RESIDENCIAPP_DATA?.questions || []).filter(q => q?.id && q?.q && q?.opts && q?.ans); }
+  function sourceAxis(q){
+    const src = String(q?.source || '').toLowerCase();
+    if(src === 'clinica') return 1;
+    if(src === 'pediatria') return 2;
+    if(src === 'gineco_obstetricia') return 3;
+    if(src === 'salud_publica') return 4;
+    if(src === 'cirugia') return 5;
+    const txt = [q?.eje,q?.source,q?.sprint,q?.tema].join(' ').toLowerCase();
+    if(txt.includes('salud pública') || txt.includes('salud publica') || txt.includes('aps') || txt.includes('epidemi')) return 4;
+    if(txt.includes('cirug')) return 5;
+    if(txt.includes('gine') || txt.includes('obst') || txt.includes('mujer')) return 3;
+    if(txt.includes('niñ') || txt.includes('ninez') || txt.includes('pediatr') || txt.includes('adolesc')) return 2;
+    return 1;
+  }
+  function seededShuffle(arr, seed='residenciapp-medquiz-v34-13'){
+    let h = 2166136261;
+    const s = String(seed);
+    for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    function rnd(){ h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    const out = arr.slice();
+    for(let i=out.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); [out[i],out[j]] = [out[j],out[i]]; }
     return out;
   }
-  function axisFromBankQuestion(q){
-    const txt = [q.eje,q.source,q.sprint,q.tema].join(' ').toLowerCase();
-    if(txt.includes('pública') || txt.includes('publica') || txt.includes('aps') || txt.includes('epidemi')) return 1;
-    if(txt.includes('mujer') || txt.includes('gine') || txt.includes('obst')) return 2;
-    if(txt.includes('niñ') || txt.includes('ninez') || txt.includes('pediatr') || txt.includes('adolesc')) return 3;
-    return 4;
+  function buildMixCatalog(){
+    const bank = bankQuestions();
+    const pools = {};
+    AXES.forEach(ax => { pools[ax.id] = seededShuffle(bank.filter(q => sourceAxis(q) === ax.id).sort((a,b)=>String(a.id).localeCompare(String(b.id))), 'mix-'+ax.key+'-v34.13'); });
+    const required = {1:457,2:200,3:186,4:68,5:63};
+    for(const ax of AXES){ if((pools[ax.id]||[]).length < Math.min(required[ax.id], ax.total)){ console.warn('Pool menor a esperado', ax.long, pools[ax.id]?.length); } }
+    const u1 = [];
+    for(let i=0;i<31;i++){
+      const qs = AXES.flatMap(ax => (pools[ax.id] || []).slice(i*2, i*2+2));
+      if(qs.length === 10) u1.push({id:'U1-'+String(i+1).padStart(2,'0'), mode:'u1', label:'Universo 1', questions:qs});
+    }
+    const u2 = [];
+    for(let i=0;i<62;i++){
+      const qs = [1,2,3].flatMap(axisId => (pools[axisId] || []).slice(62 + i*2, 62 + i*2 + 2));
+      if(qs.length === 6) u2.push({id:'U2-'+String(i+1).padStart(2,'0'), mode:'u2', label:'Universo 2', questions:qs});
+    }
+    const remnant = {
+      clinica: (pools[1] || []).slice(186),
+      pediatria: (pools[2] || []).slice(186),
+      gineco_obstetricia: (pools[3] || []).slice(186),
+      salud_publica: (pools[4] || []).slice(62),
+      cirugia: (pools[5] || []).slice(62)
+    };
+    return {u1,u2,remnant,pools};
   }
+  function getMixState(){
+    try{return JSON.parse(localStorage.getItem(LS_USED_MIXES) || '{}') || {};}
+    catch(_){return {};}
+  }
+  function setMixState(state){ localStorage.setItem(LS_USED_MIXES, JSON.stringify(state || {})); }
+  function getMixUsageSummary(){
+    const catalog = buildMixCatalog();
+    const used = getMixState();
+    return {
+      u1:{total:catalog.u1.length, used:Object.keys(used.u1 || {}).length},
+      u2:{total:catalog.u2.length, used:Object.keys(used.u2 || {}).length}
+    };
+  }
+  function pickMix(mode='u1'){
+    const catalog = buildMixCatalog();
+    const list = mode === 'u2' ? catalog.u2 : catalog.u1;
+    if(!list.length) throw new Error('No pude construir el catálogo de mixes desde el banco local.');
+    const used = getMixState();
+    used[mode] = used[mode] || {};
+    const next = list.find(m => !used[mode][m.id]);
+    if(!next) throw new Error('Ya se usaron todos los mixes de este universo en este navegador. Reiniciá el historial de mixes para volver a empezar.');
+    return next;
+  }
+  function markMixAsUsed(mode, questions){
+    if(!questions?.length) return;
+    const catalog = buildMixCatalog();
+    const list = mode === 'u2' ? catalog.u2 : catalog.u1;
+    const ids = questions.map(q=>q.sourceId).join('|');
+    const found = list.find(m => m.questions.map(q=>q.id).join('|') === ids);
+    if(!found) return;
+    const used = getMixState();
+    used[mode] = used[mode] || {};
+    used[mode][found.id] = new Date().toISOString();
+    setMixState(used);
+  }
+  function medquizResetMixHistory(){
+    if(confirm('¿Reiniciar el historial local de mixes usados? No afecta progreso, métricas ni respuestas del banco.')){
+      localStorage.removeItem(LS_USED_MIXES);
+      setMedQuizScreen('create');
+    }
+  }
+  function genQuestionsLocal({mixMode='u1'}={}){
+    const mix = pickMix(mixMode);
+    const questions = mix.questions.map(q => normalizeBankQuestion(q, sourceAxis(q)));
+    if(questions.length < (mixMode === 'u2' ? 6 : 10)) throw new Error('No pude armar el mix solicitado desde el banco local.');
+    return questions;
+  }
+  function axisFromBankQuestion(q){ return sourceAxis(q); }
   function normalizeBankQuestion(q, axisId){
     const keys = ['a','b','c','d'];
     const options = keys.map(k => q.opts?.[k] || '').filter(Boolean);
@@ -601,16 +702,17 @@ OBLIGATORIO: exactamente 2 con axisId=1, 2 con axisId=2, 2 con axisId=3, 2 con a
       topic: q.topic || ''
     })).filter(q => q.question && q.options.length === 4);
     for(const ax of AXES){
-      if(list.filter(q=>q.axisId===ax.id).length < 2) throw new Error('La IA no devolvió 2 preguntas por eje. Probá de nuevo o usá banco local.');
+      if(list.filter(q=>q.axisId===ax.id).length < 2) throw new Error('La IA no devolvió 2 preguntas por cada uno de los 5 ejes. Probá de nuevo o usá banco local.');
     }
     return AXES.flatMap(ax => list.filter(q=>q.axisId===ax.id).slice(0,2));
   }
   function axisFromText(txt){
     txt = String(txt||'').toLowerCase();
-    if(txt.includes('public') || txt.includes('aps')) return 1;
-    if(txt.includes('mujer') || txt.includes('gine') || txt.includes('obst')) return 2;
-    if(txt.includes('niñ') || txt.includes('ninez') || txt.includes('pediatr') || txt.includes('adolesc')) return 3;
-    return 4;
+    if(txt.includes('pedi') || txt.includes('niñ') || txt.includes('ninez') || txt.includes('adolesc')) return 2;
+    if(txt.includes('gine') || txt.includes('obst') || txt.includes('mujer')) return 3;
+    if(txt.includes('public') || txt.includes('aps') || txt.includes('epidemi')) return 4;
+    if(txt.includes('cirug') || txt.includes('trauma') || txt.includes('quir')) return 5;
+    return 1;
   }
 
   function medquizStartOwn(){ S.creatorMode = true; S.role = 'creator'; startQuiz(); }
@@ -775,6 +877,8 @@ OBLIGATORIO: exactamente 2 con axisId=1, 2 con axisId=2, 2 con axisId=3, 2 con a
   window.goCreate = goCreate;
   window.medquizCreateAI = medquizCreateAI;
   window.medquizCreateLocal = medquizCreateLocal;
+  window.medquizCreateUniverse = medquizCreateUniverse;
+  window.medquizResetMixHistory = medquizResetMixHistory;
   window.medquizStartOwn = medquizStartOwn;
   window.medquizAcceptChallenge = medquizAcceptChallenge;
   window.medquizSelect = medquizSelect;

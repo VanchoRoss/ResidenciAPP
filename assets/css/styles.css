@@ -1083,3 +1083,54 @@ main { overflow-x: clip; }
 /* === ResidenciAPP v34.12 · links cortos MedQuiz === */
 .medquiz-shell textarea[readonly]{min-height:5.5rem}
 @media (max-width:640px){.medquiz-shell textarea[readonly]{min-height:4.5rem;font-size:.7rem}}
+
+/* === ResidenciAPP v34.13 · Vacunas más fluido + MedQuiz 5 ejes === */
+#vaccineGameBoard.vaccine-game-board,
+.vaccine-game-board{
+  max-width:100%;
+  overflow:auto !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:none;
+  cursor:grab;
+  scrollbar-gutter:stable both-edges;
+  contain:layout paint;
+  overscroll-behavior:contain;
+}
+#vaccineGameBoard.vaccine-game-board.is-dragging,
+.vaccine-game-board.is-dragging{ cursor:grabbing; user-select:none; }
+.vaccine-game-board table{
+  min-width:1520px !important;
+  table-layout:fixed;
+  border-spacing:0;
+}
+.vaccine-game-board thead th{ min-width:78px !important; width:78px; }
+.vaccine-game-board .vaccine-age-head,
+.vaccine-game-board .vaccine-age-cell{ min-width:112px !important; max-width:112px !important; width:112px; }
+.vaccine-cell{
+  min-width:78px !important;
+  width:78px !important;
+  height:50px !important;
+  padding:.16rem !important;
+  transition:none !important;
+}
+.vaccine-tap{
+  min-height:44px !important;
+  height:44px !important;
+  border-radius:.68rem !important;
+  font-size:9px !important;
+  transition:none !important;
+}
+.vaccine-label{ font-size:8.2px !important; line-height:1.08 !important; }
+.vaccine-scroll-hint{ pointer-events:none; }
+@media(max-width:640px){
+  #vaccineGameBoard.vaccine-game-board,
+  .vaccine-game-board{ max-height:68vh; max-width:calc(100vw - 2rem); }
+  .vaccine-game-board table{ min-width:1480px !important; }
+  .vaccine-game-board thead th{ min-width:76px !important; width:76px; font-size:8px !important; }
+  .vaccine-game-board .vaccine-age-head,
+  .vaccine-game-board .vaccine-age-cell{ min-width:104px !important; max-width:104px !important; width:104px; font-size:9px !important; }
+  .vaccine-cell{ min-width:76px !important; width:76px !important; height:48px !important; }
+  .vaccine-tap{ min-height:42px !important; height:42px !important; font-size:8px !important; }
+}
+.medquiz-world{ transition:transform .16s ease, box-shadow .16s ease; }
+.medquiz-world:hover{ transform:translateY(-2px); box-shadow:0 16px 35px rgba(15,23,42,.08); }
