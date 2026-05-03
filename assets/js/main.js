@@ -652,7 +652,9 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const done = LESSONS.filter(l => lessonIsDone(l.id)).length;
       const saved = LESSONS.filter(l => lessonIsSaved(l.id)).length;
       const pct = total ? Math.round(done/total*100) : 0;
-      $('#lessonStats').innerHTML = [['Nodos', total, 'disponibles'],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
+      const expected = window.RESIDENCIAPP_EXPECTED_LESSON_COUNT || 12;
+      const suffix = total < expected ? 'actualizá caché' : 'disponibles';
+      $('#lessonStats').innerHTML = [['Nodos', total, suffix],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
     }
     function renderLearn(){
       if(!$('#learnView')) return;
@@ -1503,9 +1505,9 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const list = LESSONS.filter(l => lessonMatchesV2(l, raw));
       if($('#lessonGrid')){
         const byEje = groupBy(list, l => l.eje || 'Otros');
-        $('#lessonGrid').innerHTML = Object.entries(byEje).map(([eje, items]) =>
+        $('#lessonGrid').innerHTML = cacheWarn + (Object.entries(byEje).map(([eje, items]) =>
           '<div class="space-y-3"><div class="lesson-eje-title rounded-2xl bg-white/85 px-3 py-2 text-xs font-black uppercase tracking-[.18em] text-medical-700 shadow-sm dark:bg-slate-900/85 dark:text-medical-300">'+esc(eje)+' · '+items.length+' nodos</div>'+items.map(lessonCard).join('')+'</div>'
-        ).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>';
+        ).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>');
       }
       if(state.currentLessonId && lessonById(state.currentLessonId)) openLesson(state.currentLessonId, true);
     };
@@ -3193,8 +3195,8 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
 
     const VACCINE_ROWS = [
       ['rn','Recién nacido'], ['2m','2 meses'], ['3m','3 meses'], ['4m','4 meses'], ['5m','5 meses'], ['6m','6 meses'],
-      ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos en 2021'], ['2015','Nacidos en 2015'],
-      ['15plus','A partir de los 15 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
+      ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos 2021/22/23/24'], ['2015','Nacidos en 2015'],
+      ['11plus','Desde los 11 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
     ];
     const VACCINE_COLS = [
       ['bcg','BCG'], ['hepb','Hepatitis B'], ['neumo','Neumococo conjugada'], ['penta','Quíntuple / Pentavalente'], ['ipv','IPV'], ['rota','Rotavirus'],
@@ -3208,57 +3210,94 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       '4m|neumo':'2° dosis', '4m|penta':'2° dosis', '4m|ipv':'2° dosis', '4m|rota':'2° dosis',
       '5m|menacwy':'2° dosis',
       '6m|penta':'3° dosis', '6m|ipv':'3° dosis', '6m|gripe':'dosis anual',
-      '12m|neumo':'refuerzo', '12m|gripe':'dosis anual', '12m|hepa':'única dosis', '12m|triviral':'1° dosis',
+      '12m|neumo':'refuerzo', '12m|hepa':'única dosis', '12m|triviral':'1° dosis',
       '15m|menacwy':'refuerzo', '15m|gripe':'dosis anual', '15m|varicela':'1° dosis',
-      '18m|penta':'1° refuerzo', '18m|gripe':'dosis anual', '18m|triviral':'2° dosis', '18m|fa':'1° dosis',
-      '24m|gripe':'dosis anual',
+      '18m|penta':'1° refuerzo', '18m|gripe':'1° dosis', '18m|fa':'1° dosis',
+      '24m|gripe':'2° dosis',
       '2021|ipv':'refuerzo', '2021|triviral':'2° dosis', '2021|varicela':'2° dosis', '2021|dtpc':'2° refuerzo',
       '2015|menacwy':'única dosis', '2015|dtpa':'refuerzo', '2015|vph':'única dosis', '2015|fa':'refuerzo',
-      '15plus|triviral':'iniciar/completar esquema', '15plus|fha':'única dosis',
-      'adultos|hepb':'iniciar/completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar/completar esquema', 'adultos|db':'refuerzo cada 10 años',
-      'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
-      'puerperas|gripe':'una dosis', 'puerperas|triviral':'iniciar/completar esquema',
-      'salud|gripe':'dosis anual', 'salud|dtpa':'una dosis'
+      '11plus|triviral':'iniciar / completar esquema',
+      'adultos|hepb':'iniciar / completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar / completar esquema', 'adultos|db':'refuerzo cada 10 años', 'adultos|fha':'única dosis',
+      'embarazadas|hepb':'iniciar / completar esquema', 'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
+      'puerperas|hepb':'iniciar / completar esquema', 'puerperas|gripe':'una dosis', 'puerperas|triviral':'iniciar / completar esquema',
+      'salud|hepb':'iniciar / completar esquema', 'salud|gripe':'dosis anual', 'salud|triviral':'iniciar / completar esquema', 'salud|dtpa':'una dosis'
     };
     let vaccineGameFinished = false;
+    function vaccineCellMarkup(label=''){
+      return '<button type="button" class="vaccine-tap" aria-label="'+esc(label)+'"><span class="vaccine-mark"></span></button>';
+    }
+    function setVaccineCellContent(td, html){
+      const btn = td.querySelector('.vaccine-tap');
+      if(btn) btn.innerHTML = html;
+    }
     function renderVaccineGame(){
       const board = $('#vaccineGameBoard'); if(!board) return;
       vaccineGameFinished = false;
       const head = '<thead><tr><th class="sticky left-0 z-10 bg-slate-100 p-2 text-left text-[11px] font-black uppercase tracking-[.08em] dark:bg-slate-800">Vacunas / Edad</th>'+VACCINE_COLS.map(c=>'<th class="min-w-[120px] p-2 text-center text-[10px] font-black uppercase tracking-[.05em]">'+esc(c[1])+'</th>').join('')+'</tr></thead>';
       const body = '<tbody>'+VACCINE_ROWS.map(r=>'<tr><th class="sticky left-0 z-10 bg-white p-2 text-left text-xs font-black dark:bg-slate-900">'+esc(r[1])+'</th>'+VACCINE_COLS.map(c=>{
         const key = r[0]+'|'+c[0];
-        return '<td class="vaccine-cell border border-slate-200 p-1 align-top dark:border-slate-700" data-key="'+key+'"><textarea aria-label="'+esc(r[1]+' '+c[1])+'" class="vaccine-input h-16 w-full resize-none rounded-lg bg-transparent p-1 text-[11px] font-bold outline-none" placeholder=""></textarea></td>';
+        return '<td class="vaccine-cell border border-slate-200 align-top dark:border-slate-700" data-key="'+key+'">'+vaccineCellMarkup(r[1]+' '+c[1])+'</td>';
       }).join('')+'</tr>').join('')+'</tbody>';
-      board.innerHTML = '<table class="min-w-[2200px] border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
+      board.innerHTML = '<table class="border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
       updateVaccineGameCounter();
+    }
+    function selectedVaccineCells(){
+      return $$('.vaccine-cell.is-selected');
     }
     function updateVaccineGameCounter(){
       const counter = $('#vaccineGameCounter'); if(!counter) return;
-      const marked = $$('.vaccine-input').filter(i=>i.value.trim()).length;
-      counter.textContent = marked+' celdas marcadas · '+Object.keys(VACCINE_ANSWERS).length+' dosis correctas';
+      const marked = selectedVaccineCells().length;
+      counter.textContent = marked+' casilleros marcados · '+Object.keys(VACCINE_ANSWERS).length+' dosis correctas';
     }
-    document.addEventListener('input', e => { if(e.target?.classList?.contains('vaccine-input')) updateVaccineGameCounter(); });
     function resetVaccineGame(){
       vaccineGameFinished = false;
-      $$('.vaccine-cell').forEach(td=>{ td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed'); td.removeAttribute('title'); });
-      $$('.vaccine-input').forEach(i=>{ i.value=''; i.readOnly=false; i.placeholder=''; });
+      $$('.vaccine-cell').forEach(td=>{
+        td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed','is-selected');
+        td.removeAttribute('title');
+        const btn = td.querySelector('.vaccine-tap');
+        if(btn){ btn.disabled = false; btn.setAttribute('aria-pressed','false'); btn.setAttribute('title',''); btn.innerHTML = '<span class="vaccine-mark"></span>'; }
+      });
       const score = $('#vaccineGameScore'); if(score){ score.classList.add('hidden'); score.innerHTML=''; }
       updateVaccineGameCounter();
     }
+    document.addEventListener('click', e => {
+      const btn = e.target?.closest?.('.vaccine-tap');
+      if(!btn || vaccineGameFinished) return;
+      const td = btn.closest('.vaccine-cell'); if(!td) return;
+      td.classList.toggle('is-selected');
+      const on = td.classList.contains('is-selected');
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.innerHTML = on ? '<span class="vaccine-mark">✓</span>' : '<span class="vaccine-mark"></span>';
+      updateVaccineGameCounter();
+    });
     function finishVaccineGame(){
       if(!$('#vaccineGameBoard table')) renderVaccineGame();
       vaccineGameFinished = true;
       let correctMarked=0, wrongMarked=0, missed=0;
       $$('.vaccine-cell').forEach(td=>{
         const key = td.dataset.key;
-        const input = td.querySelector('.vaccine-input');
-        const marked = !!input.value.trim();
+        const marked = td.classList.contains('is-selected');
         const expected = VACCINE_ANSWERS[key] || '';
+        const btn = td.querySelector('.vaccine-tap');
         td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed');
-        input.readOnly = true;
-        if(marked && expected){ correctMarked++; td.classList.add('vaccine-ok'); input.value = expected; td.title = 'Correcta: '+expected; }
-        else if(marked && !expected){ wrongMarked++; td.classList.add('vaccine-bad'); td.title = 'Acá no iba una dosis'; }
-        else if(!marked && expected){ missed++; td.classList.add('vaccine-missed'); input.placeholder = expected; td.title = 'Faltó: '+expected; }
+        if(btn) btn.disabled = true;
+        if(marked && expected){
+          correctMarked++; td.classList.add('vaccine-ok');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">'+esc(expected)+'</span>';
+          td.title = 'Correcta: '+expected;
+        }
+        else if(marked && !expected){
+          wrongMarked++; td.classList.add('vaccine-bad');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">✕</span>';
+          td.title = 'Acá no iba una dosis';
+        }
+        else if(!marked && expected){
+          missed++; td.classList.add('vaccine-missed');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">'+esc(expected)+'</span>';
+          td.title = 'Faltó: '+expected;
+        } else {
+          if(btn) btn.innerHTML = '<span class="vaccine-mark"></span>';
+        }
       });
       const total = Object.keys(VACCINE_ANSWERS).length;
       const errors = wrongMarked + missed;
@@ -3275,14 +3314,12 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function renderTodayProposalStrip(){
       const box = $('#todayProposalStrip'); if(!box) return;
       const due = dueQuestions().length;
-      const mistakes = Object.keys(state.mistakes||{}).length;
-      const answered = globalAnsweredQuestions().length;
       const cards = [
-        {k:'1', t: state.session ? 'Retomar sesión' : 'Empezar bloque', d: state.session ? 'Tenés una sesión abierta para continuar.' : 'Arrancá con el banco completo o elegí sprint abajo.', a:'resumeOrStart()'},
-        {k:'2', t: due ? 'Repaso del día' : 'Repaso al día', d: due ? due+' preguntas vencidas para consolidar.' : 'No hay vencidas ahora. Podés repasar errores.', a: due ? 'startDueSession()' : 'showView(\'review\')'},
-        {k:'3', t:'Juego rápido', d:'Entrená calendario de vacunación sin feedback hasta finalizar.', a:'showView(\'games\')'}
+        {k:'🧠', t: state.session ? 'Continuar donde quedaste' : 'Empezar una sesión limpia', d: state.session ? 'Entrá directo a tu sesión activa y seguí desde la última pregunta.' : 'Abrí una sesión nueva sin perder tiempo buscando por dónde empezar.', a:'resumeOrStart()'},
+        {k:'📅', t: due ? 'Repaso del día listo' : 'Repaso bajo control', d: due ? due+' preguntas vencidas para consolidar memoria y evitar olvidos.' : 'No hay vencidas ahora. Si querés, repasá errores activos.', a: due ? 'startDueSession()' : "showView('review')"},
+        {k:'🎯', t:'Entrenamiento breve', d:'Probá el juego del calendario o entrá a Modo IA para una propuesta guiada.', a:"showView('games')"}
       ];
-      box.innerHTML = cards.map(c=>'<button class="v342-proposal rounded-[1.25rem] border border-slate-200 bg-white/75 p-3 text-left shadow-sm hover:bg-white dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="'+c.a+'"><span class="inline-grid h-7 w-7 place-items-center rounded-xl bg-medical-50 text-xs font-black text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">'+c.k+'</span><h4 class="mt-2 font-display text-sm font-extrabold">'+esc(c.t)+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+esc(c.d)+'</p></button>').join('');
+      box.innerHTML = cards.map(c=>'<button class="v342-proposal rounded-[1.35rem] border border-slate-200 bg-white/80 p-4 text-left shadow-sm hover:bg-white dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="'+c.a+'"><span class="inline-grid h-9 w-9 place-items-center rounded-2xl bg-medical-50 text-sm font-black text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">'+c.k+'</span><h4 class="mt-3 font-display text-base font-extrabold">'+esc(c.t)+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+esc(c.d)+'</p></button>').join('');
     }
 
     const __v342ShowView = showView;

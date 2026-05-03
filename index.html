@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ResidenciAPP v34.3 · Plataforma de estudio para residencia médica</title>
+  <title>ResidenciAPP v34.6 · Plataforma de estudio para residencia médica</title>
   
   <meta name="description" content="ResidenciAPP es una plataforma de estudio activo para residencia médica: preguntas por sprints, repaso espaciado, flashcards, error log y colaboración." />
   <meta name="keywords" content="residencia médica, examen único, medicina, preguntas médicas, repaso espaciado, flashcards, Argentina" />
@@ -57,43 +57,84 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=34.3" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=34.6" />
 </head>
-<body class="sidebar-collapsed min-h-screen bg-slate-50 text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50">
+<body class="sidebar-collapsed min-h-screen overflow-x-hidden bg-slate-50 text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50">
 
 
 
 
-  <div id="loading" class="fixed inset-0 z-[100] grid place-items-center bg-white dark:bg-slate-950">
-    <div class="max-w-md px-6 text-center animate-fadeUp">
-      <img src="./assets/img/residenciapp-logo.jpeg" alt="ResidenciAPP" class="mx-auto mb-5 h-48 w-48 rounded-[2rem] object-cover shadow-premium sm:h-64 sm:w-64" />
-      <p class="font-display text-3xl font-extrabold tracking-tight">ResidenciAPP</p>
-      <p class="mt-1 text-sm font-bold uppercase tracking-[.16em] text-medical-600 dark:text-medical-300">Estudiar para entender · Medir para dominar</p>
-      <p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">Entrená, aprendé desde cero y medí tu progreso con sprints y simulacros.</p>
-
-      <div class="mt-6 rounded-[1.7rem] border border-medical-100 bg-white/85 p-4 text-left shadow-soft backdrop-blur dark:border-medical-900/70 dark:bg-slate-900/80">
-        <div class="mb-4 flex items-center gap-3">
-          <div class="grid h-11 w-11 place-items-center rounded-2xl bg-medical-50 text-xl text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">🔒</div>
-          <div>
-            <p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Acceso privado</p>
-            <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Ingresá tus credenciales para comenzar.</p>
-          </div>
-        </div>
-        <form id="accessForm" class="space-y-3" onsubmit="event.preventDefault(); enterResidenciApp();">
-          <div>
-            <label for="loginUser" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Usuario</label>
-            <input id="loginUser" type="text" autocomplete="username" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold outline-none transition focus:border-medical-400 focus:ring-4 focus:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus:ring-medical-950/40" placeholder="Usuario" />
-          </div>
-          <div>
-            <label for="loginPass" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Contraseña</label>
-            <div class="mt-1 flex rounded-2xl border border-slate-200 bg-white focus-within:border-medical-400 focus-within:ring-4 focus-within:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus-within:ring-medical-950/40">
-              <input id="loginPass" type="password" autocomplete="current-password" class="min-w-0 flex-1 rounded-2xl bg-transparent px-4 py-3 text-sm font-bold outline-none" placeholder="Contraseña" />
-              <button type="button" id="togglePassBtn" class="px-4 text-xs font-black text-slate-500 hover:text-medical-700 dark:text-slate-400 dark:hover:text-medical-300" onclick="toggleAccessPassword()">Ver</button>
+  <div id="loading" class="fixed inset-0 z-[100] overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(24,119,214,.16),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,.12),transparent_26%),linear-gradient(180deg,#f8fbff,#eef4fb_55%,#f8fafc)] dark:bg-[radial-gradient(circle_at_top_left,rgba(24,119,214,.18),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,.14),transparent_24%),linear-gradient(180deg,#020617,#0f172a_55%,#020617)]">
+    <div class="mx-auto flex min-h-screen max-w-6xl items-center px-4 py-8 sm:px-6 lg:px-10">
+      <div class="grid w-full gap-6 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+        <section class="relative overflow-hidden rounded-[2.2rem] border border-white/70 bg-white/82 p-6 shadow-[0_35px_80px_rgba(15,45,77,.12)] backdrop-blur xl:p-8 dark:border-slate-800 dark:bg-slate-950/82">
+          <div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-medical-200/60 blur-3xl dark:bg-medical-700/20"></div>
+          <div class="relative">
+            <div class="inline-flex items-center gap-3 rounded-full border border-medical-100 bg-medical-50/80 px-4 py-2 text-[11px] font-black uppercase tracking-[.18em] text-medical-700 dark:border-medical-900/60 dark:bg-medical-950/40 dark:text-medical-200">Examen único 2026 · estudio inteligente</div>
+            <div class="mt-6 flex items-center gap-4">
+              <img src="./assets/img/residenciapp-pro-logo.svg" alt="ResidenciAPP" class="h-16 w-16 rounded-[1.35rem] shadow-soft sm:h-20 sm:w-20" />
+              <div>
+                <h1 class="font-display text-3xl font-extrabold tracking-tight text-slate-950 sm:text-5xl dark:text-white">ResidenciAPP</h1>
+                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">Tu sistema de estudio para residencia médica.</p>
+              </div>
+            </div>
+            <h2 class="mt-7 max-w-2xl font-display text-3xl font-extrabold tracking-tight text-slate-950 sm:text-[3.35rem] sm:leading-[1.05] dark:text-white">Entrená con foco, medí tu progreso y convertí el banco en un plan diario.</h2>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300">Una experiencia más limpia y ágil para estudiar por sprints, repasar con método y entrenar con simulacros sin perder tiempo en decisiones innecesarias.</p>
+            <div class="mt-7 grid gap-3 sm:grid-cols-3">
+              <article class="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-[11px] font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Banco</p>
+                <p class="mt-2 font-display text-3xl font-extrabold">974</p>
+                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">preguntas auditadas</p>
+              </article>
+              <article class="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-[11px] font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Ruta</p>
+                <p class="mt-2 font-display text-3xl font-extrabold">36</p>
+                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">sprints generales</p>
+              </article>
+              <article class="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
+                <p class="text-[11px] font-black uppercase tracking-[.18em] text-violet-600 dark:text-violet-300">Modos</p>
+                <p class="mt-2 font-display text-3xl font-extrabold">Libre + IA</p>
+                <p class="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">para estudiar como quieras</p>
+              </article>
             </div>
           </div>
-          <p id="loginStatus" class="min-h-[1.25rem] text-center text-xs font-bold text-slate-500 dark:text-slate-400"></p>
-          <button id="startAppBtn" type="submit" class="w-full rounded-2xl bg-medical-600 px-7 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-medical-700">Acceder y comenzar</button>
-        </form>
+        </section>
+
+        <section class="rounded-[2.2rem] border border-white/70 bg-white/90 p-6 shadow-[0_35px_80px_rgba(15,23,42,.12)] backdrop-blur xl:p-8 dark:border-slate-800 dark:bg-slate-950/88">
+          <div class="mb-5 flex items-center gap-3">
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-medical-50 text-xl text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">🔒</div>
+            <div>
+              <p class="text-xs font-black uppercase tracking-[.18em] text-medical-600 dark:text-medical-300">Acceso privado</p>
+              <h3 class="font-display text-2xl font-extrabold">Ingresá para empezar</h3>
+            </div>
+          </div>
+          <p class="mb-5 text-sm leading-6 text-slate-600 dark:text-slate-400">Conservás la misma forma de acceso por usuario y contraseña, ahora dentro de una pantalla más clara y cómoda para web y celular.</p>
+          <form id="accessForm" class="space-y-4" onsubmit="event.preventDefault(); enterResidenciApp();">
+            <div>
+              <label for="loginUser" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Usuario</label>
+              <input id="loginUser" type="text" autocomplete="username" class="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-bold outline-none transition focus:border-medical-400 focus:ring-4 focus:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus:ring-medical-950/40" placeholder="Usuario" />
+            </div>
+            <div>
+              <label for="loginPass" class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Contraseña</label>
+              <div class="mt-1 flex rounded-2xl border border-slate-200 bg-white focus-within:border-medical-400 focus-within:ring-4 focus-within:ring-medical-100 dark:border-slate-700 dark:bg-slate-950 dark:focus-within:ring-medical-950/40">
+                <input id="loginPass" type="password" autocomplete="current-password" class="min-w-0 flex-1 rounded-2xl bg-transparent px-4 py-3.5 text-sm font-bold outline-none" placeholder="Contraseña" />
+                <button type="button" id="togglePassBtn" class="px-4 text-xs font-black text-slate-500 hover:text-medical-700 dark:text-slate-400 dark:hover:text-medical-300" onclick="toggleAccessPassword()">Ver</button>
+              </div>
+            </div>
+            <p id="loginStatus" class="min-h-[1.25rem] text-center text-xs font-bold text-slate-500 dark:text-slate-400"></p>
+            <button id="startAppBtn" type="submit" class="w-full rounded-2xl bg-medical-600 px-7 py-4 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 hover:bg-medical-700">Acceder y comenzar</button>
+          </form>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-[1.4rem] border border-slate-200 bg-slate-50/90 p-4 dark:border-slate-800 dark:bg-slate-900/60">
+              <p class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Qué vas a encontrar</p>
+              <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Sprints, repaso inteligente, NeuroPREP, juegos y nodos de “Aprender desde cero”.</p>
+            </div>
+            <div class="rounded-[1.4rem] border border-slate-200 bg-slate-50/90 p-4 dark:border-slate-800 dark:bg-slate-900/60">
+              <p class="text-[11px] font-black uppercase tracking-[.16em] text-slate-400">Experiencia nueva</p>
+              <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Mejor adaptación a escritorio y celular, con un tablero más limpio y menos ruido visual.</p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -103,7 +144,7 @@
   <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex w-[304px] -translate-x-full flex-col overflow-y-auto border-r border-slate-200 bg-white/90 p-5 shadow-2xl glass transition-transform lg:translate-x-0 dark:border-slate-800 dark:bg-slate-950/90">
     <div class="mb-7 flex items-center justify-between gap-3">
       <button class="flex items-center gap-3 text-left" onclick="showView('dashboard')">
-        <img src="./assets/img/residenciapp-logo.jpeg" alt="ResidenciAPP" class="h-12 w-12 rounded-2xl object-cover shadow-glow" />
+        <img src="./assets/img/residenciapp-pro-logo.svg" alt="ResidenciAPP" class="h-12 w-12 rounded-2xl object-cover shadow-glow" />
         <div>
           <h1 class="font-display text-xl font-extrabold tracking-tight">ResidenciAPP</h1>
           <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Banco 974 · 36 sprints</p>
@@ -165,14 +206,14 @@
         <div class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-premium dark:border-slate-800 dark:bg-slate-900">
           <div class="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-medical-200/50 blur-3xl dark:bg-medical-700/20"></div>
           <div class="relative">
-            <p class="mb-3 inline-flex rounded-full bg-medical-50 px-3 py-1 text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">Banco 974 · Entrenamiento inteligente</p>
-            <h3 class="max-w-3xl font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Tu mesa de estudio, lista para hoy.</h3>
-            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">Entrá, resolvé el bloque que toca y cerrá con una métrica clara. Menos paneles visibles, más decisiones útiles.</p>
+            <p class="mb-3 inline-flex rounded-full bg-medical-50 px-3 py-1 text-xs font-black uppercase tracking-[.18em] text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">Residencia médica 2026 · enfoque diario</p>
+            <h3 class="max-w-3xl font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Estudiá con claridad y empezá por lo importante.</h3>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">Un inicio más limpio para que veas rápido qué conviene hacer hoy, sin sentir la pantalla sobrecargada.</p>
             <div id="todayProposalStrip" class="mt-5 grid gap-3 md:grid-cols-3"></div>
             <div class="mt-5 flex flex-wrap gap-3">
               <button class="rounded-2xl bg-medical-600 px-5 py-3 text-sm font-black text-white shadow-glow hover:bg-medical-700" onclick="resumeOrStart()">Continuar estudio</button>
               <button class="rounded-2xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="showView('review')">Repaso inteligente</button>
-              <button class="rounded-2xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="showView('games')">Juegos</button>
+              <button class="rounded-2xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="showView('neuroprep')">Modo IA</button>
             </div>
             <div id="dueTodayHero" class="mt-5"></div>
           </div>
@@ -516,11 +557,11 @@
         <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
           <p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Juegos de memoria</p>
           <h3 class="mt-1 font-display text-3xl font-extrabold">Calendario de vacunación en blanco</h3>
-          <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">Marcá de memoria las celdas donde recordás que va una dosis. No hay feedback durante el armado. Cuando termines, la app corrige ubicación de dosis.</p>
+          <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">Tocá las celdas para marcarlas rápidamente. No hay feedback mientras armás el calendario. Al finalizar, la app corrige ubicación de dosis y te muestra tu porcentaje.</p>
           <div class="mt-5 space-y-3 rounded-3xl bg-slate-50 p-4 text-sm leading-6 dark:bg-slate-950/60">
             <p><strong>Cómo se juega:</strong></p>
-            <p>1. Tocá una celda para marcarla.</p>
-            <p>2. Podés escribir una pista breve, pero la corrección evalúa la ubicación.</p>
+            <p>1. Tocá una celda para seleccionarla: se pinta de azul.</p>
+            <p>2. Seguí marcando de forma libre hasta completar el calendario.</p>
             <p>3. Al tocar <strong>Terminar</strong>, verde = correcta, rojo = no iba dosis, amarillo = dosis omitida.</p>
           </div>
           <div id="vaccineGameScore" class="mt-5 hidden rounded-3xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950"></div>
@@ -590,13 +631,14 @@
     </div>
   </div>
 
-    <script src="./assets/js/config.js?v=34.3"></script>
-  <script src="./assets/data/questions.js?v=34.3"></script>
-  <script src="./assets/data/collabdata.js?v=34.3"></script>
-  <script src="./assets/data/lessons.js?v=34.4"></script>
+    <script src="./assets/js/config.js?v=34.6"></script>
+  <script src="./assets/data/questions.js?v=34.6"></script>
+  <script src="./assets/data/collabdata.js?v=34.6"></script>
+  <script src="./assets/data/lessons.v34.5.js?v=34.6"></script>
+  <script>window.RESIDENCIAPP_EXPECTED_LESSON_COUNT = 12;</script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="./assets/js/main.js?v=34.3"></script>
-  <script src="./assets/js/v34_3_intelligence.js?v=34.4"></script>
+  <script src="./assets/js/main.js?v=34.6"></script>
+  <script src="./assets/js/v34_3_intelligence.js?v=34.6"></script>
 <!--
 ======================== RESIDENCIAPP · APORTES COLABORATIVOS SIN GITHUB ========================
 
