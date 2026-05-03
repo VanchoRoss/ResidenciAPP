@@ -1,4 +1,4 @@
-/* === ResidenciAPP v34.11 · Juegos + MedQuiz integrado ===
+/* === ResidenciAPP v34.12 · Juegos + MedQuiz links cortos ===
    Integra el flujo de desafío por link/base64 del MedQuiz externo dentro de la estética ResidenciAPP.
    Mantiene: calendario, banco local, API key localStorage, links sin backend y comparación por resultados.
 */
@@ -9,7 +9,7 @@
   const LS_API_KEY_COMPAT = 'mq_key';
   const LS_MODEL = 'RESIDENCIAPP_ANTHROPIC_MODEL';
   const LS_PLAYER = 'RESIDENCIAPP_CHALLENGE_PLAYER_NAME';
-  const VERSION = 11;
+  const VERSION = 12;
   const TIMER_SECONDS = 20;
 
   const AXES = [
@@ -54,16 +54,69 @@
       const pad = normalized.length % 4 ? '='.repeat(4 - normalized.length % 4) : '';
       const bin = atob(normalized + pad);
       const bytes = Uint8Array.from(bin, ch => ch.charCodeAt(0));
-      return JSON.parse(new TextDecoder().decode(bytes));
+      return expandChallengePayload(JSON.parse(new TextDecoder().decode(bytes)));
     }catch(err){
       // Compatibilidad con links base64 clásicos del archivo MedQuiz.
-      try{return JSON.parse(decodeURIComponent(escape(atob(String(token||'').trim()))));}
+      try{return expandChallengePayload(JSON.parse(decodeURIComponent(escape(atob(String(token||'').trim())))));}
       catch(_){ throw new Error('No pude leer el link. Revisá que esté completo.'); }
     }
   }
+  function questionIndexById(){
+    const bank = (window.RESIDENCIAPP_DATA?.questions || []);
+    const map = new Map();
+    bank.forEach(q => { if(q?.id) map.set(q.id, q); });
+    return map;
+  }
+  function hydrateQuestionsFromIds(ids){
+    const map = questionIndexById();
+    return (ids || []).map(id => {
+      const q = map.get(id);
+      if(!q) return null;
+      return normalizeBankQuestion(q, axisFromBankQuestion(q));
+    }).filter(Boolean);
+  }
+  function compactAnswers(ans){
+    return (ans || []).map(a => [a?.selectedIndex ?? -1, !!a?.correct, Number(a?.axisId)||0]);
+  }
+  function expandAnswers(ans){
+    return (ans || []).map(a => Array.isArray(a) ? {selectedIndex:a[0], correct:!!a[1], axisId:a[2]} : a);
+  }
+  function compactAIQuestion(q){
+    return {x:q.axisId,n:q.axisName,q:q.question,o:q.options,c:q.correctIndex,e:q.explanation,t:q.topic};
+  }
+  function expandAIQuestion(q){
+    if(!q) return null;
+    if(q.question || q.options) return q;
+    return {axisId:q.x, axisName:q.n, question:q.q, options:q.o, correctIndex:q.c, explanation:q.e, topic:q.t};
+  }
+  function compactChallengePayload(ch){
+    if(!ch) return ch;
+    const ids = (ch.questions || []).map(q => q.sourceId).filter(Boolean);
+    const local = ids.length === (ch.questions || []).length;
+    return {
+      t:'mq', v:VERSION, i:ch.id || uid(), ca:ch.createdAt || new Date().toISOString(),
+      cn:ch.creatorName || '', on:ch.opponentName || '', d:ch.difficulty || 'Examen', s:local ? 'local' : (ch.source || 'Anthropic'),
+      qi: local ? ids : undefined,
+      qs: local ? undefined : (ch.questions || []).map(compactAIQuestion),
+      cs: ch.creatorScore ?? null, ce: compactAnswers(ch.creatorAnswers),
+      hn: ch.challengerName || null, hs: ch.challengerScore ?? null, he: compactAnswers(ch.challengerAnswers)
+    };
+  }
+  function expandChallengePayload(obj){
+    if(!obj) return obj;
+    if(obj.t !== 'mq') return obj;
+    const questions = obj.qi ? hydrateQuestionsFromIds(obj.qi) : (obj.qs || []).map(expandAIQuestion).filter(Boolean);
+    return {
+      type:'medquiz_challenge', v:obj.v || VERSION, id:obj.i || uid(), createdAt:obj.ca || new Date().toISOString(),
+      creatorName:obj.cn || '', opponentName:obj.on || '', topic:'Banco integrado', difficulty:obj.d || 'Examen', source:obj.s === 'local' ? 'Banco local' : (obj.s || 'Anthropic'),
+      questions,
+      creatorScore: obj.cs ?? null, creatorAnswers: expandAnswers(obj.ce),
+      challengerName: obj.hn || null, challengerScore: obj.hs ?? null, challengerAnswers: expandAnswers(obj.he)
+    };
+  }
   function siteBase(){ return window.location.origin + window.location.pathname; }
-  function makeChallengeLink(challenge){ return siteBase() + '?c=' + b64Encode(challenge); }
-  function makeResultLink(challenge){ return siteBase() + '?c=' + b64Encode(challenge); }
+  function makeChallengeLink(challenge){ return siteBase() + '#c=' + b64Encode(compactChallengePayload(challenge)); }
+  function makeResultLink(challenge){ return siteBase() + '#c=' + b64Encode(compactChallengePayload(challenge)); }
   function readTokens(){
     const p = new URLSearchParams(window.location.search || '');
     const h = new URLSearchParams(String(window.location.hash||'').replace(/^#\??/,''));
@@ -169,7 +222,7 @@
       <div class="grid gap-4 lg:grid-cols-[1fr_.62fr_auto] lg:items-end">
         <div>
           <p class="text-xs font-black uppercase tracking-[.16em] text-amber-700 dark:text-amber-300">Configuración local</p>
-          <p class="mt-1 text-sm font-bold leading-6 text-slate-600 dark:text-slate-300">La API key se guarda solo en este navegador. También podés crear desafíos con banco local sin IA.</p>
+          <p class="mt-1 text-sm font-bold leading-6 text-slate-600 dark:text-slate-300">La API key es opcional. Se guarda en este navegador y solo se usa si elegís “Generar con IA”. Para links cortos, usá “Crear mix automático” con Banco 974.</p>
         </div>
         <label class="block text-xs font-black uppercase tracking-[.14em] text-slate-500">Anthropic API key
           <input id="anthropicKeyInput" type="password" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="sk-ant-..." value="${esc(key)}" />
@@ -234,7 +287,7 @@
           <div>
             <p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">MedQuiz · Residencia Argentina 2026</p>
             <h3 class="mt-2 font-display text-4xl font-extrabold tracking-tight">Desafío médico por link</h3>
-            <p class="mt-3 max-w-3xl text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Creá un duelo de 8 preguntas, 2 por eje. El desafío, las respuestas y la comparación viajan dentro del link base64: ideal para compartir por WhatsApp sin backend.</p>
+            <p class="mt-3 max-w-3xl text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Creá un duelo de 8 preguntas, 2 por eje. Con banco local, el link viaja compacto usando solo IDs del Banco 974.</p>
           </div>
           <div class="grid gap-2 sm:min-w-56">
             <button class="rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizGoCreate()">Crear desafío</button>
@@ -242,9 +295,6 @@
           </div>
         </div>
         ${worldCards()}
-        <div class="mt-5 rounded-3xl bg-slate-50 p-4 text-sm font-bold leading-6 text-slate-600 dark:bg-slate-950/60 dark:text-slate-300">
-          <p><strong>Flujo:</strong> Franco crea desafío → comparte link → Sofía juega → Sofía devuelve su link de resultado → Franco pega el link y compara.</p>
-        </div>
       </section>`;
   }
 
@@ -254,16 +304,13 @@
         <button class="mb-4 rounded-2xl border border-slate-200 px-4 py-2 text-sm font-black dark:border-slate-700" onclick="medquizShow('home')">← Volver</button>
         <p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Nuevo desafío</p>
         <h3 class="mt-1 font-display text-3xl font-extrabold">Crear MedQuiz</h3>
-        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Genera 8 preguntas balanceadas. Con IA salen preguntas nuevas; con banco local sale al instante usando tu Banco 974.</p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Genera automáticamente 8 preguntas balanceadas: 2 por APS, 2 por Mujer, 2 por Niñez y 2 por Adultos. No hace falta elegir tema.</p>
         <div class="mt-5 grid gap-4 md:grid-cols-2">
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Tu nombre
-            <input id="mqCreator" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="Franco" value="${esc(S.playerName || 'Franco')}" />
+            <input id="mqCreator" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="${esc(S.playerName || '')}" />
           </label>
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">A quién desafiás
-            <input id="mqOpponent" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="Sofía" value="Sofía" />
-          </label>
-          <label class="md:col-span-2 text-xs font-black uppercase tracking-[.14em] text-slate-400">Tema opcional
-            <input id="mqTopic" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="Ej: vacunas, RPM, HTA, cáncer de mama" />
+            <input id="mqOpponent" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="${esc('')}" />
           </label>
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Dificultad
             <select id="mqDifficulty" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950"><option>Examen</option><option>Repaso rápido</option><option>Difícil</option></select>
@@ -274,8 +321,8 @@
         </div>
         <div id="mqStatus" class="mt-4 text-sm font-bold text-slate-500"></div>
         <div class="mt-5 flex flex-wrap gap-2">
-          <button class="rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizCreateAI()">Generar con IA</button>
-          <button class="rounded-2xl border border-slate-200 px-5 py-4 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="medquizCreateLocal()">Crear con banco local</button>
+          <button class="rounded-2xl bg-indigo-600 px-5 py-4 text-sm font-black text-white shadow-soft hover:bg-indigo-700" onclick="medquizCreateLocal()">Crear mix automático</button>
+          <button class="rounded-2xl border border-slate-200 px-5 py-4 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="medquizCreateAI()">Generar con IA</button>
           <button class="rounded-2xl border border-amber-200 px-5 py-4 text-sm font-black text-amber-700 hover:bg-amber-50 dark:border-amber-900/60 dark:text-amber-300 dark:hover:bg-amber-950/20" onclick="openChallengeSettings()">⚙ API</button>
         </div>
       </section>`;
@@ -297,7 +344,7 @@
       <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
         <p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Desafío creado</p>
         <h3 class="mt-1 font-display text-3xl font-extrabold">Compartí el link</h3>
-        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">El link contiene preguntas y datos del desafío. Al abrirlo, la otra persona verá “${esc((S.challenge?.creatorName||'Franco').toUpperCase())} TE DESAFIO”.</p>
+        <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">El link compacto contiene los IDs de las 8 preguntas y los datos mínimos del desafío. Al abrirlo, la otra persona verá “${esc((S.challenge?.creatorName||'').toUpperCase())} TE DESAFIO”.</p>
         <textarea id="mqShareLink" class="mt-5 min-h-28 w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs font-semibold leading-5 dark:border-slate-700 dark:bg-slate-950" readonly>${esc(link)}</textarea>
         <div class="mt-4 flex flex-wrap gap-2">
           <button class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-black text-white dark:bg-white dark:text-slate-900" onclick="medquizCopy('mqShareLink')">Copiar link</button>
@@ -314,7 +361,7 @@
         <p class="text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Unirse o comparar</p>
         <h3 class="mt-1 font-display text-3xl font-extrabold">Pegá el link</h3>
         <p class="mt-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300">Acepta links de desafío, links de resultado o códigos base64 completos.</p>
-        <textarea id="mqJoinLink" class="mt-5 min-h-28 w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs font-semibold leading-5 dark:border-slate-700 dark:bg-slate-950" placeholder="Pegá acá el link largo…"></textarea>
+        <textarea id="mqJoinLink" class="mt-5 min-h-28 w-full rounded-2xl border border-slate-200 bg-white p-4 text-xs font-semibold leading-5 dark:border-slate-700 dark:bg-slate-950" placeholder="Pegá acá el link…"></textarea>
         <div id="mqJoinError" class="mt-3 hidden rounded-2xl border border-rose-200 bg-rose-50 p-3 text-sm font-bold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300"></div>
         <div class="mt-4 flex flex-wrap gap-2">
           <button class="rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-black text-white" onclick="medquizLoadPasted()">Abrir link</button>
@@ -333,7 +380,7 @@
         <p class="mt-3 text-sm font-bold text-slate-500 dark:text-slate-400">${score != null ? `Ya jugó: ${score}/${S.challenge.questions.length}` : 'Aceptá el desafío y resolvé el mismo set de preguntas.'}</p>
         <div class="mx-auto mt-6 max-w-md text-left">
           <label class="text-xs font-black uppercase tracking-[.14em] text-slate-400">Tu nombre
-            <input id="mqPlayerName" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="Sofía" value="${esc(S.playerName || S.challenge?.opponentName || 'Sofía')}" />
+            <input id="mqPlayerName" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold dark:border-slate-700 dark:bg-slate-950" placeholder="" value="${esc(S.playerName || S.challenge?.opponentName || '')}" />
           </label>
         </div>
         <div class="mt-5 flex justify-center gap-2">
@@ -452,8 +499,8 @@
 
   async function createChallenge(useAI){
     const creatorName = ($('#mqCreator')?.value || '').trim();
-    const opponentName = ($('#mqOpponent')?.value || 'Rival').trim() || 'Rival';
-    const topic = ($('#mqTopic')?.value || '').trim();
+    const opponentName = ($('#mqOpponent')?.value || '').trim();
+    const topic = '';
     const difficulty = $('#mqDifficulty')?.value || 'Examen';
     if(!creatorName){ setStatus('Ingresá tu nombre para continuar.', 'error'); return; }
     S.playerName = creatorName; localStorage.setItem(LS_PLAYER, creatorName);
@@ -464,7 +511,7 @@
       const questions = useAI ? await genQuestionsAI({topic, difficulty}) : genQuestionsLocal({topic, difficulty});
       S.challenge = {
         type:'medquiz_challenge', v:VERSION, id:uid(), createdAt:new Date().toISOString(),
-        creatorName, opponentName, topic:topic || 'Banco integrado', difficulty, source:useAI?'Anthropic':'Banco local',
+        creatorName, opponentName, topic:'Banco integrado', difficulty, source:useAI?'Anthropic':'Banco local',
         questions, creatorScore:null, creatorAnswers:null, challengerName:null, challengerScore:null, challengerAnswers:null
       };
       setMedQuizScreen('share');
@@ -520,21 +567,15 @@ OBLIGATORIO: exactamente 2 con axisId=1, 2 con axisId=2, 2 con axisId=3, 2 con a
     return normalizeGeneratedQuestions(parsed.questions || []);
   }
 
-  function genQuestionsLocal({topic}){
+  function genQuestionsLocal(){
     const bank = (window.RESIDENCIAPP_DATA?.questions || []);
     const out = [];
     for(const ax of AXES){
-      let pool = bank.filter(q => axisFromBankQuestion(q) === ax.id);
-      if(topic){
-        const t = topic.toLowerCase();
-        const filtered = pool.filter(q => [q.q,q.tema,q.sprint,q.eje].join(' ').toLowerCase().includes(t));
-        if(filtered.length >= 2) pool = filtered;
-      }
-      pool = shuffle(pool).slice(0,2);
+      const pool = shuffle(bank.filter(q => axisFromBankQuestion(q) === ax.id)).slice(0,2);
       out.push(...pool.map(q => normalizeBankQuestion(q, ax.id)));
     }
     if(out.length < 8) throw new Error('No pude armar 8 preguntas balanceadas desde el banco local.');
-    return shuffle(out).slice(0,8);
+    return out;
   }
   function axisFromBankQuestion(q){
     const txt = [q.eje,q.source,q.sprint,q.tema].join(' ').toLowerCase();

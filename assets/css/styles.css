@@ -1063,7 +1063,7 @@ main { overflow-x: clip; }
 }
 
 
-/* === ResidenciAPP v34.11 · MedQuiz integrado === */
+/* === ResidenciAPP v34.12 · MedQuiz links cortos === */
 .medquiz-shell { animation: medquizFade .22s ease-out; }
 @keyframes medquizFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .medquiz-world { transition: transform .16s ease, box-shadow .16s ease; }
@@ -1078,3 +1078,8 @@ main { overflow-x: clip; }
   .medquiz-shell h3 { line-height: 1.05; }
   .medquiz-shell textarea { font-size: 11px; }
 }
+
+
+/* === ResidenciAPP v34.12 · links cortos MedQuiz === */
+.medquiz-shell textarea[readonly]{min-height:5.5rem}
+@media (max-width:640px){.medquiz-shell textarea[readonly]{min-height:4.5rem;font-size:.7rem}}
