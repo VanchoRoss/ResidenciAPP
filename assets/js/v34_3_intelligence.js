@@ -211,13 +211,15 @@
   }
 
   function v343LibraryChip(q){
-    const items = (state.library||[]).filter(it => it && (it.qid===q.id || v343Norm(it.topic||'')===v343Norm(q.sprint||'') || v343Norm(it.topic||'')===v343Norm(q.tema||'')));
+    const items = (state.library||[]).filter(it => it && String(it.qid||'')===String(q.id));
     if(!items.length) return '';
-    return '<button class="mt-4 mb-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-black text-amber-800 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200" onclick="openQuestionLibrary(\''+v343Esc(q.id)+'\')">📚 Tenés '+items.length+' nota'+(items.length===1?'':'s')+' para este tema</button>';
+    return '<button class="mt-4 mb-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-black text-amber-800 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200" onclick="openQuestionLibrary(\''+v343Esc(q.id)+'\')">📚 Tenés '+items.length+' nota'+(items.length===1?'':'s')+' guardada'+(items.length===1?'':'s')+' para esta pregunta</button>';
   }
   window.openQuestionLibrary = function(qid){
+    const active = document.querySelector('.view:not(.hidden)')?.id?.replace('View','') || (state.session ? 'session' : 'dashboard');
+    window.__libraryQuestionContext = {qid, returnView: active==='library' ? (state.session ? 'session' : 'dashboard') : active};
     showView('library');
-    setTimeout(()=>alert('Abrí Biblioteca personal. Buscá las notas asociadas a la pregunta '+qid+' o al sprint/tema.'),100);
+    if(typeof renderLibrary === 'function') renderLibrary();
   };
 
   const __v343QuestionTemplate = questionTemplate;

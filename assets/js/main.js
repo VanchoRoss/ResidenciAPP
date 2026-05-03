@@ -569,7 +569,36 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     function saveErrorLog(id){ const q=QUESTIONS.find(x=>x.id===id); const type=$('#errorType').value; const note=$('#errorNote').value.trim(); const reason = ERROR_REASONS.find(r=>r.id===type)?.label || type; state.mistakes[id] = Object.assign(state.mistakes[id]||{id, correct:q.ans, selected:answerFor(q)?.selected||'', at:Date.now(), eje:q.eje, tema:q.tema, sprint:q.sprint}, {errorType:type, errorLabel:reason, note}); addLibrary({type:'error', topic:q.sprint, text:reason+' — '+(note||'Sin nota'), qid:id}); scheduleQuestion(id, 3, false); saveState(); closeMethodModal(); renderReview(); renderLibrary(); renderQuestion(); alert('Error guardado y programado para repaso.'); }
     function addLibrary(item){ state.library.unshift(Object.assign({createdAt:Date.now()}, item)); state.library = state.library.slice(0,300); saveState(); }
     function saveLibraryItem(){ const type=$('#libraryType').value; const topic=$('#libraryTopic').value.trim(); const text=$('#libraryText').value.trim(); if(!topic||!text) return alert('Completá tema y texto.'); addLibrary({type, topic, text}); $('#libraryTopic').value=''; $('#libraryText').value=''; renderLibrary(); }
-    function renderLibrary(){ const q=norm($('#librarySearch')?.value||''); const list=(state.library||[]).filter(x => !q || norm([x.type,x.topic,x.text].join(' ')).includes(q)); $('#libraryList').innerHTML = list.map((it,i)=>'<article class="rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><div class="flex items-start justify-between gap-3"><div><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(it.type)+'</span><h4 class="mt-2 font-display text-lg font-extrabold">'+esc(it.topic)+'</h4></div><button class="text-rose-500 font-black" onclick="deleteLibraryItem('+i+')">×</button></div><p class="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(it.text)+'</p></article>').join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">Todavía no hay recursos guardados.</div>'; }
+    function libraryItemsWithIndexes(items){
+      return (items||[]).map((it,i)=>({it,i}));
+    }
+    function renderLibrary(){
+      const ctx = window.__libraryQuestionContext || null;
+      const search = norm($('#librarySearch')?.value||'');
+      let pairs = libraryItemsWithIndexes(state.library||[]);
+      let heading = '';
+      if(ctx && ctx.qid){
+        const qctx = QUESTIONS.find(q=>q.id===ctx.qid);
+        pairs = pairs.filter(p => p.it && String(p.it.qid||'') === String(ctx.qid));
+        heading = '<div class="mb-4 rounded-3xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">'
+          + '<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.18em] text-amber-700 dark:text-amber-300">Biblioteca contextual</p>'
+          + '<h4 class="mt-1 font-display text-xl font-extrabold">Notas guardadas para esta pregunta</h4>'
+          + '<p class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">'+esc(qctx ? (qctx.sprint+' · '+qctx.tema) : ctx.qid)+'</p></div>'
+          + '<button class="rounded-2xl bg-slate-950 px-4 py-3 text-xs font-black text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950" onclick="clearLibraryContextAndReturn()">Volver a la sección activa</button></div></div>';
+      } else {
+        pairs = pairs.filter(p => !search || norm([p.it.type,p.it.topic,p.it.text].join(' ')).includes(search));
+      }
+      const cards = pairs.map(({it,i})=>'<article class="rounded-3xl border border-slate-200 p-4 dark:border-slate-700"><div class="flex items-start justify-between gap-3"><div><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(it.type)+'</span><h4 class="mt-2 font-display text-lg font-extrabold">'+esc(it.topic)+'</h4></div><button class="text-rose-500 font-black" onclick="deleteLibraryItem('+i+')">×</button></div><p class="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700 dark:text-slate-300">'+esc(it.text)+'</p></article>').join('');
+      const empty = ctx && ctx.qid
+        ? '<div class="rounded-3xl border border-dashed border-amber-300 p-8 text-center text-slate-500 dark:border-amber-800">Esta pregunta todavía no tiene notas propias guardadas.</div>'
+        : '<div class="rounded-3xl border border-dashed border-slate-300 p-8 text-center text-slate-500 dark:border-slate-700">Todavía no hay recursos guardados.</div>';
+      if($('#libraryList')) $('#libraryList').innerHTML = heading + (cards || empty);
+    }
+    function clearLibraryContextAndReturn(){
+      const ret = window.__libraryQuestionContext?.returnView || (state.session ? 'session' : 'dashboard');
+      window.__libraryQuestionContext = null;
+      showView(ret);
+    }
     function deleteLibraryItem(i){ state.library.splice(i,1); saveState(); renderLibrary(); }
 
     function scheduleQuestion(id, days=3, announce=true){ const q=QUESTIONS.find(x=>x.id===id); if(!q) return; state.scheduled[id] = {id, due:addDays(days), days, at:Date.now(), tema:q.tema, sprint:q.sprint}; saveState(); renderReview(); if(announce) alert('Repaso programado para '+state.scheduled[id].due); }
@@ -3193,13 +3222,13 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
 
     const VACCINE_ROWS = [
       ['rn','Recién nacido'], ['2m','2 meses'], ['3m','3 meses'], ['4m','4 meses'], ['5m','5 meses'], ['6m','6 meses'],
-      ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos en 2021'], ['2015','Nacidos en 2015'],
-      ['15plus','A partir de los 15 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
+      ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos 2021/22/23/24'], ['2015','Nacidos en 2015'],
+      ['11plus','Desde los 11 años'], ['15_18','15 a 18 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
     ];
     const VACCINE_COLS = [
       ['bcg','BCG'], ['hepb','Hepatitis B'], ['neumo','Neumococo conjugada'], ['penta','Quíntuple / Pentavalente'], ['ipv','IPV'], ['rota','Rotavirus'],
       ['menacwy','Meningococo ACWY'], ['gripe','Antigripal'], ['hepa','Hepatitis A'], ['triviral','Triple viral'], ['varicela','Varicela'], ['dtpc','Triple bacteriana celular'],
-      ['dtpa','Triple bacteriana acelular'], ['vph','VPH'], ['db','Doble bacteriana'], ['vsr','VSR'], ['fa','Fiebre amarilla'], ['fha','Fiebre hemorrágica arg.']
+      ['dtpa','Triple bacteriana acelular'], ['vph','VPH'], ['db','Doble bacteriana'], ['vsr','Virus sincicial respiratorio'], ['fa','Fiebre amarilla'], ['fha','Fiebre hemorrágica arg.']
     ];
     const VACCINE_ANSWERS = {
       'rn|bcg':'única dosis', 'rn|hepb':'dosis neonatal',
@@ -3208,42 +3237,65 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       '4m|neumo':'2° dosis', '4m|penta':'2° dosis', '4m|ipv':'2° dosis', '4m|rota':'2° dosis',
       '5m|menacwy':'2° dosis',
       '6m|penta':'3° dosis', '6m|ipv':'3° dosis', '6m|gripe':'dosis anual',
-      '12m|neumo':'refuerzo', '12m|gripe':'dosis anual', '12m|hepa':'única dosis', '12m|triviral':'1° dosis',
+      '12m|neumo':'refuerzo', '12m|hepa':'única dosis', '12m|triviral':'1° dosis',
       '15m|menacwy':'refuerzo', '15m|gripe':'dosis anual', '15m|varicela':'1° dosis',
       '18m|penta':'1° refuerzo', '18m|gripe':'dosis anual', '18m|triviral':'2° dosis', '18m|fa':'1° dosis',
       '24m|gripe':'dosis anual',
       '2021|ipv':'refuerzo', '2021|triviral':'2° dosis', '2021|varicela':'2° dosis', '2021|dtpc':'2° refuerzo',
       '2015|menacwy':'única dosis', '2015|dtpa':'refuerzo', '2015|vph':'única dosis', '2015|fa':'refuerzo',
-      '15plus|triviral':'iniciar/completar esquema', '15plus|fha':'única dosis',
-      'adultos|hepb':'iniciar/completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar/completar esquema', 'adultos|db':'refuerzo cada 10 años',
-      'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
-      'puerperas|gripe':'una dosis', 'puerperas|triviral':'iniciar/completar esquema',
-      'salud|gripe':'dosis anual', 'salud|dtpa':'una dosis'
+      '11plus|triviral':'iniciar / completar esquema',
+      '15_18|triviral':'2 dosis / completar esquema', '15_18|fha':'única dosis',
+      'adultos|hepb':'iniciar / completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar / completar esquema', 'adultos|db':'refuerzo cada 10 años', 'adultos|fha':'única dosis',
+      'embarazadas|hepb':'iniciar / completar esquema', 'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
+      'puerperas|hepb':'iniciar / completar esquema', 'puerperas|gripe':'una dosis', 'puerperas|triviral':'iniciar / completar esquema',
+      'salud|hepb':'iniciar / completar esquema', 'salud|gripe':'dosis anual', 'salud|triviral':'iniciar / completar esquema', 'salud|dtpa':'una dosis'
     };
     let vaccineGameFinished = false;
+    function vaccineCellMarkup(label=''){
+      return '<button type="button" class="vaccine-tap" aria-label="'+esc(label)+'" aria-pressed="false"><span class="vaccine-mark"></span></button>';
+    }
     function renderVaccineGame(){
       const board = $('#vaccineGameBoard'); if(!board) return;
       vaccineGameFinished = false;
-      const head = '<thead><tr><th class="sticky left-0 z-10 bg-slate-100 p-2 text-left text-[11px] font-black uppercase tracking-[.08em] dark:bg-slate-800">Vacunas / Edad</th>'+VACCINE_COLS.map(c=>'<th class="min-w-[120px] p-2 text-center text-[10px] font-black uppercase tracking-[.05em]">'+esc(c[1])+'</th>').join('')+'</tr></thead>';
-      const body = '<tbody>'+VACCINE_ROWS.map(r=>'<tr><th class="sticky left-0 z-10 bg-white p-2 text-left text-xs font-black dark:bg-slate-900">'+esc(r[1])+'</th>'+VACCINE_COLS.map(c=>{
+      board.classList.add('vaccine-game-board');
+      const head = '<thead><tr><th class="vaccine-age-head">Vacunas / Edad</th>'+VACCINE_COLS.map(c=>'<th>'+esc(c[1])+'</th>').join('')+'</tr></thead>';
+      const body = '<tbody>'+VACCINE_ROWS.map(r=>'<tr><th class="vaccine-age-cell">'+esc(r[1])+'</th>'+VACCINE_COLS.map(c=>{
         const key = r[0]+'|'+c[0];
-        return '<td class="vaccine-cell border border-slate-200 p-1 align-top dark:border-slate-700" data-key="'+key+'"><textarea aria-label="'+esc(r[1]+' '+c[1])+'" class="vaccine-input h-16 w-full resize-none rounded-lg bg-transparent p-1 text-[11px] font-bold outline-none" placeholder=""></textarea></td>';
+        return '<td class="vaccine-cell border border-slate-200 align-top dark:border-slate-700" data-key="'+key+'">'+vaccineCellMarkup(r[1]+' '+c[1])+'</td>';
       }).join('')+'</tr>').join('')+'</tbody>';
-      board.innerHTML = '<table class="min-w-[2200px] border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
-      updateVaccineGameCounter();
-    }
-    function updateVaccineGameCounter(){
-      const counter = $('#vaccineGameCounter'); if(!counter) return;
-      const marked = $$('.vaccine-input').filter(i=>i.value.trim()).length;
-      counter.textContent = marked+' celdas marcadas · '+Object.keys(VACCINE_ANSWERS).length+' dosis correctas';
-    }
-    document.addEventListener('input', e => { if(e.target?.classList?.contains('vaccine-input')) updateVaccineGameCounter(); });
-    function resetVaccineGame(){
-      vaccineGameFinished = false;
-      $$('.vaccine-cell').forEach(td=>{ td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed'); td.removeAttribute('title'); });
-      $$('.vaccine-input').forEach(i=>{ i.value=''; i.readOnly=false; i.placeholder=''; });
+      board.innerHTML = '<div class="vaccine-scroll-hint">↔ Deslizá para ver todo el calendario · tocá una celda para marcar/desmarcar</div><table class="border-collapse text-slate-900 dark:text-slate-100">'+head+body+'</table>';
       const score = $('#vaccineGameScore'); if(score){ score.classList.add('hidden'); score.innerHTML=''; }
       updateVaccineGameCounter();
+    }
+    function selectedVaccineCells(){ return $$('.vaccine-cell.is-selected'); }
+    function updateVaccineGameCounter(){
+      const counter = $('#vaccineGameCounter'); if(!counter) return;
+      const marked = selectedVaccineCells().length;
+      counter.textContent = marked+' casilleros marcados · '+Object.keys(VACCINE_ANSWERS).length+' dosis correctas';
+    }
+    function resetVaccineGame(){
+      vaccineGameFinished = false;
+      $$('.vaccine-cell').forEach(td=>{
+        td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed','is-selected');
+        td.removeAttribute('title');
+        const btn = td.querySelector('.vaccine-tap');
+        if(btn){ btn.disabled=false; btn.setAttribute('aria-pressed','false'); btn.innerHTML='<span class="vaccine-mark"></span>'; }
+      });
+      const score = $('#vaccineGameScore'); if(score){ score.classList.add('hidden'); score.innerHTML=''; }
+      updateVaccineGameCounter();
+    }
+    if(!window.__residenciappVaccineClickBound){
+      document.addEventListener('click', e => {
+        const btn = e.target?.closest?.('.vaccine-tap');
+        if(!btn || vaccineGameFinished) return;
+        const td = btn.closest('.vaccine-cell'); if(!td) return;
+        td.classList.toggle('is-selected');
+        const on = td.classList.contains('is-selected');
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.innerHTML = on ? '<span class="vaccine-mark">✓</span>' : '<span class="vaccine-mark"></span>';
+        updateVaccineGameCounter();
+      });
+      window.__residenciappVaccineClickBound = true;
     }
     function finishVaccineGame(){
       if(!$('#vaccineGameBoard table')) renderVaccineGame();
@@ -3251,14 +3303,28 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       let correctMarked=0, wrongMarked=0, missed=0;
       $$('.vaccine-cell').forEach(td=>{
         const key = td.dataset.key;
-        const input = td.querySelector('.vaccine-input');
-        const marked = !!input.value.trim();
+        const marked = td.classList.contains('is-selected');
         const expected = VACCINE_ANSWERS[key] || '';
+        const btn = td.querySelector('.vaccine-tap');
         td.classList.remove('vaccine-ok','vaccine-bad','vaccine-missed');
-        input.readOnly = true;
-        if(marked && expected){ correctMarked++; td.classList.add('vaccine-ok'); input.value = expected; td.title = 'Correcta: '+expected; }
-        else if(marked && !expected){ wrongMarked++; td.classList.add('vaccine-bad'); td.title = 'Acá no iba una dosis'; }
-        else if(!marked && expected){ missed++; td.classList.add('vaccine-missed'); input.placeholder = expected; td.title = 'Faltó: '+expected; }
+        if(btn) btn.disabled = true;
+        if(marked && expected){
+          correctMarked++; td.classList.add('vaccine-ok');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">'+esc(expected)+'</span>';
+          td.title = 'Correcta: '+expected;
+        }
+        else if(marked && !expected){
+          wrongMarked++; td.classList.add('vaccine-bad');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">✕</span>';
+          td.title = 'Acá no iba una dosis';
+        }
+        else if(!marked && expected){
+          missed++; td.classList.add('vaccine-missed');
+          if(btn) btn.innerHTML = '<span class="vaccine-label">'+esc(expected)+'</span>';
+          td.title = 'Faltó: '+expected;
+        } else {
+          if(btn) btn.innerHTML = '<span class="vaccine-mark"></span>';
+        }
       });
       const total = Object.keys(VACCINE_ANSWERS).length;
       const errors = wrongMarked + missed;

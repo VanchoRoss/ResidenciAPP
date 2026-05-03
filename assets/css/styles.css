@@ -880,3 +880,163 @@ main { overflow-x: clip; }
 @media (max-width: 1023px){
   #loading .grid { align-items: stretch; }
 }
+
+/* === ResidenciAPP v34.9 · Biblioteca contextual + juego vacunas táctil === */
+#vaccineGameBoard.vaccine-game-board,
+.vaccine-game-board{
+  width:100%;
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:auto;
+  max-height:72vh;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x pan-y;
+  overscroll-behavior:contain;
+  border-radius:1.5rem;
+  border:1px solid rgba(148,163,184,.32);
+  background:rgba(255,255,255,.72);
+}
+.dark #vaccineGameBoard.vaccine-game-board,
+.dark .vaccine-game-board{
+  background:rgba(15,23,42,.55);
+}
+.vaccine-game-board table{
+  min-width:1900px;
+  width:max-content;
+  border-collapse:collapse;
+}
+.vaccine-game-board thead th,
+.vaccine-game-board tbody th,
+.vaccine-game-board td{
+  border:1px solid rgba(148,163,184,.36);
+}
+.vaccine-game-board thead th{
+  position:sticky;
+  top:0;
+  z-index:4;
+  min-width:92px;
+  padding:.45rem;
+  background:#f1f5f9;
+  color:#334155;
+  text-align:center;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.dark .vaccine-game-board thead th{ background:#1e293b; color:#e2e8f0; }
+.vaccine-game-board .vaccine-age-head{
+  left:0;
+  z-index:6;
+  min-width:132px;
+  text-align:left;
+}
+.vaccine-game-board .vaccine-age-cell{
+  position:sticky;
+  left:0;
+  z-index:3;
+  min-width:132px;
+  max-width:132px;
+  padding:.5rem;
+  background:#fff;
+  color:#0f172a;
+  text-align:left;
+  font-size:11px;
+  font-weight:900;
+}
+.dark .vaccine-game-board .vaccine-age-cell{ background:#0f172a; color:#e2e8f0; }
+.vaccine-scroll-hint{
+  position:sticky;
+  left:0;
+  top:0;
+  z-index:7;
+  display:inline-flex;
+  margin:.45rem;
+  border-radius:999px;
+  background:rgba(15,23,42,.88);
+  color:white;
+  padding:.45rem .7rem;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.02em;
+  box-shadow:0 12px 32px rgba(15,23,42,.18);
+}
+.dark .vaccine-scroll-hint{ background:rgba(226,232,240,.92); color:#0f172a; }
+.vaccine-cell{
+  min-width:92px;
+  width:92px;
+  height:56px;
+  padding:.22rem;
+  background:rgba(255,255,255,.72);
+  transition:background-color .16s ease, box-shadow .16s ease, transform .12s ease;
+}
+.dark .vaccine-cell{ background:rgba(15,23,42,.35); }
+.vaccine-tap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:50px;
+  height:50px;
+  border-radius:.78rem;
+  border:1px dashed rgba(148,163,184,.58);
+  background:transparent;
+  color:#64748b;
+  font-size:10px;
+  font-weight:900;
+  line-height:1.16;
+  text-align:center;
+  padding:.25rem;
+  cursor:pointer;
+  transition:background-color .16s ease, border-color .16s ease, color .16s ease, transform .12s ease, box-shadow .16s ease;
+}
+.vaccine-tap:hover{ border-color:rgba(24,119,214,.45); color:#1877d6; }
+.vaccine-tap:active{ transform:scale(.97); }
+.vaccine-cell.is-selected .vaccine-tap{
+  background:rgba(24,119,214,.14);
+  border-color:rgba(24,119,214,.52);
+  color:#1260ad;
+  box-shadow:inset 0 0 0 1px rgba(24,119,214,.15);
+}
+.dark .vaccine-cell.is-selected .vaccine-tap{
+  background:rgba(89,184,251,.18);
+  border-color:rgba(89,184,251,.48);
+  color:#93c5fd;
+}
+.vaccine-cell.vaccine-ok .vaccine-tap{
+  background:rgba(16,185,129,.15);
+  border:1px solid rgba(16,185,129,.55);
+  color:#047857;
+}
+.vaccine-cell.vaccine-bad .vaccine-tap{
+  background:rgba(244,63,94,.14);
+  border:1px solid rgba(244,63,94,.55);
+  color:#be123c;
+}
+.vaccine-cell.vaccine-missed .vaccine-tap{
+  background:rgba(245,158,11,.16);
+  border:1px solid rgba(245,158,11,.58);
+  color:#92400e;
+}
+.vaccine-mark{
+  font-size:1.05rem;
+  font-weight:900;
+}
+.vaccine-label{
+  display:block;
+  font-size:9.5px;
+  font-weight:900;
+  line-height:1.13;
+  max-width:100%;
+}
+@media(max-width:640px){
+  #vaccineGameBoard.vaccine-game-board,
+  .vaccine-game-board{ max-height:70vh; border-radius:1.2rem; }
+  .vaccine-game-board table{ min-width:1680px; }
+  .vaccine-game-board thead th{ min-width:82px; font-size:9px; padding:.35rem; }
+  .vaccine-game-board .vaccine-age-head,
+  .vaccine-game-board .vaccine-age-cell{ min-width:116px; max-width:116px; }
+  .vaccine-cell{ min-width:82px; width:82px; height:52px; }
+  .vaccine-tap{ min-height:46px; height:46px; font-size:9px; border-radius:.7rem; }
+  .vaccine-label{ font-size:8.5px; }
+}
