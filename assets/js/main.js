@@ -3346,7 +3346,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const cards = [
         {k:'1', t: state.session ? 'Retomar sesión' : 'Empezar bloque', d: state.session ? 'Tenés una sesión abierta para continuar.' : 'Arrancá con el banco completo o elegí sprint abajo.', a:'resumeOrStart()'},
         {k:'2', t: due ? 'Repaso del día' : 'Repaso al día', d: due ? due+' preguntas vencidas para consolidar.' : 'No hay vencidas ahora. Podés repasar errores.', a: due ? 'startDueSession()' : 'showView(\'review\')'},
-        {k:'3', t:'Juego rápido', d:'Entrená calendario de vacunación sin feedback hasta finalizar.', a:'showView(\'games\')'}
+        {k:'3', t:'Juego rápido', d:'Entrená calendario de vacunas o desafiá a otra persona por link.', a:'showView(\'games\')'}
       ];
       box.innerHTML = cards.map(c=>'<button class="v342-proposal rounded-[1.25rem] border border-slate-200 bg-white/75 p-3 text-left shadow-sm hover:bg-white dark:border-slate-700 dark:bg-slate-900/60 dark:hover:bg-slate-800" onclick="'+c.a+'"><span class="inline-grid h-7 w-7 place-items-center rounded-xl bg-medical-50 text-xs font-black text-medical-700 dark:bg-medical-950/50 dark:text-medical-200">'+c.k+'</span><h4 class="mt-2 font-display text-sm font-extrabold">'+esc(c.t)+'</h4><p class="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">'+esc(c.d)+'</p></button>').join('');
     }
@@ -3355,7 +3355,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     showView = function(name){
       __v342ShowView(name);
       if(name==='games') renderVaccineGame();
-      const titles={games:'Juegos de memoria'};
+      const titles={games:'Juegos'};
       if(titles[name] && $('#viewTitle')) $('#viewTitle').textContent = titles[name];
     };
 
@@ -3373,7 +3373,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const actions = [
         ['🧠','Sesión activa','Retomá o empezá un bloque.','resumeOrStart()'],
         ['🔁','Repaso inteligente', due+' vencidas para hoy.','showView(\'review\')'],
-        ['🎮','Juegos','Calendario de vacunas en blanco.','showView(\'games\')'],
+        ['🎮','Juegos','Calendario y desafío IA por link.','showView(\'games\')'],
         ['📄','Reporte PDF','Descargá tus métricas con fecha.','downloadProgressPDF()'],
         ['🧾','Errores activos', mistakes+' para revancha.','startMistakesSession()'],
         ['⏱️','Simulacro','Modo examen con feedback final.','startGlobalSimulation()']

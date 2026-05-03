@@ -121,3 +121,11 @@ Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y
 - Incluye auditoría visual del banco: total, 36 sprints, distribución por área e IDs duplicados.
 - Agrega navegación inferior para celular y mejoras de lectura en modo pregunta.
 - Actualiza cache busting a `v=34` para evitar que GitHub Pages muestre datos viejos.
+
+
+## v34.10 - Juegos + desafío IA
+
+- La sección **Juegos de memoria** pasa a llamarse **Juegos**.
+- Se conserva el juego de calendario de vacunación.
+- Se agrega **Desafío IA por link**: el desafío y los resultados viajan en base64 dentro de la URL, sin backend.
+- La Anthropic API key se configura desde el botón ⚙ API de la sección Juegos y queda guardada en localStorage del navegador.
