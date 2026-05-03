@@ -869,7 +869,7 @@ main{ padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 }
 
 
-/* === ResidenciAPP v34.7 · Acceso visual sin romper funciones === */
+/* === ResidenciAPP v34.8 · Acceso visual sin tocar funciones === */
 body { overflow-x: hidden; }
 main { overflow-x: clip; }
 @media (min-width: 1024px) {

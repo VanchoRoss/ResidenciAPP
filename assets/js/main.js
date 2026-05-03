@@ -652,9 +652,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const done = LESSONS.filter(l => lessonIsDone(l.id)).length;
       const saved = LESSONS.filter(l => lessonIsSaved(l.id)).length;
       const pct = total ? Math.round(done/total*100) : 0;
-      const expected = window.RESIDENCIAPP_EXPECTED_LESSON_COUNT || 12;
-      const suffix = total < expected ? 'actualizá caché' : 'disponibles';
-      $('#lessonStats').innerHTML = [['Nodos', total, suffix],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
+      $('#lessonStats').innerHTML = [['Nodos', total, 'disponibles'],['Vistos', done, pct+'% avance'],['Repasar', saved, 'guardados']].map(x=>'<div class="rounded-2xl bg-slate-50 p-3 text-center dark:bg-slate-950/60"><p class="font-display text-2xl font-extrabold">'+x[1]+'</p><p class="text-[10px] font-black uppercase tracking-[.15em] text-slate-400">'+x[0]+'</p><p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">'+x[2]+'</p></div>').join('');
     }
     function renderLearn(){
       if(!$('#learnView')) return;
@@ -1505,9 +1503,9 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       const list = LESSONS.filter(l => lessonMatchesV2(l, raw));
       if($('#lessonGrid')){
         const byEje = groupBy(list, l => l.eje || 'Otros');
-        $('#lessonGrid').innerHTML = cacheWarn + (Object.entries(byEje).map(([eje, items]) =>
+        $('#lessonGrid').innerHTML = Object.entries(byEje).map(([eje, items]) =>
           '<div class="space-y-3"><div class="lesson-eje-title rounded-2xl bg-white/85 px-3 py-2 text-xs font-black uppercase tracking-[.18em] text-medical-700 shadow-sm dark:bg-slate-900/85 dark:text-medical-300">'+esc(eje)+' · '+items.length+' nodos</div>'+items.map(lessonCard).join('')+'</div>'
-        ).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>');
+        ).join('') || '<div class="rounded-3xl border border-dashed border-slate-300 p-6 text-center text-sm font-semibold text-slate-500 dark:border-slate-700">No encontré nodos con esa búsqueda.</div>';
       }
       if(state.currentLessonId && lessonById(state.currentLessonId)) openLesson(state.currentLessonId, true);
     };
