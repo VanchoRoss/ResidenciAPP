@@ -1,4 +1,4 @@
-/* === ResidenciAPP v34.13 · Juegos + MedQuiz 5 ejes + mixes únicos ===
+/* === ResidenciAPP v35.1 · Juegos + MedQuiz 5 ejes + vacunas UX ===
    Integra el flujo de desafío por link/base64 del MedQuiz externo dentro de la estética ResidenciAPP.
    Mantiene: calendario, banco local, API key localStorage, links sin backend y comparación por resultados.
 */
@@ -9,7 +9,7 @@
   const LS_API_KEY_COMPAT = 'mq_key';
   const LS_MODEL = 'RESIDENCIAPP_ANTHROPIC_MODEL';
   const LS_PLAYER = 'RESIDENCIAPP_CHALLENGE_PLAYER_NAME';
-  const VERSION = 13;
+  const VERSION = 14;
   const TIMER_SECONDS = 20;
   const LS_USED_MIXES = 'RESIDENCIAPP_MEDQUIZ_USED_MIXES_V34_13';
   const LS_MIX_COUNTERS = 'RESIDENCIAPP_MEDQUIZ_COUNTERS_V34_13';
@@ -161,31 +161,21 @@
           <div id="challengeSettings" class="mt-5 hidden rounded-3xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"></div>
         </section>
 
-        <section id="vaccineGamePanel" class="game-panel grid gap-6 xl:grid-cols-[.72fr_1.28fr]">
-          <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Juego 1</p>
-            <h3 class="mt-1 font-display text-3xl font-extrabold">Calendario de vacunación en blanco</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">Marcá y desmarcá celdas de memoria. Al terminar, se corrige con colores.</p>
-            <div class="mt-5 space-y-3 rounded-3xl bg-slate-50 p-4 text-sm leading-6 dark:bg-slate-950/60">
-              <p><strong>Cómo se juega:</strong></p>
-              <p>1. Tocá una celda para marcarla.</p>
-              <p>2. Volvé a tocar para desmarcarla.</p>
-              <p>3. Verde = correcta · rojo = no iba dosis · amarillo = dosis omitida.</p>
-            </div>
-            <div id="vaccineGameScore" class="mt-5 hidden rounded-3xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950"></div>
-            <div class="mt-5 flex flex-wrap gap-2">
-              <button class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white shadow-soft hover:bg-emerald-700" onclick="finishVaccineGame()">Terminar</button>
-              <button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="resetVaccineGame()">Reiniciar</button>
-            </div>
-          </aside>
+        <section id="vaccineGamePanel" class="game-panel grid gap-4">
           <section class="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900 sm:p-5">
-            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div class="mb-4 flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Calendario Nacional 2026</p>
-                <h3 class="font-display text-2xl font-extrabold">Completar de memoria</h3>
+                <p class="text-xs font-black uppercase tracking-[.18em] text-emerald-600 dark:text-emerald-300">Juego 1 · Calendario Nacional 2026</p>
+                <h3 class="font-display text-2xl font-extrabold">Calendario de vacunación en blanco</h3>
+                <p class="mt-1 text-xs font-bold leading-5 text-slate-500 dark:text-slate-400">Tocá para marcar/desmarcar. Verde = correcta · rojo = no iba dosis · amarillo = dosis omitida.</p>
               </div>
-              <p id="vaccineGameCounter" class="text-xs font-black uppercase tracking-[.14em] text-slate-400"></p>
+              <div class="flex flex-wrap items-center gap-2">
+                <p id="vaccineGameCounter" class="mr-2 text-xs font-black uppercase tracking-[.14em] text-slate-400"></p>
+                <button class="rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-black text-white shadow-soft hover:bg-emerald-700" onclick="finishVaccineGame()">Terminar</button>
+                <button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="resetVaccineGame()">Reiniciar</button>
+              </div>
             </div>
+            <div id="vaccineGameScore" class="mb-4 hidden rounded-3xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950"></div>
             <div id="vaccineGameBoard" class="vaccine-game-board overflow-auto rounded-3xl border border-slate-200 dark:border-slate-700"></div>
           </section>
         </section>

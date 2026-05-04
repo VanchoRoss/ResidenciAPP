@@ -1134,3 +1134,47 @@ main { overflow-x: clip; }
 }
 .medquiz-world{ transition:transform .16s ease, box-shadow .16s ease; }
 .medquiz-world:hover{ transform:translateY(-2px); box-shadow:0 16px 35px rgba(15,23,42,.08); }
+
+/* === ResidenciAPP v35.1 · ajustes solicitados === */
+.v351-vaccine-full{grid-template-columns:1fr !important;}
+#vaccineGamePanel.v351-vaccine-full > aside{display:none !important;}
+#vaccineGamePanel.v351-vaccine-full > section{min-width:0;width:100%;}
+#vaccineGameBoard.vaccine-game-board,
+.vaccine-game-board{
+  width:100%;
+  max-width:100%;
+  max-height:72vh;
+  overflow:auto !important;
+  touch-action:none;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:auto;
+}
+.vaccine-game-board table{
+  table-layout:fixed !important;
+  width:max-content !important;
+  min-width:1320px !important;
+}
+.vaccine-game-board thead th{min-width:70px !important;width:70px !important;}
+.vaccine-game-board .vaccine-age-head,
+.vaccine-game-board .vaccine-age-cell{min-width:108px !important;max-width:108px !important;width:108px !important;}
+.vaccine-cell{min-width:70px !important;width:70px !important;height:46px !important;padding:2px !important;}
+.vaccine-tap{min-height:40px !important;height:40px !important;border-radius:.65rem !important;font-size:8px !important;}
+.vaccine-cell.is-selected .vaccine-tap{background:rgba(24,119,214,.20) !important;border-color:rgba(24,119,214,.70) !important;color:#0f4c81 !important;box-shadow:inset 0 0 0 2px rgba(24,119,214,.16) !important;}
+.dark .vaccine-cell.is-selected .vaccine-tap{background:rgba(89,184,251,.23) !important;color:#bfdbfe !important;}
+.vaccine-cell.vaccine-ok .vaccine-tap{background:rgba(16,185,129,.24) !important;border-color:rgba(16,185,129,.82) !important;color:#047857 !important;}
+.vaccine-cell.vaccine-bad .vaccine-tap{background:rgba(244,63,94,.24) !important;border-color:rgba(244,63,94,.82) !important;color:#be123c !important;}
+.vaccine-cell.vaccine-missed .vaccine-tap{background:rgba(245,158,11,.24) !important;border-color:rgba(245,158,11,.82) !important;color:#92400e !important;}
+.vaccine-game-board.is-dragging{cursor:grabbing !important;user-select:none !important;}
+.choice div[class*="border-emerald-500"],
+.choice div[class*="bg-emerald-100"]{box-shadow:0 0 0 2px rgba(16,185,129,.18),0 14px 30px rgba(16,185,129,.12);}
+.choice div[class*="border-rose-500"],
+.choice div[class*="bg-rose-100"]{box-shadow:0 0 0 2px rgba(244,63,94,.18),0 14px 30px rgba(244,63,94,.12);}
+@media (max-width:640px){
+  #vaccineGameBoard.vaccine-game-board,.vaccine-game-board{max-height:66vh;max-width:calc(100vw - 2rem);}
+  .vaccine-game-board table{min-width:1180px !important;}
+  .vaccine-game-board thead th{min-width:64px !important;width:64px !important;font-size:7.5px !important;}
+  .vaccine-game-board .vaccine-age-head,.vaccine-game-board .vaccine-age-cell{min-width:96px !important;max-width:96px !important;width:96px !important;font-size:8px !important;}
+  .vaccine-cell{min-width:64px !important;width:64px !important;height:44px !important;}
+  .vaccine-tap{min-height:38px !important;height:38px !important;font-size:7.4px !important;}
+}

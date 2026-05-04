@@ -5,7 +5,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       {id:'preguntas', name:'Preguntas ABCD', icon:'✅', tag:'Aplicación', desc:'Responder y justificar. Ideal para entrenar toma de decisiones.'},
       {id:'razonamiento', name:'Razonamiento guiado', icon:'🧬', tag:'NeuroPREP', desc:'Primero formulás hipótesis sin opciones, luego comparás contra ABCD y calibrás confianza.'},
       {id:'simulacro', name:'Simulacro', icon:'⏱️', tag:'Presión', desc:'Sin explicación inmediata. Sirve para entrenar rendimiento real.'},
-      {id:'flashcard', name:'Flashcard', icon:'🃏', tag:'Recuerdo', desc:'Pregunta al frente, respuesta al dorso. Útil para falladas.'},
+      {id:'flashcard', name:'Flashcard', icon:'🃏', tag:'Recuerdo', desc:'Pregunta al frente, respuesta al dorso. Útil para incorrectas.'},
       {id:'feynman', name:'Feynman', icon:'🎙️', tag:'Comprensión', desc:'Explicar simple. Ideal para temas nuevos o confusos.'},
       {id:'mapa', name:'Mapa mental', icon:'🗺️', tag:'Estructura', desc:'Ordenar ramas, claves y distractores del tema.'},
       {id:'nemotecnia', name:'Nemotecnia', icon:'🧩', tag:'Memoria', desc:'Crear una frase/imagen absurda para datos aislados.'},
@@ -195,7 +195,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
 
     function questionStatus(q){
-      const a = answerFor(q); if(!a) return 'pendiente'; if(a.selected === q.ans) return 'correcta'; return 'fallada';
+      const a = answerFor(q); if(!a) return 'pendiente'; if(a.selected === q.ans) return 'correcta'; return 'incorrecta';
     }
 
     function initSelects(){
@@ -303,11 +303,11 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         const isSel = selected===k; const isAns = q.ans===k;
         const answered = !!selected;
         let cls = 'border-slate-200 hover:border-medical-300 dark:border-slate-700 dark:hover:border-medical-700';
-        if(answered && isAns) cls = 'border-emerald-300 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950/30';
-        else if(answered && isSel && !isAns) cls = 'border-rose-300 bg-rose-50 dark:border-rose-800 dark:bg-rose-950/30';
+        if(answered && isAns) cls = 'border-emerald-500 bg-emerald-100 ring-2 ring-emerald-300 dark:border-emerald-400 dark:bg-emerald-950/55';
+        else if(answered && isSel && !isAns) cls = 'border-rose-500 bg-rose-100 ring-2 ring-rose-300 dark:border-rose-400 dark:bg-rose-950/55';
         return '<label class="choice block cursor-pointer"><input class="sr-only" name="choice" type="radio" value="'+k+'" '+(isSel?'checked':'')+' '+(answered?'disabled':'')+' onchange="selectAnswer(\''+q.id+'\',\''+k+'\')"><div class="rounded-3xl border '+cls+' p-4 transition"><div class="flex gap-3"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-slate-100 text-sm font-black uppercase dark:bg-slate-800">'+k+'</span><p class="text-sm font-semibold leading-6">'+esc(txt)+'</p></div></div></label>';
       }).join('');
-      return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(q.eje)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(q.tema)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(year)+'</span></div><span class="text-xs font-black uppercase tracking-[.16em] '+(status==='fallada'?'text-rose-500':status==='correcta'?'text-emerald-500':'text-slate-400')+'">'+status+'</span></div>'
+      return '<div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2"><span class="rounded-full bg-medical-50 px-3 py-1 text-xs font-black text-medical-700 dark:bg-medical-950/40 dark:text-medical-300">'+esc(q.eje)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(q.tema)+'</span><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">'+esc(year)+'</span></div><span class="text-xs font-black uppercase tracking-[.16em] '+(status==='incorrecta'?'text-rose-500':status==='correcta'?'text-emerald-500':'text-slate-400')+'">'+status+'</span></div>'
         + '<h3 class="font-display text-2xl font-extrabold leading-tight sm:text-3xl">'+highlightTriggerWords(q.q)+'</h3>'
         + (q.image_reference ? '<div class="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">⚠️ Esta pregunta menciona una imagen/ECG/radiografía. Para uso final conviene adjuntar la imagen original.</div>' : '')
         + '<div class="mt-6 grid gap-3">'+options+'</div>'
@@ -464,7 +464,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       showView('results');
     }
     function flashcardMini(q){
-      return '<button class="card-flip min-h-64 text-left" data-flipped="false" onclick="this.dataset.flipped=this.dataset.flipped===\'true\'?\'false\':\'true\'"><div class="card-flip-inner relative h-full min-h-64"><div class="card-face absolute inset-0 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="mb-3 flex items-center justify-between"><span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">Fallada</span><span class="text-xs text-slate-400">Tocar</span></div><h4 class="text-base font-black leading-6">'+esc(q.q)+'</h4><p class="mt-4 text-xs font-semibold text-slate-500">'+esc(q.sprint)+'</p></div><div class="card-face card-back absolute inset-0 rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5 shadow-soft dark:border-emerald-900/60 dark:bg-emerald-950/30"><div class="mb-3 rounded-full bg-white/80 px-3 py-1 text-xs font-black text-emerald-700 dark:bg-slate-900 dark:text-emerald-300 w-fit">Respuesta correcta</div><p class="text-lg font-black">'+(q.ans?esc(q.ans.toUpperCase()+') '+q.opts[q.ans]):'Sin clave')+'</p><p class="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-200">Clasificá el error y programá el repaso.</p></div></div></button>';
+      return '<button class="card-flip min-h-64 text-left" data-flipped="false" onclick="this.dataset.flipped=this.dataset.flipped===\'true\'?\'false\':\'true\'"><div class="card-flip-inner relative h-full min-h-64"><div class="card-face absolute inset-0 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900"><div class="mb-3 flex items-center justify-between"><span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-black text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">Incorrecta</span><span class="text-xs text-slate-400">Tocar</span></div><h4 class="text-base font-black leading-6">'+esc(q.q)+'</h4><p class="mt-4 text-xs font-semibold text-slate-500">'+esc(q.sprint)+'</p></div><div class="card-face card-back absolute inset-0 rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5 shadow-soft dark:border-emerald-900/60 dark:bg-emerald-950/30"><div class="mb-3 rounded-full bg-white/80 px-3 py-1 text-xs font-black text-emerald-700 dark:bg-slate-900 dark:text-emerald-300 w-fit">Respuesta correcta</div><p class="text-lg font-black">'+(q.ans?esc(q.ans.toUpperCase()+') '+q.opts[q.ans]):'Sin clave')+'</p><p class="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-200">Clasificá el error y programá el repaso.</p></div></div></button>';
     }
 
     function renderMethodDock(q){
@@ -625,7 +625,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const dailyBlocks = [
       ['Codificación activa','60–90 min','Construir desde cero: mapa, metáfora, esquema visual.'],
       ['Simulación clínica','90–120 min','Casos y preguntas tipo examen bajo presión.'],
-      ['Repaso espaciado','45–60 min','Recuperar sin mirar: flashcards, falladas y D1-D2-D4.'],
+      ['Repaso espaciado','45–60 min','Recuperar sin mirar: flashcards, incorrectas y D1-D2-D4.'],
       ['Exposición libre','30–45 min','Videos o lectura rápida como insumo, no como aprendizaje principal.'],
       ['Cierre metacognitivo','10–30 min','Qué aprendí, qué no quedó claro y qué método funcionó.']
     ];
@@ -3223,7 +3223,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     const VACCINE_ROWS = [
       ['rn','Recién nacido'], ['2m','2 meses'], ['3m','3 meses'], ['4m','4 meses'], ['5m','5 meses'], ['6m','6 meses'],
       ['12m','12 meses'], ['15m','15 meses'], ['18m','18 meses'], ['24m','24 meses'], ['2021','Nacidos 2021/22/23/24'], ['2015','Nacidos en 2015'],
-      ['11plus','Desde los 11 años'], ['15_18','15 a 18 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
+      ['15_18','15 a 18 años'], ['adultos','Adultos'], ['embarazadas','Embarazadas'], ['puerperas','Puérperas'], ['salud','Personal de salud']
     ];
     const VACCINE_COLS = [
       ['bcg','BCG'], ['hepb','Hepatitis B'], ['neumo','Neumococo conjugada'], ['penta','Quíntuple / Pentavalente'], ['ipv','IPV'], ['rota','Rotavirus'],
@@ -3243,7 +3243,6 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       '24m|gripe':'dosis anual',
       '2021|ipv':'refuerzo', '2021|triviral':'2° dosis', '2021|varicela':'2° dosis', '2021|dtpc':'2° refuerzo',
       '2015|menacwy':'única dosis', '2015|dtpa':'refuerzo', '2015|vph':'única dosis', '2015|fa':'refuerzo',
-      '11plus|triviral':'iniciar / completar esquema',
       '15_18|triviral':'2 dosis / completar esquema', '15_18|fha':'única dosis',
       'adultos|hepb':'iniciar / completar esquema', 'adultos|neumo':'única dosis', 'adultos|gripe':'dosis anual', 'adultos|triviral':'iniciar / completar esquema', 'adultos|db':'refuerzo cada 10 años', 'adultos|fha':'única dosis',
       'embarazadas|hepb':'iniciar / completar esquema', 'embarazadas|gripe':'una dosis', 'embarazadas|dtpa':'una dosis', 'embarazadas|vsr':'única dosis',
