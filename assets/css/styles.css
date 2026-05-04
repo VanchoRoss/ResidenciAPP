@@ -1344,3 +1344,33 @@ body.vaccine-fullscreen-active{ overflow:hidden !important; }
   #vaccineGamePanel.vaccine-fullscreen-mode{ padding:6px !important; }
   #vaccineGamePanel.vaccine-fullscreen-mode > section{ height:calc(100vh - 12px) !important; }
 }
+
+
+/* === ResidenciAPP v35.5 · orden de sesión y calendario más liviano === */
+#performancePanel{display:none!important;}
+#sessionContent{grid-template-columns:minmax(0,1fr)!important;}
+#sessionContent>div{display:flex;flex-direction:column;gap:1rem;}
+#questionCard{order:1;}
+#sessionContent>div>.mb-4{order:2;margin-bottom:0!important;}
+#sessionContent aside{order:3;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+#sessionView #methodDock{min-height:auto;}
+.choice .border-emerald-500,.choice .border-emerald-600{box-shadow:0 0 0 2px rgba(16,185,129,.26),0 10px 28px rgba(16,185,129,.12);}
+.choice .border-rose-500,.choice .border-rose-600{box-shadow:0 0 0 2px rgba(244,63,94,.24),0 10px 28px rgba(244,63,94,.12);}
+.v355-vaccine-compact{max-height:min(72vh,760px);overflow:auto;cursor:grab;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.vaccine-fullscreen-mode .v355-vaccine-compact{max-height:calc(100vh - 155px)!important;}
+.v355-vaccine-compact.is-dragging{cursor:grabbing;user-select:none;}
+.v355-vaccine-compact table{table-layout:fixed;min-width:1680px!important;width:max-content;}
+.v355-vaccine-compact th,.v355-vaccine-compact td{font-size:10px!important;}
+.v355-vaccine-compact .vaccine-cell{min-width:86px!important;width:86px!important;height:48px!important;padding:2px!important;}
+.v355-vaccine-compact .vaccine-tap{height:42px!important;min-height:42px!important;border-radius:10px!important;padding:2px!important;display:grid!important;place-items:center!important;background:#fff;border:1px solid rgba(148,163,184,.45);}
+.dark .v355-vaccine-compact .vaccine-tap{background:rgba(15,23,42,.92);}
+.v355-vaccine-compact .vaccine-cell.is-selected .vaccine-tap{background:rgba(24,119,214,.18)!important;border-color:rgba(24,119,214,.65)!important;color:#1260ad!important;box-shadow:inset 0 0 0 1px rgba(24,119,214,.16);}
+.v355-vaccine-compact .vaccine-mark{font-size:18px;font-weight:950;line-height:1;}
+@media (max-width:768px){
+  #sessionView{padding-left:.75rem!important;padding-right:.75rem!important;}
+  #questionCard{padding:1rem!important;border-radius:1.5rem!important;}
+  #sessionContent aside{grid-template-columns:1fr;}
+  .v355-vaccine-compact{max-height:70vh;}
+  .v355-vaccine-compact table{min-width:1550px!important;}
+  .v355-vaccine-compact .vaccine-cell{min-width:78px!important;width:78px!important;}
+}
