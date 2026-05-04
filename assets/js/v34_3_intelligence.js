@@ -103,13 +103,21 @@
     const qs = buildBalancedExam(n, {preferUnanswered:true});
     if(!qs.length) return alert('No hay preguntas disponibles para armar el examen equilibrado.');
     const title = n===20 ? 'Mini examen equilibrado' : n===50 ? 'Examen medio equilibrado' : 'Simulacro completo equilibrado';
-    const meta = n+' preguntas · distribución histórica por eje · '+(timing.free ? 'modo libre sin tiempo' : timing.label);
-    setSession(qs, title, meta, 'simulacro', false, timing.free ? {mode:'exam', freeTiming:true} : {mode:'exam', secondsPerQuestion:timing.seconds});
+    const meta = n+' preguntas · distribución histórica por eje · '+(timing.free ? 'modo libre sin tiempo · feedback inmediato' : timing.label+' · feedback al final');
+    /* v35.4: En modalidad libre el examen equilibrado se comporta como práctica:
+       muestra correcta/incorrecta al responder y conserva aportes/colaboración.
+       En modalidades cronometradas sigue siendo simulacro ciego con corrección final. */
+    if(timing.free){
+      setSession(qs, title, meta, state.method || 'preguntas', false, {mode:'practice'});
+    } else {
+      setSession(qs, title, meta, 'simulacro', false, {mode:'exam', secondsPerQuestion:timing.seconds});
+    }
     if(session){
       session.examKind='balanced';
       session.examSize=n;
       session.examPlan=previewBalancedExam(n);
       session.balancedTiming = timing.free ? 'free' : String(timing.seconds);
+      session.balancedFeedbackMode = timing.free ? 'immediate' : 'final';
       state.session=session;
       saveState();
     }
@@ -189,7 +197,7 @@
         + '</label>';
     }).join('');
     return '<section id="v343BalancedPanel" class="v34-clean-card mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">'
-      + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Exámenes equilibrados</p><h3 class="font-display text-2xl font-extrabold">Elegí modalidad y recién después iniciá</h3><p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">La app arma automáticamente el examen por distribución del banco. Podés hacerlo libre, sin reloj, o con tiempo por pregunta.</p></div></div>'
+      + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Exámenes equilibrados</p><h3 class="font-display text-2xl font-extrabold">Elegí modalidad y recién después iniciá</h3><p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">La app arma automáticamente el examen por distribución del banco. En modo libre tenés feedback inmediato y aportes; con tiempo funciona como simulacro ciego hasta el final.</p></div></div>'
       + '<div class="mt-5 rounded-[1.7rem] border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-950/40"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">1 · Modalidad</p><div class="mt-3 grid gap-3 sm:grid-cols-4">'+optionHtml+'</div></div>'
       + '<div class="mt-4 rounded-[1.7rem] border border-slate-200 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">2 · Iniciar examen</p><div class="mt-3 grid gap-3 sm:grid-cols-3"><button class="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-glow hover:bg-indigo-700" onclick="startBalancedMini()">Mini · 20 preguntas</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedMedium()">Medio · 50 preguntas</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedFull()">Completo · 100 preguntas</button></div></div>'
       + '<div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">'+preview.map(r=>'<div class="rounded-2xl border border-slate-200 p-3 dark:border-slate-800"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black uppercase tracking-[.12em] text-slate-400">'+v343Esc(r.id)+'</span><span class="font-display text-2xl font-extrabold" style="color:'+r.color+'">'+r.n+'</span></div><h4 class="mt-1 text-sm font-extrabold">'+v343Esc(r.label)+'</h4><p class="mt-1 text-xs font-semibold text-slate-500">Distribución estimada en mini 20q</p><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full" style="width:'+Math.round(r.weight*100)+'%;background:'+r.color+'"></div></div></div>').join('')+'</div></section>';
