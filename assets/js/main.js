@@ -1352,6 +1352,11 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
         stopExamTimer();
         return;
       }
+      if(session.freeTiming){
+        panel.classList.remove('hidden');
+        panel.innerHTML = '<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em]">Modo libre</p><p class="text-sm font-bold opacity-90">Sin tiempo · sin explicación hasta finalizar</p></div><div class="font-display text-3xl font-extrabold text-medical-700 dark:text-medical-300">∞</div></div><div class="mt-3 h-2 overflow-hidden rounded-full bg-white/70 dark:bg-slate-950/50"><div class="h-full rounded-full bg-medical-500" style="width:100%"></div></div>';
+        return;
+      }
       panel.classList.remove('hidden');
       const remaining = Math.max(0, Number(session.remainingSeconds || 0));
       const total = Math.max(1, Number(session.totalSeconds || 1));
@@ -1361,11 +1366,13 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     }
     function startExamTimerIfNeeded(){
       if(!session || session.mode !== 'exam') { renderExamTimerPanel(); return; }
+      if(session.freeTiming){ stopExamTimer(); renderExamTimerPanel(); return; }
       if(!session.lastTick) session.lastTick = Date.now();
       renderExamTimerPanel();
       if(examTimerInterval) return;
       examTimerInterval = setInterval(() => {
         if(!session || session.mode !== 'exam'){ renderExamTimerPanel(); return; }
+        if(session.freeTiming){ stopExamTimer(); renderExamTimerPanel(); return; }
         const now = Date.now();
         const delta = Math.floor((now - (session.lastTick || now))/1000);
         if(delta > 0){
@@ -1402,11 +1409,12 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
     setSession = function(qs, title, meta, method='preguntas', shuffleQs=false, options={}){
       const list = shuffleQs ? shuffle(qs) : [...qs];
       const mode = options.mode || (method === 'simulacro' ? 'exam' : 'practice');
-      const secondsPerQuestion = Number(options.secondsPerQuestion || selectedSimSeconds() || 90);
-      const totalSeconds = mode === 'exam' ? list.length * secondsPerQuestion : 0;
+      const freeTiming = !!options.freeTiming;
+      const secondsPerQuestion = freeTiming ? 0 : Number(options.secondsPerQuestion || selectedSimSeconds() || 90);
+      const totalSeconds = mode === 'exam' && !freeTiming ? list.length * secondsPerQuestion : 0;
       session = {
         questions:list.map(q=>q.id), idx:0, title, meta, method,
-        mode, secondsPerQuestion, totalSeconds, remainingSeconds: totalSeconds,
+        mode, secondsPerQuestion, totalSeconds, remainingSeconds: totalSeconds, freeTiming,
         startedAt:Date.now(), lastTick: Date.now(), selected:{}, failed:[], correct:0, revealed:false
       };
       state.session = session;
@@ -1455,7 +1463,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#sessionMeta').textContent = session.meta;
       const pct = Math.round(((session.idx)/arr.length)*100);
       $('#sessionBar').style.width = pct+'%';
-      const timingText = session.mode === 'exam' ? ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds) : ' · Sin tiempo';
+      const timingText = session.mode === 'exam' ? (session.freeTiming ? ' · Sin tiempo' : ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds)) : ' · Sin tiempo';
       $('#sessionProgress').textContent = 'Pregunta '+(session.idx+1)+' de '+arr.length+' · '+modeLabel()+timingText;
       const selected = session.selected[q.id] || answerFor(q)?.selected || '';
       const answered = !!selected;
@@ -1897,7 +1905,7 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
       $('#sessionMethod').value = session.method; $('#sessionTitle').textContent = session.title; $('#sessionMeta').textContent = session.meta;
       const pct = Math.round(((session.idx)/arr.length)*100); $('#sessionBar').style.width = pct+'%';
       const mode = session.mode === 'exam' ? 'Simulacro' : session.mode === 'revenge' ? 'Revancha' : 'Práctica libre';
-      const timingText = session.mode === 'exam' ? ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds) : ' · Sin tiempo';
+      const timingText = session.mode === 'exam' ? (session.freeTiming ? ' · Sin tiempo' : ' · Tiempo total: '+formatClock(session.totalSeconds)+' · Restante: '+formatClock(session.remainingSeconds)) : ' · Sin tiempo';
       $('#sessionProgress').textContent = 'Pregunta '+(session.idx+1)+' de '+arr.length+' · '+mode+timingText;
       const selected = questionSessionSelection(q); const showExplanation = !!selected && session.mode !== 'exam' && session.mode !== 'revenge';
       startQuestionTimer(q); renderPerformancePanel(); $('#questionCard').innerHTML = questionTemplate(q, selected, showExplanation); renderMethodDock(q); startExamTimerIfNeeded?.();

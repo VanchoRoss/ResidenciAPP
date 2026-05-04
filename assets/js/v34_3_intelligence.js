@@ -79,15 +79,40 @@
     return v343Shuffle(out).slice(0,total);
   };
 
+  function v353BalancedTiming(){
+    const value = String((document.querySelector('input[name="balancedTimeMode"]:checked')?.value) || localStorage.getItem('residenciapp_balanced_time_mode') || 'free');
+    localStorage.setItem('residenciapp_balanced_time_mode', value);
+    if(value === 'free') return {free:true, label:'sin tiempo', seconds:0};
+    const seconds = Number(value) || 90;
+    return {free:false, seconds, label: seconds===60 ? '1:00 por pregunta' : seconds===90 ? '1:30 por pregunta' : seconds===120 ? '2:00 por pregunta' : seconds+' segundos por pregunta'};
+  }
+
+  window.setBalancedTimeMode = function(value){
+    localStorage.setItem('residenciapp_balanced_time_mode', String(value || 'free'));
+    document.querySelectorAll('[data-balanced-time-card]').forEach(el=>{
+      const active = el.getAttribute('data-value') === String(value || 'free');
+      el.classList.toggle('border-indigo-400', active);
+      el.classList.toggle('bg-indigo-50', active);
+      el.classList.toggle('dark:bg-indigo-950/30', active);
+    });
+  };
+
   window.startBalancedExam = function(totalQ=20, secondsPerQuestion){
     const n = Math.max(1, Number(totalQ)||20);
-    const seconds = Number(secondsPerQuestion || (typeof selectedSimSeconds === 'function' ? selectedSimSeconds() : 90) || 90);
+    const timing = secondsPerQuestion === undefined ? v353BalancedTiming() : (secondsPerQuestion === 'free' ? {free:true,label:'sin tiempo',seconds:0} : {free:false,seconds:Number(secondsPerQuestion)||90,label:(Number(secondsPerQuestion)||90)+' segundos por pregunta'});
     const qs = buildBalancedExam(n, {preferUnanswered:true});
     if(!qs.length) return alert('No hay preguntas disponibles para armar el examen equilibrado.');
     const title = n===20 ? 'Mini examen equilibrado' : n===50 ? 'Examen medio equilibrado' : 'Simulacro completo equilibrado';
-    const meta = n+' preguntas · distribución histórica por eje · '+seconds+' segundos por pregunta';
-    setSession(qs, title, meta, 'simulacro', false, {mode:'exam', secondsPerQuestion:seconds});
-    if(session){ session.examKind='balanced'; session.examSize=n; session.examPlan=previewBalancedExam(n); state.session=session; saveState(); }
+    const meta = n+' preguntas · distribución histórica por eje · '+(timing.free ? 'modo libre sin tiempo' : timing.label);
+    setSession(qs, title, meta, 'simulacro', false, timing.free ? {mode:'exam', freeTiming:true} : {mode:'exam', secondsPerQuestion:timing.seconds});
+    if(session){
+      session.examKind='balanced';
+      session.examSize=n;
+      session.examPlan=previewBalancedExam(n);
+      session.balancedTiming = timing.free ? 'free' : String(timing.seconds);
+      state.session=session;
+      saveState();
+    }
   };
   window.startBalancedMini = () => startBalancedExam(20);
   window.startBalancedMedium = () => startBalancedExam(50);
@@ -149,10 +174,25 @@
 
   function v343MiniExamCard(){
     const preview = previewBalancedExam(20);
+    const selected = String(localStorage.getItem('residenciapp_balanced_time_mode') || 'free');
+    const timeOptions = [
+      {value:'free', title:'Libre', sub:'sin tiempo'},
+      {value:'60', title:'1:00', sub:'por pregunta'},
+      {value:'90', title:'1:30', sub:'por pregunta'},
+      {value:'120', title:'2:00', sub:'por pregunta'}
+    ];
+    const optionHtml = timeOptions.map(opt=>{
+      const active = selected === opt.value;
+      return '<label data-balanced-time-card data-value="'+opt.value+'" class="cursor-pointer rounded-2xl border '+(active?'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30':'border-slate-200 bg-white/70 dark:border-slate-700 dark:bg-slate-900/60')+' p-3 transition hover:border-indigo-300 dark:hover:border-indigo-700">'
+        + '<input class="sr-only" type="radio" name="balancedTimeMode" value="'+opt.value+'" '+(active?'checked':'')+' onchange="setBalancedTimeMode(\''+opt.value+'\')">'
+        + '<p class="font-display text-2xl font-extrabold">'+v343Esc(opt.title)+'</p><p class="text-xs font-black uppercase tracking-[.12em] text-slate-500 dark:text-slate-400">'+v343Esc(opt.sub)+'</p>'
+        + '</label>';
+    }).join('');
     return '<section id="v343BalancedPanel" class="v34-clean-card mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">'
-      + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Exámenes equilibrados</p><h3 class="font-display text-2xl font-extrabold">Simulacros por distribución real del banco</h3><p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">La app arma automáticamente preguntas por eje según el peso histórico: Salud Pública 7%, Mujeres 19%, Niñez 21% y Adultos 53%.</p></div>'
-      + '<div class="flex flex-wrap gap-2"><button class="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white" onclick="startBalancedMini()">Mini 20q</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedMedium()">Medio 50q</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedFull()">Completo 100q</button></div></div>'
-      + '<div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">'+preview.map(r=>'<div class="rounded-2xl border border-slate-200 p-3 dark:border-slate-800"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black uppercase tracking-[.12em] text-slate-400">'+v343Esc(r.id)+'</span><span class="font-display text-2xl font-extrabold" style="color:'+r.color+'">'+r.n+'</span></div><h4 class="mt-1 text-sm font-extrabold">'+v343Esc(r.label)+'</h4><p class="mt-1 text-xs font-semibold text-slate-500">'+Math.round(r.weight*100)+'% del examen</p><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full" style="width:'+Math.round(r.weight*100)+'%;background:'+r.color+'"></div></div></div>').join('')+'</div></section>';
+      + '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Exámenes equilibrados</p><h3 class="font-display text-2xl font-extrabold">Elegí modalidad y recién después iniciá</h3><p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">La app arma automáticamente el examen por distribución del banco. Podés hacerlo libre, sin reloj, o con tiempo por pregunta.</p></div></div>'
+      + '<div class="mt-5 rounded-[1.7rem] border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-950/40"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">1 · Modalidad</p><div class="mt-3 grid gap-3 sm:grid-cols-4">'+optionHtml+'</div></div>'
+      + '<div class="mt-4 rounded-[1.7rem] border border-slate-200 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">2 · Iniciar examen</p><div class="mt-3 grid gap-3 sm:grid-cols-3"><button class="rounded-2xl bg-indigo-600 px-4 py-3 text-sm font-black text-white shadow-glow hover:bg-indigo-700" onclick="startBalancedMini()">Mini · 20 preguntas</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedMedium()">Medio · 50 preguntas</button><button class="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="startBalancedFull()">Completo · 100 preguntas</button></div></div>'
+      + '<div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">'+preview.map(r=>'<div class="rounded-2xl border border-slate-200 p-3 dark:border-slate-800"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black uppercase tracking-[.12em] text-slate-400">'+v343Esc(r.id)+'</span><span class="font-display text-2xl font-extrabold" style="color:'+r.color+'">'+r.n+'</span></div><h4 class="mt-1 text-sm font-extrabold">'+v343Esc(r.label)+'</h4><p class="mt-1 text-xs font-semibold text-slate-500">Distribución estimada en mini 20q</p><div class="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full" style="width:'+Math.round(r.weight*100)+'%;background:'+r.color+'"></div></div></div>').join('')+'</div></section>';
   }
 
   function v343ModePanelHtml(){

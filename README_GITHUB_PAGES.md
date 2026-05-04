@@ -1,4 +1,4 @@
-# ResidenciAPP v35.1 — versión para GitHub Pages
+# ResidenciAPP v35.2 — versión para GitHub Pages
 
 Esta carpeta está preparada para subirse directamente al repositorio de GitHub Pages.
 
