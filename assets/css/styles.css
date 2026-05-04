@@ -1374,3 +1374,19 @@ body.vaccine-fullscreen-active{ overflow:hidden !important; }
   .v355-vaccine-compact table{min-width:1550px!important;}
   .v355-vaccine-compact .vaccine-cell{min-width:78px!important;width:78px!important;}
 }
+
+/* === ResidenciAPP v35.7 === */
+.v357-error-action{
+  border-color: rgba(225,29,72,.35) !important;
+  background: linear-gradient(135deg, rgba(225,29,72,.10), rgba(244,63,94,.05)) !important;
+  color: rgb(190 18 60) !important;
+}
+.dark .v357-error-action{
+  border-color: rgba(251,113,133,.45) !important;
+  background: rgba(127,29,29,.28) !important;
+  color: rgb(253 164 175) !important;
+}
+#v357QuestionNavigator button{ min-width: 2.35rem; }
+#v357QuestionNavigator{ scroll-margin-top: 1rem; }
+.v357-balanced-size{ transition: transform .14s ease, border-color .14s ease, background-color .14s ease; }
+.v357-balanced-size:hover{ transform: translateY(-1px); }
