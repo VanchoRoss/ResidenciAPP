@@ -208,49 +208,83 @@
     });
   }
 
-  // 5) Exámenes equilibrados: primero seleccionás tamaño; recién se inicia con botón inferior.
+  // 5) Exámenes equilibrados: selector robusto de modalidad + tamaño + inicio explícito.
+  // v35.9: se elimina dependencia de radios ocultos para evitar conflictos de render.
+  function balancedGetSize(){
+    const raw = localStorage.getItem('residenciapp_balanced_size') || '20';
+    const n = Number(raw);
+    return [20,50,100].includes(n) ? n : 20;
+  }
+  function balancedGetTime(){
+    const raw = String(localStorage.getItem('residenciapp_balanced_time_mode') || 'free');
+    return ['free','60','90','120'].includes(raw) ? raw : 'free';
+  }
   window.setBalancedSize = function(n){
-    localStorage.setItem('residenciapp_balanced_size', String(n || 20));
-    enhanceBalancedPanel();
+    const v = [20,50,100].includes(Number(n)) ? Number(n) : 20;
+    localStorage.setItem('residenciapp_balanced_size', String(v));
+    setTimeout(enhanceBalancedPanel, 0);
+  };
+  window.setBalancedTimeMode = function(value){
+    const v = ['free','60','90','120'].includes(String(value)) ? String(value) : 'free';
+    localStorage.setItem('residenciapp_balanced_time_mode', v);
+    setTimeout(enhanceBalancedPanel, 0);
   };
   window.startSelectedBalancedExam = function(){
-    const n = Number(localStorage.getItem('residenciapp_balanced_size') || 20);
-    startBalancedExam(n);
+    const n = balancedGetSize();
+    const time = balancedGetTime();
+    if(typeof startBalancedExam !== 'function'){
+      alert('No se encontró el motor de exámenes equilibrados. Recargá la página.');
+      return;
+    }
+    startBalancedExam(n, time === 'free' ? 'free' : Number(time));
   };
-  function selectedTimingValue(){ return String(localStorage.getItem('residenciapp_balanced_time_mode') || 'free'); }
   function timingLabel(v){
     if(v === 'free') return 'modo libre · sin tiempo · feedback inmediato';
     const s = Number(v)||90;
     return (s===60?'1:00':s===90?'1:30':s===120?'2:00':s+' s')+' por pregunta · corrección final';
   }
+  function timeButton(value, title, sub){
+    const active = balancedGetTime() === String(value);
+    const cls = active
+      ? 'border-indigo-500 bg-indigo-600 text-white shadow-glow'
+      : 'border-slate-200 bg-white/75 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800';
+    const subCls = active ? 'text-indigo-100' : 'text-slate-400';
+    return '<button type="button" data-balanced-time-card data-value="'+E(value)+'" class="rounded-2xl border '+cls+' p-4 text-left transition hover:-translate-y-0.5" onclick="setBalancedTimeMode(\''+E(value)+'\')">'
+      + '<p class="font-display text-2xl font-extrabold">'+E(title)+'</p>'
+      + '<p class="mt-1 text-xs font-black uppercase tracking-[.12em] '+subCls+'">'+E(sub)+'</p>'
+      + '</button>';
+  }
   function sizeButton(n, label, sub){
-    const active = String(localStorage.getItem('residenciapp_balanced_size') || '20') === String(n);
-    return '<button type="button" class="v357-balanced-size rounded-2xl border '+(active?'border-indigo-500 bg-indigo-600 text-white shadow-glow':'border-slate-200 bg-white/75 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800')+' p-4 text-left" onclick="setBalancedSize('+n+')"><p class="font-display text-2xl font-extrabold">'+E(label)+'</p><p class="mt-1 text-xs font-black uppercase tracking-[.12em] '+(active?'text-indigo-100':'text-slate-400')+'">'+E(sub)+'</p></button>';
+    const active = balancedGetSize() === Number(n);
+    const cls = active
+      ? 'border-indigo-500 bg-indigo-600 text-white shadow-glow'
+      : 'border-slate-200 bg-white/75 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800';
+    const subCls = active ? 'text-indigo-100' : 'text-slate-400';
+    return '<button type="button" class="v357-balanced-size rounded-2xl border '+cls+' p-4 text-left transition hover:-translate-y-0.5" onclick="setBalancedSize('+Number(n)+')">'
+      + '<p class="font-display text-2xl font-extrabold">'+E(label)+'</p>'
+      + '<p class="mt-1 text-xs font-black uppercase tracking-[.12em] '+subCls+'">'+E(sub)+'</p>'
+      + '</button>';
   }
   function enhanceBalancedPanel(){
     const panel = $('#v343BalancedPanel');
     if(!panel) return;
-    const size = Number(localStorage.getItem('residenciapp_balanced_size') || 20);
-    const timing = selectedTimingValue();
+    const size = balancedGetSize();
+    const timing = balancedGetTime();
     const preview = (typeof previewBalancedExam === 'function' ? previewBalancedExam(size) : []);
     const timeOptions = [
       ['free','Libre','sin tiempo'], ['60','1:00','por pregunta'], ['90','1:30','por pregunta'], ['120','2:00','por pregunta']
-    ].map(opt => {
-      const active = timing === opt[0];
-      return '<label data-balanced-time-card data-value="'+opt[0]+'" class="cursor-pointer rounded-2xl border '+(active?'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30':'border-slate-200 bg-white/70 dark:border-slate-700 dark:bg-slate-900/60')+' p-3 transition hover:border-indigo-300 dark:hover:border-indigo-700"><input class="sr-only" type="radio" name="balancedTimeMode" value="'+opt[0]+'" '+(active?'checked':'')+' onchange="setBalancedTimeMode(\''+opt[0]+'\'); setTimeout(enhanceBalancedPanel,20)"><p class="font-display text-2xl font-extrabold">'+E(opt[1])+'</p><p class="text-xs font-black uppercase tracking-[.12em] text-slate-500 dark:text-slate-400">'+E(opt[2])+'</p></label>';
-    }).join('');
+    ].map(opt => timeButton(opt[0], opt[1], opt[2])).join('');
+
+    const previewHtml = preview.length
+      ? '<div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">'+preview.map(r=>'<div class="rounded-2xl border border-slate-200 p-3 dark:border-slate-800"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black uppercase tracking-[.12em] text-slate-400">'+E(r.id)+'</span><span class="font-display text-2xl font-extrabold" style="color:'+E(r.color)+'">'+E(r.n)+'</span></div><h4 class="mt-1 text-sm font-extrabold">'+E(r.label)+'</h4><p class="mt-1 text-xs font-semibold text-slate-500">Distribución estimada</p></div>').join('')+'</div>'
+      : '<div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">No se pudo generar la vista previa, pero podés iniciar el examen si el banco está cargado.</div>';
+
     panel.innerHTML = '<div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between"><div><p class="v34-kicker text-xs font-black uppercase tracking-[.18em] text-indigo-600 dark:text-indigo-300">Exámenes equilibrados</p><h3 class="font-display text-2xl font-extrabold">Elegí modalidad, tamaño y recién después iniciá</h3><p class="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">La app arma automáticamente el examen por distribución del banco. En modo libre tenés feedback inmediato; con tiempo funciona como simulacro ciego hasta el final.</p></div></div>'
       + '<div class="mt-5 rounded-[1.7rem] border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-950/40"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">1 · Modalidad</p><div class="mt-3 grid gap-3 sm:grid-cols-4">'+timeOptions+'</div></div>'
-      + '<div class="mt-4 rounded-[1.7rem] border border-slate-200 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">2 · Tamaño del examen</p><div class="mt-3 grid gap-3 sm:grid-cols-3">'+sizeButton(20,'Mini','20 preguntas')+sizeButton(50,'Medio','50 preguntas')+sizeButton(100,'Completo','100 preguntas')+'</div></div>'
-      + '<div class="mt-4 rounded-[1.7rem] border border-indigo-200 bg-indigo-50/70 p-4 dark:border-indigo-900/60 dark:bg-indigo-950/25"><div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em] text-indigo-600 dark:text-indigo-300">3 · Listo para iniciar</p><h4 class="font-display text-xl font-extrabold">'+size+' preguntas · '+E(timingLabel(timing))+'</h4></div><button class="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white shadow-glow hover:bg-indigo-700" onclick="startSelectedBalancedExam()">Iniciar</button></div></div>'
-      + '<div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">'+preview.map(r=>'<div class="rounded-2xl border border-slate-200 p-3 dark:border-slate-800"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black uppercase tracking-[.12em] text-slate-400">'+E(r.id)+'</span><span class="font-display text-2xl font-extrabold" style="color:'+r.color+'">'+r.n+'</span></div><h4 class="mt-1 text-sm font-extrabold">'+E(r.label)+'</h4><p class="mt-1 text-xs font-semibold text-slate-500">Distribución estimada</p></div>').join('')+'</div>';
+      + '<div class="mt-4 rounded-[1.7rem] border border-slate-200 bg-white/70 p-4 dark:border-slate-800 dark:bg-slate-900/50"><p class="text-xs font-black uppercase tracking-[.16em] text-slate-400">2 · Tipo de examen</p><div class="mt-3 grid gap-3 sm:grid-cols-3">'+sizeButton(20,'Mini','20 preguntas')+sizeButton(50,'Medio','50 preguntas')+sizeButton(100,'Completo','100 preguntas')+'</div></div>'
+      + '<div class="mt-4 rounded-[1.7rem] border border-indigo-200 bg-indigo-50/70 p-4 dark:border-indigo-900/60 dark:bg-indigo-950/25"><div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="text-xs font-black uppercase tracking-[.16em] text-indigo-600 dark:text-indigo-300">3 · Listo para iniciar</p><h4 class="font-display text-xl font-extrabold">'+size+' preguntas · '+E(timingLabel(timing))+'</h4><p class="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">El examen no comienza hasta tocar Iniciar.</p></div><button type="button" class="rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white shadow-glow hover:bg-indigo-700" onclick="startSelectedBalancedExam()">Iniciar</button></div></div>'
+      + previewHtml;
   }
-  const oldSetBalancedTimeMode = window.setBalancedTimeMode;
-  window.setBalancedTimeMode = function(value){
-    if(typeof oldSetBalancedTimeMode === 'function') oldSetBalancedTimeMode(value);
-    else localStorage.setItem('residenciapp_balanced_time_mode', String(value || 'free'));
-    setTimeout(enhanceBalancedPanel, 20);
-  };
   window.enhanceBalancedPanel = enhanceBalancedPanel;
 
   // Wrap renderers once all previous layers already loaded.
