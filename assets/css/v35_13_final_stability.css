@@ -1,0 +1,16 @@
+/* ResidenciAPP v35.13 · estabilidad y performance */
+#v343BalancedPanel button,
+#v3513QuestionNavigator button { touch-action: manipulation; }
+#v343BalancedPanel [data-balanced-mode-final],
+#v343BalancedPanel [data-balanced-size-final],
+#v343BalancedPanel [data-balanced-start-final] { user-select: none; }
+#v3513QuestionNavigator { contain: layout paint; }
+.collab-panel { scroll-margin-top: 96px; }
+.collab-panel textarea { min-height: 10rem; }
+[data-collab-paste-hint] { user-select: none; }
+.choice .ring-2 { box-shadow: 0 0 0 3px rgba(16,185,129,.25); }
+.choice input:disabled + div { cursor: default; }
+@media (max-width: 640px){
+  #v343BalancedPanel .font-display.text-2xl { font-size: 1.25rem; }
+  #v3513QuestionNavigator .max-h-40 { max-height: 12rem; }
+}
