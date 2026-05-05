@@ -307,7 +307,7 @@
   }catch(_){ }
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(afterRender, 250);
-    const mo = new MutationObserver(() => setTimeout(afterRender, 30));
-    mo.observe(document.body, {childList:true, subtree:true});
+    /* v35.10: se retiró el MutationObserver global. Re-renderizaba paneles completos
+       ante cada cambio del DOM y podía trabar botones, especialmente Exámenes equilibrados. */
   });
 })();
