@@ -1,0 +1,125 @@
+/* ════════════════════════════════════════════════════════════════════════
+   ResidenciAPP v35.8 · Estilos para componentes cognitivos nuevos
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Heatmap de cobertura */
+.np-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  gap: 4px;
+}
+.np-heatmap-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: transform .12s ease, opacity .15s, box-shadow .15s;
+  position: relative;
+}
+.np-heatmap-cell:hover {
+  transform: scale(1.18);
+  opacity: 1 !important;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+@media (max-width: 480px) {
+  .np-heatmap-grid { grid-template-columns: repeat(auto-fill, minmax(22px, 1fr)); gap: 3px; }
+}
+
+/* Botón de confianza NeuroPREP — animación entrada */
+.np-conf-btn {
+  animation: npConfFadeUp .35s ease-out both;
+}
+.np-conf-btn:nth-child(1) { animation-delay: 0s; }
+.np-conf-btn:nth-child(2) { animation-delay: .08s; }
+.np-conf-btn:nth-child(3) { animation-delay: .16s; }
+@keyframes npConfFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.np-conf-btn:active { transform: scale(.97); }
+
+/* Tarjeta zona de peligro · pulso */
+@keyframes npDangerPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244,63,94,0); }
+  50% { box-shadow: 0 0 0 6px rgba(244,63,94,.08); }
+}
+.np-danger-pulse { animation: npDangerPulse 2.4s ease-in-out infinite; }
+
+/* Onboarding banner · entrada */
+#onboardingBanner {
+  animation: npOnboardingIn .45s ease-out both;
+}
+@keyframes npOnboardingIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Predictor · animación de número */
+@keyframes npNumberFlow {
+  from { opacity: 0; transform: translateY(4px) scale(.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+#v358ApprovalPredictor [class*="text-4xl"] {
+  animation: npNumberFlow .5s ease-out;
+}
+
+/* Dashboard cognitivo cards · hover */
+#v358CognitiveDashboard > div > div {
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+#v358CognitiveDashboard > div > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15,23,42,.08);
+}
+
+/* Mode badge razonamiento · brillo sutil */
+@keyframes npNeuroGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  50% { box-shadow: 0 0 0 4px rgba(99,102,241,.12); }
+}
+
+/* Indicador de calibración correcta · check verde */
+.np-calib-correct::before {
+  content: '✓';
+  display: inline-block;
+  margin-right: 4px;
+  color: #1D9E75;
+  font-weight: 900;
+}
+
+/* Tooltip nativo del heatmap más legible */
+.np-heatmap-cell {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Mejoras dark mode para gradientes generados con bg-{color}-50 */
+.dark #onboardingBanner {
+  background: linear-gradient(135deg, rgba(67,56,202,.15), rgba(15,23,42,.95));
+}
+
+/* Botones de patrón de error en strategies */
+.np-strategy-btn {
+  transition: all .15s ease;
+}
+.np-strategy-btn:hover {
+  transform: translateX(2px);
+}
+
+/* Modo razonamiento · Hint de proceso */
+.np-process-hint {
+  font-size: 11px;
+  color: var(--color-text-tertiary, #64748b);
+  font-family: var(--font-mono, monospace);
+  letter-spacing: .04em;
+}
+
+/* Mejora responsive del predictor de aprobación */
+@media (max-width: 480px) {
+  #v358ApprovalPredictor .font-display.text-4xl {
+    font-size: 2.25rem;
+  }
+}
+
+/* Smooth scroll para navegación dentro del onboarding */
+html { scroll-behavior: smooth; }

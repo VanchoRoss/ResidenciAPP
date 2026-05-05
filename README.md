@@ -1,6 +1,19 @@
-# ResidenciAPP v34.2 Premium Clean UX
+# ResidenciAPP v35.8 · NeuroPREP Real
 
-Versión Banco 974 con reporte PDF de progreso, juegos de memoria y calendario de vacunación en blanco.
+Plataforma de estudio activo para residencia médica con motor cognitivo basado en neurociencia del aprendizaje.
+
+**v35.8 (4 mayo 2026)** — Capa cognitiva real:
+- Modo Razonamiento con calibración de confianza antes de las opciones.
+- Dashboard cognitivo de 3 indicadores accionables (zona de peligro, calibración, patrón dominante).
+- Onboarding diagnóstico de 5 preguntas para usuarios nuevos.
+- Predictor de probabilidad de aprobación ponderado por peso real del examen.
+- Mapa de calor de cobertura por sprint.
+- Interleaving estructurado round-robin entre ejes.
+- Recomendación adaptativa según estado del estudiante.
+
+Ver `docs/RESIDENCIAPP_V35_8_NEUROPREP_REAL.md` para detalles técnicos completos.
+
+---
 
 # ResidenciAPP
 
