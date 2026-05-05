@@ -1,21 +1,13 @@
-# ResidenciAPP v35.8 · NeuroPREP Real
+# ResidenciAPP v35.9 · Refactor cognitivo
 
 Plataforma de estudio activo para residencia médica con motor cognitivo basado en neurociencia del aprendizaje.
 
-**v35.8 (4 mayo 2026)** — Capa cognitiva real:
-- Modo Razonamiento con calibración de confianza antes de las opciones.
-- Dashboard cognitivo de 3 indicadores accionables (zona de peligro, calibración, patrón dominante).
-- Onboarding diagnóstico de 5 preguntas para usuarios nuevos.
-- Predictor de probabilidad de aprobación ponderado por peso real del examen.
-- Mapa de calor de cobertura por sprint.
-- Interleaving estructurado round-robin entre ejes.
-- Recomendación adaptativa según estado del estudiante.
+**v35.9 (5 mayo 2026)** — Refactor de inteligencia cognitiva: dashboard accionable, predictor de aprobación, mapa de cobertura, sidebar limpio. Lee del sistema NeuroPREP nativo sin duplicación.
 
-Ver `docs/RESIDENCIAPP_V35_8_NEUROPREP_REAL.md` para detalles técnicos completos.
+Ver `docs/RESIDENCIAPP_V35_9_REFACTOR.md` para detalles completos.
 
 ---
 
-# ResidenciAPP
 
 Plataforma de estudio activo para residencia médica: banco de preguntas por temario, sprints, repaso espaciado, flashcards, error log, modo Feynman y colaboración sin GitHub para usuarios comunes.
 

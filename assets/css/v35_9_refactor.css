@@ -1,0 +1,137 @@
+/* ════════════════════════════════════════════════════════════════════════
+   ResidenciAPP v35.9 · Estilos refactor
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── HEATMAP ── */
+.np-heat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+  gap: 4px;
+}
+.np-heat-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, opacity .2s ease;
+  position: relative;
+}
+.np-heat-cell:hover {
+  transform: scale(1.25);
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
+  opacity: 1 !important;
+}
+@media (max-width: 480px) {
+  .np-heat-grid {
+    grid-template-columns: repeat(auto-fill, minmax(22px, 1fr));
+    gap: 3px;
+  }
+}
+
+/* ── BOTONES DE CONFIANZA ── */
+.np-conf-btn {
+  animation: npConfFadeUp .35s ease-out both;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.np-conf-btn:nth-child(1) { animation-delay: 0s; }
+.np-conf-btn:nth-child(2) { animation-delay: .08s; }
+.np-conf-btn:nth-child(3) { animation-delay: .16s; }
+.np-conf-btn:active { transform: scale(0.96); }
+@keyframes npConfFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── ONBOARDING BANNER ── */
+#v359OnboardingBanner {
+  animation: npBannerSlide .45s ease-out both;
+}
+@keyframes npBannerSlide {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PREDICTOR · animación del número ── */
+#v359PredictorBlock .text-5xl {
+  animation: npNumberPop .5s ease-out both;
+}
+@keyframes npNumberPop {
+  from { opacity: 0; transform: scale(.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── DASHBOARD COGNITIVO · hover sutil ── */
+#v359CognitiveBlock > div > div {
+  transition: transform .15s ease, box-shadow .25s ease;
+}
+#v359CognitiveBlock > div > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, .07);
+}
+
+/* ── BADGE DE CONFIANZA EN SESIÓN ── */
+#v359ConfBadge {
+  animation: npBadgeIn .25s ease-out both;
+}
+@keyframes npBadgeIn {
+  from { opacity: 0; transform: scale(.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── FEEDBACK DE CALIBRACIÓN ── */
+#v359CalibFeedback {
+  animation: npFeedbackIn .35s ease-out both;
+}
+@keyframes npFeedbackIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── OVERLAY DE CONFIANZA · entrada ── */
+#v359ConfOverlay {
+  animation: npOverlayIn .3s ease-out both;
+}
+@keyframes npOverlayIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MEJORA DEL SIDEBAR · NeuroPREP destacado ── */
+[data-nav="neuroprep"] {
+  position: relative;
+  font-weight: 700 !important;
+}
+[data-nav="neuroprep"]::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  background: #6366f1;
+  border-radius: 0 4px 4px 0;
+  opacity: 0;
+  transition: opacity .2s;
+}
+[data-nav="neuroprep"]:hover::before {
+  opacity: 1;
+}
+
+/* ── SCROLL SUAVE ── */
+html { scroll-behavior: smooth; }
+
+/* ── RESPONSIVE FIXES ── */
+@media (max-width: 640px) {
+  #v359PredictorBlock .text-5xl { font-size: 2.5rem !important; }
+  #v359CognitiveBlock .text-5xl { font-size: 3rem !important; }
+}
+
+/* ── DARK MODE · gradient onboarding ── */
+.dark #v359OnboardingBanner {
+  background: linear-gradient(135deg,
+    rgba(67, 56, 202, 0.15),
+    rgba(15, 23, 42, 0.95) 60%,
+    rgba(2, 6, 23, 0.95));
+}
