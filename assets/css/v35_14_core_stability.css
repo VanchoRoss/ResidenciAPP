@@ -1,0 +1,23 @@
+/* ResidenciAPP v35.14 · estabilidad visual */
+.v3514-session-chip{
+  min-width:2.25rem;height:2.25rem;border-radius:.85rem;border:1px solid rgb(226 232 240);background:#fff;color:rgb(71 85 105);font-size:.8rem;font-weight:900;transition:transform .12s ease, background .12s ease, border-color .12s ease;color-scheme:light;
+}
+.dark .v3514-session-chip{background:rgb(15 23 42);border-color:rgb(51 65 85);color:rgb(203 213 225)}
+.v3514-session-chip:hover{transform:translateY(-1px);background:rgb(248 250 252)}
+.v3514-session-chip.is-current{background:rgb(37 99 235);border-color:rgb(37 99 235);color:white;box-shadow:0 10px 22px rgba(37,99,235,.20)}
+.v3514-session-chip.is-correct{background:rgb(220 252 231);border-color:rgb(134 239 172);color:rgb(21 128 61)}
+.v3514-session-chip.is-wrong{background:rgb(255 228 230);border-color:rgb(253 164 175);color:rgb(190 18 60)}
+.v3514-balanced-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}
+.v3514-balanced-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.v3514-balanced-card{border:1px solid rgb(226 232 240);background:rgba(255,255,255,.82);border-radius:1.05rem;padding:1rem;text-align:left;display:flex;flex-direction:column;gap:.15rem;transition:transform .12s ease,border-color .12s ease,background .12s ease,box-shadow .12s ease;min-height:5rem}
+.v3514-balanced-card:hover{transform:translateY(-1px);border-color:rgb(129 140 248);box-shadow:0 12px 28px rgba(15,23,42,.08)}
+.v3514-balanced-card.is-active{border-color:rgb(79 70 229);background:rgb(79 70 229);color:white;box-shadow:0 18px 38px rgba(79,70,229,.22)}
+.v3514-balanced-title{font-family:ui-rounded,system-ui,sans-serif;font-size:1.45rem;line-height:1.1;font-weight:900}
+.v3514-balanced-sub{font-size:.68rem;line-height:1.2;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:rgb(100 116 139)}
+.v3514-balanced-desc{font-size:.68rem;line-height:1.2;font-weight:800;color:rgb(148 163 184)}
+.v3514-balanced-card.is-active .v3514-balanced-sub,.v3514-balanced-card.is-active .v3514-balanced-desc{color:rgba(255,255,255,.82)}
+.dark .v3514-balanced-card{border-color:rgb(51 65 85);background:rgba(15,23,42,.82);color:rgb(241 245 249)}
+.dark .v3514-balanced-card:not(.is-active):hover{background:rgb(30 41 59)}
+@media(max-width:760px){.v3514-balanced-grid,.v3514-balanced-grid-3{grid-template-columns:1fr}.v3514-balanced-card{min-height:4.5rem}.v3514-balanced-title{font-size:1.25rem}}
+.v3514-error-button{border-color:rgb(254 205 211)!important;background:rgb(244 63 94)!important;color:white!important;box-shadow:0 12px 26px rgba(244,63,94,.18)!important}
+.v3514-error-button:hover{background:rgb(225 29 72)!important}
