@@ -1,6 +1,113 @@
 {
   "lessons": [
     {
+      "id": "cardiologia-vault-10-nodos",
+      "title": "Cardiología — Vault completo",
+      "eje": "Clínica médica",
+      "tema": "Cardiología",
+      "subtitle": "10 nodos integrados · HTA, riesgo CV, SCA, FA, IC, valvulopatías y TEP",
+      "file": "./assets/lessons/cardiologia-vault-10-nodos.html",
+      "accent": "amber",
+      "badges": [
+        "Vault",
+        "10 nodos",
+        "Alta frecuencia",
+        "Cardiología"
+      ],
+      "description": "Biblioteca visual completa de Cardiología con navegación lateral interna, ideas madre, tablas, algoritmos, trampas y mini-casos para repasar el eje clínico de forma integrada.",
+      "sections": [
+        "HTA diagnóstico",
+        "HTA tratamiento",
+        "Riesgo CV",
+        "STEMI",
+        "NSTEMI y síncope",
+        "Insuficiencia cardíaca",
+        "Fibrilación auricular",
+        "Arritmias",
+        "Valvulopatías",
+        "TEP/TVP"
+      ],
+      "terms": [
+        "cardiologia",
+        "cardiología",
+        "hta",
+        "hipertension",
+        "hipertensión",
+        "riesgo cardiovascular",
+        "framingham",
+        "estatinas",
+        "stemi",
+        "nstemi",
+        "sindrome coronario",
+        "síndrome coronario",
+        "infarto",
+        "sincope",
+        "síncope",
+        "pericarditis",
+        "taponamiento",
+        "insuficiencia cardiaca",
+        "insuficiencia cardíaca",
+        "fibrilacion auricular",
+        "fibrilación auricular",
+        "arritmias",
+        "bloqueos av",
+        "valvulopatias",
+        "valvulopatías",
+        "endocarditis",
+        "tep",
+        "tvp"
+      ],
+      "explicitQuestionIds": []
+    },
+    {
+      "id": "hta-adultos-completo",
+      "title": "HTA en el adulto — Nodo completo",
+      "eje": "Clínica médica",
+      "tema": "Cardiología",
+      "subtitle": "Diagnóstico · MAPA · crisis hipertensiva · fármacos por contexto",
+      "file": "./assets/lessons/hta-adultos-completo.html",
+      "accent": "medical",
+      "badges": [
+        "Guía MSAL 2024",
+        "CL1",
+        "Muy preguntado",
+        "Práctica"
+      ],
+      "description": "Nodo profundo de hipertensión arterial en adultos: clasificación, fenotipos, algoritmo diagnóstico-terapéutico, situaciones especiales, crisis hipertensivas, trampas y práctica interactiva.",
+      "sections": [
+        "Nodo",
+        "Clasificación",
+        "Algoritmo",
+        "Situaciones especiales",
+        "Crisis HTA",
+        "Trampas",
+        "Práctica"
+      ],
+      "terms": [
+        "hta",
+        "hipertension",
+        "hipertensión",
+        "presion arterial",
+        "presión arterial",
+        "mapa",
+        "bata blanca",
+        "enmascarada",
+        "urgencia hipertensiva",
+        "emergencia hipertensiva",
+        "crisis hipertensiva",
+        "microalbuminuria",
+        "diabetes",
+        "ieca",
+        "ara ii",
+        "tiazida",
+        "amlodipina",
+        "espironolactona",
+        "enalapril",
+        "hiperaldosteronismo"
+      ],
+      "explicitQuestionIds": []
+    },
+    {
       "id": "cancer-cervix",
       "title": "Cáncer de Cérvix",
       "eje": "Salud integral de las mujeres",
@@ -756,18 +863,5 @@
         "Q0774"
       ]
     }
-  ],
-  "metadata": {
-    "version": "v34.4-nodos-aprender-desde-cero",
-    "updated_at": "2026-05-02",
-    "total_lessons": 12,
-    "added_lessons": [
-      "crecimiento-desarrollo-nutricion",
-      "gineco-endocrino-10-nodos",
-      "hemorragias-primera-mitad-nodo",
-      "torch-peripartum-neonatal",
-      "vault-hemorragias-primera-mitad-10-nodos",
-      "vault-hemorragias-segunda-mitad-10-nodos"
-    ]
-  }
+  ]
 }

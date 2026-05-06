@@ -1,0 +1,50 @@
+/* === ResidenciAPP v35.15 · Biblioteca visual para Aprender desde cero === */
+#learnView .learn-library-shell { scroll-margin-top: 1rem; }
+#learnView .learn-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+#learnView .learn-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px auto auto -1px;
+  width: 5px;
+  height: calc(100% + 2px);
+  background: var(--learn-accent, #1877d6);
+  opacity: .9;
+}
+#learnView .learn-card:hover { transform: translateY(-2px); }
+#learnView .learn-card.is-current {
+  box-shadow: 0 18px 50px rgba(24,119,214,.16);
+}
+#learnView .learn-card-title { text-wrap: balance; }
+#learnView .learn-chip.active {
+  background: #1877d6;
+  color: white;
+  border-color: #1877d6;
+  box-shadow: 0 10px 26px rgba(24,119,214,.18);
+}
+#learnView .lesson-library-grid { scrollbar-width: thin; }
+#learnView .lesson-library-grid::-webkit-scrollbar { width: 8px; }
+#learnView .lesson-library-grid::-webkit-scrollbar-thumb { background: rgba(100,116,139,.25); border-radius: 999px; }
+#learnView .library-section-title {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  backdrop-filter: blur(12px);
+}
+#lessonFrame { border: 0; }
+.lesson-focus #learnView .xl\:grid-cols-\[380px_minmax\(0\,1fr\)\] { grid-template-columns: minmax(0,1fr) !important; }
+.lesson-focus #learnView aside { display: none; }
+.lesson-focus #lessonFrame { min-height: 86vh; }
+@media (min-width: 1280px){
+  #learnView > .grid { grid-template-columns: 430px minmax(0,1fr) !important; }
+}
+@media (max-width: 1279px){
+  #learnView #lessonGrid { max-height: 520px; }
+}
+@media (max-width: 640px){
+  #learnView .learn-card { border-radius: 1.35rem; }
+  #learnView #lessonFrame { min-height: 72vh; }
+}

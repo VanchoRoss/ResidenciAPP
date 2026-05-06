@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardiología — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;--border2:#3d4a6a;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+/* SIDEBAR */
+#sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+.progress-bar{height:3px;background:var(--bg4);margin-top:8px;border-radius:2px}
+.progress-fill{height:100%;border-radius:2px;background:var(--item-color);transition:width .3s}
+/* CONTENT */
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:860px}
+.node{display:none}
+.node.active{display:block}
+/* Node header */
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+/* Idea madre */
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+/* Sections */
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Tables */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+/* Pills/tags */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}
+.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}
+.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}
+.tag-g{background:var(--greenb);color:var(--green2)}
+/* Alert boxes */
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+/* Cards grid */
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+/* Algorithm steps */
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+/* Highlight */
+hl{color:var(--nc);font-weight:600}
+/* Nav arrows */
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Responsive */
+@media(max-width:800px){
+  body{flex-direction:column}
+  #sidebar{width:100%;height:auto;position:static}
+  #content{padding:20px 16px}
+  .cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Cardiología</div>
+    <div class="sb-sub">Banco 2016–2025 · Bibliografía CABA 2026</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">89</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">10</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--purple)">3</div><div class="sb-stat-l">sprints</div></div>
+    </div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--amber)">Sprint CL1 · HTA / Riesgo / TEP — 33 preg.</div>
+  <div class="nav-item active" style="--item-color:var(--amber)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">HTA — Diagnóstico</div><div class="nav-n">Clasificación · MAPA · HTA 2ria</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">HTA — Tratamiento</div><div class="nav-n">Antihipertensivos por comorbilidad</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Riesgo CV y estatinas</div><div class="nav-n">Framingham · LDL · Prevención</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--red)">Sprint CL2 · SCA / Síncope / Pericarditis — 13 preg.</div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">SCA — STEMI</div><div class="nav-n">ECG · Reperfusión · Tiempo</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">NSTEMI · Síncope · Pericarditis</div><div class="nav-n">Troponinas · Taponamiento</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--purple)">Sprint CL3 · Arritmias / IC / Valvulopatías — 43 preg.</div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Insuficiencia cardíaca</div><div class="nav-n">FEr vs FEp · NYHA · Tratamiento</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Fibrilación auricular</div><div class="nav-n">CHA₂DS₂-VASc · Cardioversión · ACO</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Arritmias y ECG</div><div class="nav-n">Bloqueos AV · TV · QT · WPW</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(8)">
+    <div class="nav-num">9</div>
+    <div class="nav-text"><div class="nav-name">Valvulopatías · Pericarditis · EI</div><div class="nav-n">EA · Taponamiento · Duke</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(9)">
+    <div class="nav-num">10</div>
+    <div class="nav-text"><div class="nav-name">TEP / TVP</div><div class="nav-n">Wells · AngioTC · Trombolisis</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══════════════════════════════════════════════════ NODO 1 ═══ -->
+<div class="node active" id="n0" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL1 · 33 preguntas</div>
+    <div class="node-title">HTA — Diagnóstico y clasificación</div>
+    <div class="node-subtitle">Guardapolvo blanco · MAPA · Urgencia vs emergencia · HTA secundaria</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La HTA casi siempre es primaria y asintomática. El examen pregunta cuándo confirmar (MAPA), cuándo hay daño de órgano blanco (emergencia), y cuándo sospechar causa secundaria (hipopotasemia, paroxismos).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico y clasificación</div>
+    <table class="tbl">
+      <tr><th>Categoría</th><th>Consultorio (mmHg)</th><th>MAPA 24h</th><th>Automedición</th></tr>
+      <tr><td>Normal</td><td>&lt;120/80</td><td>&lt;115/75</td><td>&lt;120/80</td></tr>
+      <tr><td>Normal-alta</td><td>130–139 / 85–89</td><td>—</td><td>—</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>HTA Grado 1</strong></td><td>140–159 / 90–99</td><td>≥130/80</td><td>≥135/85</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>HTA Grado 2</strong></td><td>160–179 / 100–109</td><td>—</td><td>—</td></tr>
+      <tr><td style="color:var(--red2)"><strong>HTA Grado 3</strong></td><td>≥180 / ≥110</td><td>—</td><td>—</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Diagnóstico: 2 tomas en ≥2 consultas separadas. Una sola toma NO es suficiente.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Guardapolvo blanco vs HTA enmascarada vs MAPA</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">HTA de guardapolvo blanco</div>
+        <ul>
+          <li>TA alta en consultorio</li>
+          <li>TA normal fuera del consultorio</li>
+          <li>Confirmación: MAPA (monitoreo ambulatorio 24h)</li>
+          <li>→ NO iniciar tratamiento hasta confirmar</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">HTA enmascarada (más peligrosa)</div>
+        <ul>
+          <li>TA normal en consultorio</li>
+          <li>TA alta fuera del consultorio</li>
+          <li>Mayor riesgo CV que la de guardapolvo blanco</li>
+          <li>También se confirma con MAPA</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">🎯 Patrón del examen — MAPA</div>
+      <p>Siempre que el caso presente: TA alta en consultorio + sospecha de falsa elevación → la respuesta es <strong>MAPA</strong>. No es "repetir la toma en consultorio" ni "iniciar tratamiento".</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Urgencia vs emergencia hipertensiva — la distinción más preguntada</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--amber2)">Urgencia hipertensiva</th><th style="color:var(--red2)">Emergencia hipertensiva</th></tr>
+      <tr><td>TA</td><td>Muy alta (&gt;180/120)</td><td>Generalmente muy alta</td></tr>
+      <tr><td><strong>Daño de órgano blanco</strong></td><td style="color:var(--teal2)"><strong>AUSENTE</strong></td><td style="color:var(--red2)"><strong>PRESENTE</strong></td></tr>
+      <tr><td>Síntomas</td><td>Cefalea, epistaxis, ansiedad</td><td>Signos neurológicos, dolor torácico, disnea, oliguria, alt. visual</td></tr>
+      <tr><td>Manejo</td><td style="color:var(--teal2)">AMBULATORIO · vía oral</td><td style="color:var(--red2)">HOSPITALIZACIÓN · vía parenteral</td></tr>
+      <tr><td>Fármacos</td><td>Captopril 25 mg SL/oral, labetalol oral</td><td>Nitroprusiato IV, labetalol IV, nicardipino IV</td></tr>
+      <tr><td>Velocidad de descenso</td><td>Gradual en horas</td><td>25% en primera hora, luego gradual</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa del examen</div>
+      <p>El examen da una TA de 200/120 sin síntomas → urgencia → manejo ambulatorio oral. Si das hospitalización o vía IV sin daño orgánico = error. La clave es siempre buscar si hay o no daño de órgano blanco.</p>
+    </div>
+    <p style="font-size:13px;margin-top:10px;color:var(--text2)"><strong style="color:var(--text)">Órganos blanco a buscar:</strong> cerebro (ACV, encefalopatía), corazón (SCA, IC aguda), riñón (oliguria, hematuria, creatinina↑), aorta (disección), retina (grado III-IV Keith-Wagener).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">HTA secundaria — sospechar y estudiar</div>
+    <table class="tbl">
+      <tr><th>Causa</th><th>Pistas clínicas</th><th>Estudio inicial</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>Hiperaldosteronismo primario</strong></td><td>HTA resistente, hipopotasemia ESPONTÁNEA, mujer joven</td><td>Relación aldosterona/renina plasmática. Luego TC suprarrenal</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Feocromocitoma</strong></td><td>HTA paroxística + triada: cefalea + sudoración + palpitaciones</td><td>Metanefrinas en orina 24h o metanefrinas plasmáticas</td></tr>
+      <tr><td>HTA renovascular</td><td>Soplo periumbilical, empeora con IECAs (sube creatinina)</td><td>Eco Doppler de arterias renales</td></tr>
+      <tr><td>Síndrome de Cushing</td><td>Obesidad central, cara de luna llena, estrías violáceas</td><td>Cortisol libre en orina 24h, test de supresión con dexametasona</td></tr>
+      <tr><td>Apnea del sueño</td><td>HTA matinal, ronquido, obesidad, somnolencia diurna</td><td>Polisomnografía</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa frecuente — hipopotasemia + HTA</div>
+      <p>Mujer joven con HTA resistente + K+ bajo espontáneo → pensar <strong>hiperaldosteronismo primario</strong>, NO hipopotasemia por diuréticos (que es el diagnóstico obvio). Estudio: aldosterona/renina, no catecolaminas.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso clínico tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Mujer 45 años. Dos tomas en consultorio: 156/96 y 158/94. Asintomática. Sin cardiopatía conocida. ¿Cuál es el paso siguiente?</p>
+      <p style="margin-top:8px"><strong>Respuesta: MAPA</strong> (confirmar diagnóstico antes de iniciar tratamiento, descartar guardapolvo blanco). El error es iniciar antihipertensivo con dos tomas sin confirmar.</p>
+    </div>
+    <div class="alert alert-caso" style="margin-top:8px">
+      <div class="alert-title">Caso 2</div>
+      <p>Hombre 60 años. TA 210/130. Cefalea. Sin déficit neurológico focal, creatinina normal, sin dolor torácico. ¿Qué hacer?</p>
+      <p style="margin-top:8px"><strong>Respuesta: Urgencia hipertensiva → manejo ambulatorio con captopril oral</strong>. No hay daño de órgano blanco → NO hospitalizar, NO vía IV.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones con otros nodos</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Nodo 2:</strong> Una vez confirmada la HTA, elegir el fármaco según comorbilidad</li>
+        <li><strong>Nodo 3:</strong> La HTA es uno de los 5 componentes del síndrome metabólico y factor del Framingham</li>
+        <li><strong>Nodo 6:</strong> HTA crónica → causa más frecuente de IC con FEp (diastólica)</li>
+        <li><strong>Nodo 7:</strong> HTA = 1 punto en CHA₂DS₂-VASc → contribuye a la decisión de anticoagular en FA</li>
+        <li><strong>Ginecología:</strong> HTA en embarazo → metildopa (IECAs teratogénicos)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: HTA Tratamiento →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 2 ═══ -->
+<div class="node" id="n1" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL1 · 33 preguntas</div>
+    <div class="node-title">HTA — Tratamiento y fármacos</div>
+    <div class="node-subtitle">Antihipertensivos por comorbilidad · Contraindicaciones · Urgencia vs Emergencia</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">No hay un antihipertensivo universal. El examen no pregunta "cuál es el mejor" sino "cuál es el correcto para este paciente con esta condición". Conocer los 5-6 pares fármaco-comorbilidad domina este nodo.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Los 4 grupos de primera línea (sin comorbilidad)</div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-title" style="color:var(--teal2)">IECA / ARA-II</div><ul><li>Enalapril, lisinopril (IECA)</li><li>Losartán, valsartán (ARA-II)</li><li>CI: embarazo 2°-3° trim, estenosis bilateral renal, hiperpotasemia</li><li>Si IECA produce tos seca → cambiar por ARA-II</li></ul></div>
+      <div class="card"><div class="card-title" style="color:var(--blue2)">Betabloqueantes</div><ul><li>Carvedilol, metoprolol, bisoprolol, atenolol</li><li>CI relativa: EPOC grave, asma, BAV 2°-3°, bradicardia</li><li>Cardioselectivos (β1): metoprolol, bisoprolol, atenolol</li></ul></div>
+      <div class="card"><div class="card-title" style="color:var(--amber2)">Bloqueantes de calcio (BC)</div><ul><li>Dihidropiridinas: amlodipino, nifedipino (vasculares)</li><li>No-DHP: verapamilo, diltiazem (cardíacos, reducen FC)</li><li>BC dihidropiridínicos: útiles en EPOC, ancianos, HTA sistólica aislada</li></ul></div>
+      <div class="card"><div class="card-title" style="color:var(--purple2)">Diuréticos tiazídicos</div><ul><li>Hidroclorotiazida, clortalidona (preferida)</li><li>CI: gota activa (aumentan uricemia)</li><li>CI relativa: hipopotasemia, dislipemia</li></ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Antihipertensivo por comorbilidad — tabla del examen</div>
+    <table class="tbl">
+      <tr><th>Condición clínica</th><th>Fármaco de ELECCIÓN</th><th>CONTRAINDICADO / evitar</th></tr>
+      <tr><td>Diabético con proteinuria / nefropatía</td><td style="color:var(--teal2)">IECA o ARA-II (nefroprotector)</td><td>Tiazidas (empeoran glucemia)</td></tr>
+      <tr><td>Post-IAM</td><td style="color:var(--teal2)">Betabloqueante + IECA</td><td>—</td></tr>
+      <tr><td>IC con FEr (FEVI &lt;40%)</td><td style="color:var(--teal2)">IECA + Betabloqueante + Espironolactona + Furosemida</td><td>BC dihidropiridínicos de acción corta, verapamilo, diltiazem</td></tr>
+      <tr><td>EPOC estable</td><td style="color:var(--teal2)">BC dihidropiridínico (amlodipino)</td><td>BBloq no selectivos. Cardioselectivos con precaución</td></tr>
+      <tr><td>Asma</td><td style="color:var(--teal2)">BC dihidropiridínico</td><td>Betabloqueantes (todos, incluso cardioselectivos)</td></tr>
+      <tr><td style="color:var(--red2)">Embarazo (2°-3° trimestre)</td><td style="color:var(--teal2)">Metildopa (1ª línea) · Nifedipino · Labetalol</td><td style="color:var(--red2)">IECA y ARA-II (teratogénicos: oligohidramnios, IRA fetal)</td></tr>
+      <tr><td>Gota / hiperuricemia</td><td style="color:var(--teal2)">Losartán (ARA-II, tiene efecto uricosúrico)</td><td>Tiazidas (aumentan ácido úrico)</td></tr>
+      <tr><td>Hiperaldosteronismo primario</td><td style="color:var(--teal2)">Espironolactona (antagonista aldosterona)</td><td>—</td></tr>
+      <tr><td>Fibrilación auricular (control FC)</td><td style="color:var(--teal2)">Betabloqueante o diltiazem/verapamilo</td><td>—</td></tr>
+      <tr><td>HBP (hipertrofia benigna próstata)</td><td style="color:var(--teal2)">Alfa-1 bloqueante (doxazosina, terazosina)</td><td>—</td></tr>
+      <tr><td>Disección aórtica</td><td style="color:var(--teal2)">Labetalol IV (baja TA + FC)</td><td>Vasodilatadores puros (reflejo taquicardia aumenta shear stress)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Emergencia hipertensiva — fármacos IV según órgano afectado</div>
+    <table class="tbl">
+      <tr><th>Tipo de emergencia</th><th>Fármaco preferido</th></tr>
+      <tr><td>Encefalopatía hipertensiva / HTA maligna</td><td>Nitroprusiato sódico IV (de elección general)</td></tr>
+      <tr><td>Disección aórtica</td><td>Labetalol IV (reduce FC y TA) + nitroprusiato</td></tr>
+      <tr><td>Eclampsia / preeclampsia grave</td><td>Hidralazina IV o Labetalol IV</td></tr>
+      <tr><td>SCA + emergencia HTA</td><td>NTG IV + Betabloqueante</td></tr>
+      <tr><td>EAP hipertensivo</td><td>NTG IV + Furosemida IV</td></tr>
+      <tr><td>ACV hemorrágico</td><td>Labetalol IV o nicardipino IV</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa crítica — embarazo y antihipertensivos</div>
+      <p>Los IECAs y ARA-II están <strong>CONTRAINDICADOS en el 2° y 3° trimestre</strong> (causan oligohidramnios, malformaciones renales fetales, muerte fetal). Si el caso tiene embarazada con HTA → siempre Metildopa primero. Si ya toma IECA, hay que cambiarlo.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-casos tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso 1</div>
+      <p>Hombre 65 años, diabético con microalbuminuria, PA 150/95. ¿Qué antihipertensivo usar?</p>
+      <p style="margin-top:6px"><strong>Respuesta: IECA o ARA-II</strong> — la proteinuria/nefropatía diabética es indicación específica de este grupo. Efecto nefroprotector independiente del efecto antihipertensivo.</p>
+    </div>
+    <div class="alert alert-caso" style="margin-top:8px">
+      <div class="alert-title">Caso 2</div>
+      <p>Mujer 32 años, 20 semanas de embarazo, PA 160/105, sin proteinuria. Estaba tomando enalapril. ¿Qué hacer?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Suspender enalapril + iniciar metildopa</strong>. IECA contraindicado desde el 2° trimestre. La HTA en la 20ª semana sin proteinuria es HTA crónica (no preeclampsia que aparece después de la 20ª sem).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Nodo 1:</strong> La clasificación de urgencia/emergencia define si el fármaco va oral o IV</li>
+        <li><strong>Nodo 6:</strong> IC-FEr: los mismos 4 pilares del tratamiento (IECA+BBloq+ARM+furosemida) aplican aquí</li>
+        <li><strong>Obstetricia:</strong> Metildopa, nifedipino, labetalol son los 3 antihipertensivos seguros en embarazo</li>
+        <li><strong>Nodo 4:</strong> Post-IAM: siempre betabloqueante + IECA (reducen remodelado y mortalidad)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: HTA Dx</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Riesgo CV →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 3 ═══ -->
+<div class="node" id="n2" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL1 · 33 preguntas</div>
+    <div class="node-title">Riesgo cardiovascular y estatinas</div>
+    <div class="node-subtitle">Framingham · Prevención primaria vs secundaria · Síndrome metabólico</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La prevención secundaria (después de un evento CV) siempre indica estatinas sin importar el LDL. La prevención primaria depende del riesgo calculado. El LDL objetivo difiere: &lt;70 en muy alto riesgo, &lt;100 en alto.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estratificación del riesgo cardiovascular global</div>
+    <table class="tbl">
+      <tr><th>Categoría</th><th>Definición</th><th>LDL objetivo</th><th>Estatinas</th></tr>
+      <tr><td>Bajo riesgo</td><td>Riesgo Framingham &lt;10%</td><td>&lt;130 mg/dL</td><td>Solo si LDL muy alto</td></tr>
+      <tr><td>Riesgo moderado</td><td>Framingham 10–20%</td><td>&lt;100 mg/dL</td><td>Si cambios de estilo de vida insuficientes</td></tr>
+      <tr><td style="color:var(--amber2)">Alto riesgo</td><td>Framingham &gt;20% o DM con 1 FRCV adicional</td><td>&lt;100 mg/dL</td><td><strong>Indicadas</strong></td></tr>
+      <tr><td style="color:var(--red2)"><strong>Muy alto riesgo</strong></td><td>ECV establecida: IAM, ACV, AIT, AOP, angina</td><td style="color:var(--red2)"><strong>&lt;70 mg/dL</strong></td><td style="color:var(--red2)"><strong>SIEMPRE, sin umbral de LDL</strong></td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida — prevención secundaria</div>
+      <p>Paciente post-IAM con LDL de 85 mg/dL. ¿Se dan estatinas? <strong>SÍ, SIEMPRE</strong>. En prevención secundaria no hay un LDL mínimo para indicar estatinas. El beneficio es independiente del LDL basal. La respuesta "no se necesitan porque el LDL es normal" = error.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Score de Framingham — variables que incluye</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Variables del cálculo</div>
+        <ul>
+          <li>Edad y sexo</li>
+          <li>Colesterol total</li>
+          <li>HDL-colesterol</li>
+          <li>Presión arterial sistólica (y si está tratada)</li>
+          <li>Tabaquismo (sí/no)</li>
+          <li>Diabetes (sí/no)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Lo que da como resultado</div>
+        <ul>
+          <li>Riesgo de evento CV a 10 años (%)</li>
+          <li>No incluye: LDL, TG, obesidad directamente</li>
+          <li>Limitación: subestima riesgo en mujeres, latinoamericanos, jóvenes</li>
+          <li>En Argentina se usa como guía junto con las GPC MSAL 2024</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estatinas — intensidad y cuándo usarlas</div>
+    <table class="tbl">
+      <tr><th>Intensidad</th><th>Fármacos</th><th>Indicación</th></tr>
+      <tr><td style="color:var(--red2)">Alta intensidad</td><td>Atorvastatina 40–80 mg · Rosuvastatina 20–40 mg</td><td>Prevención secundaria · LDL muy alto · DM con alto riesgo</td></tr>
+      <tr><td style="color:var(--amber2)">Moderada intensidad</td><td>Atorvastatina 10–20 mg · Simvastatina 20–40 mg · Rosuvastatina 10 mg</td><td>Prevención primaria con riesgo moderado-alto</td></tr>
+      <tr><td>Baja intensidad</td><td>Simvastatina 10 mg · Pravastatina</td><td>Casos seleccionados, intolerancia</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Efecto adverso principal: miopatía (dolores musculares) → medir CPK si síntomas. Rabdomiólisis rara pero grave.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síndrome metabólico — criterios NCEP-ATPIII (3 de 5)</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">1</div>
+        <div class="algo-text"><strong>Obesidad abdominal:</strong> cintura &gt;102 cm en hombres / &gt;88 cm en mujeres</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">2</div>
+        <div class="algo-text"><strong>Triglicéridos:</strong> ≥150 mg/dL o en tratamiento</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">3</div>
+        <div class="algo-text"><strong>HDL bajo:</strong> &lt;40 mg/dL (H) / &lt;50 mg/dL (M)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">4</div>
+        <div class="algo-text"><strong>TA elevada:</strong> ≥130/85 mmHg o en tratamiento antihipertensivo</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">5</div>
+        <div class="algo-text"><strong>Glucemia en ayunas:</strong> ≥100 mg/dL o diabetes diagnosticada</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-top:8px">Síndrome metabólico ≠ diagnóstico de DM. Es un conjunto de factores de riesgo que aumenta el riesgo de DM tipo 2 y enfermedad cardiovascular.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 58 años, fumador 40 cigarrillos/día. PA 145/90. Colesterol total 220 mg/dL. HDL 38 mg/dL. Glucemia normal. Sin antecedentes cardíacos. Riesgo Framingham calculado: 24%. ¿Iniciar estatinas?</p>
+      <p style="margin-top:6px"><strong>Respuesta: SÍ</strong> — riesgo &gt;20% = alto riesgo → indicación de estatinas en prevención primaria. Meta LDL &lt;100 mg/dL. Usar estatina de intensidad moderada a alta.</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: HTA Tratamiento</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: STEMI →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 4 ═══ -->
+<div class="node" id="n3" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Sprint CL2 · 13 preguntas</div>
+    <div class="node-title">SCA — STEMI</div>
+    <div class="node-subtitle">Oclusión coronaria completa · Reperfusión urgente · ECG por territorios</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">STEMI = arteria ocluida completamente = tiempo es músculo. La única decisión que importa en los primeros 10 minutos es: ¿angioplastia primaria disponible en &lt;120 min? Sí → ICP. No → Trombolisis. Todo lo demás es tratamiento médico adjunto.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ECG del STEMI — territorios coronarios</div>
+    <table class="tbl">
+      <tr><th>Derivaciones con ↑ST</th><th>Territorio afectado</th><th>Arteria responsable</th></tr>
+      <tr><td>V1 – V4</td><td>Cara anterior</td><td style="color:var(--red2)">Descendente anterior (DA)</td></tr>
+      <tr><td>V5 – V6 + DI + aVL</td><td>Cara lateral</td><td style="color:var(--amber2)">Circunfleja (Cx)</td></tr>
+      <tr><td>DII + DIII + aVF</td><td>Cara inferior</td><td style="color:var(--teal2)">Coronaria derecha (CD)</td></tr>
+      <tr><td>V7 – V9 (posteriores)</td><td>Cara posterior</td><td>CD o Cx</td></tr>
+      <tr><td style="color:var(--purple2)">V3R – V4R</td><td style="color:var(--purple2)">Ventrículo derecho</td><td style="color:var(--purple2)">CD (rama marginal)</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Criterio de elevación ST para STEMI</div>
+      <p>Elevación ≥1 mm en ≥2 derivaciones contiguas de extremidades, ≥2 mm en precordiales, O bloqueo de rama izquierda (BRI) NUEVO en contexto de dolor típico.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa ECG — pericarditis vs STEMI</div>
+      <p><strong>Pericarditis:</strong> elevación ST difusa (múltiples territorios sin imagen especular), cóncava "en silla de montar", depresión de PR (signo patognomónico). <br><strong>STEMI:</strong> elevación convexa "en cúpula", imagen especular (↓ST en derivaciones opuestas), localizada en un territorio.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algoritmo de reperfusión — la decisión clave</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">1</div>
+        <div class="algo-text"><strong>Diagnóstico:</strong> ECG de 12 derivaciones en &lt;10 min del primer contacto médico</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">2</div>
+        <div class="algo-text"><strong>¿Angioplastia primaria (ICP) disponible en &lt;120 min del PCM?</strong><br>
+          → SÍ: ICP primaria, tiempo puerta-balón &lt;90 min<br>
+          → NO: Trombolisis (si &lt;12 hs de inicio síntomas y sin contraindicaciones)
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">3</div>
+        <div class="algo-text"><strong>Tratamiento médico adjunto (todos):</strong> AAS 300 mg + P2Y12 (clopidogrel 600 mg o ticagrelor) + heparina IV/SC + betabloqueante + IECA + estatina alta intensidad</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">4</div>
+        <div class="algo-text"><strong>Si trombolisis exitosa (dolor cede, ST baja &gt;50%):</strong> angiografía en 3–24 hs</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Contraindicaciones a la trombolisis</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Absolutas</div>
+        <ul>
+          <li>ACV hemorrágico previo (cualquier momento)</li>
+          <li>ACV isquémico en los últimos 3 meses</li>
+          <li>Neoplasia maligna intracraneal</li>
+          <li>Sospecha de disección aórtica</li>
+          <li>Sangrado activo (excepto menstrual)</li>
+          <li>Trauma craneal severo &lt;3 meses</li>
+          <li>Cirugía mayor &lt;3 semanas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Relativas</div>
+        <ul>
+          <li>HTA no controlada &gt;185/110</li>
+          <li>Embarazo</li>
+          <li>RCP traumática prolongada</li>
+          <li>Úlcera péptica activa</li>
+          <li>Anticoagulación en curso</li>
+          <li>Uso de estreptoquinasa previa &gt;5 días</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">IAM de ventrículo derecho — el caso trampa</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa del examen — IAM inferior + VD</div>
+      <p>Paciente con STEMI inferior (DII, DIII, aVF) + <strong>hipotensión + ingurgitación yugular + campos pulmonares limpios</strong> = IAM de VD.<br><br>
+      Tratamiento: <strong>expansión de volumen (SF IV)</strong> para mantener precarga.<br>
+      <strong>CONTRAINDICADO: NTG y furosemida</strong> (disminuyen precarga → colapso hemodinámico).
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 55 años, dolor retroesternal opresivo 2 horas. ECG: elevación ST en DII, DIII, aVF. PA 80/50, ingurgitación yugular, Rx tórax sin congestión. El hospital está a 3 horas de un hemodinamismo.</p>
+      <p style="margin-top:6px"><strong>Diagnóstico: STEMI inferior + IAM de VD</strong><br>
+      <strong>Conducta:</strong> 1) AAS + P2Y12 + heparina. 2) Trombolisis (no hay ICP disponible en tiempo). 3) NO nitatos. 4) Expansión con SF. 5) Derivar para angiografía post-trombolisis.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Nodo 2:</strong> Post-IAM → betabloqueante + IECA siempre (continuar indefinido)</li>
+        <li><strong>Nodo 6:</strong> IAM extenso → IC aguda (Killip III-IV) → manejo de IC</li>
+        <li><strong>Nodo 8:</strong> IAM → arritmias (FV en primeras 24-48h, bloqueo AV en IAM inferior)</li>
+        <li><strong>Nodo 3:</strong> Post-IAM = prevención secundaria → estatinas alta intensidad SIEMPRE</li>
+      </ul>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Riesgo CV</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: NSTEMI/Síncope →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 5 ═══ -->
+<div class="node" id="n4" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Sprint CL2 · 13 preguntas</div>
+    <div class="node-title">NSTEMI · Síncope · Pericarditis · Taponamiento</div>
+    <div class="node-subtitle">Troponinas · Clasificación síncope · Criterios diagnósticos pericarditis · Tríada de Beck</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres entidades que comparten el sprint pero son muy diferentes: NSTEMI (sin ST↑, troponinas positivas → NO trombolisis), síncope (¿cardíaco o vasovagal?), pericarditis (dolor posicional + cóncavo en ECG). El examen las mezcla para que confundas.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">NSTEMI y Angina Inestable — diferencia clave</div>
+    <table class="tbl">
+      <tr><th>Entidad</th><th>ECG</th><th>Troponinas</th><th>Mecanismo</th></tr>
+      <tr><td>Angina estable</td><td>Normal o depresión ST en esfuerzo</td><td>Normales</td><td>Oclusión parcial reversible</td></tr>
+      <tr><td>Angina inestable (AI)</td><td>Depresión ST u ondas T negativas en reposo</td><td style="color:var(--teal2)">NORMALES</td><td>Oclusión parcial, sin necrosis</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>NSTEMI</strong></td><td>Depresión ST u ondas T negativas</td><td style="color:var(--red2)"><strong>ELEVADAS</strong></td><td>Oclusión parcial CON necrosis</td></tr>
+      <tr><td style="color:var(--red2)"><strong>STEMI</strong></td><td style="color:var(--red2)">Elevación ST persistente</td><td>Elevadas</td><td>Oclusión COMPLETA</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa crítica — NUNCA trombolisis en NSTEMI</div>
+      <p>La trombolisis en NSTEMI/AI no solo no sirve, sino que <strong>aumenta la mortalidad</strong>. Solo se usa en STEMI. El examen puede tentarte a dar trombolisis en un NSTEMI con troponinas muy altas → error.</p>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 Troponinas — qué saber</div>
+      <p>Se elevan 3–6 hs del inicio del dolor, pico a 24–48 hs, se normalizan en 7–14 días. También se elevan en: miocarditis, IC grave, sepsis, TEP masivo, insuficiencia renal (falso positivo). La troponina I es más específica de miocardio que la troponina T.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síncope — clasificación y abordaje inicial</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Características</th><th>ECG</th></tr>
+      <tr><td style="color:var(--teal2)">Vasovagal (más frecuente)</td><td>Precipitantes (dolor, bipedestación, emociones). Pródromos (mareo, visión borrosa, sudor). Recuperación inmediata. Sin amnesia</td><td>Normal</td></tr>
+      <tr><td style="color:var(--amber2)">Ortostático</td><td>Al ponerse de pie. Baja TA sistólica ≥20 mmHg. Causas: deshidratación, fármacos, disautonomía</td><td>Normal</td></tr>
+      <tr><td style="color:var(--red2)">Cardíaco (el más peligroso)</td><td>Sin pródromos, en decúbito o esfuerzo, en cardiopatía conocida, con palpitaciones previas</td><td style="color:var(--red2)">SIEMPRE ECG OBLIGATORIO</td></tr>
+      <tr><td>Neurológico (epilepsia, no síncope real)</td><td>Movimientos tónico-clónicos, mordedura lateral de lengua, confusión postictal, incontinencia</td><td>—</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — síncope de esfuerzo</div>
+      <p>Síncope que ocurre <strong>durante el esfuerzo</strong> (no después) → pensar primero <strong>estenosis aórtica grave o miocardiopatía hipertrófica</strong>. NO es vasovagal. ECG + ecocardiograma obligatorio.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pericarditis aguda — diagnóstico y tratamiento</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Criterios diagnósticos (≥2 de 4)</div>
+      <ol style="padding-left:16px;font-size:13px">
+        <li>Dolor pleurítico, posicional (empeora en decúbito, mejora sentado inclinado)</li>
+        <li>Roce pericárdico (triphasic friction rub) — patognomónico</li>
+        <li>Cambios ECG: elevación ST cóncava difusa + depresión del intervalo PR</li>
+        <li>Derrame pericárdico nuevo en ecocardiograma</li>
+      </ol>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Etiología</div>
+        <ul>
+          <li>Idiopática/viral: &gt;80% (Coxsackievirus, Echo)</li>
+          <li>Bacteriana: S. aureus, TBC</li>
+          <li>Post-IAM (síndrome de Dressler): semanas después</li>
+          <li>LES, AR, neoplasias, urémica</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tratamiento</div>
+        <ul>
+          <li><strong>AAS 750–1000 mg c/8h</strong> (2–4 semanas)</li>
+          <li><strong>Colchicina 0,5 mg 2x/día</strong> (3 meses) — reduce recurrencias 50%</li>
+          <li>Reposo absoluto hasta resolución síntomas</li>
+          <li>NO AINEs en pericarditis post-IAM</li>
+          <li>Corticoides: solo si viral refractaria o CI a AAS</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Taponamiento cardíaco</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Tríada de Beck — memorizar</div>
+      <p>1. <strong>Hipotensión</strong> &nbsp;|&nbsp; 2. <strong>Ingurgitación yugular</strong> &nbsp;|&nbsp; 3. <strong>Ruidos cardíacos apagados</strong><br><br>
+      + <strong>Pulso paradójico:</strong> caída &gt;10 mmHg de TA sistólica durante la inspiración.<br><br>
+      <strong>Diagnóstico:</strong> ecocardiograma (colapso diastólico del VD).<br>
+      <strong>Tratamiento urgente: PERICARDIOCENTESIS.</strong> No esperar.</p>
+    </div>
+    <p style="font-size:13px;color:var(--text2)">Causas: derrame pericárdico masivo, hemopericardio (trauma, disección aórtica), neoplasia.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: STEMI</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: IC →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 6 ═══ -->
+<div class="node" id="n5" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL3 · 43 preguntas</div>
+    <div class="node-title">Insuficiencia cardíaca</div>
+    <div class="node-subtitle">FEr vs FEp · Clasificación NYHA · 4 pilares del tratamiento · Descompensación aguda</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">En IC el examen pregunta dos cosas: clasificar si es FEr o FEp (el ecocardiograma decide), y qué dar en IC-FEr (los 4 pilares). La trampa clásica es dar betabloqueante en la descompensación aguda.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">FEr vs FEp — la clasificación fundamental</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--red2)">IC con FEr (sistólica)</th><th style="color:var(--teal2)">IC con FEp (diastólica)</th></tr>
+      <tr><td>FEVI</td><td>&lt;40%</td><td>≥50%</td></tr>
+      <tr><td>Fisiopatología</td><td>Dilatación + contractilidad ↓</td><td>HVI + rigidez → llenado ↓</td></tr>
+      <tr><td>Paciente típico</td><td>Post-IAM, dilatada idiopática, joven</td><td>Anciana, hipertensa, diabética, obesa</td></tr>
+      <tr><td>Rx tórax</td><td>Cardiomegalia franca</td><td>Cardiomegalia leve</td></tr>
+      <tr><td>Tratamiento</td><td style="color:var(--red2)">IECA+BBloq+ARM+diurético (reducen mortalidad)</td><td style="color:var(--teal2)">Control síntomas + comorbilidades. Sin evidencia clara</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación NYHA — comunicar severidad</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--greenb);color:var(--green2)">I</div>
+        <div class="algo-text"><strong>Asintomático</strong> en cualquier nivel de actividad. Sin limitación.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">II</div>
+        <div class="algo-text"><strong>Síntomas con actividad moderada</strong> (subir escaleras, caminar rápido). Confortable en reposo.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">III</div>
+        <div class="algo-text"><strong>Síntomas con actividad leve</strong> (caminar en llano, tareas domésticas). Confortable en reposo.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">IV</div>
+        <div class="algo-text"><strong>Síntomas en reposo</strong>. Incapacitante. No puede realizar ninguna actividad.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento IC-FEr — los 4 pilares que reducen mortalidad</div>
+    <table class="tbl">
+      <tr><th>Pilar</th><th>Fármaco</th><th>Por qué / cuándo</th></tr>
+      <tr><td style="color:var(--purple2)">1. IECA / ARNI</td><td>Enalapril, lisinopril / Sacubitrilo-valsartán</td><td>PRIMERA LÍNEA. ARNI superior a IECA sólos en NYHA II-III estable</td></tr>
+      <tr><td style="color:var(--purple2)">2. Betabloqueante</td><td>Carvedilol, metoprolol succinato, bisoprolol</td><td>INICIAR EN ESTABLE. NUNCA en descompensación aguda nueva</td></tr>
+      <tr><td style="color:var(--purple2)">3. ARM (espironolactona)</td><td>Espironolactona 25–50 mg, eplerenona</td><td>FEVI &lt;35% o síntomas persistentes pese a IECA+BBloq. Monitorear K+</td></tr>
+      <tr><td style="color:var(--purple2)">4. iSGLT2</td><td>Dapagliflozina, empagliflozina</td><td>Nuevo 4° pilar (guías 2021–2023). Reduce hospitalizaciones y mortalidad CV</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Diuréticos (furosemida): alivian síntomas y congestión pero NO reducen mortalidad. Son "sintomáticos".</p>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa del examen — betabloqueante en descompensación</div>
+      <p>Si el paciente <strong>ya toma</strong> betabloqueante y se descompensa → <strong>NO suspender</strong> (a menos que bradicardia severa o shock).<br>
+      Si el paciente <strong>no toma</strong> betabloqueante y llega con IC aguda descompensada → <strong>NO iniciar</strong> (esperar estabilización).<br>
+      La pregunta "¿cuál de estos NO haría?" → iniciar betabloqueante nuevo en descompensación.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">IC aguda descompensada — manejo inmediato</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">1</div><div class="algo-text"><strong>Posición:</strong> sentado o semisentado (reduce precarga, mejora mecánica respiratoria)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">2</div><div class="algo-text"><strong>Oxígeno:</strong> meta SatO₂ &gt;94%. VMNI (CPAP/BiPAP) si no responde a O₂ convencional</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">3</div><div class="algo-text"><strong>Furosemida IV</strong> (40–80 mg): descongestionar. Monitorear diuresis, electrolitos</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">4</div><div class="algo-text"><strong>NTG IV</strong> si TA sistólica &gt;90 mmHg: reduce precarga y poscarga. NO si hipotensión</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">5</div><div class="algo-text"><strong>Dobutamina IV</strong> si bajo gasto severo (IC de bajo gasto, shock cardiogénico)</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 68 años, NYHA III, FEVI 32%. Tratamiento: enalapril + furosemida. TA 125/80. FC 78. ¿Qué agregar para reducir mortalidad?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Betabloqueante</strong> (carvedilol o metoprolol succinato). El paciente está estable, ya tiene IECA + diurético, falta el betabloqueante y el ARM (espironolactona también debería agregarse dado FEVI &lt;35%).</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: NSTEMI</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: FA →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 7 ═══ -->
+<div class="node" id="n6" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL3 · 43 preguntas</div>
+    <div class="node-title">Fibrilación auricular</div>
+    <div class="node-subtitle">CHA₂DS₂-VASc · Anticoagulación · Cardioversión eléctrica · Control ritmo vs frecuencia</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La FA mata por ACV, no por la arritmia. El manejo gira en torno a: ¿cuándo anticoagulo? (CHA₂DS₂-VASc ≥2 en hombres), ¿cuándo cardiovierto? (&lt;48h o &gt;48h + anticoag previa), y ¿aspirina o ACO? (siempre ACO si indicado, nunca aspirina sola).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ECG de FA — reconocerlo rápido</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Criterios ECG de FA</div>
+        <ul>
+          <li>Ausencia de ondas P discernibles</li>
+          <li>Línea de base con ondas "f" fibrilantes irregulares</li>
+          <li>Ritmo ventricular IRREGULARMENTE irregular</li>
+          <li>QRS generalmente estrecho (&lt;120 ms) salvo aberrancia</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Clasificación temporal</div>
+        <ul>
+          <li>Primer episodio: primera vez diagnosticada</li>
+          <li>Paroxística: &lt;7 días, revierte sola</li>
+          <li>Persistente: &gt;7 días o necesita cardioversión</li>
+          <li>Permanente: &gt;1 año, se acepta mantener FA</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CHA₂DS₂-VASc — cuándo anticoagular</div>
+    <table class="tbl">
+      <tr><th>Letra</th><th>Factor de riesgo</th><th>Puntos</th></tr>
+      <tr><td><span class="tag tag-p">C</span></td><td>IC o FEVI &lt;40%</td><td>1</td></tr>
+      <tr><td><span class="tag tag-p">H</span></td><td>Hipertensión arterial</td><td>1</td></tr>
+      <tr><td><span class="tag tag-r">A₂</span></td><td>Edad ≥75 años</td><td><strong>2</strong></td></tr>
+      <tr><td><span class="tag tag-p">D</span></td><td>Diabetes mellitus</td><td>1</td></tr>
+      <tr><td><span class="tag tag-r">S₂</span></td><td>ACV / AIT / tromboembolismo previo</td><td><strong>2</strong></td></tr>
+      <tr><td><span class="tag tag-p">V</span></td><td>Enfermedad vascular (IAM, placa aórtica, AOP)</td><td>1</td></tr>
+      <tr><td><span class="tag tag-p">A</span></td><td>Edad 65–74 años</td><td>1</td></tr>
+      <tr><td><span class="tag tag-p">Sc</span></td><td>Sexo femenino</td><td>1</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Cuándo anticoagular</div>
+      <p>Hombres: puntuación ≥2 → ANTICOAGULAR. Puntuación 1 → considerar.<br>
+      Mujeres: puntuación ≥3 → ANTICOAGULAR (el sexo femenino solo = 1 punto, no justifica anticoagular).<br><br>
+      <strong>NACO de elección:</strong> apixabán, rivaroxabán, edoxabán, dabigatrán.<br>
+      <strong>Warfarina (acenocumarol):</strong> solo en estenosis mitral reumática severa o prótesis valvular mecánica (NACOs contraindicados).</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más importante de FA — ACV + FA</div>
+      <p>FA + ACV/AIT → anticoagulación con ACO (acenocumarol o NACO). <strong>NO aspirina sola.</strong> La aspirina NO previene ACV en FA con el mismo nivel de eficacia que los anticoagulantes. Esta es la trampa más repetida del banco.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cardioversión eléctrica — algoritmo de decisión</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">!</div>
+        <div class="algo-text"><strong>FA + inestabilidad hemodinámica</strong> (hipotensión, IC aguda, isquemia activa) → <strong>CARDIOVERSIÓN ELÉCTRICA INMEDIATA</strong> sin importar duración ni anticoagulación previa (dar heparina IV simultánea)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">A</div>
+        <div class="algo-text"><strong>FA &lt;48 hs + estable hemodinámicamente</strong> → cardioversión eléctrica electiva (sin necesidad de anticoagulación previa de semanas). Anticoagular 4 semanas post-cardioversión.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">B</div>
+        <div class="algo-text"><strong>FA &gt;48 hs o duración incierta + estable</strong> → OPCIÓN 1: anticoagular 3–4 semanas antes de cardiovertir. OPCIÓN 2: ETE (ecografía transesofágica) para descartar trombo en aurícula izquierda → si negativo: cardiovertir. Post-CV: anticoagular ≥4 semanas.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Control de ritmo vs control de frecuencia</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Control de frecuencia (FA permanente)</div>
+        <ul>
+          <li>Betabloqueante: 1ª línea (metoprolol)</li>
+          <li>Digoxina: ancianos sedentarios, IC-FEr (reduce FC en reposo)</li>
+          <li>Verapamilo / Diltiazem: NO en IC con FEr (depresores)</li>
+          <li>Meta: FC en reposo &lt;80–100 lpm</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Control de ritmo (restaurar sinusal)</div>
+        <ul>
+          <li>Amiodarona: más eficaz, pero múltiples efectos adversos (tiroideos, pulmonares, hepáticos)</li>
+          <li>Flecainida / Propafenona: solo sin cardiopatía estructural</li>
+          <li>Ablación por catéter: en paroxística sintomática refractaria</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — FA con WPW</div>
+      <p>FA + WPW (vía accesoria) → <strong>NUNCA digoxina, betabloqueante, adenosina o verapamilo</strong>. Estos bloquean el nodo AV pero no la vía accesoria → conducción rápida por Kent → fibrilación ventricular → muerte. Tratamiento: cardioversión eléctrica o procainamida IV.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 72 años. FA detectada hace 3 días. PA 130/80. Hx: HTA, DM tipo 2. CHA₂DS₂-VASc = ? ¿Anticoagular?</p>
+      <p style="margin-top:6px"><strong>CHA₂DS₂-VASc:</strong> HTA (1) + DM (1) + edad 65–74 (1) = <strong>3 puntos</strong> → anticoagular con NACO. FA &lt;7 días → paroxística. Si se decide cardiovertir: &lt;48h → cardioversión directa + NACO post.</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: IC</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Arritmias →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 8 ═══ -->
+<div class="node" id="n7" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL3 · 43 preguntas</div>
+    <div class="node-title">Otras arritmias y ECG</div>
+    <div class="node-subtitle">Bloqueos AV · TV · QT largo · WPW · Manejo según hemodinamia</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen pregunta ECG con dos objetivos: reconocer el tipo de arritmia y decidir la conducta. La regla de oro es: ¿está hemodinámicamente estable? Si no → cardioversión inmediata. Si sí → tratamiento específico.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Bloqueos AV — clasificación y manejo</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>ECG</th><th>Riesgo</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)">BAV 1°</td><td>PR &gt;200 ms (5 mm). Todos los QRS conducen</td><td>Muy bajo</td><td>Observar. Sin tratamiento</td></tr>
+      <tr><td style="color:var(--amber2)">BAV 2° Mobitz I (Wenckebach)</td><td>PR se alarga progresivamente hasta que falta un QRS</td><td>Bajo. Benigno en general</td><td>Tratar causa (vagotomía, IAM inferior). Raramente marcapasos</td></tr>
+      <tr><td style="color:var(--amber2)">BAV 2° Mobitz II</td><td>PR constante, QRS desaparece bruscamente sin aviso</td><td style="color:var(--red2)">ALTO. Puede progresar a BAV 3°</td><td style="color:var(--red2)">Marcapasos definitivo</td></tr>
+      <tr><td style="color:var(--red2)">BAV 3° (completo)</td><td>Disociación completa P-QRS. QRS &lt;40 lpm. P a su ritmo</td><td style="color:var(--red2)">MUY ALTO. Síncope, MSC</td><td style="color:var(--red2)">MARCAPASOS URGENTE</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">BAV transitorio en IAM inferior: generalmente reversible (no siempre requiere marcapasos definitivo). IAM anterior con BAV: peor pronóstico, casi siempre marcapasos.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Bloqueos de rama — BCRD vs BCRI</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">BCRD — bloqueo completo de rama derecha</div>
+        <ul>
+          <li>QRS &gt;120 ms</li>
+          <li>rSR' en V1 ("M" o "orejas de conejo")</li>
+          <li>Onda S ancha en DI y V5-V6</li>
+          <li>Puede ser idiopático (benigno)</li>
+          <li>Buscar: TEP, miocarditis, cor pulmonale</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">BCRI — bloqueo completo de rama izquierda</div>
+        <ul>
+          <li>QRS &gt;120 ms</li>
+          <li>Muesca en la R en V5-V6 (onda R amplia mellada)</li>
+          <li>QS en V1</li>
+          <li>SIEMPRE patológico — buscar cardiopatía</li>
+          <li>Nuevo + dolor torácico = STEMI equivalente</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Taquiarritmias — algoritmo de manejo</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">!</div>
+        <div class="algo-text"><strong>INESTABILIDAD HEMODINÁMICA</strong> (hipotensión, IC, isquemia) → <strong>CARDIOVERSIÓN ELÉCTRICA SINCRONIZADA INMEDIATA</strong> (para todas excepto FV)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">QRS estrecho</div>
+        <div class="algo-text"><strong>TPSV (150-220 lpm):</strong> maniobras vagales primero → Adenosina 6 mg IV bolo rápido → si recurrente: betabloqueante o verapamilo VO. <br><strong>Flúter auricular:</strong> dientes de sierra en DII/DIII, frecuencia ventricular ~150 (2:1) → control de FC o cardioversión</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">QRS ancho</div>
+        <div class="algo-text"><strong>TV monomórfica estable:</strong> Amiodarona IV 150 mg en 10 min. <br><strong>TV inestable:</strong> Cardioversión sincronizada. <br><strong>Fibrilación ventricular:</strong> DESFIBRILACIÓN NO sincronizada + RCP</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — adenosina en FA/Flúter</div>
+      <p>La adenosina <strong>NO cardiovierte</strong> la FA ni el flúter (solo frena transitoriamente para diagnóstico). Su uso es en TPSV. No confundir con el manejo de la FA.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">QT largo y Torsades de Pointes</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">QT prolongado</div>
+        <ul>
+          <li>Normal: &lt;440 ms (H) / &lt;460 ms (M)</li>
+          <li>Causas adquiridas: hipocalcemia, hipoK, hipoMg, fármacos (haloperidol, quinidina, claritromicina, metadona, antidepresivos TCA)</li>
+          <li>Riesgo: Torsades de Pointes → síncope o MSC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Torsades de Pointes</div>
+        <ul>
+          <li>TV polimórfica con QRS que "giran" en el eje</li>
+          <li>Tratamiento: <strong>Sulfato de magnesio IV</strong> (2 g en 5 min)</li>
+          <li>Corrección de electrolitos (K+, Mg2+)</li>
+          <li>Si recurrente: marcapasos (overdrive pacing)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">WPW — Síndrome de Wolf-Parkinson-White</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 ECG del WPW</div>
+      <p>Intervalo PR corto (&lt;120 ms) + <strong>onda delta</strong> (empastamiento inicio del QRS) + QRS ancho. Mecanismo: vía accesoria (haz de Kent) que preexcita los ventrículos antes que el nodo AV.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa WPW + FA — los 4 NUNCA</div>
+      <p>FA con WPW → <strong>NUNCA</strong> dar: digoxina, betabloqueante, adenosina, verapamilo/diltiazem.<br>
+      Estos bloquean el nodo AV pero no la vía accesoria → conducción a 300+ lpm por la vía Kent → degeneración en fibrilación ventricular.<br>
+      <strong>Correcto: cardioversión eléctrica o procainamida IV.</strong></p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: FA</div>
+    <div class="nav-btn" onclick="show(8)">Nodo 9: Valvulopatías →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 9 ═══ -->
+<div class="node" id="n8" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL3 · 43 preguntas</div>
+    <div class="node-title">Valvulopatías · Endocarditis infecciosa</div>
+    <div class="node-subtitle">Estenosis aórtica (la más preguntada) · Criterios de Duke · Hemocultivos previos a ATB</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La estenosis aórtica sintomática tiene una ventana de sobrevida predecible por síntoma. La endocarditis infecciosa siempre requiere hemocultivos ANTES del antibiótico. El soplo en el examen tiene una localización y irradiación que define la válvula.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Soplos cardíacos — tabla de reconocimiento</div>
+    <table class="tbl">
+      <tr><th>Valvulopatía</th><th>Tipo de soplo</th><th>Foco / localización</th><th>Irradiación</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Estenosis aórtica (EA)</strong></td><td>Sistólico eyectivo (creciente-decreciente)</td><td>2° EID ("foco aórtico")</td><td>Carótidas, cuello</td></tr>
+      <tr><td>Insuficiencia aórtica (IA)</td><td>Diastólico decreciente</td><td>3° EII (borde paraesternal izq.)</td><td>Ápex</td></tr>
+      <tr><td style="color:var(--amber2)">Insuficiencia mitral (IM)</td><td>Holosistólico (pansistólico)</td><td>Ápex (5° EII)</td><td>Axila izquierda</td></tr>
+      <tr><td>Estenosis mitral (EM)</td><td>Diastólico (rodada) + chasquido apertura</td><td>Ápex, localizado</td><td>No irradia</td></tr>
+      <tr><td>Prolapso mitral</td><td>Clic mesosistólico ± soplo tardío</td><td>Ápex</td><td>Variable</td></tr>
+      <tr><td>Insuficiencia tricuspídea</td><td>Holosistólico</td><td>4° EII</td><td>No irradia. Aumenta con inspiración (signo de Rivero-Carvallo)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estenosis aórtica — la valvulopatía más preguntada</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Tríada sintomática — pronóstico sin cirugía</div>
+        <ul>
+          <li>🔴 <strong>Angina</strong>: sobrevida media ~5 años</li>
+          <li>🟡 <strong>Síncope</strong>: sobrevida media ~3 años</li>
+          <li>🔴 <strong>IC / Disnea</strong>: sobrevida media 1–2 años</li>
+          <li>Antes de los síntomas: asintomático por años</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Criterios de gravedad</div>
+        <ul>
+          <li>Área valvular &lt;1 cm² (grave)</li>
+          <li>Gradiente medio &gt;40 mmHg</li>
+          <li>Velocidad pico aórtica &gt;4 m/s</li>
+          <li>EA muy grave: área &lt;0.6 cm²</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — tratamiento de EA grave sintomática</div>
+      <p>EA grave sintomática → <strong>reemplazo valvular aórtico</strong> (quirúrgico o TAVI percutáneo en pacientes de alto riesgo quirúrgico). <br>
+      <strong>NO:</strong> valvuloplastia con balón (solo paliativa en casos muy seleccionados).<br>
+      <strong>NO:</strong> diuréticos agresivos ni vasodilatadores (reducen precarga → síncope/hipotensión).<br>
+      <strong>NO:</strong> NTG en la EA grave (puede colapsar).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estenosis mitral — lo que hay que saber</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Causa y fisiopatología</div>
+        <ul>
+          <li>Causa clásica: fiebre reumática (Streptococo A)</li>
+          <li>Obstrucción AI → VI: hipertensión pulmonar → IC derecha</li>
+          <li>Dilatación de AI → FA (muy frecuente)</li>
+          <li>FA en EM → alto riesgo tromboembólico</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Anticoagulación en EM</div>
+        <ul>
+          <li>EM reumática severa + FA → <strong>WARFARINA (acenocumarol)</strong></li>
+          <li>NACOs <strong>CONTRAINDICADOS</strong> en EM reumática severa</li>
+          <li>Esta es la única situación donde los NACOs no reemplazan a la warfarina en FA</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Endocarditis infecciosa — criterios de Duke modificados</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Criterios MAYORES</div>
+        <ul>
+          <li>Hemocultivos positivos: ≥2 con microorganismo típico (S. viridans, S. aureus, Enterococo) o persistentemente positivos</li>
+          <li>Evidencia de endocardio afectado: vegetación en eco, nueva regurgitación valvular, absceso perivalvular</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Criterios MENORES</div>
+        <ul>
+          <li>Cardiopatía predisponente o ADVP</li>
+          <li>Fiebre &gt;38°C</li>
+          <li>Fenómenos vasculares: émbolos sépticos, hemorragias conjuntivales</li>
+          <li>Fenómenos inmunológicos: manchas Roth, nódulos Osler, FR +, glomerulonefritis</li>
+          <li>Hemocultivos positivos que no cumplen criterio mayor</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Diagnóstico definitivo: 2 mayores, 1 mayor + 3 menores, o 5 menores</div>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Microorganismo</th><th>Contexto típico</th><th>Válvula preferida</th></tr>
+      <tr><td style="color:var(--teal2)">S. viridans (α-hemolítico)</td><td>Caries, procedimientos dentales, válvula nativa</td><td>Mitral, aórtica (izquierdas)</td></tr>
+      <tr><td style="color:var(--red2)">S. aureus</td><td>Más frecuente actualmente. ADVP, catéteres, heridas. Curso agresivo</td><td>ADVP: tricúspide (derecha). No-ADVP: izquierdas</td></tr>
+      <tr><td>Enterococo</td><td>Procedimientos GI o GU, ancianos</td><td>Izquierdas</td></tr>
+      <tr><td>S. epidermidis (coag-)</td><td>Válvula protésica precoz (&lt;60 días post-cirugía)</td><td>Protésica</td></tr>
+      <tr><td>Candida spp.</td><td>Inmunocomprometidos, ADVP, nutrición parenteral</td><td>Cualquiera</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hemocultivos ANTES del antibiótico</div>
+      <p>Siempre tomar 3 pares de hemocultivos (aerobio + anaerobio) de 3 sitios distintos, con 30 minutos de diferencia, ANTES de iniciar antibióticos. Si ya se iniciaron → los hemocultivos son negativos → se pierde el diagnóstico. Esta secuencia es infaltable en el examen.</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(7)">← Nodo 8: Arritmias</div>
+    <div class="nav-btn" onclick="show(9)">Nodo 10: TEP/TVP →</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ NODO 10 ═══ -->
+<div class="node" id="n9" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL1+CL3 · transversal</div>
+    <div class="node-title">TEP y TVP</div>
+    <div class="node-subtitle">Tríada de Virchow · Score de Wells · AngioTC · Trombolisis en TEP masivo</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">TEP y TVP son una misma enfermedad (tromboembolismo venoso). La estrategia diagnóstica depende de la probabilidad pretest: baja → dímero D primero; alta → AngioTC directa. El dímero D NO es útil en embarazo ni en alta probabilidad.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Score de Wells para TEP — cálculo rápido</div>
+    <table class="tbl">
+      <tr><th>Variable</th><th>Puntos</th></tr>
+      <tr><td>Signos y síntomas clínicos de TVP</td><td>3</td></tr>
+      <tr><td>Diagnóstico alternativo menos probable que TEP</td><td>3</td></tr>
+      <tr><td>FC &gt;100 lpm</td><td>1.5</td></tr>
+      <tr><td>Inmovilización &gt;3 días o cirugía reciente (4 sem)</td><td>1.5</td></tr>
+      <tr><td>TVP o TEP previo</td><td>1.5</td></tr>
+      <tr><td>Hemoptisis</td><td>1</td></tr>
+      <tr><td>Cáncer activo</td><td>1</td></tr>
+    </table>
+    <div class="cards-grid" style="margin-top:10px">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Wells &lt;2 — baja probabilidad</div>
+        <ul>
+          <li>→ Dímero D</li>
+          <li>Si dímero D <strong>negativo</strong>: TEP <strong>DESCARTADO</strong></li>
+          <li>Si dímero D <strong>positivo</strong>: AngioTC de tórax</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Wells &gt;4 — alta probabilidad</div>
+        <ul>
+          <li>→ <strong>AngioTC directamente</strong> (sin dímero D)</li>
+          <li>Dímero D siempre será positivo → no aporta</li>
+          <li>Anticoagular mientras se confirma diagnóstico</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — dímero D en embarazo</div>
+      <p>En el embarazo el dímero D está <strong>fisiológicamente elevado</strong> (siempre positivo) → NO tiene valor diagnóstico. Ante sospecha de TEP en embarazada: eco Doppler de MMII primero. Si negativo y sospecha alta: AngioTC con protección abdominal o gammagrafía V/Q.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Presentación clínica y ECG del TEP</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Clínica (disnea súbita + taquicardia)</div>
+        <ul>
+          <li>Disnea de inicio brusco (síntoma más frecuente)</li>
+          <li>Taquicardia sinusal (ECG más frecuente)</li>
+          <li>Dolor pleurítico si infarto pulmonar</li>
+          <li>Hemoptisis (tardía, infarto pulmonar)</li>
+          <li>Hipoxemia + hipocapnia (alcalosis respiratoria)</li>
+          <li>TEP masivo: hipotensión + shock</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">ECG del TEP</div>
+        <ul>
+          <li><strong>Taquicardia sinusal:</strong> lo más frecuente (inespecífico)</li>
+          <li><strong>S1Q3T3:</strong> S en DI, Q en DIII, T invertida en DIII (clásico pero raro)</li>
+          <li>BCRD nuevo</li>
+          <li>T negativas en V1-V4 (sobrecarga VD)</li>
+          <li>FA de nueva aparición</li>
+          <li>Ningún hallazgo es patognomónico del TEP</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación por gravedad y tratamiento</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>TA sistólica</th><th>Disfunción VD</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--red2)"><strong>TEP masivo (alto riesgo)</strong></td><td style="color:var(--red2)">&lt;90 mmHg o shock</td><td>Sí</td><td style="color:var(--red2)"><strong>TROMBOLISIS</strong> (alteplasa 100 mg/2h) o embolectomía quirúrgica</td></tr>
+      <tr><td style="color:var(--amber2)">TEP submasivo (riesgo intermedio)</td><td>Normal ≥90 mmHg</td><td>Sí (eco o tropo +)</td><td>Anticoagulación + monitoreo estrecho. Trombolisis si deterioro</td></tr>
+      <tr><td style="color:var(--teal2)">TEP bajo riesgo</td><td>Normal</td><td>No</td><td>Anticoagulación (NACO oral). Ambulatorio posible (HESTIA)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anticoagulación en TEP/TVP — fármacos y duración</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Fármacos (orden de preferencia)</div>
+        <ul>
+          <li>NACO: rivaroxabán, apixabán (primera elección)</li>
+          <li>HBPM (enoxaparina 1 mg/kg/12h) → puente o en embarazo</li>
+          <li>Warfarina (acenocumarol) con HBPM puente hasta RIN 2–3</li>
+          <li>Embarazo: HBPM (NACOs y warfarina contraindicados)</li>
+          <li>Cáncer: HBPM o NACO específico (rivaroxabán, apixabán)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Duración del tratamiento</div>
+        <ul>
+          <li>Factor precipitante reversible (cirugía, trauma, inmovilización): <strong>3 meses</strong></li>
+          <li>TEP/TVP idiopático (sin factor identificado): <strong>≥3–6 meses</strong>, considerar indefinido</li>
+          <li>Segundo episodio idiopático: <strong>indefinido</strong></li>
+          <li>Cáncer activo: <strong>indefinido</strong> (mientras haya cáncer)</li>
+          <li>Trombofilia hereditaria: indefinido en muchos casos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Mujer 35 años, 28 semanas de embarazo. Disnea súbita. FC 118. SatO₂ 91%. Pierna derecha edematosa y dolorosa. Sin hipotensión. ¿Cuál es el primer estudio?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Eco Doppler venoso de MMII.</strong> El dímero D está elevado fisiológicamente en el embarazo (no es útil). Si el Doppler muestra TVP → anticoagulación con HBPM. Si el Doppler es negativo y la sospecha sigue siendo alta → angioTC o gammagrafía V/Q.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones con toda la cardiología</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Nodo 7 (FA):</strong> FA puede ser consecuencia de TEP masivo (y del cor pulmonale)</li>
+        <li><strong>Nodo 4 (SCA):</strong> TEP puede simular SCA (dolor + ECG anormal + troponinas levemente elevadas)</li>
+        <li><strong>Nodo 6 (IC):</strong> TEP masivo → cor pulmonale agudo → IC derecha aguda</li>
+        <li><strong>HTA:</strong> hipertensión pulmonar crónica → secuela de TEP no resuelto</li>
+        <li><strong>Ginecología:</strong> anticonceptivos orales = factor de riesgo trombótico → TVP/TEP</li>
+        <li><strong>Cirugía:</strong> TVP postoperatoria = indicación de profilaxis con HBPM</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--teal2);margin-bottom:12px;letter-spacing:.05em">✅ CARDIOLOGÍA COMPLETADA — 10/10 nodos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 89 preguntas del banco (3 sprints). Los temas más repetidos: HTA (urgencia/emergencia + fármacos), FA (anticoagulación + cardioversión), IC (FEr, tratamiento y descompensación). Las trampas más frecuentes: betabloqueante en descompensación, aspirina en FA + ACV, IECA en embarazo, trombolisis en NSTEMI, dímero D en embarazo. Repasá las trampas antes de avanzar al siguiente eje.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-r">33 preg CL1</span>
+      <span class="tag tag-r">13 preg CL2</span>
+      <span class="tag tag-p">43 preg CL3</span>
+      <span class="tag tag-t">Bibliografía: GPC HTA MSAL 2024 · GPC Cardio MSAL 2023</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(8)">← Nodo 9: Valvulopatías</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>ResidenciAPP v34.9 · Plataforma de estudio para residencia médica</title>
+  <title>ResidenciAPP v35.15 · Plataforma de estudio para residencia médica</title>
   
   <meta name="description" content="ResidenciAPP es una plataforma de estudio activo para residencia médica: preguntas por sprints, repaso espaciado, flashcards, error log y colaboración." />
   <meta name="keywords" content="residencia médica, examen único, medicina, preguntas médicas, repaso espaciado, flashcards, Argentina" />
@@ -57,10 +57,11 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=35.14" />
-  <link rel="stylesheet" href="./assets/css/v35_9_refactor.css?v=35.14" />
-  <link rel="stylesheet" href="./assets/css/v35_13_final_stability.css?v=35.14" />
-  <link rel="stylesheet" href="./assets/css/v35_14_core_stability.css?v=35.14" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=35.15" />
+  <link rel="stylesheet" href="./assets/css/v35_9_refactor.css?v=35.15" />
+  <link rel="stylesheet" href="./assets/css/v35_13_final_stability.css?v=35.15" />
+  <link rel="stylesheet" href="./assets/css/v35_14_core_stability.css?v=35.15" />
+  <link rel="stylesheet" href="./assets/css/v35_15_learn_library.css?v=35.15" />
 </head>
 <body class="sidebar-collapsed min-h-screen bg-slate-50 text-slate-950 antialiased dark:bg-slate-950 dark:text-slate-50">
 
@@ -422,8 +423,8 @@
             <div class="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-medical-200/60 blur-3xl dark:bg-medical-700/20"></div>
             <div class="relative">
               <p class="text-xs font-black uppercase tracking-[.2em] text-medical-600 dark:text-medical-300">ResidenciAPP Tutor</p>
-              <h3 class="mt-1 font-display text-3xl font-extrabold tracking-tight">Aprender desde cero</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Nodos guiados con explicación narrativa, algoritmos, trampas y preguntas reales. Primero entendés la película; después entrenás el banco.</p>
+              <h3 class="mt-1 font-display text-3xl font-extrabold tracking-tight">Biblioteca de aprendizaje</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Elegí por eje y tema. Cada nodo funciona como una clase visual: primero entendés el mapa; después entrenás preguntas y errores.</p>
               <div id="lessonStats" class="mt-4 grid grid-cols-3 gap-2"></div>
             </div>
           </div>
@@ -432,12 +433,14 @@
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-xs font-black uppercase tracking-[.18em] text-slate-400">Buscar nodo</p>
-                <h4 class="font-display text-xl font-extrabold">Lecciones disponibles</h4>
+                <h4 class="font-display text-xl font-extrabold">Nodos disponibles</h4>
               </div>
               <button class="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-black hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800" onclick="resetLessonFilter()">Limpiar</button>
             </div>
-            <input id="lessonSearch" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Ej: BIRADS, RPM, endometriosis, HPV…" autocomplete="off" />
+            <input id="lessonSearch" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-medical-400 dark:border-slate-700 dark:bg-slate-950" placeholder="Buscar por tema, eje o palabra clave…" autocomplete="off" />
             <select id="lessonEjeFilter" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold outline-none dark:border-slate-700 dark:bg-slate-950"></select>
+            <select id="lessonTemaFilter" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold outline-none dark:border-slate-700 dark:bg-slate-950"></select>
+            <div id="lessonAxisChips" class="mt-3 flex flex-wrap gap-2"></div>
             <div id="lessonGrid" class="mt-4 grid max-h-[660px] gap-3 overflow-auto pr-1 no-scrollbar"></div>
           </div>
         </aside>
@@ -622,20 +625,21 @@
     </div>
   </div>
 
-    <script src="./assets/js/config.js?v=35.14"></script>
-  <script src="./assets/data/questions.js?v=35.14"></script>
-  <script src="./assets/data/collabdata.js?v=35.14"></script>
-  <script src="./assets/data/lessons.js?v=35.14"></script>
+    <script src="./assets/js/config.js?v=35.15"></script>
+  <script src="./assets/data/questions.js?v=35.15"></script>
+  <script src="./assets/data/collabdata.js?v=35.15"></script>
+  <script src="./assets/data/lessons.js?v=35.15"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="./assets/js/main.js?v=35.14"></script>
-  <script src="./assets/js/v34_3_intelligence.js?v=35.14"></script>
-  <script src="./assets/js/challenge_game.js?v=35.14"></script>
-  <script src="./assets/js/v35_1_fixes.js?v=35.14"></script>
-  <script src="./assets/js/v35_2_vaccine_fullscreen.js?v=35.14"></script>
-  <script src="./assets/js/v35_5_errors_session_vaccine.js?v=35.14"></script>
-  <script src="./assets/js/v35_6_balanced_plan_sessions.js?v=35.14"></script>
-  <script src="./assets/js/v35_9_refactor.js?v=35.14"></script>
-  <script src="./assets/js/v35_14_core_stability.js?v=35.14"></script>
+  <script src="./assets/js/main.js?v=35.15"></script>
+  <script src="./assets/js/v34_3_intelligence.js?v=35.15"></script>
+  <script src="./assets/js/challenge_game.js?v=35.15"></script>
+  <script src="./assets/js/v35_1_fixes.js?v=35.15"></script>
+  <script src="./assets/js/v35_2_vaccine_fullscreen.js?v=35.15"></script>
+  <script src="./assets/js/v35_5_errors_session_vaccine.js?v=35.15"></script>
+  <script src="./assets/js/v35_6_balanced_plan_sessions.js?v=35.15"></script>
+  <script src="./assets/js/v35_9_refactor.js?v=35.15"></script>
+  <script src="./assets/js/v35_14_core_stability.js?v=35.15"></script>
+  <script src="./assets/js/v35_15_learn_library.js?v=35.15"></script>
 <!--
 ======================== RESIDENCIAPP · APORTES COLABORATIVOS SIN GITHUB ========================
 

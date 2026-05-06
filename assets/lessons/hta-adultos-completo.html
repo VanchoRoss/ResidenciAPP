@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans,system-ui,sans-serif);background:transparent;}
+.W{max-width:900px;padding:.5rem 0 2rem;}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:.5px solid var(--color-border-tertiary,#e5e5e5);}
+.ttl{font-size:17px;font-weight:600;color:var(--color-text-primary,#111);}
+.sub{font-size:12px;color:var(--color-text-secondary,#666);margin-top:3px;}
+.biblio{font-size:10px;padding:3px 9px;border-radius:10px;background:#E6F1FB;color:#0C447C;font-weight:500;}
+.mnav{display:flex;gap:0;border:.5px solid var(--color-border-tertiary,#e5e5e5);border-radius:8px;overflow:hidden;width:fit-content;margin-bottom:1.25rem;flex-wrap:wrap;}
+.mbtn{padding:7px 15px;font-size:12px;font-weight:500;border:none;background:var(--color-background-primary,#fff);color:var(--color-text-secondary,#666);cursor:pointer;border-right:.5px solid var(--color-border-tertiary,#e5e5e5);}
+.mbtn:last-child{border-right:none;}
+.mbtn:hover{background:var(--color-background-secondary,#f5f5f5);}
+.mbtn.on{background:#185FA5;color:#fff;}
+.panel{display:none;}.panel.on{display:block;}
+.sl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#999;margin:1.25rem 0 .6rem;}
+.sl:first-child{margin-top:0;}
+/* NODO */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px;margin-bottom:.75rem;}
+.nc{padding:12px 13px;border-radius:8px;border:.5px solid #B5D4F4;background:#E6F1FB;}
+.nt{font-size:12px;font-weight:600;color:#0C447C;margin-bottom:5px;}
+.nb{font-size:12px;line-height:1.6;color:var(--color-text-primary,#111);}
+.nb b{font-weight:600;}
+.idm{padding:12px 16px;border-radius:8px;border-left:4px solid #185FA5;background:#E6F1FB;font-size:13px;line-height:1.65;margin-bottom:1rem;color:#0C447C;font-style:italic;font-weight:500;}
+/* CLASIFICACION TABLE */
+.ct{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem;}
+.ct th{text-align:left;padding:6px 10px;background:#185FA5;color:#fff;font-weight:600;}
+.ct th:first-child{border-radius:6px 0 0 0;}
+.ct th:last-child{border-radius:0 6px 0 0;}
+.ct td{padding:7px 10px;border-bottom:.5px solid #e5e5e5;vertical-align:middle;line-height:1.4;}
+.ct tr:last-child td{border-bottom:none;}
+.ct tr:hover td{background:var(--color-background-secondary,#f9f9f9);}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+/* FENOTIPOS */
+.fenogrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid #185FA540;border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.feno-hdr{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:7px 10px;text-align:center;}
+.feno-cell{padding:10px 12px;font-size:12px;line-height:1.5;}
+/* ALGO */
+.as{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;}
+.an{min-width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px;background:#E6F1FB;color:#0C447C;}
+.at{font-size:13px;line-height:1.6;color:var(--color-text-primary,#111);}
+.at b{font-weight:600;}
+.decision{padding:10px 14px;border-radius:8px;border:.5px solid #185FA540;background:var(--color-background-secondary,#f9f9f9);font-size:12px;margin:8px 0;line-height:1.55;}
+.decision b{color:#185FA5;font-weight:600;}
+/* SITUACIONES */
+.sbox{border:.5px solid #e5e5e5;border-radius:8px;overflow:hidden;margin-bottom:8px;}
+.sbox-hdr{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:.5px solid #e5e5e5;background:var(--color-background-secondary,#f9f9f9);}
+.sbox-title{font-size:12px;font-weight:600;color:var(--color-text-primary,#111);flex:1;}
+.sbox-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+.sbox-body{padding:10px 12px;font-size:12px;line-height:1.6;display:none;}
+.sbox-body.open{display:block;}
+/* TRAMPAS */
+.tl{list-style:none;}
+.ti{padding:9px 0;border-bottom:.5px solid #e5e5e5;display:flex;gap:10px;align-items:flex-start;}
+.ti:last-child{border-bottom:none;}
+.tw{text-decoration:line-through;color:#E24B4A;font-size:12px;}
+.tr2{color:#22855A;font-weight:600;font-size:12px;}
+.ti-body{font-size:12px;line-height:1.55;flex:1;}
+.ti-context{font-size:11px;color:#999;margin-top:3px;}
+/* PRACTICA */
+.q-card{border:.5px solid #e5e5e5;border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.q-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.q-meta{font-size:11px;color:#999;}
+.q-year{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--color-background-secondary,#f5f5f5);color:#666;}
+.q-text{font-size:13px;line-height:1.6;color:var(--color-text-primary,#111);margin-bottom:10px;}
+.opts{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.opt{padding:8px 12px;border-radius:8px;border:.5px solid #e5e5e5;font-size:12px;cursor:pointer;text-align:left;background:var(--color-background-primary,#fff);color:var(--color-text-primary,#111);transition:background .1s;line-height:1.45;}
+.opt:hover:not(.disabled){background:var(--color-background-secondary,#f5f5f5);}
+.opt.correct{background:#E8F8F0;border-color:#22855A;color:#22855A;}
+.opt.wrong{background:#FEF0F0;border-color:#E24B4A;color:#E24B4A;}
+.opt.reveal{background:#E8F8F0;border-color:#22855A;color:#22855A;}
+.opt.disabled{pointer-events:none;}
+.q-exp{display:none;margin-top:8px;padding:10px 12px;border-radius:8px;background:var(--color-background-secondary,#f5f5f5);font-size:12px;line-height:1.6;color:var(--color-text-secondary,#666);}
+.q-exp.on{display:block;}
+.q-exp b{color:var(--color-text-primary,#111);font-weight:600;}
+.prog{height:4px;background:var(--color-background-secondary,#f5f5f5);border-radius:2px;margin-bottom:12px;overflow:hidden;}
+.prog-fill{height:100%;background:#185FA5;border-radius:2px;transition:width .3s;}
+.score-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12px;color:#666;}
+.score-val{font-size:15px;font-weight:600;color:var(--color-text-primary,#111);}
+.reset-btn{margin-left:auto;font-size:11px;padding:4px 10px;border-radius:6px;border:.5px solid #e5e5e5;background:var(--color-background-primary,#fff);cursor:pointer;color:#666;}
+/* FR */
+.fr{padding:11px 14px;border-radius:8px;border-left:3px solid #185FA5;background:#E6F1FB;font-size:12px;font-style:italic;line-height:1.7;margin-top:1rem;color:#0C447C;}
+/* DOB TABLE */
+.dob-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:.75rem;}
+.dob-card{padding:10px 12px;border-radius:8px;border:.5px solid #e5e5e5;background:var(--color-background-secondary,#f9f9f9);}
+.dob-t{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#999;margin-bottom:5px;}
+.dob-b{font-size:12px;line-height:1.55;}
+</style>
+</head>
+<body>
+<div class="W">
+
+<div class="topbar">
+  <div>
+    <div class="ttl">HTA en el adulto — nodo completo</div>
+    <div class="sub">Sprint CL1 · 33 preguntas · 2016–2025</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+    <span class="biblio">Guía MSAL 2024</span>
+    <span class="biblio">Consenso FIMI 2025</span>
+    <span class="biblio">GPC Cardio MSAL 2023</span>
+  </div>
+</div>
+
+<div class="mnav">
+  <button class="mbtn on" onclick="sv('nodo',this)">Nodo</button>
+  <button class="mbtn" onclick="sv('clasificacion',this)">Clasificación</button>
+  <button class="mbtn" onclick="sv('algo',this)">Algoritmo</button>
+  <button class="mbtn" onclick="sv('situaciones',this)">Situaciones especiales</button>
+  <button class="mbtn" onclick="sv('crisis',this)">Crisis HTA</button>
+  <button class="mbtn" onclick="sv('trampas',this)">Trampas</button>
+  <button class="mbtn" onclick="sv('practica',this)">Práctica</button>
+</div>
+
+<!-- NODO -->
+<div id="p-nodo" class="panel on">
+  <div class="idm">Idea madre: La HTA no es solo "presión alta" — es un síndrome crónico de daño vascular progresivo. El examen siempre te pide resolver cuatro decisiones: ¿confirmar o no el diagnóstico? ¿urgencia o emergencia? ¿cuándo tratar con fármaco? ¿qué fármaco según el contexto?</div>
+
+  <div class="sl">Epidemiología argentina — datos que se preguntan textual</div>
+  <div class="grid3">
+    <div class="nc"><div class="nt">Prevalencia (RENATA II)</div><div class="nb"><b style="font-size:20px;color:#185FA5;">36.3%</b> de la población adulta.<br>Aumenta con la edad: 12% en &lt;35a → 77% en ≥65a.</div></div>
+    <div class="nc"><div class="nt">Desconocen su condición</div><div class="nb"><b>38.8%</b> de los hipertensos no saben que lo son. Solo <b>24%</b> de control efectivo. La HTA combinada llega al 46.6%.</div></div>
+    <div class="nc"><div class="nt">Factor de riesgo más importante</div><div class="nb">Principal causa modificable de mortalidad prematura. Asociada a ACV, IAM, IC, FA, aneurisma aórtico, ERC y demencia.</div></div>
+  </div>
+
+  <div class="sl">Conceptos núcleo — qué es lo más preguntable</div>
+  <div class="grid3">
+    <div class="nc"><div class="nt">Diagnóstico</div><div class="nb">≥140/90 mmHg en consultorio. Promedio de 2 mediciones en 2 visitas con ≥1 semana de diferencia. <b>Excepción:</b> si ≥180/110 → no esperar segunda visita, descartar emergencia.</div></div>
+    <div class="nc"><div class="nt">4 fenotipos de PA</div><div class="nb">1. HTA verdadera: elevada en ambos métodos.<br>2. Bata blanca: alta en consultorio, MAPA normal.<br>3. Enmascarada: normal en consultorio, MAPA alta.<br>4. Normotensión verdadera: ambas normales.</div></div>
+    <div class="nc"><div class="nt">MAPA — cuándo pedirlo</div><div class="nb">Sospecha de bata blanca, sospecha de HTA enmascarada, HTA resistente, evaluación circadiana (dipping nocturno). <b>Umbral MAPA:</b> ≥130/80 mmHg de promedio.</div></div>
+    <div class="nc"><div class="nt">Daño órgano blanco</div><div class="nb">Corazón: HVI, IC, FA, cardiopatía isquémica.<br>Cerebro: ACV, deterioro cognitivo.<br>Riñón: microalbuminuria → proteinuria → ERC.<br>Ojo: retinopatía hipertensiva.</div></div>
+    <div class="nc"><div class="nt">HTA secundaria — sospechar</div><div class="nb">Joven sin antecedentes familiares, HTA resistente (≥3 fármacos), hipocaliemia espontánea, feocromocitoma (crisis + taquicardia + sudoración), coartación aórtica.</div></div>
+    <div class="nc"><div class="nt">Objetivo de TA</div><div class="nb">&lt;130/80 en general (guía MSAL 2024). &lt;140/90 en &gt;80 años. No bajar &lt;120/70 en ancianos o con coronariopatía (hipoperfusión).</div></div>
+  </div>
+
+  <div class="sl">Medición correcta — técnica que a veces se pregunta</div>
+  <div class="nc" style="background:var(--color-background-secondary,#f9f9f9);border-color:#e5e5e5;max-width:600px;">
+    <div class="nb">No café/tabaco/ejercicio 30 min antes · Vejiga vacía · Sentado 5 min previos · Espalda apoyada · Sin hablar · 3 mediciones separadas 1 min → promedio de las últimas 2 · Ambos brazos en primera consulta.</div>
+  </div>
+
+  <div class="fr">"HTA: diagnóstico con ≥140/90 en 2 visitas; bata blanca → MAPA ≥130/80; 36% prevalencia argentina; objetivo &lt;130/80; daño de órgano blanco define el estadio y la urgencia del tratamiento."</div>
+</div>
+
+<!-- CLASIFICACIÓN -->
+<div id="p-clasificacion" class="panel">
+  <div class="sl">Clasificación oficial — Guía MSAL 2024 / Consenso FIMI 2025</div>
+  <table class="ct">
+    <tr><th>Categoría</th><th>PAS (mmHg)</th><th>PAD (mmHg)</th><th>Conducta</th></tr>
+    <tr><td>Óptima</td><td>&lt;120</td><td>y &lt;80</td><td>Sin intervención farmacológica</td></tr>
+    <tr><td>Normal</td><td>120–129</td><td>y 80–84</td><td>Cambios en estilo de vida si hay FR</td></tr>
+    <tr><td>Normal alta</td><td>130–139</td><td>y/o 85–89</td><td>Estilo de vida; fármaco si alto riesgo CV</td></tr>
+    <tr><td><b>HTA Grado 1</b></td><td><b>140–159</b></td><td><b>y/o 90–99</b></td><td>Estilo de vida + fármaco si riesgo moderado-alto</td></tr>
+    <tr><td><b>HTA Grado 2</b></td><td><b>160–179</b></td><td><b>y/o 100–109</b></td><td>Fármaco siempre; objetivo &lt;130/80</td></tr>
+    <tr><td><b>HTA Grado 3</b></td><td><b>≥180</b></td><td><b>y/o ≥110</b></td><td>Tratamiento inmediato; descartar emergencia</td></tr>
+    <tr><td>HTA sistólica aislada</td><td>≥140</td><td>y &lt;90</td><td>Frecuente en ancianos; tiazida o CCB</td></tr>
+  </table>
+
+  <div class="sl">Los 4 fenotipos de presión arterial — los más preguntados</div>
+  <div class="fenogrid">
+    <div class="feno-hdr" style="background:#185FA5;color:#fff;">PA en consultorio ALTA</div>
+    <div class="feno-hdr" style="background:#185FA5;color:#fff;">PA en consultorio NORMAL</div>
+    <div class="feno-cell" style="background:#FAECE7;"><b>HTA VERDADERA</b><br>Alta en consultorio + MAPA alto → tratar siempre</div>
+    <div class="feno-cell" style="background:#FAEEDA;"><b>HTA ENMASCARADA</b><br>Normal en consultorio + MAPA alto → subdiagnóstico frecuente, mismo riesgo que HTA verdadera</div>
+    <div class="feno-cell" style="background:#EAF3DE;"><b>HTA BATA BLANCA</b><br>Alta en consultorio + MAPA normal → NO tratar farmacológicamente, seguimiento</div>
+    <div class="feno-cell" style="background:#F1EFE8;"><b>NORMOTENSIÓN</b><br>Normal en ambos métodos → sin intervención</div>
+  </div>
+
+  <div class="sl">Evaluación inicial del hipertenso — qué pedir siempre</div>
+  <div class="grid3">
+    <div class="nc" style="background:var(--color-background-secondary,#f9f9f9);border-color:#e5e5e5;">
+      <div class="nt" style="color:var(--color-text-primary,#111);">Laboratorio básico</div>
+      <div class="nb">Glucemia · creatinina + TFGe · ionograma · orina completa · microalbuminuria · perfil lipídico · ECG</div>
+    </div>
+    <div class="nc" style="background:var(--color-background-secondary,#f9f9f9);border-color:#e5e5e5;">
+      <div class="nt" style="color:var(--color-text-primary,#111);">Buscar daño órgano blanco</div>
+      <div class="nb">Fondo de ojo · ecocardiograma (si HVI sospechada) · índice tobillo-brazo · eco carotídeo (si soplo)</div>
+    </div>
+    <div class="nc" style="background:var(--color-background-secondary,#f9f9f9);border-color:#e5e5e5;">
+      <div class="nt" style="color:var(--color-text-primary,#111);">HTA secundaria — estudios dirigidos</div>
+      <div class="nb">Aldosterona/renina (hiperaldo) · catecolaminas orina 24h (feocromocitoma) · TSH · eco renal + Doppler arterias renales</div>
+    </div>
+  </div>
+  <div class="fr">"Clasificación: óptima &lt;120/80 → grado 3 ≥180/110. Regla si sistólica y diastólica caen en distintas categorías: usar la más alta. Bata blanca = MAPA normal = no tratar. Enmascarada = MAPA alto = mismo riesgo que HTA real."</div>
+</div>
+
+<!-- ALGORITMO -->
+<div id="p-algo" class="panel">
+  <div class="sl">Algoritmo diagnóstico-terapéutico — paso a paso</div>
+  <div class="as"><div class="an">1</div><div class="at"><b>¿TA ≥140/90 en consultorio?</b> → Confirmar técnica correcta (no hablar, 5 min reposo, posición adecuada).</div></div>
+  <div class="as"><div class="an">2</div><div class="at"><b>¿TA ≥180/110?</b> → No esperar segunda visita → Evaluar daño de órgano blanco inmediato → Urgencia o emergencia hipertensiva.</div></div>
+  <div class="as"><div class="an">3</div><div class="at"><b>Si TA 140–179/90–109:</b> Repetir en segunda visita separada ≥1 semana. Si persiste ≥140/90 → confirma HTA.</div></div>
+  <div class="as"><div class="an">4</div><div class="at"><b>¿Hay discordancia entre consultorio y domicilio?</b> → Solicitar MAPA. Si MAPA ≥130/80 → HTA verdadera o enmascarada → tratar. Si MAPA normal → bata blanca → no fármaco.</div></div>
+  <div class="as"><div class="an">5</div><div class="at"><b>Evaluar riesgo CV global</b> (edad, sexo, diabetes, dislipemia, tabaco, ERC, cardiopatía previa) y buscar daño de órgano blanco.</div></div>
+  <div class="as"><div class="an">6</div><div class="at"><b>Tratamiento no farmacológico SIEMPRE:</b> Sal &lt;5g/día · DASH · actividad física ≥150 min/semana · no fumar · no alcohol · reducir peso (1 kg → 1 mmHg de PAS).</div></div>
+  <div class="as"><div class="an">7</div><div class="at"><b>¿Iniciar fármaco?</b> Ver decisión de tratamiento ↓</div></div>
+
+  <div class="decision"><b>Inicio de tratamiento farmacológico — cuándo:</b><br>
+  • HTA grado 2–3 (≥160/100): siempre, desde el diagnóstico<br>
+  • HTA grado 1 con riesgo CV alto o daño órgano blanco: sí<br>
+  • HTA grado 1 sin riesgo CV alto: primero 3-6 meses de estilo de vida → si no mejora, agregar fármaco<br>
+  • &gt;80 años TA 140–150: individualizar; valorar fragilidad; no tratar automáticamente<br>
+  • Normal alta (130–139): solo si hay DM o ERC con proteinuria</div>
+
+  <div class="as"><div class="an">8</div><div class="at"><b>Sin comorbilidades → elección libre de primera línea:</b> IECA/ARA II · calcioantagonista (CCB) · tiazida. Los tres son equivalentes.</div></div>
+  <div class="as"><div class="an">9</div><div class="at"><b>Con comorbilidades → ver pestaña "Situaciones especiales".</b> La elección ya no es libre.</div></div>
+  <div class="as"><div class="an">10</div><div class="at"><b>Si monoterapia no logra objetivo:</b> Agregar un segundo fármaco (combinación). Combinación ideal: IECA/ARA II + CCB. <b>Triple terapia:</b> ARB + CCB + tiazida. NUNCA IECA + ARA II juntos.</div></div>
+
+  <div class="fr">"Algo HTA: confirmar en 2 visitas (salvo ≥180/110); MAPA si hay duda; estilo de vida siempre; fármaco libre en grado 1 sin riesgo, obligado en grado 2-3; triple = ARB+CCB+tiazida; NUNCA IECA+ARAII."</div>
+</div>
+
+<!-- SITUACIONES ESPECIALES -->
+<div id="p-situaciones" class="panel">
+  <div class="sl">Situaciones especiales — elección de fármaco NO es libre</div>
+
+  <div class="sbox" id="s1">
+    <div class="sbox-hdr" onclick="toggleS('s1')">
+      <div class="sbox-title">HTA + Diabetes tipo 2 + microalbuminuria</div>
+      <span class="sbox-tag" style="background:#FAECE7;color:#993C1D;">★★★ Más preguntado</span>
+    </div>
+    <div class="sbox-body open" id="b-s1">
+      <b>Elección: IECA o ARA II obligatorio.</b><br>
+      Mecanismo: reducen presión intraglomerular (efecto hemodinámico renal independiente del efecto antihipertensivo sistémico) → enlentecen progresión de nefropatía diabética.<br>
+      Trampa: poner tiazida o betabloqueante como primera opción → son válidas en HTA sin microalbuminuria, pero NO son la elección cuando hay microalbuminuria.<br>
+      Meta de TA: &lt;130/80 mmHg.
+    </div>
+  </div>
+
+  <div class="sbox" id="s2">
+    <div class="sbox-hdr" onclick="toggleS('s2')">
+      <div class="sbox-title">HTA + Insuficiencia cardíaca con FE reducida</div>
+      <span class="sbox-tag" style="background:#EEEDFE;color:#534AB7;">★★ Muy preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s2">
+      <b>Elección: IECA (o ARA II si intolerancia) + betabloqueante.</b><br>
+      Reducen mortalidad en IC FE reducida. Agregar diurético (furosemida) para control de síntomas congestivos. Espironolactona en estadios avanzados.<br>
+      Trampa: "betabloqueante contraindicado en IC" → FALSO. En IC estable (no en descompensación aguda) el betabloqueante ES parte del tratamiento estándar.
+    </div>
+  </div>
+
+  <div class="sbox" id="s3">
+    <div class="sbox-hdr" onclick="toggleS('s3')">
+      <div class="sbox-title">HTA sistólica aislada en el anciano</div>
+      <span class="sbox-tag" style="background:#FAEEDA;color:#BA7517;">★★ Muy preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s3">
+      <b>Elección: tiazidas o calcioantagonistas dihidropiridínicos (amlodipina).</b><br>
+      Mecanismo: la PAS aislada alta se debe a rigidez aórtica con la edad. IECA son menos eficaces porque el mecanismo no es mediado por renina.<br>
+      <b>Paciente &gt;80 años con TA 140–150, sin síntomas, sin daño órgano blanco:</b> primero medidas no farmacológicas y seguimiento. No iniciar fármaco automáticamente. Objetivo en ≥80a: &lt;140/90 (no &lt;130/80).
+    </div>
+  </div>
+
+  <div class="sbox" id="s4">
+    <div class="sbox-hdr" onclick="toggleS('s4')">
+      <div class="sbox-title">HTA + Embarazo</div>
+      <span class="sbox-tag" style="background:#E1F5EE;color:#0F6E56;">★★ Muy preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s4">
+      <b>IECA y ARA II: CONTRAINDICADOS (teratogénicos en 2°-3° trimestre).</b><br>
+      Fármacos seguros: alfametildopa (1ª línea), labetalol, nifedipina oral de acción prolongada.<br>
+      Si una paciente ya recibe IECA/ARA II y queda embarazada → cambiar inmediatamente a alfametildopa.<br>
+      Ver nodo de HTA gestacional para preeclampsia/eclampsia.
+    </div>
+  </div>
+
+  <div class="sbox" id="s5">
+    <div class="sbox-hdr" onclick="toggleS('s5')">
+      <div class="sbox-title">HTA + ERC (sin diabetes)</div>
+      <span class="sbox-tag" style="background:#E6F1FB;color:#185FA5;">★ Preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s5">
+      <b>Elección: IECA o ARA II si hay proteinuria.</b> Reducen la progresión de ERC por reducción de presión intraglomerular.<br>
+      Precaución: monitorear potasio y creatinina al inicio. Si hay estenosis bilateral de arterias renales → CONTRAINDICADOS (pueden precipitar IRA).<br>
+      Meta: &lt;130/80 si hay proteinuria.
+    </div>
+  </div>
+
+  <div class="sbox" id="s6">
+    <div class="sbox-hdr" onclick="toggleS('s6')">
+      <div class="sbox-title">HTA + Hiperaldosteronismo primario (secundaria)</div>
+      <span class="sbox-tag" style="background:#FAEEDA;color:#BA7517;">★ Preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s6">
+      <b>Pista diagnóstica: hipocaliemia espontánea + HTA resistente.</b><br>
+      Mecanismo: exceso de aldosterona → retiene sodio → pierde potasio → HTA + hipocaliemia.<br>
+      Diagnóstico: relación aldosterona/renina (elevada). Confirmación: TC suprarrenal.<br>
+      Elección de fármaco: espironolactona (antagonista de aldosterona).<br>
+      Diferencial: feocromocitoma (crisis paroxísticas + taquicardia + cefalea + sudoración → estudio: catecolaminas en orina 24h).
+    </div>
+  </div>
+
+  <div class="sbox" id="s7">
+    <div class="sbox-hdr" onclick="toggleS('s7')">
+      <div class="sbox-title">HTA resistente — definición y manejo</div>
+      <span class="sbox-tag" style="background:#F1EFE8;color:#5F5E5A;">★ Preguntado</span>
+    </div>
+    <div class="sbox-body" id="b-s7">
+      <b>Definición: TA &gt;140/90 con triple terapia (ARB + CCB + tiazida) a dosis óptimas.</b><br>
+      Antes de rotularla: descartar pseudorresistencia (mala adherencia, técnica de medición incorrecta, bata blanca).<br>
+      Agregar: espironolactona como 4° fármaco (evidencia fuerte en HTA resistente).<br>
+      Buscar causa secundaria: hiperaldosteronismo, apnea del sueño, feocromocitoma, estenosis arterias renales.
+    </div>
+  </div>
+</div>
+
+<!-- CRISIS HTA -->
+<div id="p-crisis" class="panel">
+  <div class="sl">Crisis hipertensivas — la distinción más preguntada del banco</div>
+
+  <div style="padding:12px;border-radius:8px;background:#E6F1FB;border:.5px solid #B5D4F4;margin-bottom:1rem;font-size:13px;line-height:1.65;">
+    <b style="color:#0C447C;font-size:14px;">Regla madre:</b> <span style="color:#0C447C;">Lo que define la emergencia NO es el número de la TA. Es el DAÑO AGUDO DE ÓRGANO BLANCO.</span>
+  </div>
+
+  <div class="dob-grid">
+    <div class="dob-card" style="border-color:#B5D4F4;background:#E6F1FB;">
+      <div class="dob-t" style="color:#0C447C;">URGENCIA HIPERTENSIVA</div>
+      <div class="dob-b">
+        <b>TA ≥180/120</b> sin evidencia de daño agudo de órgano blanco.<br><br>
+        <b>Síntomas:</b> cefalea leve, mareos, ansiedad. Sin déficit neurológico, sin disnea, sin dolor torácico, sin oliguria.<br><br>
+        <b>Conducta:</b> Descenso gradual de TA en horas (25% en primeras 2-6h, luego objetivo en 24-48h). Medicación <b>oral</b>. No requiere internación en UTI. No vía IV.<br><br>
+        <b>Fármacos orales:</b> captopril SL, labetalol oral, clonidina oral.<br><br>
+        <b style="color:#E24B4A;">⚠ No bajar rápido:</b> hipoperfusión de órganos "acostumbrados" a PA alta.
+      </div>
+    </div>
+    <div class="dob-card" style="border-color:#F5C4B3;background:#FAECE7;">
+      <div class="dob-t" style="color:#993C1D;">EMERGENCIA HIPERTENSIVA</div>
+      <div class="dob-b">
+        <b>TA ≥180/120</b> CON daño agudo de órgano blanco activo.<br><br>
+        <b>Manifestaciones:</b><br>
+        • Neurológico: encefalopatía HTA, ACV hemorrágico/isquémico, déficit focal<br>
+        • Cardíaco: SCA, EAP, disección aórtica<br>
+        • Renal: IRA con oliguria, proteinuria masiva<br>
+        • Fondo de ojo: exudados, hemorragias, edema de papila<br><br>
+        <b>Conducta:</b> Internación UTI. Descenso controlado con drogas <b>IV</b>. Reducir 20-25% en primera hora, luego objetivo a las 24h.<br><br>
+        <b>Fármacos IV:</b> nitroprusiato, labetalol IV, nicardipina IV.
+      </div>
+    </div>
+  </div>
+
+  <div class="sl">Cuadros que definen emergencia — memorizarlos</div>
+  <table class="ct">
+    <tr><th>Órgano</th><th>Cuadro clínico</th><th>Fármaco de elección IV</th></tr>
+    <tr><td>Cerebro</td><td>Encefalopatía HTA, ACV hemorrágico, déficit focal</td><td>Labetalol IV / nicardipina IV</td></tr>
+    <tr><td>Corazón</td><td>SCA, EAP (edema agudo de pulmón)</td><td>Nitroglicerina IV + diurético</td></tr>
+    <tr><td>Aorta</td><td>Disección aórtica (dolor desgarrante, anisocoria de TA)</td><td>Labetalol IV (reduce FC + PA)</td></tr>
+    <tr><td>Riñón</td><td>IRA oligurica, proteinuria masiva</td><td>Nicardipina IV</td></tr>
+    <tr><td>Ojo</td><td>Retinopatía maligna (edema de papila, exudados)</td><td>Labetalol IV / nicardipina</td></tr>
+  </table>
+
+  <div class="sl">Casos clínicos tipo examen — reconocer patrón</div>
+  <div class="nc" style="margin-bottom:8px;">
+    <div class="nt">Caso 1 — la trampa clásica</div>
+    <div class="nb">TA 195/115, cefalea leve, sin signos neurológicos, ECG normal, creatinina normal, fondo de ojo normal. → <span style="color:#22855A;font-weight:600;">URGENCIA → captopril oral, control en 2-4h. No UTI.</span></div>
+  </div>
+  <div class="nc" style="margin-bottom:8px;">
+    <div class="nt">Caso 2 — emergencia oculta</div>
+    <div class="nb">TA 190/108, cefalea intensa, disartria leve, asimetría facial. → <span style="color:#E24B4A;font-weight:600;">EMERGENCIA (déficit neurológico) → UTI + IV inmediato. Descartar ACV hemorrágico.</span></div>
+  </div>
+  <div class="nc">
+    <div class="nt">Caso 3 — disección aórtica</div>
+    <div class="nb">TA 210/120, dolor torácico "desgarrante" que irradia a la espalda, TA diferente en ambos brazos. → <span style="color:#E24B4A;font-weight:600;">EMERGENCIA (disección) → Labetalol IV (reduce FC y PA simultáneamente).</span></div>
+  </div>
+
+  <div class="fr">"Crisis: el número no define emergencia, el daño de órgano blanco sí. Sin DOB → urgencia → oral gradual. Con DOB → emergencia → UTI + IV. Descenso brusco = peligro en ambas."</div>
+</div>
+
+<!-- TRAMPAS -->
+<div id="p-trampas" class="panel">
+  <div class="sl">Catálogo completo de trampas — error documentado vs respuesta correcta</div>
+  <ul class="tl">
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Bata blanca → iniciar antihipertensivo porque la TA en consultorio es siempre alta</span><br><span class="tr2">→ MAPA normal confirma que no hay HTA real. Sin fármaco, solo seguimiento y estilo de vida.</span><div class="ti-context">Sprint CL1 · aparece 3 veces en el banco</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Corte para urgencia hipertensiva es 160/110 mmHg</span><br><span class="tr2">→ Corte es 180/120 mmHg. Por debajo de eso no es crisis hipertensiva, es HTA no controlada.</span><div class="ti-context">Error muy frecuente por confusión con preeclampsia severa</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Emergencia HTA → bajar la TA al objetivo en la primera hora</span><br><span class="tr2">→ Reducir solo 20-25% en la primera hora. Bajada brusca → isquemia cerebral, renal y coronaria.</span><div class="ti-context">Mecansimo: autorregulación vascular desplazada hacia arriba en hipertensos crónicos</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">HTA + DM2 + microalbuminuria → primera línea es tiazida o betabloqueante</span><br><span class="tr2">→ IECA o ARA II obligatorio. Son los únicos con efecto nefroprotector independiente.</span><div class="ti-context">Patrón aparece casi todos los años</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Anciano 83a, TA 148/82, asintomático, sin DOB → iniciar antihipertensivo</span><br><span class="tr2">→ En ≥80 años con TA moderada sin DOB: primero medidas no farmacológicas. Umbral de tratamiento es más alto. Objetivo si se trata: &lt;140/90, no &lt;130/80.</span><div class="ti-context">Guía MSAL 2024 — individualizar en mayores de 80</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Triple terapia incluye betabloqueante como tercer escalón</span><br><span class="tr2">→ Triple estándar = ARB/IECA + calcioantagonista + tiazida. Betabloqueante entra en situaciones específicas (IC, post-IAM, arritmia), no como 3° escalón genérico.</span></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">HTA resistente → agregar un 4° fármaco cualquiera</span><br><span class="tr2">→ 4° fármaco de elección en HTA resistente = espironolactona. Evidencia sólida.</span><div class="ti-context">Pensar también en hiperaldosteronismo primario como causa subyacente</div></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">HTA + hipocaliemia → sospechar feocromocitoma como primera causa</span><br><span class="tr2">→ Hipocaliemia + HTA = hiperaldosteronismo primario primero. Feo tiene crisis paroxísticas con taquicardia. Son cuadros diferentes.</span></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">IECA + ARA II juntos en HTA resistente para mayor bloqueo del SRAA</span><br><span class="tr2">→ CONTRAINDICADO. Doble bloqueo SRAA = hipercaliemia + IRA sin beneficio adicional demostrado.</span></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Embarazada hipertensa → continuar con enalapril o losartán que ya tomaba</span><br><span class="tr2">→ IECA y ARA II son teratogénicos. Cambiar a alfametildopa, labetalol o nifedipina inmediatamente.</span></div></li>
+    <li class="ti"><span style="color:#185FA5;font-size:14px;">▶</span><div class="ti-body"><span class="tw">Disección aórtica + TA muy alta → nitroprusiato solo</span><br><span class="tr2">→ Labetalol IV (betabloqueante + alfabloqueante): reduce FC y PA simultáneamente. Nitroprusiato solo puede causar taquicardia refleja que aumenta el estrés sobre la pared aórtica.</span></div></li>
+  </ul>
+</div>
+
+<!-- PRÁCTICA -->
+<div id="p-practica" class="panel">
+  <div class="score-row">
+    <span>Respondidas: <span class="score-val" id="sc-ans">0</span>/6</span>
+    <span>Correctas: <span class="score-val" id="sc-cor" style="color:#22855A;">0</span></span>
+    <button class="reset-btn" onclick="resetQ()">Reiniciar</button>
+  </div>
+  <div class="prog"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+  <div id="qlist"></div>
+</div>
+
+</div>
+
+<script>
+const QS=[
+  {year:'2025',q:'Marcos, 52 años, hipertenso de larga data. Llega a guardia con TA 202/118 mmHg. Refiere cefalea leve. Fondo de ojo: sin exudados ni hemorragias. ECG: sin cambios agudos. Creatinina: 1.0 mg/dl. ¿Cuál es el diagnóstico y la conducta más adecuada?',opts:['a) Emergencia hipertensiva: internar en UTI y comenzar labetalol IV','b) Urgencia hipertensiva: descenso gradual con captopril oral, control ambulatorio en 2-4h','c) HTA grado 3: iniciar triple terapia y controlar en 48h','d) Emergencia hipertensiva: nitroprusiato IV inmediato'],correct:1,exp:'TA ≥180/120 pero SIN daño de órgano blanco (fondo ojo normal, ECG normal, creatinina normal) → URGENCIA hipertensiva. Conducta: descenso gradual oral (captopril SL, labetalol oral). No requiere UTI ni drogas IV. Error clásico: confundir el número alto con emergencia sin evaluar el órgano blanco.'},
+  {year:'2024',q:'Diana, 61 años, diabética tipo 2 desde hace 8 años. TA 152/94 mmHg en 3 visitas. Microalbuminuria: 220 mg/g. Sin otras comorbilidades cardíacas. ¿Cuál es el antihipertensivo de primera elección?',opts:['a) Amlodipina 5mg/día','b) Hidroclorotiazida 25mg/día','c) Enalapril 10mg/día','d) Atenolol 50mg/día'],correct:2,exp:'HTA + DM2 + microalbuminuria → IECA (enalapril) o ARA II obligatorio. Mecanismo: nefroprotección por reducción de presión intraglomerular independiente del efecto antihipertensivo. Amlodipina y tiazida son válidas en HTA sin microalbuminuria, pero no son la elección cuando hay proteinuria. Atenolol no es primera línea en HTA sin IC o arritmia.'},
+  {year:'2023',q:'Sebastián, 46 años, consulta por cefalea de 2 días. TA en consultorio: 164/98 mmHg en 3 tomas. Refiere que en su casa siempre mide 118/76. Sin antecedentes. ¿Cuál es el paso inicial más adecuado?',opts:['a) Diagnóstico de HTA grado 2: iniciar IECA inmediatamente','b) Solicitar MAPA para confirmar el fenotipo de PA','c) Repetir la toma en una semana y si persiste, iniciar tiazida','d) Ecocardiograma para buscar hipertrofia ventricular'],correct:1,exp:'Discordancia entre TA en consultorio (alta) y domicilio (normal reportada) → sospecha de HTA de bata blanca. El MAPA es el método que define el fenotipo. Si MAPA ≥130/80 → HTA real → tratar. Si MAPA normal → bata blanca → no fármaco, solo seguimiento. No se debe iniciar tratamiento farmacológico antes de confirmar el diagnóstico.'},
+  {year:'2022',q:'Hortensia, 85 años. Control de salud. TA 148/80 mmHg en 2 visitas. Sin síntomas, sin daño de órgano blanco, sin antecedentes cardíacos. ECG normal, creatinina 0.9 mg/dl, fondo de ojo normal. ¿Cuál es la conducta inicial?',opts:['a) Iniciar enalapril 5mg/día','b) Iniciar tiazida 12.5mg/día por ser la elección en sistólica aislada','c) Medidas higiénico-dietéticas y seguimiento sin fármaco por ahora','d) MAPA para confirmar HTA antes de tratar'],correct:2,exp:'En ≥80 años con TA moderada (148/80) sin síntomas ni daño de órgano blanco, la guía MSAL 2024 indica individualizar. No se trata automáticamente. Primero medidas no farmacológicas y seguimiento. El objetivo de TA si se decide tratar es <140/90, no <130/80. La tiazida sería correcta si se decide tratar, pero el primer paso es medidas no farmacológicas.'},
+  {year:'2021',q:'Paula, 38 años. HTA con TA 186/110 mmHg. Tratada con enalapril 10mg + amlodipina 5mg sin respuesta adecuada. TA sigue en 168/104. ¿Cuál es el siguiente paso terapéutico correcto?',opts:['a) Aumentar enalapril a 20mg y amlodipina a 10mg','b) Agregar ARA II (losartán) al enalapril para mayor bloqueo del SRAA','c) Agregar tiazida para completar la triple terapia ARB+CCB+tiazida','d) Cambiar enalapril por losartán y mantener amlodipina'],correct:2,exp:'HTA no controlada con 2 fármacos → agregar tercero. Triple terapia estándar = IECA o ARA II + calcioantagonista + tiazida. Ya tiene IECA (enalapril) + CCB (amlodipina) → agregar tiazida. NUNCA combinar IECA + ARA II (hipercaliemia + IRA sin beneficio adicional). Esta es una trampa frecuente del banco.'},
+  {year:'2019',q:'Bernardo, 58 años. HTA diagnosticada hace 6 meses. En tratamiento con enalapril + amlodipina + hidroclorotiazida a dosis óptimas. TA persiste 158/96 mmHg. Ionograma: K+ 3.1 mEq/L. ¿Cuál es la conducta más adecuada?',opts:['a) Agregar betabloqueante como cuarto fármaco','b) Agregar espironolactona y estudiar hiperaldosteronismo primario','c) Duplicar la dosis de hidroclorotiazida','d) Derivar a nefrología para hemodiálisis'],correct:1,exp:'HTA resistente (no controlada con triple terapia) + hipocaliemia → sospechar hiperaldosteronismo primario. Cuarto fármaco de elección = espironolactona (antagonista de aldosterona), que además trata la causa potencial. Estudiar con relación aldosterona/renina. El betabloqueante no es el 4° escalón estándar en HTA resistente.'},
+];
+
+let answered={},correct=0,total=QS.length;
+function initQ(){
+  const el=document.getElementById('qlist');
+  el.innerHTML=QS.map((q,i)=>`
+  <div class="q-card" id="qc${i}">
+    <div class="q-head"><span class="q-meta">Pregunta ${i+1}</span><span class="q-year">${q.year}</span></div>
+    <div class="q-text">${q.q}</div>
+    <div class="opts">${q.opts.map((o,j)=>`<button class="opt" id="o${i}_${j}" onclick="ans(${i},${j},${q.correct})">${o}</button>`).join('')}</div>
+    <div class="q-exp" id="exp${i}"><b>Explicación:</b> ${q.exp}</div>
+  </div>`).join('');
+}
+function ans(qi,chosen,correct_i){
+  if(answered[qi]) return;
+  answered[qi]=true;
+  const opts=document.querySelectorAll(`[id^="o${qi}_"]`);
+  opts.forEach((o,j)=>{
+    o.classList.add('disabled');
+    if(j===correct_i) o.classList.add('reveal');
+    if(j===chosen && chosen!==correct_i) o.classList.add('wrong');
+    if(j===chosen && chosen===correct_i) o.classList.add('correct');
+  });
+  document.getElementById('exp'+qi).classList.add('on');
+  if(chosen===correct_i) correct++;
+  document.getElementById('sc-ans').textContent=Object.keys(answered).length;
+  document.getElementById('sc-cor').textContent=correct;
+  document.getElementById('prog').style.width=Math.round(Object.keys(answered).length/total*100)+'%';
+}
+function resetQ(){answered={};correct=0;initQ();document.getElementById('sc-ans').textContent='0';document.getElementById('sc-cor').textContent='0';document.getElementById('prog').style.width='0%';}
+
+const openS={s1:true,s2:false,s3:false,s4:false,s5:false,s6:false,s7:false};
+function toggleS(id){
+  openS[id]=!openS[id];
+  const b=document.getElementById('b-'+id);
+  if(b) b.className='sbox-body'+(openS[id]?' open':'');
+}
+
+function sv(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='practica') initQ();
+}
+</script>
+</body>
+</html>
