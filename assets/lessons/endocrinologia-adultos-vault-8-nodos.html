@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Endocrinología Adultos — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --pink:#d4537e;--pink2:#ed93b1;--pinkb:#2e1020;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}.tag-g{background:var(--greenb);color:var(--green2)}
+.tag-c{background:var(--coralb);color:var(--coral2)}.tag-pk{background:var(--pinkb);color:var(--pink2)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Endocrinología Adultos</div>
+    <div class="sb-sub">Banco 2016–2025 · Bibliografía CABA 2026</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--coral)">44</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">8</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">2</div><div class="sb-stat-l">sprints</div></div>
+    </div>
+  </div>
+  <div class="sprint-label" style="color:var(--coral)">Sprint CL7 · Diabetes/Obesidad — 35 preg.</div>
+  <div class="nav-item active" style="--item-color:var(--coral)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">DM — Diagnóstico y clasificación</div><div class="nav-n">Criterios · DM1 vs DM2 · MODY · HbA1c</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--coral)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">DM2 — Tratamiento</div><div class="nav-n">Metformina · iSGLT2 · GLP-1 · Insulina · Metas</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Complicaciones agudas DM</div><div class="nav-n">CAD · SHHNC · Hipoglucemia</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">Complicaciones crónicas DM</div><div class="nav-n">Nefropatía · Retinopatía · Neuropatía · Pie</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--teal)">Sprint CL8 · Tiroides/Suprarrenal — 9 preg.</div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Hipotiroidismo</div><div class="nav-n">TSH · Hashimoto · Levotiroxina · Mixedema</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Hipertiroidismo y nódulo tiroideo</div><div class="nav-n">Graves · Bethesda · PAAF · Tormenta tiroidea</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Patología suprarrenal</div><div class="nav-n">Addison · Cushing · Feocromocitoma · Test ACTH</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Obesidad · Calcio · Hipófisis</div><div class="nav-n">IMC · Hipocalcemia · Acromegalia · ADH</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══ NODO 1 — DM DIAGNÓSTICO ═══ -->
+<div class="node active" id="n0" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">Sprint CL7 · 35 preguntas</div>
+    <div class="node-title">Diabetes mellitus — Diagnóstico y clasificación</div>
+    <div class="node-subtitle">4 criterios diagnósticos · DM1 vs DM2 · Prediabetes · HbA1c</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El diagnóstico de diabetes tiene 4 criterios, cada uno suficiente solo si es inequívoco (con síntomas), o requiere confirmación en 2 días distintos si es asintomático. El examen da un valor y pregunta si hay diabetes o no. La HbA1c ≥6.5% es diagnóstico, pero la glucemia de 126 mg/dL en ayunas también lo es.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Los 4 criterios diagnósticos de diabetes (ADA / MSAL)</div>
+    <table class="tbl">
+      <tr><th>Criterio</th><th>Umbral</th><th>Confirmación</th></tr>
+      <tr><td style="color:var(--coral2)"><strong>1. Glucemia en ayunas</strong> (≥8 hs sin ingesta)</td><td style="color:var(--coral2)"><strong>≥ 126 mg/dL</strong></td><td>Repetir en otro día si asintomático</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>2. Glucemia 2 hs poscarga</strong> (75 g glucosa oral — PTOG)</td><td style="color:var(--coral2)"><strong>≥ 200 mg/dL</strong></td><td>Repetir si asintomático</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>3. HbA1c</strong></td><td style="color:var(--coral2)"><strong>≥ 6.5%</strong></td><td>Repetir si asintomático (mismo criterio)</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>4. Glucemia casual</strong> (cualquier hora)</td><td style="color:var(--coral2)"><strong>≥ 200 mg/dL + síntomas clásicos</strong></td><td><strong>NO requiere confirmación</strong> (síntomas = inequívoco)</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 La regla del examen — una glucemia ≥200 + síntomas = diagnóstico inmediato</div>
+      <p>"Síntomas clásicos" = poliuria + polidipsia + polifagia + pérdida de peso inexplicada. Si el paciente tiene glucemia 215 + sed intensa + orina mucho → diagnóstico de DM en una sola medición, no esperar confirmación.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — dos glucemias en días distintos</div>
+      <p>Si el paciente está <strong>asintomático</strong> y la glucemia en ayunas es 132 → necesitás una segunda glucemia ≥126 en otro día (o una HbA1c ≥6.5%) para confirmar. Un solo valor en asintomático NO es diagnóstico. El error es diagnosticar con una sola toma sin síntomas.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prediabetes — los umbrales intermedios</div>
+    <table class="tbl">
+      <tr><th>Categoría</th><th>Glucemia ayunas</th><th>PTOG 2hs</th><th>HbA1c</th></tr>
+      <tr><td style="color:var(--teal2)">Normal</td><td>&lt;100 mg/dL</td><td>&lt;140 mg/dL</td><td>&lt;5.7%</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Glucemia alterada en ayunas</strong> (GAA)</td><td>100–125 mg/dL</td><td>—</td><td>—</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Tolerancia disminuida</strong> (TDG)</td><td>—</td><td>140–199 mg/dL</td><td>—</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>HbA1c prediabetes</strong></td><td>—</td><td>—</td><td>5.7–6.4%</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>Diabetes</strong></td><td>≥126 mg/dL</td><td>≥200 mg/dL</td><td>≥6.5%</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Intervención en prediabetes: cambios intensivos de estilo de vida (dieta + ejercicio) reducen el riesgo de progresión a DM en un 58%. Metformina en prediabetes con IMC ≥35 o glucemia ayunas ≥110.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DM1 vs DM2 — diferencias clave para el examen</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--blue2)">DM tipo 1</th><th style="color:var(--coral2)">DM tipo 2</th></tr>
+      <tr><td>Mecanismo</td><td>Destrucción autoinmune células β → déficit absoluto de insulina</td><td>Resistencia a la insulina + defecto progresivo de secreción</td></tr>
+      <tr><td>Edad inicio</td><td>Infancia/adolescencia (pero puede ser cualquier edad)</td><td>Adultos &gt;30 años, obesos (pero crece en jóvenes)</td></tr>
+      <tr><td>Peso</td><td>Normal o bajo (pérdida peso)</td><td>Obesidad frecuente (80%)</td></tr>
+      <tr><td>Anticuerpos</td><td>Anti-GAD, anti-insulina, anti-IA2 (positivos)</td><td>Negativos</td></tr>
+      <tr><td>Péptido C</td><td>Muy bajo (déficit absoluto)</td><td>Normal o elevado</td></tr>
+      <tr><td>Cetoacidosis</td><td>Frecuente (tendencia espontánea)</td><td>Rara (solo en situaciones de estrés grave)</td></tr>
+      <tr><td>Tratamiento</td><td><strong>Insulina siempre</strong> (no hay alternativa)</td><td>Escalonado: metformina → combinaciones → insulina si falla</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — DM tipo LADA</div>
+      <p>Adulto joven (&lt;35 años) delgado con diabetes que inicialmente responde a antidiabéticos orales pero que rápidamente necesita insulina → pensar <strong>LADA</strong> (Latent Autoimmune Diabetes in Adults). Es una DM1 de inicio lento en adultos. Anticuerpos anti-GAD positivos. El error es tratarla indefinidamente como DM2.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">HbA1c — qué es y para qué sirve</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--coral2)">Qué mide</div>
+        <ul>
+          <li>Fracción de hemoglobina glucosilada</li>
+          <li>Refleja el promedio de glucemia de los últimos 2–3 meses</li>
+          <li>No requiere ayuno</li>
+          <li>Sirve para diagnóstico Y seguimiento del control</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Cuando NO es confiable</div>
+        <ul>
+          <li>Hemoglobinopatías (anemia falciforme, talasemia)</li>
+          <li>Anemia hemolítica (destruye GR rápido → HbA1c falsamente baja)</li>
+          <li>Deficiencia de hierro severa (puede elevarla falsamente)</li>
+          <li>Transfusiones recientes</li>
+          <li>En estos casos: usar glucemia en ayunas o PTOG</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: DM2 Tratamiento →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 2 — DM TRATAMIENTO ═══ -->
+<div class="node" id="n1" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">Sprint CL7 · más preguntado</div>
+    <div class="node-title">DM2 — Tratamiento y metas</div>
+    <div class="node-subtitle">Metformina · iSGLT2 · GLP-1 · Insulinización · Metas de HbA1c personalizadas</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Metformina es la primera línea siempre salvo contraindicación. Las metas de HbA1c son personalizadas: 7% en jóvenes sanos, más laxas en ancianos. Los iSGLT2 y GLP-1 tienen beneficio cardiovascular y renal demostrado → se agregan en pacientes de alto riesgo CV o con ERC. Nunca suspender metformina solo por HbA1c alta: agregar fármaco.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Metas de HbA1c — personalización según paciente</div>
+    <table class="tbl">
+      <tr><th>Perfil del paciente</th><th>Meta HbA1c</th><th>Razonamiento</th></tr>
+      <tr><td style="color:var(--teal2)">Joven, sin comorbilidades, DM reciente, larga esperanza de vida</td><td style="color:var(--teal2)"><strong>&lt;7.0%</strong></td><td>Beneficio de control estricto supera al riesgo de hipoglucemia</td></tr>
+      <tr><td style="color:var(--amber2)">Adulto con comorbilidades moderadas, DM &gt;10 años</td><td style="color:var(--amber2)"><strong>&lt;7.5–8.0%</strong></td><td>Control aceptable sin hipoglucemia severa</td></tr>
+      <tr><td style="color:var(--red2)">Anciano (&gt;70 años), pluripatológico, frágil, deterioro cognitivo, espectativa de vida limitada</td><td style="color:var(--red2)"><strong>&lt;8.0–8.5%</strong></td><td>Evitar hipoglucemia (más peligrosa en ancianos: caídas, ACV)</td></tr>
+      <tr><td>Embarazada con DM (gestacional o preexistente)</td><td style="color:var(--teal2)"><strong>&lt;6.0–6.5%</strong></td><td>Control estricto: reduce malformaciones y macrosomía</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — HbA1c igual para todos</div>
+      <p>El examen da un anciano de 78 años con DM2 y HbA1c 7.8%. ¿Intensificar el tratamiento? <strong>NO necesariamente</strong>. En este perfil la meta aceptable puede ser hasta 8–8.5%. Intensificar el tratamiento aumenta el riesgo de hipoglucemia en el anciano → caídas → fractura de cadera → mortalidad. La respuesta "agregar otro hipoglucemiante" puede ser el error.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Escalonamiento del tratamiento farmacológico</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--coralb);color:var(--coral2)">1</div>
+        <div class="algo-text"><strong>Metformina + cambios de estilo de vida</strong> (dieta + ejercicio). Inicio en todo DM2 con TFGe ≥30 mL/min. Dosis máxima 2550 mg/día. Siempre primera línea.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--coralb);color:var(--coral2)">2</div>
+        <div class="algo-text"><strong>Si ECV establecida, ICC o ERC:</strong> agregar <span style="color:var(--teal2)"><strong>iSGLT2</strong></span> (dapagliflozina, empagliflozina) o <span style="color:var(--blue2)"><strong>arGLP-1</strong></span> (semaglutida, liraglutida) por beneficio cardiorenal independiente del control glucémico.<br>
+        <strong>Si sin ECV establecida:</strong> agregar según perfil (peso, hipoglucemia, costo).</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--coralb);color:var(--coral2)">3</div>
+        <div class="algo-text"><strong>Agregar tercer fármaco</strong> si HbA1c no alcanza meta con doble terapia. Combinar según efectos adversos y comorbilidades.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">4</div>
+        <div class="algo-text"><strong>Insulinización:</strong> HbA1c &gt;10% con síntomas + hiperglucemia severa, o fracaso de triple terapia oral. Comenzar con insulina basal (glargina o NPH nocturna).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fármacos antidiabéticos — tabla de características</div>
+    <table class="tbl">
+      <tr><th>Fármaco</th><th>Mecanismo</th><th>Ventajas</th><th>Contraindicaciones / EAs</th></tr>
+      <tr><td style="color:var(--coral2)"><strong>Metformina</strong></td><td>Reduce producción hepática de glucosa (↓ gluconeogénesis)</td><td>Costo, no sube peso, no hipoglucemia, larga evidencia, cardioprotector</td><td style="color:var(--red2)">CI: TFGe &lt;30. Suspender si contraste IV o cirugía mayor (riesgo acidosis láctica). GI frecuentes al inicio</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>iSGLT2</strong> (dapagliflozina, empagliflozina)</td><td>Inhibe reabsorción renal de glucosa → glucosuria</td><td>↓ peso, ↓ PA, cardioprotector (IC, ERC), nefroprotector</td><td style="color:var(--amber2)">ITU/candidiasis genital. Cetoacidosis normoglucémica (rara). Suspender antes de cirugía. CI: TFGe &lt;20–30</td></tr>
+      <tr><td style="color:var(--blue2)"><strong>arGLP-1</strong> (semaglutida, liraglutida)</td><td>Agonista receptor GLP-1 → ↑ insulina dependiente de glucosa + ↓ glucagón + saciedad</td><td>↓ peso (el mayor de todos), cardioprotector (ACV, IAM), beneficio renal</td><td>GI (náuseas, vómitos frecuentes al inicio). CI: pancreatitis crónica, antecedente de CMT (carcinoma medular de tiroides)</td></tr>
+      <tr><td><strong>iDPP-4</strong> (sitagliptina, alogliptina)</td><td>Inhibe degradación de GLP-1 endógeno → ↑ insulina postprandial</td><td>Neutro en peso, bien tolerado, seguro en ERC (ajustar dosis)</td><td>Pancreatitis. Infecciones vías respiratorias. Neutral en CV</td></tr>
+      <tr><td><strong>Sulfonilureas</strong> (glibenclamida, glimepirida)</td><td>Estimula secreción de insulina pancreática (independiente de glucemia)</td><td>Bajo costo, potencia moderada</td><td style="color:var(--red2)"><strong>Hipoglucemia severa</strong> (especialmente en ancianos y IRC). Aumento de peso. CI: IRC avanzada, anciano frágil</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Insulina</strong></td><td>Reemplazo directo</td><td>Potencia ilimitada. Única opción en DM1 y DM2 avanzada</td><td>Hipoglucemia, aumento de peso. Técnica de inyección y automonitoreo</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — metformina y contraste yodado</div>
+      <p>Antes de una TC con contraste IV → suspender metformina 48 hs antes (riesgo de acidosis láctica si hay IRA inducida por contraste). Reanudar solo cuando la función renal se confirmó normal post-procedimiento. El examen pone un diabético que va a una TC con contraste y pregunta qué hacer con la medicación.</p>
+    </div>
+    <div class="alert alert-trap" style="margin-top:8px">
+      <div class="alert-title">⚠️ Trampa — nunca suspender metformina por HbA1c alta</div>
+      <p>DM2 con HbA1c 9.5% en tratamiento con metformina sola → ¿qué hacés? <strong>Agregar un segundo fármaco</strong> (iSGLT2, arGLP-1 o sulfonilurea), no suspender la metformina. La metformina se mantiene en la base de todos los esquemas salvo contraindicación real.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 62 años, DM2 hace 8 años. HbA1c 8.3%, IMC 32, sin ECV establecida pero con TFGe 52 mL/min/1.73m² (ERC estadio 3a). En tratamiento con metformina 1000 mg/12h. ¿Qué agregar?</p>
+      <p style="margin-top:6px"><strong>Respuesta: iSGLT2</strong> (dapagliflozina o empagliflozina). Indicado porque tiene ERC establecida (TFGe 52 → iSGLT2 tienen beneficio nefroprotector probado y pueden usarse con TFGe ≥20–25). Además la combinación metformina + iSGLT2 es la más recomendada en este perfil.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: DM Diagnóstico</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Complicaciones Agudas →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 3 — COMPLICACIONES AGUDAS ═══ -->
+<div class="node" id="n2" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Sprint CL7 · urgencias metabólicas</div>
+    <div class="node-title">Complicaciones agudas de la diabetes</div>
+    <div class="node-subtitle">CAD · SHHNC · Hipoglucemia — diagnóstico diferencial y manejo inicial</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres emergencias metabólicas que el examen diferencia por glucemia, pH y osmolaridad. CAD = acidosis metabólica + cetonemia (DM1 típicamente). SHHNC = hiperosmolaridad sin acidosis (DM2 ancianos). Hipoglucemia = glucemia &lt;70 + síntomas adrenérgicos → siempre glucosa oral primero si el paciente está consciente.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CAD vs SHHNC — tabla diagnóstica diferencial</div>
+    <table class="tbl">
+      <tr><th>Parámetro</th><th style="color:var(--blue2)">CAD</th><th style="color:var(--amber2)">SHHNC</th></tr>
+      <tr><td>Tipo de DM más frecuente</td><td>DM1 (aunque puede ser DM2)</td><td>DM2 (anciano)</td></tr>
+      <tr><td>Glucemia</td><td>250–600 mg/dL (puede ser menor)</td><td style="color:var(--amber2)"><strong>&gt;600 mg/dL (generalmente &gt;800–1000)</strong></td></tr>
+      <tr><td>pH arterial</td><td style="color:var(--red2)"><strong>&lt;7.30 (acidosis)</strong></td><td style="color:var(--teal2)"><strong>Normal o levemente ↓ (&gt;7.30)</strong></td></tr>
+      <tr><td>Cetonas / cetonuria</td><td style="color:var(--red2)"><strong>ELEVADAS (+++ )</strong></td><td>Ausentes o mínimas</td></tr>
+      <tr><td>Osmolaridad plasmática</td><td>Normal o levemente ↑ (&lt;320 mOsm/kg)</td><td style="color:var(--amber2)"><strong>&gt;320 mOsm/kg (hiperosmolar)</strong></td></tr>
+      <tr><td>Bicarbonato</td><td style="color:var(--red2)"><strong>&lt;18 mEq/L</strong></td><td>Normal o &gt;18 mEq/L</td></tr>
+      <tr><td>Anión gap</td><td style="color:var(--red2)"><strong>Elevado (&gt;12)</strong></td><td>Normal</td></tr>
+      <tr><td>Consciencia</td><td>Alerta o somnoliento</td><td style="color:var(--amber2)">Confusión profunda, coma frecuente</td></tr>
+      <tr><td>Deshidratación</td><td>Moderada (3–6 L déficit)</td><td style="color:var(--amber2)">Severa (9–12 L déficit)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de CAD — los 4 pilares</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">1</div>
+        <div class="algo-text"><strong>Hidratación IV agresiva:</strong> SF 0.9% 1 L en la primera hora. Luego según estado hemodinámico (0.45% si hipernatremia). La hidratación baja la glucemia incluso sin insulina.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">2</div>
+        <div class="algo-text"><strong>Insulina regular IV (en infusión):</strong> iniciar solo si K⁺ &gt;3.5 mEq/L. Si K⁺ &lt;3.5 → corregir potasio PRIMERO (la insulina baja el K⁺ intracelularmente → riesgo de paro). Dosis: 0.1 UI/kg/h en infusión continua.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">3</div>
+        <div class="algo-text"><strong>Reposición de potasio:</strong> siempre necesaria (la insulina y la corrección de la acidosis redistribuyen K⁺ intracelularmente). Meta K⁺ 3.5–5.0 mEq/L durante el tratamiento.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">4</div>
+        <div class="algo-text"><strong>Cuando glucemia llega a 250 mg/dL:</strong> agregar dextrosa al suero (para poder seguir bajando la acidosis sin bajar la glucemia a menos de 200). Mantener glucemia 150–200 hasta que ceda la acidosis.</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — insulina sin corregir potasio en CAD</div>
+      <p>Paciente con CAD, K⁺ sérico 2.8 mEq/L. ¿Iniciás insulina? <strong>NO aún</strong>. La insulina mete el K⁺ en la célula → K⁺ sérico baja más → arritmia cardíaca → paro. Primero reponer K⁺ hasta ≥3.5 mEq/L y después iniciar insulina. El K⁺ sérico inicial en CAD suele estar normal o alto (por acidosis), pero el K⁺ corporal total está depletado.</p>
+    </div>
+    <div class="alert alert-trap" style="margin-top:8px">
+      <div class="alert-title">⚠️ Trampa — bicarbonato en CAD</div>
+      <p>La administración rutinaria de bicarbonato en CAD <strong>NO está recomendada</strong> (aumenta riesgo de alcalosis de rebote, hipopotasemia, acidosis paradójica del LCR). Solo considerar si pH &lt;6.9. El tratamiento con fluidos + insulina corrige la acidosis.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipoglucemia — definición, síntomas y manejo</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Clasificación por glucemia</div>
+        <ul>
+          <li><strong>Umbral de alerta:</strong> &lt;70 mg/dL → tratar</li>
+          <li><strong>Hipoglucemia clínica:</strong> &lt;54 mg/dL</li>
+          <li><strong>Grave:</strong> &lt;54 mg/dL + incapacidad de autotratarse</li>
+          <li>Síntomas adrenérgicos: temblor, sudoración, taquicardia, hambre (aparecen primero)</li>
+          <li>Síntomas neuroglucopénicos: confusión, visión borrosa, convulsión, coma (más severo)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Tratamiento según estado de consciencia</div>
+        <ul>
+          <li><strong>Consciente:</strong> regla 15-15: 15 g glucosa oral (3 terrones, jugo, gel), repetir glucemia a 15 min. Si &lt;70, repetir</li>
+          <li><strong>Inconsciente / no puede deglutir:</strong> glucagón 1 mg SC/IM (por familiar entrenado), o glucosa hipertónica IV (dextrosa 25–50%)</li>
+          <li>Después de recuperar: comer algo con carbohidratos complejos</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Causa más frecuente de hipoglucemia en DM2 — sulfonilureas</div>
+      <p>Las sulfonilureas (glibenclamida) estimulan la secreción de insulina independientemente de la glucemia → pueden causar hipoglucemia severa y prolongada (especialmente en ancianos con IRC). En IR la sulfonilurea y sus metabolitos se acumulan → hipoglucemia refractaria → hospitalización con infusión de glucosa por horas.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: DM Tratamiento</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: Complicaciones Crónicas →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 4 — COMPLICACIONES CRÓNICAS ═══ -->
+<div class="node" id="n3" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL7 · alta frecuencia en banco</div>
+    <div class="node-title">Complicaciones crónicas de la diabetes</div>
+    <div class="node-subtitle">Nefropatía · Retinopatía · Neuropatía periférica · Pie diabético · Screening y frecuencia</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Las complicaciones crónicas se clasifican en microvasculares (nefropatía, retinopatía, neuropatía) y macrovasculares (IAM, ACV, arteriopatía periférica). El examen pregunta cuándo hacer el screening de cada una, cuál es el marcador más precoz (microalbuminuria en nefropatía), y qué se puede hacer para prevenirlas o frenarlas.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Screening de complicaciones — cuándo y con qué</div>
+    <table class="tbl">
+      <tr><th>Complicación</th><th>Cuándo iniciar screening</th><th>Estudio</th><th>Frecuencia</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>Nefropatía diabética</strong></td><td>DM1: 5 años después del diagnóstico. DM2: al diagnóstico (puede llevar años de DM no detectada)</td><td>Microalbuminuria en orina de 24h o cociente albúmina/creatinina en orina de 1ª mañana. + Creatinina/TFGe</td><td>Anual</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>Retinopatía diabética</strong></td><td>DM1: 5 años. DM2: al diagnóstico</td><td>Fondo de ojo con dilatación (oftalmoscopia directa/indirecta). Retinografía</td><td>Anual. Si sin retinopatía: cada 2 años</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Neuropatía periférica</strong></td><td>DM1: 5 años. DM2: al diagnóstico</td><td>Monofilamento 10 g (sensibilidad). Diapasón 128 Hz (vibración). Reflejo aquiliano</td><td>Anual</td></tr>
+      <tr><td><strong>ECV / Macrovascular</strong></td><td>Al diagnóstico</td><td>ECG basal. Lipidograma. Control PA. Score de riesgo CV</td><td>Variable</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Microalbuminuria — la primera señal de nefropatía</div>
+      <p><strong>Definición:</strong> albuminuria 30–300 mg/día (o cociente albúmina/creatinina 30–300 mg/g).<br>
+      <strong>Macroalbuminuria:</strong> &gt;300 mg/día → nefropatía establecida.<br><br>
+      Microalbuminuria = primera señal de daño renal antes de que baje la TFG. Reversible con control de glucemia + PA + IECA/ARA-II.<br>
+      Confirmación: 2 de 3 muestras en 3–6 meses (descartar ITU, ejercicio intenso, fiebre como causas transitorias).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Nefropatía diabética — estadios y tratamiento</div>
+    <table class="tbl">
+      <tr><th>Estadio</th><th>TFGe</th><th>Albuminuria</th><th>Intervención</th></tr>
+      <tr><td>G1 (normal)</td><td>≥90</td><td>Normo o micro</td><td>Control glucemia + PA. IECA/ARA-II si micro</td></tr>
+      <tr><td>G2</td><td>60–89</td><td>Micro o macro</td><td>IECA/ARA-II. iSGLT2 (beneficio nefroprotector)</td></tr>
+      <tr><td style="color:var(--amber2)">G3a/G3b</td><td>30–59</td><td>Variable</td><td>IECA/ARA-II. iSGLT2 si TFGe ≥20–25. Ajustar metformina</td></tr>
+      <tr><td style="color:var(--red2)">G4</td><td>15–29</td><td>Macro</td><td>Suspender metformina. Suspender iSGLT2. Preparar para TRS</td></tr>
+      <tr><td style="color:var(--red2)">G5 (ERCT)</td><td>&lt;15</td><td>Variable</td><td>Diálisis o trasplante. Insulina basal ajustada</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IECA en nefropatía diabética</div>
+      <p>El IECA (o ARA-II) no solo baja la PA: tiene efecto nefroprotector independiente al reducir la presión intraglomerular. Se indica con cualquier grado de albuminuria en diabético, incluso si la PA es normal. La monitorización de K⁺ y creatinina es obligatoria al iniciarlos (pueden subir la creatinina ≤30% al inicio → aceptable, persistir = riesgo).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Retinopatía diabética — clasificación y riesgo</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Hallazgos</th><th>Riesgo de ceguera</th></tr>
+      <tr><td style="color:var(--teal2)">No proliferativa leve</td><td>Microaneurismas solamente</td><td>Bajo</td></tr>
+      <tr><td style="color:var(--amber2)">No proliferativa moderada</td><td>Hemorragias, exudados duros, manchas algodonosas</td><td>Moderado</td></tr>
+      <tr><td style="color:var(--amber2)">No proliferativa severa</td><td>Hemorragias en 4 cuadrantes, AMIR, arrosariamiento venoso</td><td>Alto (50% progresa a proliferativa en 1 año)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Proliferativa</strong></td><td>Neovasos, hemorragia vítrea, desprendimiento de retina</td><td style="color:var(--red2)"><strong>MUY ALTO</strong></td></tr>
+      <tr><td style="color:var(--red2)">Edema macular diabético</td><td>Engrosamiento retinal central. La causa más frecuente de pérdida visual en DM</td><td style="color:var(--red2)">Alto (ceguera central)</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Tratamiento: fotocoagulación con láser (retinopatía no proliferativa severa y proliferativa). Ranibizumab/bevacizumab intravítreo (edema macular). Control glucémico estricto previene y enlentece progresión.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Neuropatía periférica y pie diabético</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Neuropatía periférica distal simétrica</div>
+        <ul>
+          <li>La más frecuente. "En guante y calcetín"</li>
+          <li>Síntomas: parestesias, ardor, adormecimiento, hiperalgesia nocturna</li>
+          <li>Pérdida de sensibilidad al monofilamento → riesgo de úlceras</li>
+          <li>Tratamiento del dolor: amitriptilina, duloxetina, gabapentina, pregabalina</li>
+          <li>Diagnóstico: clínico. EMG si atípico o asimétrico</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Pie diabético — clasificación de Wagner</div>
+        <ul>
+          <li>Grado 0: piel intacta, deformidades óseas</li>
+          <li>Grado 1: úlcera superficial (piel)</li>
+          <li>Grado 2: úlcera profunda (tendón, cápsula)</li>
+          <li>Grado 3: úlcera + hueso / absceso / osteomielitis</li>
+          <li>Grado 4: gangrena localizada</li>
+          <li>Grado 5: gangrena extensa del pie</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Osteomielitis en pie diabético — el diagnóstico difícil</div>
+      <p>Úlcera profunda en pie diabético → "test del hueso": introducir sonda metálica estéril en la úlcera, si llega al hueso → muy sugestivo de osteomielitis. Confirmar con RMN (estudio de elección) o gammagrafía ósea. Rx simple: cambios tardíos (aparece semanas después). Tratamiento: antibióticos + desbridamiento quirúrgico ± amputación según extensión.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Complicaciones Agudas</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Hipotiroidismo →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 5 — HIPOTIROIDISMO ═══ -->
+<div class="node" id="n4" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL8 · 9 preguntas</div>
+    <div class="node-title">Hipotiroidismo</div>
+    <div class="node-subtitle">TSH primero · Hashimoto · Levotiroxina · Mixedema · Coma hipotiroideo</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El diagnóstico de tiroides siempre empieza por la TSH. TSH elevada = hipotiroidismo primario. La causa más frecuente en Argentina es Hashimoto (autoinmune). El tratamiento es levotiroxina en ayunas. El examen pregunta qué pasa si hay hipotiroidismo durante el embarazo (riesgo de aborto y desarrollo neurológico fetal) y cómo manejar el coma hipotiroideo (emergencia).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico y clasificación de hipotiroidismo</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">1</div>
+        <div class="algo-text"><strong>TSH:</strong> primer estudio siempre. TSH ↑ → hipotiroidismo primario (tiroides no funciona). TSH ↓ → hipotiroidismo central (hipofisario/hipotalámico, raro)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">2</div>
+        <div class="algo-text"><strong>T4 libre:</strong> si TSH alterada → medir T4L para confirmar y clasificar. T4L baja + TSH alta = hipotiroidismo primario franco. T4L normal + TSH levemente alta = hipotiroidismo subclínico.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">3</div>
+        <div class="algo-text"><strong>Anticuerpos anti-TPO:</strong> si positivos → Hashimoto (causa autoinmune). No cambia el tratamiento inicial pero confirma etiología.</div>
+      </div>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Tipo</th><th>TSH</th><th>T4 libre</th><th>Síntomas</th><th>Tratar</th></tr>
+      <tr><td style="color:var(--teal2)">Subclínico</td><td>↑ (4.5–10 mUI/L)</td><td>Normal</td><td>Ninguno o inespecíficos</td><td>Si TSH &gt;10 o embarazada o síntomas: sí. Si TSH 4.5–10 asintomático: discutir</td></tr>
+      <tr><td style="color:var(--amber2)">Franco (clínico)</td><td>↑ &gt;10 mUI/L</td><td>↓</td><td>Clínica completa</td><td><strong>Siempre</strong></td></tr>
+      <tr><td style="color:var(--red2)">Coma mixedematoso</td><td>↑↑↑</td><td>↓↓</td><td>Coma + hipotermia + bradicardia</td><td>Emergencia: T4 IV + hidrocortisona</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clínica del hipotiroidismo — patrón de reconocimiento</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Síntomas típicos (todo está enlentecido)</div>
+        <ul>
+          <li>Cansancio, somnolencia, bradipsiquia</li>
+          <li>Intolerancia al frío</li>
+          <li>Aumento de peso (leve)</li>
+          <li>Estreñimiento crónico</li>
+          <li>Piel seca, cabello frágil y seco, pérdida de la cola de la ceja (signo de Queen Anne)</li>
+          <li>Bradicardia, voz ronca</li>
+          <li>Menorragia, infertilidad</li>
+          <li>Mixedema: edema duro, no deja fóvea</li>
+          <li>Derrame pericárdico/pleural</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Laboratorio característico</div>
+        <ul>
+          <li>TSH elevada, T4L baja</li>
+          <li>CPK elevada (miopatía)</li>
+          <li>Hipercolesterolemia (↑ LDL)</li>
+          <li>Hiponatremia (leve)</li>
+          <li>Anemia normocítica</li>
+          <li>Anti-TPO positivo (si Hashimoto)</li>
+          <li>ECG: bradicardia, bajo voltaje</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hipotiroidismo subclínico y tratamiento</div>
+      <p>TSH 6.5 mUI/L + T4L normal + paciente asintomático de 55 años. ¿Tratar? → En la mayoría de los adultos con TSH 4.5–10 y sin síntomas: NO tratar de rutina (controversial, muchos se normalizan solos). <strong>Sí tratar</strong> si: embarazada (cualquier TSH &gt;2.5 en embarazo), TSH &gt;10, síntomas atribuibles, infertilidad, antiTPO positivo con TSH &gt;5.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento con levotiroxina</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Cómo tomar la levotiroxina</div>
+      <p>En ayunas, 30–60 minutos antes del desayuno. O a la noche, 4 horas después de cenar.<br><br>
+      <strong>Interacciones que reducen la absorción:</strong> calcio, hierro, antiácidos, colestipol → separar 4 horas.<br><br>
+      <strong>Dosis inicial:</strong> 1.6 mcg/kg/día en adultos sanos. En ancianos o cardiopatía: comenzar con 25–50 mcg/día y aumentar gradualmente.<br><br>
+      <strong>Control:</strong> TSH a las 6–8 semanas del inicio o cambio de dosis. Meta: TSH 0.5–2.5 mUI/L (en general), 0.1–1.5 en embarazo.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hipotiroidismo + insuficiencia suprarrenal concomitante</div>
+      <p>En hipotiroidismo secundario o en paciente con sospecha de insuficiencia suprarrenal → <strong>SIEMPRE dar hidrocortisona ANTES de la levotiroxina</strong>. La levotiroxina aumenta el metabolismo del cortisol → precipita crisis adrenal aguda si hay insuficiencia suprarrenal no tratada.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipotiroidismo en el embarazo</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Por qué es crítico en embarazo</div>
+      <p>T4 es esencial para el desarrollo neurológico fetal en el primer trimestre (antes de que la tiroides fetal funcione). Hipotiroidismo materno → déficit de T4 → alteración del neurodesarrollo fetal → retraso mental, pérdida auditiva.<br><br>
+      <strong>Screening:</strong> TSH al inicio del embarazo en toda mujer.<br>
+      <strong>Meta de TSH en embarazo:</strong> 0.1–2.5 mUI/L (primer trimestre), &lt;3.0 (segundo y tercer trimestre).<br>
+      <strong>Las necesidades de levotiroxina aumentan 25–50% en el embarazo.</strong></p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: Complicaciones Crónicas</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Hipertiroidismo →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 6 — HIPERTIROIDISMO Y NÓDULO ═══ -->
+<div class="node" id="n5" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL8 · 9 preguntas</div>
+    <div class="node-title">Hipertiroidismo y nódulo tiroideo</div>
+    <div class="node-subtitle">Enfermedad de Graves · Bocio tóxico · Tormenta tiroidea · PAAF · Bethesda</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Hipertiroidismo = TSH suprimida + T4L elevada. La causa más frecuente es Graves (anticuerpos anti-TSH receptor). El nódulo tiroideo es muy prevalente: el examen pregunta cuándo hacer PAAF (Bethesda determina el riesgo), con énfasis en que Bethesda IV tiene 20-30% de malignidad → siempre cirugía.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipertiroidismo — causas y diagnóstico</div>
+    <table class="tbl">
+      <tr><th>Causa</th><th>Mecanismo</th><th>Datos clave</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Enfermedad de Graves</strong> (más frecuente)</td><td>Anticuerpos anti-receptor de TSH (TRAb) → estimulan tiroides</td><td>Bocio difuso + oftalmopatía (proptosis) + mixedema pretibial. Anti-TRAb positivo. Captación de I131 difusamente aumentada</td></tr>
+      <tr><td><strong>Bocio multinodular tóxico</strong></td><td>Nódulos autónomos productores de T4/T3</td><td>Bocio multinodular. Captación de I131 en nódulos ("nodular")</td></tr>
+      <tr><td><strong>Adenoma tóxico (nódulo solitario)</strong></td><td>Nódulo autónomo único</td><td>Nódulo palpable único. Captación I131 en el nódulo ("nódulo caliente" = benigno)</td></tr>
+      <tr><td><strong>Tiroiditis de Hashimoto (fase inicial)</strong></td><td>Destrucción inflamatoria → liberación de hormona preformada</td><td>Transitoria. Anti-TPO +. Captación I131 reducida</td></tr>
+      <tr><td><strong>Tiroiditis subaguda (De Quervain)</strong></td><td>Viral. Destrucción inflamatoria</td><td>Bocio doloroso. VSG muy elevada. Transitoria. Captación I131 reducida</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Clínica del hipertiroidismo (todo está acelerado)</div>
+      <p>Pérdida de peso a pesar de apetito aumentado · taquicardia / FA · temblor fino de extremidades · diaforesis · intolerancia al calor · diarrea · nerviosismo / ansiedad · piel caliente y húmeda · debilidad muscular proximal · osteoporosis (largo plazo).<br>
+      En ancianos: forma "apática" → sin síntomas típicos, solo FA inexplicada o depresión.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento del hipertiroidismo</div>
+    <table class="tbl">
+      <tr><th>Opción</th><th>Indicación</th><th>Precauciones</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Antitiroideos</strong><br>Metimazol (de elección) / PTU</td><td>Primera línea en Graves. Durante el embarazo (PTU en 1er trim, metimazol en 2°-3°)</td><td>Agranulocitosis (raro pero grave) → consultar si fiebre/faringitis. Hepatotoxicidad (PTU &gt; metimazol)</td></tr>
+      <tr><td><strong>Radioyodo (I131)</strong></td><td>Graves sin embarazo, bocio multinodular tóxico, adenoma tóxico. Definitivo</td><td style="color:var(--red2)">Contraindicado en EMBARAZO y lactancia. Empeora oftalmopatía de Graves (transitoriamente)</td></tr>
+      <tr><td><strong>Cirugía (tiroidectomía)</strong></td><td>Bocio muy grande, compresivo, cáncer asociado, fracaso de otras terapias, embarazo si no responde a ATD</td><td>Riesgo: hipocalcemia (lesión paratiroides), lesión nervio recurrente</td></tr>
+      <tr><td><strong>Betabloqueantes</strong> (propranolol, atenolol)</td><td>Control sintomático (taquicardia, temblor). Adjunto. NO tratan la causa</td><td>No curan el hipertiroidismo. Mantener hasta controlar el estado tiroideo</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — radioyodo en embarazo</div>
+      <p>Paciente embarazada con hipertiroidismo (Graves) → <strong>NUNCA radioyodo</strong> (destruiría la tiroides fetal). Tratamiento: antitiroideos (PTU en primer trimestre por el metimazol y sus malformaciones; metimazol en segundo y tercer trimestre). La solución definitiva (I131 o cirugía) se posterga para después del parto.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Nódulo tiroideo — cuándo hacer PAAF y sistema Bethesda</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Abordaje del nódulo tiroideo</div>
+      <p><strong>Paso 1:</strong> TSH. Si TSH baja → gammagrafía (nódulo hiperfuncionante = caliente = casi siempre benigno → no PAAF de rutina). Si TSH normal o alta → PAAF.<br>
+      <strong>Paso 2:</strong> Ecografía tiroidea → características (tamaño, ecogenicidad, bordes, calcificaciones, vascularización) para estratificar riesgo (TIRADS).<br>
+      <strong>Paso 3:</strong> PAAF (punción aspiración con aguja fina) → citopatología → Bethesda.</p>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Bethesda</th><th>Categoría</th><th>Riesgo malignidad</th><th>Conducta</th></tr>
+      <tr><td>I</td><td>No diagnóstico / insatisfactorio</td><td>Indeterminado</td><td>Repetir PAAF</td></tr>
+      <tr><td style="color:var(--teal2)">II</td><td>Benigno</td><td style="color:var(--teal2)">0–3%</td><td>Seguimiento ecográfico</td></tr>
+      <tr><td style="color:var(--amber2)">III</td><td>Atipia de significado incierto (AUS/FLUS)</td><td style="color:var(--amber2)">~10–30%</td><td>Repetir PAAF o prueba molecular</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>IV</strong></td><td><strong>Neoplasia folicular</strong></td><td style="color:var(--amber2)"><strong>20–30%</strong></td><td style="color:var(--amber2)"><strong>Lobectomía diagnóstica (para histología)</strong></td></tr>
+      <tr><td style="color:var(--red2)">V</td><td>Sospechoso de malignidad</td><td style="color:var(--red2)">60–75%</td><td>Tiroidectomía</td></tr>
+      <tr><td style="color:var(--red2)">VI</td><td>Maligno</td><td style="color:var(--red2)">97–99%</td><td>Tiroidectomía total</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida — Bethesda IV requiere cirugía diagnóstica</div>
+      <p>El Bethesda IV (neoplasia folicular) no distingue adenoma folicular (benigno) de carcinoma folicular por citología sola: ambos tienen células foliculares iguales. La diferencia es histológica (invasión capsular/vascular). Por eso se requiere <strong>lobectomía</strong> para tener tejido y hacer diagnóstico definitivo. Si el resultado del examen pregunta qué hacer con Bethesda IV → lobectomía/cirugía.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tormenta tiroidea — emergencia</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Tormenta tiroidea — reconocerla y actuar</div>
+      <p>Descompensación aguda grave de hipertiroidismo. Precipitantes: cirugía, infección, trauma, parto, suspensión de antitiroideos.<br><br>
+      <strong>Clínica:</strong> fiebre &gt;38.5°C + taquicardia &gt;140 + agitación / confusión / psicosis + disfunción multiorgánica (IC, insuficiencia hepática).<br><br>
+      <strong>Tratamiento (simultáneo y urgente):</strong><br>
+      1. Propiltiouracilo (PTU) IV (bloquea síntesis Y conversión periférica T4→T3)<br>
+      2. Yoduro potásico (solución de Lugol) 1 hora DESPUÉS del PTU (bloquea liberación preformada)<br>
+      3. Propranolol IV (controla FC)<br>
+      4. Hidrocortisona IV (reduce conversión T4→T3 y trata posible insuficiencia suprarrenal)<br>
+      5. Soporte general: refrigeración, fluidos, tratar desencadenante.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Hipotiroidismo</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Suprarrenal →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 7 — SUPRARRENAL ═══ -->
+<div class="node" id="n6" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL8 · alta especificidad</div>
+    <div class="node-title">Patología suprarrenal</div>
+    <div class="node-subtitle">Insuficiencia suprarrenal (Addison) · Síndrome de Cushing · Feocromocitoma · Test de ACTH</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres enfermedades suprarrenales que el examen distingue por su clínica opuesta: Addison (hipocortisolismo → hipotensión, hiperpigmentación, hiponatremia + hiperkalemia) vs Cushing (hipercortisolismo → HTA, obesidad central, estrías). El feocromocitoma: HTA paroxística + triada de síntomas → metanefrinas en orina.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Insuficiencia suprarrenal (Addison primario)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Clínica característica</div>
+        <ul>
+          <li>Astenia, debilidad muscular, anorexia, pérdida de peso</li>
+          <li>Hipotensión, mareos ortostáticos</li>
+          <li><strong>Hiperpigmentación</strong> (codos, cicatrices, mucosa oral, pliegues) → por ↑ ACTH/MSH</li>
+          <li>Hiponatremia + Hiperkalemia (déficit de aldosterona)</li>
+          <li>Hipoglucemia</li>
+          <li>Causa más frecuente: autoinmune (anticuerpos anti-21-hidroxilasa)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Crisis adrenal aguda — emergencia</div>
+        <ul>
+          <li>Precipitada por: infección, cirugía, trauma, omisión del tratamiento</li>
+          <li>Hipotensión + shock + fiebre + vómitos + dolor abdominal</li>
+          <li>Tratamiento: <strong>Hidrocortisona 100 mg IV bolo</strong>, luego 50–100 mg c/6–8h + SF IV</li>
+          <li>NO esperar resultados para tratar: clínica = acción</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Test de ACTH (Cortrosyn/Synacthen) — el que pregunta el banco</div>
+      <p>Se administra ACTH sintética (250 mcg IV) y se mide cortisol basal a los 30 y 60 minutos.<br>
+      <strong>Respuesta normal:</strong> cortisol pico &gt;18–20 mcg/dL → descarta insuficiencia suprarrenal.<br>
+      <strong>Respuesta insuficiente:</strong> cortisol pico &lt;18 mcg/dL → confirma insuficiencia suprarrenal primaria (o secundaria crónica).<br><br>
+      Si hay sospecha de crisis adrenal aguda: NO esperar el test → tratar. El test es diagnóstico en la etapa no aguda.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Addison vs secundario (cortisol ACTH)</div>
+      <p><strong>Addison primario:</strong> cortisol bajo + ACTH muy elevada (la hipófisis intenta estimular una suprarrenal que no responde) + hiperpigmentación.<br>
+      <strong>Secundario (hipofisario):</strong> cortisol bajo + ACTH baja (la hipófisis no produce ACTH) + sin hiperpigmentación + sin hiperkalemia (aldosterona preservada en el secundario).<br>
+      El test de ACTH distingue: en secundario crónico el test también es alterado (la suprarrenal atrófica no responde).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síndrome de Cushing — hipercortisolismo</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th>Descripción</th></tr>
+      <tr><td style="color:var(--amber2)">Causa más frecuente</td><td><strong>Exógeno (iatrogénico):</strong> corticoides crónicos externos. Luego: adenoma hipofisario productor de ACTH (Enfermedad de Cushing). Carcinoma suprarrenal. ACTH ectópica (carcinoma microcítico)</td></tr>
+      <tr><td>Clínica cardinal</td><td>Obesidad central con extremidades delgadas · cara de luna llena · giba dorsal · estrías violáceas abdominales anchas (&gt;1 cm) · HTA · DM · osteoporosis · debilidad muscular proximal · amenorrea · acné y aumento de vello</td></tr>
+      <tr><td>Diagnóstico</td><td><strong>Screening:</strong> cortisol libre en orina 24h (más sensible). O: cortisol salival nocturno. O: test de supresión con dexametasona 1 mg nocturno (cortisol matinal &lt;1.8 mcg/dL = normal → descarta).<br>Si screening positivo: test de supresión con dexametasona 2 mg/día × 2 días.</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — estrías del Cushing vs estrías normales</div>
+      <p>Las estrías del Cushing son <strong>violáceas, anchas (&gt;1 cm), en abdomen, muslos y axila</strong>. Las estrías del embarazo o de crecimiento normal son rosadas-blanquecinas y más finas. Si el examen da estrías violáceas anchas en joven obeso con HTA → pensar Cushing antes que obesidad simple.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Feocromocitoma — la HTA paroxística</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Triada clásica + diagnóstico</div>
+      <p><strong>Triada:</strong> cefalea pulsátil + sudoración profusa + palpitaciones (episódicos = paroxísticos).<br>
+      + HTA severa (puede ser persistente o paroxística, en crisis).<br><br>
+      <strong>Diagnóstico bioquímico:</strong> <strong>metanefrinas fraccionadas en orina de 24h</strong> (o metanefrinas plasmáticas libres). Es el estudio de elección.<br>
+      Confirmar localización: TC o RMN de abdomen (90% en suprarrenal).<br><br>
+      <strong>Regla 10%:</strong> 10% bilateral, 10% extra-adrenal (paraganglioma), 10% maligno, 10% familiar (MEN2, Von Hippel-Lindau, NF1).<br><br>
+      <strong>Tratamiento:</strong> cirugía (laparoscópica). <strong>Siempre bloqueo alfa PREVIO</strong> a la cirugía con fenoxibenzamina (vasodilatación para evitar crisis hipertensiva intraoperatoria). Luego agregar betabloqueante (NUNCA betabloqueante primero → bloqueo beta sin alfa → vasoconstricción paradójica).</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — betabloqueante antes de alfa en feocromocitoma</div>
+      <p>Si se da betabloqueante sin alfa previo → bloqueo de la vasodilatación mediada por β₂ + predominio de la vasoconstricción mediada por α₁ → crisis hipertensiva paradójica severa → muerte. La secuencia siempre es: <strong>alfa primero</strong> (fenoxibenzamina) → estabilizar → luego beta si taquicardia.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Hipertiroidismo</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Obesidad/Calcio/Hipófisis →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 8 — OBESIDAD / CALCIO / HIPÓFISIS ═══ -->
+<div class="node" id="n7" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL7+CL8 · temas transversales</div>
+    <div class="node-title">Obesidad · Diselectrolitemias endócrinas · Hipófisis</div>
+    <div class="node-subtitle">IMC · Cirugía bariátrica · Hipocalcemia · Hipercalcemia · Acromegalia · SIADH</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Cuatro temas más pequeños pero que el banco repite: obesidad (IMC + tratamiento), hipocalcemia (PTH y calcio sérico — también en nefro), hipercalcemia (hiperPTH primario vs malignidad) y acromegalia (GH/IGF-1 + TC hipofisaria). Cada uno tiene un dato-trampa que el examen inserta.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Obesidad — clasificación por IMC e intervenciones</div>
+    <table class="tbl">
+      <tr><th>Categoría</th><th>IMC (kg/m²)</th><th>Intervención según guías</th></tr>
+      <tr><td style="color:var(--teal2)">Normopeso</td><td>18.5–24.9</td><td>Mantener hábitos saludables</td></tr>
+      <tr><td style="color:var(--amber2)">Sobrepeso</td><td>25–29.9</td><td>Cambios de estilo de vida. Metformina si DM o prediabetes</td></tr>
+      <tr><td style="color:var(--amber2)">Obesidad grado I</td><td>30–34.9</td><td>Dieta + ejercicio + tratamiento farmacológico (orlistat, semaglutida)</td></tr>
+      <tr><td style="color:var(--red2)">Obesidad grado II</td><td>35–39.9</td><td>+ Cirugía bariátrica si comorbilidades (DM2, HTA, SAHOS)</td></tr>
+      <tr><td style="color:var(--red2)">Obesidad grado III (mórbida)</td><td>≥40</td><td>Cirugía bariátrica (indicación sin necesitar comorbilidades)</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Indicaciones de cirugía bariátrica</div>
+      <p>IMC ≥40 sin comorbilidades, O IMC ≥35 con al menos una comorbilidad grave (DM2, HTA, SAHOS, dislipemia, osteoartritis, ERGE, reflujo). Fracaso previo de tratamiento médico intensivo (≥6 meses). Edad 18–65 años (relativo). No dependencia a drogas. Evaluación psicológica previa.<br><br>
+      Técnicas más usadas: <strong>manga gástrica</strong> (sleeve) y <strong>bypass gástrico</strong> en Y de Roux. El bypass produce mayor pérdida de peso y mejor control de DM, pero mayor complejidad.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — déficits nutricionales post-bariátrica</div>
+      <p>Post-bypass gástrico: malabsorción de Hierro, Vitamina B12, Calcio y Vitamina D → suplementación obligatoria de por vida. El examen puede dar un paciente post-bariátrica con anemia o neuropatía → pensar déficit de B12 o hierro, no en otra causa.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipocalcemia — causas y manejo</div>
+    <table class="tbl">
+      <tr><th>Causa</th><th>PTH</th><th>Fósforo</th><th>Contexto</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Hipoparatiroidismo</strong></td><td style="color:var(--red2)">Baja</td><td>Alta</td><td>Post-tiroidectomía (la más frecuente quirúrgica), autoinmune, infiltrativo</td></tr>
+      <tr><td><strong>Déficit de vitamina D</strong></td><td>Alta (PTH reactiva)</td><td>Baja</td><td>Malabsorción, baja exposición solar, IR</td></tr>
+      <tr><td><strong>IRC</strong></td><td>Alta (hiperPTH secundario)</td><td>Alta</td><td>Falta activación 1,25 OH vitamina D</td></tr>
+      <tr><td><strong>Pancreatitis aguda</strong></td><td>Variable</td><td>Variable</td><td>Saponificación del calcio en grasa peripancreática</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Signos clínicos de hipocalcemia</div>
+      <p><strong>Signo de Chvostek:</strong> percusión del nervio facial → espasmo del labio (contracción facial ipsilateral).<br>
+      <strong>Signo de Trousseau:</strong> manguito inflado por encima de la sistólica × 3 min → espasmo carpopedal ("mano de obstetra") = más específico.<br>
+      <strong>Tratamiento agudo:</strong> gluconato de calcio IV 1–2 ampollas en 10 min. Luego: calcio oral + vitamina D.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipercalcemia — causas principales</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Hipercalcemia de origen PTH</div>
+        <ul>
+          <li><strong>HiperPTH primario:</strong> causa más frecuente ambulatoria. Adenoma paratiroideo (85%). PTH ↑ + Ca ↑. Asintomático o nefrolitiasis, osteoporosis, poliuria</li>
+          <li>Tratamiento: paratiroidectomía si Ca &gt;1 mg/dL sobre lo normal, &lt;50 años, o con complicaciones</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Hipercalcemia maligna</div>
+        <ul>
+          <li>Causa más frecuente hospitalaria</li>
+          <li>PTH ↓ (suprimida) + Ca ↑ + PTHrP ↑ (mieloma, ca. escamoso pulmón) o metástasis óseas osteolíticas (mama, mieloma)</li>
+          <li>Tratamiento urgente: SF IV + furosemida (forzar calciuresis) + bifosfonatos (zoledronato IV) + corticoides si hemopatía o sarcoidosis</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hipercalcemia: PTH alta vs baja orienta la causa</div>
+      <p>Ca ↑ + PTH ↑ = hiperPTH primario (el problema está en la paratiroides).<br>
+      Ca ↑ + PTH ↓ = causa extra-paratiroidea: malignidad (PTHrP↑), intoxicación vitamina D, granulomas (sarcoidosis), tiazidas.<br>
+      Esta distinción básica aparece constantemente en el examen.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Acromegalia y otras patologías hipofisarias</div>
+    <table class="tbl">
+      <tr><th>Enfermedad</th><th>Hormona excesiva</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Acromegalia</strong></td><td>GH (tumor hipofisario)</td><td>IGF-1 elevado. Confirmación: no supresión de GH durante PTOG. RMN hipofisaria: macroadenoma</td><td>Cirugía transesfenoidal (1ª línea). Análogos de somatostatina (octreotido) si recidiva o inoperable</td></tr>
+      <tr><td><strong>Hiperprolactinemia</strong></td><td>Prolactina</td><td>Prolactina &gt;200 ng/mL → casi siempre prolactinoma. RMN hipofisaria</td><td>Agonistas dopaminérgicos (cabergolina, bromocriptina). 1ª línea incluso en macroadenomas (reduce tamaño)</td></tr>
+      <tr><td><strong>Diabetes insípida</strong></td><td>Déficit de ADH</td><td>Poliuria (3–20 L/día) + polidipsia. Osmolaridad urinaria baja. Test de deshidratación. Responde a desmopresina (central) vs no responde (nefrogénica)</td><td>Central: desmopresina (DDAVP). Nefrogénica: hidroclorotiazida + restricción de sodio</td></tr>
+      <tr><td><strong>SIADH</strong></td><td>ADH excesiva</td><td>Hiponatremia + orina concentrada (osmolalidad urinaria &gt;100) + osmolalidad plasmática baja + sin edemas. Euvolémico</td><td>Restricción hídrica. Tolvaptán si grave. Tratar causa (NAC, meningitis, fármacos)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Endocrinología</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>DM → HTA → ERC:</strong> la tríada más frecuente del adulto argentino. IECA protege riñón y corazón. iSGLT2 protege riñón y corazón.</li>
+        <li><strong>DM2 → Hipotiroidismo:</strong> ambas condiciones se potencian (hipotiroidismo empeora perfil lipídico y resistencia a insulina). En diabético con mal control: pedir TSH.</li>
+        <li><strong>Hipotiroidismo ↔ Cardiología:</strong> hipotiroidismo causa dislipemia + bradicardia + derrame pericárdico. Tratarlo mejora el perfil cardiovascular.</li>
+        <li><strong>Feocromocitoma ↔ HTA (Cardiología N1):</strong> es una causa secundaria de HTA con triada de síntomas. Estudio: metanefrinas en orina (no catecolaminas directamente).</li>
+        <li><strong>Cushing ↔ HTA + DM + Obesidad:</strong> el hipercortisolismo produce todo el síndrome metabólico simultáneamente. Estrías violáceas + HTA en joven = pensar Cushing.</li>
+        <li><strong>Hipocalcemia ↔ Nefro:</strong> IRC → déficit 1,25 vitamina D → hipocalcemia → hiperPTH secundario → calcificaciones vasculares.</li>
+        <li><strong>CAD ↔ Pediatría:</strong> la CAD en niños y adolescentes es la forma de presentación de la DM1. Un niño con poliuria + pérdida de peso + vómitos = CAD hasta que no se demuestre lo contrario.</li>
+        <li><strong>Tiroides ↔ Embarazo:</strong> hipotiroidismo subclínico en embarazo = tratar siempre (neurodesarrollo fetal). Hipertiroidismo = PTU en primer trimestre.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--coral2);margin-bottom:12px;letter-spacing:.05em">✅ ENDOCRINOLOGÍA ADULTOS — 8/8 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 44 preguntas del banco (CL7 + CL8). Los temas más repetidos: diagnóstico de DM (criterios + HbA1c), metformina primera línea siempre, metas HbA1c personalizadas por edad, Bethesda IV → cirugía, TSH primero en todo lo tiroideo, test de ACTH para Addison, signos de Chvostek y Trousseau.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-c">CL7: 35 preg DM/Obesidad</span>
+      <span class="tag tag-t">CL8: 9 preg Tiroides/Suprarrenal</span>
+      <span class="tag tag-a">GPC DM MSAL 2019 · ADA 2024</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Suprarrenal</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div><!-- /content -->
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

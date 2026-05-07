@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salud Pública / APS / Epidemiología / Leyes — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --pink:#d4537e;--pink2:#ed93b1;--pinkb:#2e1020;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:265px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}.tag-g{background:var(--greenb);color:var(--green2)}
+.tag-c{background:var(--coralb);color:var(--coral2)}.tag-pk{background:var(--pinkb);color:var(--pink2)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Tabla 2x2 visual */
+.tabla2x2{display:grid;grid-template-columns:120px 1fr 1fr;gap:2px;margin:10px 0;font-size:13px}
+.t2-header{background:var(--bg3);padding:8px 12px;text-align:center;font-weight:700;color:var(--text2);border-radius:var(--radius-sm)}
+.t2-label{background:var(--bg4);padding:8px 12px;display:flex;align-items:center;justify-content:center;font-weight:700;border-radius:var(--radius-sm)}
+.t2-vp{background:#0e2e25;border:2px solid var(--teal);padding:12px;text-align:center;border-radius:var(--radius-sm)}
+.t2-fp{background:#2e1010;border:1px solid var(--red);padding:12px;text-align:center;border-radius:var(--radius-sm)}
+.t2-fn{background:#2e1010;border:1px solid var(--red);padding:12px;text-align:center;border-radius:var(--radius-sm)}
+.t2-vn{background:#0e2e25;border:2px solid var(--teal);padding:12px;text-align:center;border-radius:var(--radius-sm)}
+.t2-cell-title{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.t2-cell-val{font-size:22px;font-weight:700}
+.t2-cell-desc{font-size:11px;color:var(--text2);margin-top:3px}
+/* Formula box */
+.formula{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;font-family:monospace}
+.formula-name{font-size:11px;font-weight:700;color:var(--nc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:'Segoe UI',system-ui,sans-serif}
+.formula-eq{font-size:15px;color:var(--text);margin-bottom:4px}
+.formula-mem{font-size:12px;color:var(--text2);margin-top:4px;font-family:'Segoe UI',system-ui,sans-serif}
+/* Ley card */
+.ley-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.ley-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ley-num{background:var(--nc);color:#0f1117;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.ley-name{font-size:14px;font-weight:700;color:var(--text)}
+.ley-year{font-size:11px;color:var(--text3);margin-top:2px}
+.ley-item{font-size:13px;color:var(--text2);padding:4px 0;padding-left:12px;position:relative;line-height:1.5}
+.ley-item::before{content:"→";position:absolute;left:0;color:var(--nc)}
+.ley-trap{background:var(--redb);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--red2);margin-top:8px}
+/* Big number */
+.big-num{font-size:32px;font-weight:700;text-align:center;margin:6px 0}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid{grid-template-columns:1fr}.tabla2x2{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Salud Pública / APS / Leyes</div>
+    <div class="sb-sub">Banco 2016–2025 · Bibliografía CABA + Leyes subidas</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">68</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">10</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--purple)">6</div><div class="sb-stat-l">leyes</div></div>
+    </div>
+  </div>
+  <div class="sprint-label" style="color:var(--blue)">Bioestadística</div>
+  <div class="nav-item active" style="--item-color:var(--blue)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">Sensibilidad y Especificidad</div><div class="nav-n">VPP · VPN · Tabla 2×2 visual</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">IC · Valor p · NNT · Sesgos</div><div class="nav-n">Error tipo I/II · Razones de estudio</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--teal)">Epidemiología</div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Epidemiología — tipos de estudio</div><div class="nav-n">Cohorte · Casos-controles · ECA · RR · OR</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">APS · Prevención · Rastreos</div><div class="nav-n">Alma Ata · Niveles · Wilson & Jungner</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--amber)">Vacunas</div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Vacunas en adultos</div><div class="nav-n">Calendario 2025 · Embarazo · Grupos especiales</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--purple)">Leyes</div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Ley 26.529 + 26.742</div><div class="nav-n">Derechos paciente · HC · CI · Muerte digna</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Ley 153 CABA</div><div class="nav-n">Ley básica salud · Niveles atención</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Ley 27.447 — Trasplante</div><div class="nav-n">INCUCAI · Donante presunto · Muerte encefálica</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--coral)" onclick="show(8)">
+    <div class="nav-num">9</div>
+    <div class="nav-text"><div class="nav-name">Ley 25.673 + 26.061</div><div class="nav-n">Salud sexual · Derechos NNA · Interés superior</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--green)" onclick="show(9)">
+    <div class="nav-num">10</div>
+    <div class="nav-text"><div class="nav-name">Determinantes sociales · Bioética · Adulto mayor</div><div class="nav-n">OPS · Caídas · Geriatría · Autonomía</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ══════════════════════════ NODO 1 — SENSIBILIDAD ══ -->
+<div class="node active" id="n0" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Bioestadística · el más preguntado</div>
+    <div class="node-title">Sensibilidad, Especificidad, VPP y VPN</div>
+    <div class="node-subtitle">La tabla 2×2 que resuelve todo · Mnemotecnias · Casos tipo examen</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Todo se resuelve con una tabla 2×2. Sensibildad y Especificidad son propiedades fijas del test (no cambian con la prevalencia). VPP y VPN sí cambian: dependen de qué tan común es la enfermedad en esa población. Si entendés esto, el 80% de las preguntas de bioestadística se responden solas.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">La tabla 2×2 — aprenderla una vez, usarla siempre</div>
+    <div class="tabla2x2">
+      <div class="t2-header" style="grid-column:1;background:transparent"></div>
+      <div class="t2-header">🦠 Enfermedad PRESENTE</div>
+      <div class="t2-header">✅ Enfermedad AUSENTE</div>
+      <div class="t2-label" style="color:var(--red2)">Test ➕ POSITIVO</div>
+      <div class="t2-vp"><div class="t2-cell-title" style="color:var(--teal2)">VP</div><div class="t2-cell-val" style="color:var(--teal2)">a</div><div class="t2-cell-desc">Verdadero Positivo<br>"Test + y SÍ está enfermo"</div></div>
+      <div class="t2-fp"><div class="t2-cell-title" style="color:var(--red2)">FP</div><div class="t2-cell-val" style="color:var(--red2)">b</div><div class="t2-cell-desc">Falso Positivo<br>"Test + pero NO está enfermo"</div></div>
+      <div class="t2-label" style="color:var(--teal2)">Test ➖ NEGATIVO</div>
+      <div class="t2-fn"><div class="t2-cell-title" style="color:var(--red2)">FN</div><div class="t2-cell-val" style="color:var(--red2)">c</div><div class="t2-cell-desc">Falso Negativo<br>"Test - pero SÍ está enfermo"</div></div>
+      <div class="t2-vn"><div class="t2-cell-title" style="color:var(--teal2)">VN</div><div class="t2-cell-val" style="color:var(--teal2)">d</div><div class="t2-cell-desc">Verdadero Negativo<br>"Test - y NO está enfermo"</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">VP=a, FP=b, FN=c, VN=d. Columna izquierda = enfermos. Columna derecha = sanos. Fila superior = test positivo. Fila inferior = test negativo.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Las 4 fórmulas — con mnemotecnia</div>
+
+    <div class="formula">
+      <div class="formula-name">🔍 Sensibilidad (Se) — "el test no deja escapar enfermos"</div>
+      <div class="formula-eq">Se = VP / (VP + FN) = a / (a + c)</div>
+      <div class="formula-mem">📌 Lees la COLUMNA de los enfermos. ¿Cuántos DETECTÓ el test? → Se / (Se + FN)<br>Alta sensibilidad = pocos falsos negativos = si el test da negativo, descartás la enfermedad.<br><strong>Mnemotecnia: Se-N-Sar → Sensibilidad se usa para DESCARTAR (negativo verdadero).</strong><br>Regla de oro: test con Se 99% → si da NEGATIVO → tranquilizate, es casi imposible que esté enfermo.</div>
+    </div>
+
+    <div class="formula">
+      <div class="formula-name">🎯 Especificidad (Esp) — "el test no acusa inocentes"</div>
+      <div class="formula-eq">Esp = VN / (VN + FP) = d / (d + b)</div>
+      <div class="formula-mem">📌 Lees la COLUMNA de los sanos. ¿Cuántos dejó negativos? → VN / (VN + FP)<br>Alta especificidad = pocos falsos positivos = si el test da positivo, confirmás la enfermedad.<br><strong>Mnemotecnia: Es-P-in → Especificidad se usa para CONFIRMAR (positivo verdadero).</strong><br>Regla de oro: test con Esp 99% → si da POSITIVO → ojo, es casi seguro que está enfermo.</div>
+    </div>
+
+    <div class="formula">
+      <div class="formula-name">💎 VPP — Valor Predictivo Positivo</div>
+      <div class="formula-eq">VPP = VP / (VP + FP) = a / (a + b)</div>
+      <div class="formula-mem">📌 Lees la FILA superior (todos los que dieron positivo). ¿Cuántos REALMENTE están enfermos?<br>"De todos los que salieron positivos, ¿cuántos SÍ tienen la enfermedad?"<br>DEPENDE DE LA PREVALENCIA: si la enfermedad es rara, muchos positivos son falsos → VPP baja.</div>
+    </div>
+
+    <div class="formula">
+      <div class="formula-name">🛡️ VPN — Valor Predictivo Negativo</div>
+      <div class="formula-eq">VPN = VN / (VN + FN) = d / (d + c)</div>
+      <div class="formula-mem">📌 Lees la FILA inferior (todos los que dieron negativo). ¿Cuántos REALMENTE están sanos?<br>"De todos los que salieron negativos, ¿cuántos SÍ NO tienen la enfermedad?"<br>DEPENDE DE LA PREVALENCIA: si la enfermedad es muy común, un negativo sigue siendo sospechoso → VPN baja.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">La regla más importante — y la más preguntada</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Regla de oro: SpPin · SnNout</div>
+      <p><strong>SpPin:</strong> Alta <strong>Sp</strong>ecificidad → test <strong>P</strong>ositivo = <strong>IN</strong>clusion (confirma). Ej: ELISA de HBV alta Esp → si da +, es infección real.<br>
+      <strong>SnNout:</strong> Alta <strong>Sn</strong>sitivity → test <strong>N</strong>egativo = r<strong>OUT</strong>e out (descarta). Ej: dímero D alta Sen → si da -, descartás TEP.<br><br>
+      <strong>La trampa del examen:</strong> el examen da un test con sensibilidad del 95% y te pregunta "¿cuál es la ventaja principal?" → la respuesta es que <strong>un resultado negativo descarta la enfermedad</strong>, no que confirma la presencia.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Efecto de la prevalencia — el concepto más confundido</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Prevalencia ALTA (enfermedad común)</div>
+        <ul>
+          <li>VPP sube (los positivos son más probablemente reales)</li>
+          <li>VPN baja (los negativos son menos confiables)</li>
+          <li>Mismo test → diferentes VPP/VPN según población</li>
+          <li>Ej: Test de hepatitis C en ADVP vs población general</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Prevalencia BAJA (enfermedad rara)</div>
+        <ul>
+          <li>VPP baja (muchos positivos son falsos positivos)</li>
+          <li>VPN sube (los negativos son casi siempre reales)</li>
+          <li>Por eso el screening masivo da muchos falsos positivos</li>
+          <li>Ej: Test de VIH en población general de bajo riesgo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa clásica del examen</div>
+      <p>Se aplica el mismo test (misma Se y Esp) en dos poblaciones distintas: una de alto riesgo y una de bajo riesgo. ¿En cuál tendrá mayor VPP? → En la de <strong>alto riesgo</strong> (mayor prevalencia). Se y Esp no cambian entre las dos poblaciones. VPP y VPN sí cambian.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Ejercicio resuelto tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Ejercicio</div>
+      <p>Se evalúa un test para diagnóstico de tuberculosis en una población de 1.000 personas. 100 tienen TBC (prevalencia 10%). El test tiene Sensibilidad 90% y Especificidad 80%.</p>
+      <p style="margin-top:8px"><strong>Completá la tabla:</strong></p>
+      <p style="margin-top:6px">
+        Enfermos = 100 → VP = 100 × 0.90 = <strong>90</strong> · FN = 100 - 90 = <strong>10</strong><br>
+        Sanos = 900 → VN = 900 × 0.80 = <strong>720</strong> · FP = 900 - 720 = <strong>180</strong>
+      </p>
+      <p style="margin-top:8px">
+        <strong>Se</strong> = 90/100 = <strong>90%</strong> ✓<br>
+        <strong>Esp</strong> = 720/900 = <strong>80%</strong> ✓<br>
+        <strong>VPP</strong> = 90/(90+180) = 90/270 = <strong>33%</strong> 😱 ← solo 1 de cada 3 positivos es real TBC<br>
+        <strong>VPN</strong> = 720/(720+10) = 720/730 = <strong>98.6%</strong> ← si da negativo, casi seguro que no tiene TBC
+      </p>
+      <p style="margin-top:6px;font-size:12px">El VPP bajo (33%) se explica por la baja prevalencia (10%) + la especificidad imperfecta (80%). En poblaciones de alto riesgo (ej. conviviente de caso), el VPP subiría drásticamente.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: IC · Valor p · NNT →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 2 — ESTADÍSTICA ══ -->
+<div class="node" id="n1" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Bioestadística · parte 2</div>
+    <div class="node-title">Intervalo de confianza · Valor p · NNT · Sesgos</div>
+    <div class="node-subtitle">Lo que el examen pregunta de estadística inferencial — sin fórmulas complicadas</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen de residencia no te pide hacer cálculos estadísticos complejos. Te pide interpretar: ¿el IC incluye el 1 (o el 0)? → no significativo. ¿El p &lt;0.05? → significativo. ¿El NNT es bajo? → tratamiento eficiente. Entender el concepto es suficiente.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Intervalo de confianza (IC 95%)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 La idea en una frase</div>
+      <p>Si repetís el estudio 100 veces, en 95 de esas veces el verdadero efecto estará dentro del intervalo calculado. El IC 95% es un rango de valores donde probablemente cae el efecto real.<br><br>
+      <strong>Cómo interpretarlo según la medida:</strong><br>
+      — Si el IC del <strong>RR o del OR</strong> incluye el <strong>1</strong> → no hay diferencia estadísticamente significativa entre grupos.<br>
+      — Si el IC de la <strong>diferencia de medias</strong> incluye el <strong>0</strong> → no hay diferencia significativa.<br>
+      — IC estrecho = muestra grande, resultado preciso. IC amplio = muestra pequeña, resultado impreciso.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IC que incluye el 1</div>
+      <p>Un estudio dice que un nuevo fármaco tiene un RR de 0.75 (IC 95%: 0.50–1.10). ¿Hay efecto protector significativo? <strong>NO</strong>. El IC incluye el 1 → el verdadero RR podría ser 1 (sin efecto). Aunque el punto estimado es 0.75, no es estadísticamente significativo.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Valor p — el más malentendido de la estadística</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">¿Qué ES el valor p?</div>
+        <ul>
+          <li>La probabilidad de obtener un resultado al menos tan extremo como el observado, <em>asumiendo que la hipótesis nula es verdadera</em></li>
+          <li>Punto de corte convencional: <strong>p &lt; 0.05</strong> → resultado estadísticamente significativo</li>
+          <li>p &lt; 0.05 significa: si en realidad no hubiera efecto, sería raro ver este resultado (&lt;5% de las veces)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Lo que el valor p NO dice</div>
+        <ul>
+          <li>NO dice que el efecto sea clínicamente importante</li>
+          <li>NO dice la magnitud del efecto</li>
+          <li>NO confirma la hipótesis alternativa</li>
+          <li>p = 0.06 y p = 0.04 no son clínicamente muy diferentes</li>
+          <li>Con muestra muy grande: casi cualquier diferencia da p &lt; 0.05</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Errores tipo I y tipo II — en idioma humano</div>
+    <table class="tbl">
+      <tr><th>Tipo de error</th><th>También se llama</th><th>Qué pasa</th><th>Representado por</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Error tipo I (α)</strong></td><td>Falso positivo estadístico</td><td>Decís que hay efecto cuando en realidad NO hay → "alarma falsa"</td><td>α = 0.05 (nivel de significación)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Error tipo II (β)</strong></td><td>Falso negativo estadístico</td><td>Decís que NO hay efecto cuando en realidad SÍ hay → "pérdida de oportunidad"</td><td>β = 0.20 (típico). Poder = 1−β = 0.80</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Mnemotecnia visual</div>
+      <p>Tipo I = Lobo que no estaba (gritás "¡lobo!" cuando no hay lobo → falsa alarma)<br>
+      Tipo II = Lobo que sí estaba (no gritás "¡lobo!" cuando sí hay lobo → pérdida silenciosa)<br><br>
+      <strong>Poder estadístico</strong> = capacidad de detectar un efecto real = 1 − β. Aumenta con mayor tamaño muestral.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">NNT y NNH — los más clínicamente útiles</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">NNT — Número Necesario a Tratar</div>
+        <ul>
+          <li><strong>NNT = 1 / RAR</strong> (riesgo absoluto reducido)</li>
+          <li>"Cuántos pacientes hay que tratar para evitar 1 evento"</li>
+          <li>NNT bajo = tratamiento eficiente (ej. NNT=5 → trato 5 para salvar 1)</li>
+          <li>NNT alto = tratamiento poco eficiente (ej. NNT=200 → trato 200 para salvar 1)</li>
+          <li>Siempre acompañar del IC y el tiempo de seguimiento</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">NNH — Número Necesario para Dañar</div>
+        <ul>
+          <li><strong>NNH = 1 / RAR</strong> (aumento de riesgo absoluto)</li>
+          <li>"Cuántos pacientes hay que tratar para que 1 sufra un evento adverso"</li>
+          <li>NNH alto = fármaco más seguro</li>
+          <li>NNH bajo = fármaco más peligroso</li>
+          <li>Comparar NNT vs NNH para evaluar beneficio/riesgo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Ejemplo clínico</div>
+      <p>Estudio de estatinas en prevención primaria: Riesgo de IAM sin estatina 4%, con estatina 3%. RAR = 4% - 3% = 1%. NNT = 1/0.01 = <strong>100</strong>. "Hay que tratar 100 pacientes por X años para evitar 1 IAM."<br><br>
+      Comparar con RRR: RRR = 1/4 = 25% (parece impresionante) pero NNT = 100 (relativiza la magnitud absoluta).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tipos de sesgos — los 3 que más pregunta el examen</div>
+    <table class="tbl">
+      <tr><th>Sesgo</th><th>Qué es</th><th>Ejemplo clásico</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>De selección</strong></td><td>La muestra no representa la población de interés</td><td>Estudio de HTA solo en hombres → resultados no extrapolables a mujeres</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>De información / medición</strong></td><td>Error sistemático en cómo se miden las variables</td><td>Sesgo de recuerdo: en casos-controles, los enfermos recuerdan mejor las exposiciones previas</td></tr>
+      <tr><td style="color:var(--red2)"><strong>De confusión (confounding)</strong></td><td>Una tercera variable distorsiona la relación entre exposición y resultado</td><td>Relación entre café y cáncer de pulmón: el tabaco es la variable confusora (los cafeómanías también fuman)</td></tr>
+    </table>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: Se/Esp</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Tipos de Estudio →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 3 — EPIDEMIOLOGÍA ══ -->
+<div class="node" id="n2" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">SP1 · 39 preguntas</div>
+    <div class="node-title">Epidemiología — Tipos de estudio y medidas</div>
+    <div class="node-subtitle">Cohorte · Casos-controles · ECA · Transversal · Incidencia · Prevalencia · RR · OR</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen pregunta: dado este tipo de estudio, ¿qué medida de asociación usás? y ¿qué podés y no podés concluir? Las respuestas son determinadas: cohorte → RR, casos-controles → OR, transversal → prevalencia. Solo el ECA puede hablar de causalidad.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tipos de estudios — la pirámide de evidencia</div>
+    <table class="tbl">
+      <tr><th>Estudio</th><th>Dirección</th><th>Medida de asociación</th><th>Fortaleza</th></tr>
+      <tr><td style="color:var(--red2)"><strong>ECA (ensayo controlado aleatorio)</strong></td><td>Prospectivo. Investigador asigna exposición</td><td>RR, diferencia de riesgos</td><td style="color:var(--red2)"><strong>Máxima — puede establecer causalidad</strong></td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Cohorte (Cohort)</strong></td><td>Prospectivo (o retrospectivo). Sigo expuestos y no expuestos</td><td style="color:var(--amber2)"><strong>RR (Riesgo Relativo)</strong></td><td>Alta — puede calcular incidencia</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Casos-controles</strong></td><td>Retrospectivo. Comparo casos vs controles</td><td style="color:var(--amber2)"><strong>OR (Odds Ratio)</strong></td><td>Moderada — eficiente para enfermedades raras</td></tr>
+      <tr><td><strong>Transversal (corte transversal)</strong></td><td>Un momento en el tiempo</td><td>Prevalencia, PR (prevalencia relativa)</td><td>Baja — no puede establecer temporalidad</td></tr>
+      <tr><td><strong>Ecológico</strong></td><td>Datos poblacionales, no individuales</td><td>Correlaciones ecológicas</td><td>Muy baja — falacia ecológica</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — OR vs RR</div>
+      <p>En casos-controles NO se puede calcular incidencia (no sabés cuántos enfermos hay en la población base) → por eso no se puede calcular RR → se usa OR.<br>
+      El OR aproxima al RR solo cuando la enfermedad es rara (&lt;10% de prevalencia). Si la enfermedad es común, OR sobreestima el efecto. Esta distinción aparece siempre en el banco.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Medidas de frecuencia — prevalencia vs incidencia</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Prevalencia</div>
+        <ul>
+          <li>Casos EXISTENTES en un momento dado / población total</li>
+          <li>Fotografía = corte transversal</li>
+          <li>Sin unidad de tiempo o por período definido</li>
+          <li>Afectada por: incidencia + duración de la enfermedad</li>
+          <li>Alta en enfermedades crónicas (diabetes, HTA)</li>
+          <li>Ej: prevalencia de EPOC en mayores de 40 años en Argentina = 14.5%</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Incidencia</div>
+        <ul>
+          <li>Casos NUEVOS en un período / población en riesgo al inicio</li>
+          <li>Película = seguimiento a lo largo del tiempo</li>
+          <li>Tiene unidad de tiempo (ej: por 100.000 hab/año)</li>
+          <li>Mide el ritmo de aparición de nuevos casos</li>
+          <li>Alta en enfermedades agudas infecciosas</li>
+          <li>Ej: incidencia de TBC en Argentina: ~27/100.000 hab/año</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Relación entre prevalencia e incidencia</div>
+      <p>Prevalencia ≈ Incidencia × Duración media de la enfermedad (cuando la enfermedad está en estado estacionario).<br><br>
+      Si un tratamiento cura más rápido → <strong>prevalencia baja</strong> aunque la incidencia no cambie (más personas se curan = menos casos existentes).<br>
+      Si una enfermedad tiene cura → la prevalencia baja. Si es crónica incurable → la prevalencia sube aunque la incidencia sea igual.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">RR y OR — cómo interpretarlos</div>
+    <table class="tbl">
+      <tr><th>Valor</th><th>Interpretación</th><th>Ejemplo</th></tr>
+      <tr><td style="color:var(--red2)">RR o OR &gt; 1</td><td>El factor aumenta el riesgo de la enfermedad (factor de riesgo)</td><td>RR=2 → los expuestos tienen el doble de riesgo</td></tr>
+      <tr><td style="color:var(--teal2)">RR o OR &lt; 1</td><td>El factor protege contra la enfermedad (factor protector)</td><td>RR=0.5 → los expuestos tienen la mitad de riesgo</td></tr>
+      <tr><td>RR o OR = 1</td><td>No hay asociación entre exposición y enfermedad</td><td>IC incluye el 1 → no significativo</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Causalidad — Criterios de Bradford-Hill (resumidos)</div>
+    <div class="alert alert-green">
+      <div class="alert-title">✅ Los 3 más importantes para el examen</div>
+      <ol style="padding-left:16px;font-size:13px;line-height:1.8">
+        <li><strong>Temporalidad:</strong> la causa SIEMPRE precede al efecto (único criterio necesario)</li>
+        <li><strong>Fuerza de asociación:</strong> RR o OR alto → más probable que sea causal</li>
+        <li><strong>Plausibilidad biológica:</strong> el mecanismo tiene sentido fisiopatológico</li>
+      </ol>
+      <p style="margin-top:6px">Los demás (consistencia, gradiente dosis-respuesta, especificidad, coherencia, analogía, experimento) refuerzan pero no son suficientes solos.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: Estadística</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: APS / Prevención →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 4 — APS / PREVENCIÓN ══ -->
+<div class="node" id="n3" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">SP1 · 39 preguntas · alta frecuencia</div>
+    <div class="node-title">APS · Niveles de prevención · Rastreos</div>
+    <div class="node-subtitle">Alma Ata · Astana · 4 niveles de prevención · Criterios de Wilson y Jungner · Programas de screening</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen de residencia valora la lógica de salud pública: saber en qué nivel de prevención cae cada intervención, cuándo hacer screening (no a todo el mundo ni para todo) y cuáles son los principios de la APS. La trampa más frecuente es clasificar mal el nivel de prevención.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Niveles de prevención — la tabla clave</div>
+    <table class="tbl">
+      <tr><th>Nivel</th><th>Cuándo actúa</th><th>Objetivo</th><th>Ejemplos concretos</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Primaria</strong></td><td>Antes de la enfermedad (persona sana)</td><td>Evitar que aparezca la enfermedad</td><td>Vacunación · Educación tabaquismo · Consejería ejercicio · Flúor en agua</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Secundaria</strong></td><td>Enfermedad existe pero asintomática o incipiente</td><td>Diagnóstico precoz para tratar antes de que avance</td><td>PAP · Mamografía · Screening de HTA · SOMF para CCR · Glucemia en ayunas · PPD</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>Terciaria</strong></td><td>Enfermedad establecida y sintomática</td><td>Reducir complicaciones, mejorar función, rehabilitar</td><td>Rehabilitación cardíaca post-IAM · Fisioterapia post-ACV · Control de DM con complicaciones</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Cuaternaria</strong></td><td>Riesgo de sobrediagnóstico o iatrogenia</td><td>Proteger al paciente de intervenciones médicas excesivas</td><td>Evitar test innecesarios · Desmedicalización · "Choosing Wisely" · Evitar cirugías innecesarias</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más frecuente — secundaria vs terciaria</div>
+      <p>Un diabético con neuropatía que va a fisioterapia → <strong>terciaria</strong> (ya tiene la enfermedad establecida con complicaciones).<br>
+      Un diabético asintomático al que le pedís microalbuminuria → <strong>secundaria</strong> (buscás daño renal antes de que dé síntomas).<br>
+      La clave: ¿hay síntomas/diagnóstico ya establecido? → sí = terciaria. ¿Es asintomático/detección precoz? → secundaria.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">APS — Declaraciones clave</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Alma-Ata 1978</div>
+        <ul>
+          <li>"Salud para todos en el año 2000"</li>
+          <li>APS como estrategia central del sistema de salud</li>
+          <li>Salud = derecho humano fundamental</li>
+          <li>8 elementos esenciales (alimentación, agua, vacunas, saneamiento, MCH, enfermedades endémicas, traumatismos, medicamentos esenciales)</li>
+          <li>Participación comunitaria · Intersectorialidad</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Astana 2018 (actualización)</div>
+        <ul>
+          <li>"Salud para todos, en todos lados"</li>
+          <li>Renovación del compromiso con APS</li>
+          <li>3 componentes: conocimiento/competencias del individuo, servicios de salud integrales, multisectorialidad</li>
+          <li>Énfasis en cobertura sanitaria universal</li>
+          <li>Agenda ODS (Objetivos de Desarrollo Sostenible)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios de Wilson y Jungner — cuándo hacer screening</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">1</div><div class="algo-text">La enfermedad debe ser un <strong>problema de salud importante</strong> (alta frecuencia o mortalidad)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">2</div><div class="algo-text">Debe existir <strong>tratamiento efectivo</strong> para la enfermedad detectada</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">3</div><div class="algo-text">Deben existir <strong>instalaciones disponibles</strong> para el diagnóstico y tratamiento</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">4</div><div class="algo-text">La enfermedad debe tener una <strong>fase latente reconocible</strong> (período asintomático detectable)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">5</div><div class="algo-text">Debe existir <strong>un test válido</strong> para la detección (sensible, específico, aceptable por la población)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">6</div><div class="algo-text">El test debe ser <strong>aceptable para la población</strong> (costo razonable, no invasivo o bien tolerado)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">7</div><div class="algo-text">La <strong>historia natural</strong> de la enfermedad debe ser bien conocida</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">8</div><div class="algo-text">El <strong>costo</strong> del programa debe ser razonable en relación con el beneficio</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Programas de rastreo / screening en Argentina — calendario del banco</div>
+    <table class="tbl">
+      <tr><th>Cáncer / enfermedad</th><th>Población objetivo</th><th>Método</th><th>Frecuencia</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Ca de cuello uterino</strong></td><td>Mujeres 25–64 años</td><td>PAP (25–29a), VPH ADN test (30–64a)</td><td>Cada 3 años (PAP) / 5 años (VPH)</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Ca colorrectal</strong></td><td>Personas 50–75 años</td><td>SOMF (sangre oculta en materia fecal)</td><td>Anual</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Ca de mama</strong></td><td>Mujeres 50–69 años</td><td>Mamografía bilateral</td><td>Bienal (cada 2 años)</td></tr>
+      <tr><td><strong>HTA</strong></td><td>Adultos ≥18 años</td><td>Toma de TA</td><td>Cada 2–3 años si normal, anual si 130–139</td></tr>
+      <tr><td><strong>Diabetes</strong></td><td>Adultos ≥45 años o factores de riesgo</td><td>Glucemia en ayunas o HbA1c</td><td>Cada 3 años si normal</td></tr>
+      <tr><td><strong>Dislipemia</strong></td><td>Hombres ≥35a, Mujeres ≥45a (o antes si FR)</td><td>Colesterol total + HDL</td><td>Cada 5 años si normal</td></tr>
+      <tr><td><strong>Ca de pulmón</strong></td><td>50–80 años + ≥20 paq-año + fumador activo o ex &lt;15a</td><td>TC de baja dosis</td><td>Anual</td></tr>
+    </table>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Epidemiología</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Vacunas →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 5 — VACUNAS ══ -->
+<div class="node" id="n4" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">SP4 · 29 preguntas · alta rentabilidad</div>
+    <div class="node-title">Vacunas en adultos — Calendario 2025</div>
+    <div class="node-subtitle">Embarazo · Adulto mayor · Grupos especiales · Contraindicaciones · BCG intradérmica</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Las vacunas tienen un patrón de preguntas muy predecible: ¿qué vacunas van en el embarazo y cuáles están contraindicadas? ¿Cuándo dar neumococo en secuencia? ¿Qué vacuna es intradérmica? El banco repite 5–6 preguntas sobre el mismo tema con distintas variaciones. Memorizás los pares "contraindicación-embarazo" y sumás muchos puntos.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Vacunas en el embarazo — las más preguntadas</div>
+    <table class="tbl">
+      <tr><th>Vacuna</th><th>Cuándo</th><th>Indicación</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>dTpa</strong> (triple bacteriana acelular)</td><td style="color:var(--teal2)"><strong>Desde semana 20 en adelante</strong> · UNA dosis por embarazo</td><td>Protección de la embarazada y del neonato contra tos convulsa (coqueluche) antes de que pueda vacunarse</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Antigripal (influenza)</strong></td><td style="color:var(--teal2)">Cualquier trimestre · UNA dosis por temporada</td><td>Gripe severa en embarazo → riesgo de prematurez, mortalidad materna</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Hepatitis B</strong></td><td>Si no está vacunada · 3 dosis (0-1-6 meses)</td><td>Prevención de transmisión vertical al neonato</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>VSR (virus sincitial respiratorio)</strong></td><td><strong>Semanas 32–36</strong> de gestación</td><td>Protección neonatal contra bronquiolitis grave (vacuna materna→anticuerpos al bebé)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ CONTRAINDICADAS en embarazo — las más preguntadas</div>
+      <p>Vacunas a <strong>virus vivos atenuados</strong> están ABSOLUTAMENTE contraindicadas en embarazo:<br>
+      🚫 <strong>Triple viral (SRP)</strong> — sarampión, rubéola, paperas<br>
+      🚫 <strong>Varicela</strong><br>
+      🚫 <strong>Fiebre amarilla</strong> (solo si viaje a zona endémica y sin alternativa → evaluación riesgo-beneficio)<br>
+      🚫 <strong>BCG</strong><br>
+      🚫 <strong>Herpes zóster</strong> (vacuna viva)<br><br>
+      <strong>La regla:</strong> si tiene "vivo atenuado" en su descripción → contraindicada en embarazo.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Neumococo en adultos — la secuencia que repite el banco</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Secuencia VCN13 → VP23 (nunca al revés)</div>
+      <p><strong>Primero:</strong> VCN13 (conjugada 13 valente) — activa la memoria inmunológica T-dependiente<br>
+      <strong>Después (≥1 año):</strong> VP23 (polisacárida 23 valente) — amplía cobertura serotipos<br><br>
+      <strong>Indicaciones en adultos (cualquier edad &gt;18a con factores):</strong><br>
+      — Adultos ≥65 años<br>
+      — Asplenia (funcional o anatómica) · Inmunocompromiso · Insuficiencia cardíaca o respiratoria · Enfermedad hepática crónica · Diabetes · Nefropatía crónica · Fístula de LCR · Implante coclear<br><br>
+      <strong>Trampa:</strong> dar VP23 primero → incorrecto. La secuencia es VCN13 PRIMERO siempre (en pacientes que no la recibieron antes).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">La única vacuna intradérmica — dato que repite el banco 3–4 veces</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 BCG = única vacuna intradérmica. Punto.</div>
+      <p>Todas las demás vacunas del calendario son:<br>
+      — IM (intramuscular): hepatitis B, dTpa, antigripal, VPH, neumococo, meningococo, hepatitis A<br>
+      — SC (subcutánea): triple viral (SRP), varicela, fiebre amarilla, herpes zóster<br><br>
+      La BCG se aplica en el deltoides derecho, vía intradérmica (ID), produciendo una pápula de 5–7 mm que luego forma úlcera y cicatriz.<br>
+      El examen pregunta directamente: "¿Cuál es la única vacuna que se aplica por vía intradérmica?" → BCG.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Grupos especiales — vacunas por condición</div>
+    <table class="tbl">
+      <tr><th>Condición</th><th>Vacunas a agregar / priorizar</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Asplenia (esplenectomía)</strong></td><td>Neumococo (VCN13 + VP23) + Meningococo (ACYW y B) + H. influenzae tipo b (Hib). Las 3 capsuladas. Idealmente 2 semanas ANTES de la cirugía.</td></tr>
+      <tr><td>VIH positivo</td><td>Neumococo · Antigripal anual · Hepatitis A y B · VPH (hasta 45a) · NO vacunas vivas si CD4 &lt;200</td></tr>
+      <tr><td>Adultos &gt;65 años</td><td>Antigripal anual · Neumococo (VCN13 + VP23) · dTpa (si no la recibió de adulto) · Herpes zóster · Hepatitis B si no tiene serología de inmunidad</td></tr>
+      <tr><td>EPOC / Cardiopatía crónica</td><td>Antigripal anual · Neumococo</td></tr>
+      <tr><td>Personal de salud</td><td>Hepatitis B · Triple viral · Varicela (si seronegativa) · Antigripal anual · dTpa · VPH (si &lt;45a)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">VPH — vacunación</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Vacuna VPH en Argentina (Calendario Nacional)</div>
+      <p><strong>Esquema primario:</strong> Niñas y niños a los 11 años → 2 dosis (0 y 6 meses).<br>
+      Si inician después de los 15 años o son inmunocomprometidos → 3 dosis (0, 1–2, 6 meses).<br><br>
+      <strong>Catch-up / rescate:</strong> hasta los 26 años en personas no vacunadas. Hasta 45 años en situaciones especiales (inmunocompromiso, HSH, trabajadores sexuales).<br><br>
+      Vacuna disponible: nonavalente (Gardasil 9, previene 9 genotipos VPH incluyendo 6, 11, 16, 18, 31, 33, 45, 52, 58).<br>
+      No terapéutica: no trata la infección existente.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: APS</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Ley 26.529 →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 6 — LEY 26.529 ══ -->
+<div class="node" id="n5" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Leyes · banco repite 6+ veces</div>
+    <div class="node-title">Ley 26.529 — Derechos del Paciente · Historia Clínica · Consentimiento Informado</div>
+    <div class="node-subtitle">+ Ley 26.742 (Muerte digna) · Directivas anticipadas · Excepciones al CI</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La Ley 26.529 define los derechos del paciente en la relación médico-paciente: información, autonomía, confidencialidad, consentimiento informado, historia clínica. La 26.742 la amplía para permitir rechazar tratamientos en enfermedades terminales. El examen pregunta cuándo el CI puede ser verbal y cuándo escrito, y quién puede pedir la HC.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Derechos del paciente (Art. 2 — Ley 26.529)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Los 7 derechos esenciales</div>
+        <ul>
+          <li>a. Asistencia sin discriminación</li>
+          <li>b. Trato digno y respetuoso</li>
+          <li>c. Intimidad y privacidad</li>
+          <li>d. Confidencialidad</li>
+          <li>e. <strong>Autonomía de la voluntad</strong> (aceptar o rechazar)</li>
+          <li>f. <strong>Información sanitaria</strong> (incluyendo el derecho a NO recibirla)</li>
+          <li>g. Interconsulta médica (segunda opinión)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Historia clínica — datos clave</div>
+        <ul>
+          <li>Titular: el <strong>PACIENTE</strong></li>
+          <li>Puede solicitar copia en 48 hs</li>
+          <li>Debe guardarse por mínimo <strong>10 años</strong></li>
+          <li>Inviolable · Único por establecimiento</li>
+          <li>Clave uniforme para identificar al paciente</li>
+          <li>Habeas data si se niegan a dársela</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Consentimiento informado — verbal vs escrito</div>
+    <table class="tbl">
+      <tr><th>Modalidad</th><th>Cuándo</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Verbal</strong> (regla general)</td><td>La mayoría de las actuaciones médicas</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Escrito y firmado</strong> (excepciones)</td><td>Internación · Intervención quirúrgica · Procedimientos diagnósticos/terapéuticos invasivos · Procedimientos con riesgo según reglamentación · Revocación del consentimiento</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Excepciones al CI — cuándo no se necesita</div>
+      <p>El profesional queda eximido de pedir CI en SOLO 2 casos (Art. 9):<br>
+      1. <strong>Grave peligro para la SALUD PÚBLICA</strong><br>
+      2. <strong>Situación de emergencia con grave peligro para la vida o salud del paciente</strong> que no puede dar consentimiento por sí ni por representantes<br><br>
+      Estas excepciones se interpretan de forma <strong>restrictiva</strong>. El examen pone una situación de emergencia y pregunta si se necesita CI → NO, salvo que el paciente esté consciente y pueda darlo.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ley 26.742 — Muerte digna (modifica Ley 26.529)</div>
+    <div class="ley-card">
+      <div class="ley-header">
+        <div class="ley-num">26.742</div>
+        <div><div class="ley-name">Muerte digna — Ley de 2012</div><div class="ley-year">Modifica artículos 2, 5, 6, 10 y 11 de la Ley 26.529</div></div>
+      </div>
+      <div class="ley-item">Paciente con enfermedad <strong>irreversible, incurable o en estadio terminal</strong> puede rechazar procedimientos quirúrgicos, de reanimación artificial, retiro de soporte vital cuando sean desproporcionados</div>
+      <div class="ley-item">Puede rechazar <strong>hidratación y alimentación</strong> si solo prolongan el estadio terminal</div>
+      <div class="ley-item">El rechazo <strong>NO implica</strong> interrumpir medidas de alivio del sufrimiento (cuidados paliativos continúan)</div>
+      <div class="ley-item"><strong>Directivas anticipadas:</strong> se formalizan ante escribano público o juzgado de primera instancia · 2 testigos · Pueden revocarse en cualquier momento</div>
+      <div class="ley-item">Profesional que cumple la ley <strong>no tiene responsabilidad civil, penal ni administrativa</strong> (Art. 11 bis)</div>
+      <div class="ley-trap">⚠️ Trampa: ¿La ley permite eutanasia? NO. Solo permite rechazar tratamientos desproporcionados en terminal. La eutanasia activa y el suicidio asistido están explícitamente excluidos.</div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Vacunas</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Ley 153 CABA →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 7 — LEY 153 ══ -->
+<div class="node" id="n6" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Leyes · CABA específico</div>
+    <div class="node-title">Ley 153 CABA — Ley Básica de Salud de CABA</div>
+    <div class="node-subtitle">Principios · Derechos · Organización del sistema · Niveles de atención · Gratuidad</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Esta ley es la base del sistema de salud de CABA. El examen pregunta sus principios rectores (especialmente la gratuidad), cómo se organiza el sistema en 3 subsectores y los 3 niveles de atención. La frase "gratuidad en el área estatal" aparece textualmente en el banco.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Principios rectores (Art. 3)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Los más preguntados</div>
+        <ul>
+          <li><strong>Gratuidad</strong> = exención de pago directo en el área ESTATAL (las obras sociales y prepagas sí pagan al Estado por los servicios prestados a sus afiliados)</li>
+          <li><strong>Cobertura universal</strong> de la población</li>
+          <li><strong>Equidad</strong> (compensar desigualdades)</li>
+          <li><strong>Atención primaria como estrategia central</strong></li>
+          <li>Gasto en salud como <strong>inversión social prioritaria</strong></li>
+          <li>Solidaridad social como filosofía rectora</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tres subsectores del sistema (Art. 10)</div>
+        <ul>
+          <li><strong>Estatal:</strong> hospitales públicos, CESACS, CeSACs. Gratuito, sin distinción de cobertura</li>
+          <li><strong>Seguridad social:</strong> obras sociales (PAMI, IOMA, obras sociales sindicales)</li>
+          <li><strong>Privado:</strong> prepagas, clínicas, consultorios</li>
+          <li>Los tres deben coordinarse mediante referencias y contrarreferencias</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Gratuidad en el área estatal</div>
+      <p>La gratuidad de la Ley 153 significa que el paciente no paga directamente al hospital. PERO: la seguridad social (obra social) y las prepagas DEBEN abonar al Estado por las prestaciones que sus afiliados reciben en hospitales públicos, sin necesidad de autorización previa (ni en urgencias). El hospital puede facturar a la obra social.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Los 3 niveles de atención (Arts. 18–23)</div>
+    <table class="tbl">
+      <tr><th>Nivel</th><th>Definición</th><th>Efectores</th><th>Función</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Primer nivel</strong></td><td>Puerta de entrada principal al sistema</td><td>CeSAC, CEMAR, médico de cabecera, consultorios externos básicos</td><td>Promoción, prevención, diagnóstico, tratamiento ambulatorio básico, internación domiciliaria</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Segundo nivel</strong></td><td>Referencia del primer nivel</td><td>Hospitales generales de agudos (ambulatorio especializado + internación baja-mediana complejidad)</td><td>Especialidades, cirugía ambulatoria, hospitalización de baja-mediana complejidad</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Tercer nivel</strong></td><td>Último nivel de referencia</td><td>Hospitales de alta complejidad (ej. Argerich, Fernández, Udaondo)</td><td>Alta complejidad médica y tecnológica, UCI, trasplantes, neurocirugía</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Referencia y contrarreferencia</div>
+      <p>El sistema se articula mediante referencias (primer → segundo → tercer nivel) y contrarreferencias (retorno al nivel de menor complejidad una vez estabilizado). La Ley 153 garantiza esta articulación mediante redes de servicios. Sin referencia adecuada = fragmentación = peores resultados.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Derechos de las personas (Art. 4) — los más preguntados</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Derechos en el sistema de salud</div>
+        <ul>
+          <li>No discriminación (económica, racial, sexual, ideológica...)</li>
+          <li>Intimidad y confidencialidad</li>
+          <li>Acceso a historia clínica e información</li>
+          <li>Consentimiento informado previo</li>
+          <li>Libre elección de profesional y efector</li>
+          <li>Internación conjunta madre-niño</li>
+          <li>Derechos reproductivos</li>
+          <li><strong>Urgencia: recibir primeros auxilios en el efector más cercano, cualquier subsector</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Obligaciones de las personas (Art. 6)</div>
+        <ul>
+          <li>Ser cuidadosos con instalaciones y equipos</li>
+          <li>Firmar la HC y el alta voluntaria si corresponde</li>
+          <li>Brindar información veraz sobre datos personales</li>
+        </ul>
+        <div class="ley-trap" style="margin-top:8px">⚠️ Trampa: El alta voluntaria requiere firma del paciente, no solo comunicación verbal.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Ley 26.529</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Trasplante →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 8 — LEY 27.447 ══ -->
+<div class="node" id="n7" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Ley 27.447 · 2018</div>
+    <div class="node-title">Ley de Trasplante de Órganos, Tejidos y Células</div>
+    <div class="node-subtitle">Donante presunto · INCUCAI · Muerte encefálica · Donante vivo · Principios · Penalidades</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La Ley 27.447 (2018) establece el sistema de donación en Argentina. El cambio más importante: la donación ya no es "por defecto se donan los órganos" — ahora cada persona mayor de 18 años puede expresar su voluntad afirmativa, negativa o restringida. Sin expresión registrada, el profesional debe verificar la voluntad de otro modo. El INCUCAI coordina todo.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Principios de la ley (Art. 3)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Principios clave</div>
+        <ul>
+          <li>Dignidad humana</li>
+          <li>Autonomía de la voluntad</li>
+          <li>Solidaridad y justicia distributiva</li>
+          <li>Equidad en el acceso</li>
+          <li><strong>Extrapatrimonialidad</strong>: el cuerpo y sus partes NO son propiedad comerciable</li>
+          <li><strong>Voluntariedad, altruismo y gratuidad</strong> en la donación</li>
+          <li>Autosuficiencia: maximizar disponibilidad de órganos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Queda prohibido (Art. 40)</div>
+        <ul>
+          <li>Toda contraprestación patrimonial o no por donación</li>
+          <li>Intermediación con fines de lucro</li>
+          <li>Actividades sin confidencialidad</li>
+          <li>Extraer si no se cumplieron requisitos de la ley</li>
+          <li>Operar si el propio médico fue quien trató al fallecido o diagnosticó su muerte</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Expresión de voluntad — cómo funciona</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">≥18</div><div class="algo-text">Toda persona capaz mayor de 18 años puede expresar voluntad <strong>afirmativa, negativa o restringida</strong> respecto de la donación de sus órganos (Art. 31)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">📋</div><div class="algo-text">Canales habilitados (Art. 32): INCUCAI · RENAPER · Registros del Estado Civil · Autoridades sanitarias · Correo Oficial. Sin costo para el declarante.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">❓</div><div class="algo-text">Si no hay voluntad registrada → el profesional a cargo <strong>debe verificar la voluntad</strong> según la reglamentación (consulta a familiares/allegados)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">⚠️</div><div class="algo-text">Menores de 18 años fallecidos → autorización de ambos progenitores o representante legal. La oposición de UN solo padre elimina la posibilidad.</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Donante vivo — requisitos</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Donante vivo (Art. 22)</div>
+      <p>Solo permitida la ablación de órganos en vida cuando:<br>
+      — El donante es <strong>mayor de 18 años, capaz</strong><br>
+      — El receptor es <strong>pariente consanguíneo o por adopción hasta 4° grado, cónyuge, o conviviente</strong><br>
+      — <strong>Plazo obligatorio de 48 horas</strong> entre la información y la intervención (Art. 24)<br>
+      — Dictamen favorable del equipo trasplantador<br>
+      — Sin costo alguno para el dador (Art. 28)<br><br>
+      <strong>Donación cruzada (riñón):</strong> si dos parejas donante-receptor son incompatibles entre sí, pueden cruzar sus donaciones. Cada donante debe estar relacionado con su receptor por los vínculos del Art. 22.</p>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 Células progenitoras hematopoyéticas (CPH) — excepción</div>
+      <p>Para donación de CPH (médula ósea), cualquier persona &gt;18a puede donar <strong>SIN las limitaciones de parentesco</strong>. Menores de 18a: solo con autorización del representante legal y solo a parientes del Art. 22.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Muerte y certificación del fallecimiento (Arts. 36–37)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Diagnóstico de muerte encefálica</div>
+      <p>El fallecimiento puede certificarse por:<br>
+      1. Cese irreversible de funciones <strong>circulatorias</strong> (muerte cardíaca)<br>
+      2. Cese irreversible de funciones <strong>encefálicas</strong> (muerte cerebral)<br><br>
+      Para muerte encefálica: deben firmar <strong>2 médicos</strong>, al menos uno de ellos <strong>neurólogo o neurocirujano</strong>. Ninguno puede ser integrante del equipo de ablación/trasplante.<br>
+      La hora del fallecimiento = hora en que se completó el diagnóstico.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Penalidades relevantes</div>
+    <table class="tbl">
+      <tr><th>Conducta</th><th>Pena</th></tr>
+      <tr><td>Dar u ofrecer beneficio para obtener órganos / intermediar con fines de lucro</td><td>Prisión 6 meses a 5 años + inhabilitación 2–10 años (más si profesional de salud)</td></tr>
+      <tr><td>Extraer indebidamente órganos de cadáveres</td><td>Prisión 2–6 años + inhabilitación</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Extracción de órganos en vida sin cumplir Art. 22</strong></td><td style="color:var(--red2)"><strong>Prisión 4 años a PERPETUA</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Ley 153</div>
+    <div class="nav-btn" onclick="show(8)">Nodo 9: Salud Sexual / NNA →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 9 — LEY 25.673 + 26.061 ══ -->
+<div class="node" id="n8" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">Leyes · derechos y salud</div>
+    <div class="node-title">Ley 25.673 · Ley 26.061 · Otras leyes clave</div>
+    <div class="node-subtitle">Salud sexual y procreación responsable · Derechos NNA · Ley 23.798 VIH · Ley 26.657 Salud mental</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen de residencia tiene preguntas de leyes en todos los ejes. Las más frecuentes: ¿a qué edad un adolescente puede pedir preservativos sin los padres? (cualquier edad), ¿cuándo un menor puede pedir test de VIH sin firma de padres? (13 años+), ¿qué define el "interés superior del niño"? Estas preguntas tienen una sola respuesta correcta basada en la ley.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ley 25.673 — Programa Nacional de Salud Sexual y Procreación Responsable</div>
+    <div class="ley-card" style="--nc:var(--coral)">
+      <div class="ley-header">
+        <div class="ley-num" style="background:var(--coral)">25.673</div>
+        <div><div class="ley-name">Salud Sexual y Procreación Responsable — 2002</div></div>
+      </div>
+      <div class="ley-item">Objetivo: alcanzar el nivel más elevado de salud sexual, prevenir embarazos no deseados, prevenir ITS/VIH</div>
+      <div class="ley-item">Destinada a <strong>la población en general, sin discriminación</strong></div>
+      <div class="ley-item">Los servicios de salud deben suministrar <strong>métodos anticonceptivos reversibles, no abortivos y transitorios</strong> — a demanda</div>
+      <div class="ley-item">Las prestaciones están incluidas en el <strong>PMO (Programa Médico Obligatorio)</strong> → cobertura obligatoria por obras sociales y prepagas</div>
+      <div class="ley-item">Instituciones privadas <strong>confesionales</strong> pueden exceptuarse del suministro de métodos anticonceptivos (inciso b del Art. 6) con fundamento en sus convicciones</div>
+      <div class="ley-trap">⚠️ Trampa: ¿Los hospitales públicos pueden negarse a dar anticonceptivos por razones religiosas? NO. Solo las instituciones privadas confesionales tienen esa excepción. El hospital público debe brindar la prestación siempre.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ley 26.061 — Protección Integral de Derechos de Niños, Niñas y Adolescentes</div>
+    <div class="ley-card" style="--nc:var(--coral)">
+      <div class="ley-header">
+        <div class="ley-num" style="background:var(--coral)">26.061</div>
+        <div><div class="ley-name">Derechos NNA — 2005</div></div>
+      </div>
+      <div class="ley-item"><strong>Interés superior del niño</strong>: principio rector. Cuando hay conflicto entre intereses del niño y otros intereses, prevalecen los del niño</div>
+      <div class="ley-item">Niño, niña o adolescente = toda persona hasta 18 años (Convención sobre los Derechos del Niño)</div>
+      <div class="ley-item">Tienen derecho a ser oídos en todas las decisiones que los afecten</div>
+      <div class="ley-item">Derecho a la identidad, educación, salud, familia, participación</div>
+      <div class="ley-item">Prioridad absoluta para el Estado: protección en cualquier circunstancia + asignación privilegiada de recursos</div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Autonomía progresiva — lo más preguntado</div>
+      <p>Los niños tienen <strong>autonomía progresiva</strong>: a mayor madurez y capacidad de comprensión, mayor participación en decisiones sobre su salud. No hay una edad fija para todo — depende del tipo de decisión y la madurez individual.<br><br>
+      <strong>Reglas específicas que el banco pregunta:</strong><br>
+      — Test de VIH sin firma de padres: <strong>13 años o más</strong> (Ley 23.798 + modificatorias)<br>
+      — Anticonceptivos: cualquier adolescente con capacidad de comprensión puede solicitarlos<br>
+      — Internación voluntaria: adolescente con 16 años puede dar consentimiento como adulto en aspectos de salud</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Otras leyes clave del banco — resumen rápido</div>
+    <table class="tbl">
+      <tr><th>Ley</th><th>Tema</th><th>Dato clave para el examen</th></tr>
+      <tr><td style="color:var(--purple2)"><strong>Ley 23.798</strong></td><td>VIH/SIDA</td><td>Test de VIH: voluntario, gratuito, confidencial. Adolescente ≥13 años: sin firma de padres. Notificación obligatoria SIN nombre (anónima)</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Ley 26.657</strong></td><td>Salud Mental</td><td>Internación psiquiátrica = último recurso · Debe haber alternativas comunitarias · Consentimiento informado del paciente · Alta a pedido del paciente no requiere autorización médica · Comités de revisión de internaciones</td></tr>
+      <tr><td><strong>Ley 27.610</strong></td><td>Interrupción voluntaria del embarazo (IVE)</td><td>IVE hasta las 14 semanas sin causa justificada. ILE sin límite de semanas: violación, peligro de vida/salud. Gratuita en todos los subsectores. Objeción de conciencia individual (no institucional). Acceso en 10 días hábiles.</td></tr>
+      <tr><td><strong>Ley 26.743</strong></td><td>Identidad de género</td><td>Toda persona tiene derecho al reconocimiento de su identidad de género. Sin cirugía ni diagnóstico psiquiátrico. Menores: con consentimiento de representante legal o judicial</td></tr>
+      <tr><td><strong>Ley 26.485</strong></td><td>Violencia contra la mujer</td><td>5 tipos de violencia (física, psicológica, sexual, económica, simbólica) · 6 modalidades (doméstica, institucional, laboral, obstétrica, mediática, pública-política) · Obligación de denuncia para profesionales de salud</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ IVE — las trampas que más aparecen</div>
+      <p>1. IVE solo hasta 14 semanas SIN CAUSA → después de 14 semanas, SOLO con causa legal (violación o peligro vida/salud).<br>
+      2. Objeción de conciencia: es <strong>individual</strong>, no institucional. El efector público SIEMPRE debe garantizar el acceso.<br>
+      3. El objetor debe derivar a la paciente inmediatamente a otro profesional no objetor.<br>
+      4. La negativa injustificada puede ser sancionada administrativa y penalmente.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(7)">← Nodo 8: Trasplante</div>
+    <div class="nav-btn" onclick="show(9)">Nodo 10: Det. Sociales / Bioética →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ NODO 10 — BIOÉTICA ══ -->
+<div class="node" id="n9" style="--nc:var(--green)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--greenb);color:var(--green2)">Integrador · transversal a todo el examen</div>
+    <div class="node-title">Bioética · Determinantes Sociales · Adulto Mayor · APS Integrada</div>
+    <div class="node-subtitle">Principios de Beauchamp y Childress · OPS/OMS · Caídas · MMSE · Fragilidad</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Los principios bioéticos son la base teórica que explica por qué existen las leyes de derechos del paciente. El examen los pregunta directamente: "¿qué principio bioético se viola si...?". El adulto mayor tiene preguntas específicas en el banco: caídas, evaluación funcional, polifarmacia, fragilidad.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cuatro principios de bioética — Beauchamp y Childress</div>
+    <table class="tbl">
+      <tr><th>Principio</th><th>Qué significa</th><th>Se viola cuando...</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Autonomía</strong></td><td>Respeto a la capacidad del paciente de tomar decisiones informadas sobre su salud</td><td>No se pide consentimiento informado, no se informa al paciente, se actúa en contra de su voluntad sin justificación</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Beneficencia</strong></td><td>Actuar en el mejor interés del paciente, hacer el bien</td><td>Se toma una decisión que no es la más beneficiosa para el paciente</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>No maleficencia</strong></td><td>No causar daño innecesario ("primum non nocere")</td><td>Se prescribe un tratamiento con riesgos desproporcionados o se realizan procedimientos innecesarios</td></tr>
+      <tr><td style="color:var(--purple2)"><strong>Justicia</strong></td><td>Distribución equitativa de los recursos y acceso igualitario a la atención</td><td>Se niega atención por condición socioeconómica, raza o cobertura; recursos se distribuyen de forma inequitativa</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — conflicto entre principios</div>
+      <p>El banco da escenarios de conflicto: paciente que rechaza un tratamiento que le salvaría la vida (autonomía vs beneficencia). ¿Cuál prevalece? En general: <strong>autonomía prevalece sobre beneficencia</strong> en adultos capaces. El médico debe respetar la decisión informada del paciente aunque no la comparta, salvo que sea incapaz o haya peligro para terceros.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Determinantes sociales de la salud (OMS — Comisión de Marmot)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--green2)">Determinantes estructurales</div>
+        <ul>
+          <li>Posición socioeconómica (ingreso, educación, empleo)</li>
+          <li>Distribución del ingreso (inequidad)</li>
+          <li>Sistemas políticos y económicos</li>
+          <li>Políticas de bienestar social</li>
+          <li>Género, etnia, raza como eje de inequidad</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Determinantes intermediarios</div>
+        <ul>
+          <li>Condiciones de vida y trabajo</li>
+          <li>Acceso a alimentos y agua potable</li>
+          <li>Factores psicosociales (estrés, cohesión social)</li>
+          <li>Sistema de atención de salud</li>
+          <li>Comportamientos y estilos de vida</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 El gradiente social de la salud</div>
+      <p>La salud mejora progresivamente a medida que mejora el estatus socioeconómico. No es un umbral (pobres vs ricos) sino un gradiente continuo. Esto explica por qué las intervenciones puramente biomédicas tienen límites — las causas de las causas son sociales.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Adulto mayor — lo que pregunta el banco</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Caídas — prevención (muy preguntado)</div>
+        <ul>
+          <li>Causa más frecuente de lesiones en mayores de 65 años</li>
+          <li>Factores de riesgo modificables: fármacos (hipnóticos, diuréticos, antihipertensivos), déficit visual, calzado inadecuado, barreras domiciliarias</li>
+          <li>Factores intrínsecos: debilidad muscular, trastorno de la marcha, hipotensión ortostática, deterioro cognitivo</li>
+          <li>Evaluación: Timed Up and Go (TUG) >12 segundos = riesgo aumentado</li>
+          <li>Prevención multicomponente: ejercicio (Tai-Chi, equilibrio), revisión de medicación, adaptación domiciliaria, corrección visual</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Evaluación funcional y cognitiva</div>
+        <ul>
+          <li><strong>MMSE (Mini Mental State Examination):</strong> 30 puntos. &lt;24 → sospecha de deterioro cognitivo. &lt;10 → grave</li>
+          <li><strong>Barthel:</strong> independencia en AVD (actividades de la vida diaria). 0–100</li>
+          <li><strong>Lawton-Brody:</strong> AVD instrumentales (cocinar, manejar dinero, medicación). 0–8</li>
+          <li><strong>Fragilidad:</strong> síndrome de pérdida de reserva funcional. Criterios de Fried: pérdida de peso, fatiga, debilidad muscular, enlentecimiento, baja actividad</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Definición de adulto mayor en Argentina</div>
+      <p>Adulto mayor = personas de <strong>60 años o más</strong> (según OPS/OMS para países en desarrollo y Argentina). En países desarrollados se usa 65 años. El banco pregunta específicamente la edad de corte argentina: <strong>60 años</strong>.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — polifarmacia en el adulto mayor</div>
+      <p>Polifarmacia = 5 o más fármacos simultáneos. Criterios de Beers: lista de medicamentos a evitar en ancianos (benzodiazepinas, antihistamínicos sedantes, AINEs, algunos hipoglucemiantes). El examen da un anciano con caídas o confusión → buscar polifarmacia como causa.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Salud Pública</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Bioestadística (N1-2) ↔ Epidemiología (N3):</strong> el VPP depende de la prevalencia → esto explica por qué el screening en baja prevalencia da muchos FP (N4)</li>
+        <li><strong>APS (N4) ↔ Cardiología:</strong> el riesgo CV Framingham es un programa de screening secundario → cálculo de riesgo para decidir estatinas</li>
+        <li><strong>Leyes (N6-9) ↔ Todos los ejes:</strong> VIH (Infecto N4) → Ley 23.798 rige el test. Adolescente consulta por anticoncepción → Ley 25.673 + autonomía progresiva. Muerte → Ley 26.742</li>
+        <li><strong>Vacunas (N5) ↔ Infectología:</strong> profilaxis de TBC latente (isoniacida), PEP VIH (ARV), son intervenciones de prevención secundaria o primaria según el contexto</li>
+        <li><strong>Determinantes sociales (N10) ↔ Salud Mental:</strong> pobreza, desempleo, discriminación son determinantes de la salud mental (Ley 26.657 lo incorpora explícitamente)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--green2);margin-bottom:12px;letter-spacing:.05em">✅ SALUD PÚBLICA / APS / LEYES — 10/10 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 68 preguntas del banco (SP1 + SP4). Además: bioestadística completa (Se/Esp/VPP/VPN + IC/valor p/NNT), 6 leyes clave con sus trampas, niveles de prevención, rastreos, vacunas, bioética y adulto mayor. Las trampas más frecuentes: confundir Se con VPP, clasificar mal el nivel de prevención, vacunas contraindicadas en embarazo, dar VP23 antes de VCN13, confundir CI verbal con escrito, IVE solo hasta 14 sem sin causa.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-b">SP1: 39 preg APS/Epidemiología</span>
+      <span class="tag tag-a">SP4: 29 preg Vacunas</span>
+      <span class="tag tag-p">Leyes: 153 · 26529 · 26742 · 27447 · 25673 · 26061</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(8)">← Nodo 9: Leyes</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div>
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

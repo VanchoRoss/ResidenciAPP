@@ -1,0 +1,31 @@
+/* ResidenciAPP v35.19 · calendario vacunas rápido y estable */
+#vaccineGameBoard.v3519-vaccine-board{
+  overflow:auto!important;
+  cursor:grab;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  scroll-behavior:auto;
+}
+#vaccineGameBoard.v3519-vaccine-board.is-dragging{cursor:grabbing;user-select:none;}
+#vaccineGameBoard.v3519-vaccine-board .vaccine-cell{position:relative;touch-action:none!important;}
+#vaccineGameBoard.v3519-vaccine-board .vaccine-tap{
+  pointer-events:none!important;
+  user-select:none!important;
+  display:grid!important;
+  place-items:center!important;
+  transition:background .08s ease,border-color .08s ease,box-shadow .08s ease!important;
+}
+#vaccineGameBoard.v3519-vaccine-board .vaccine-cell.is-selected .vaccine-tap{
+  background:rgba(24,119,214,.24)!important;
+  border-color:rgba(24,119,214,.86)!important;
+  color:#0f5fa9!important;
+  box-shadow:inset 0 0 0 2px rgba(24,119,214,.22)!important;
+}
+.dark #vaccineGameBoard.v3519-vaccine-board .vaccine-cell.is-selected .vaccine-tap{
+  color:#dbeafe!important;
+  background:rgba(59,130,246,.28)!important;
+}
+#vaccineGameBoard.v3519-vaccine-board .vaccine-mark{font-size:18px!important;font-weight:950!important;line-height:1!important;}
+@media(max-width:760px){
+  #vaccineGameBoard.v3519-vaccine-board{max-height:70vh!important;}
+}

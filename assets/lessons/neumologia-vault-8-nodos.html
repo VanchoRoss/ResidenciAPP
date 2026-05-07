@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neumonología — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}
+.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}
+.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}
+.tag-g{background:var(--greenb);color:var(--green2)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Prochaska visual */
+.prochaska{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.pr-step{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:start;padding:9px 12px;border-radius:var(--radius-sm);background:var(--bg3)}
+.pr-label{font-size:12px;font-weight:700}
+.pr-desc{font-size:12px;color:var(--text2);line-height:1.4}
+/* Gold stages */
+.gold-row{display:grid;grid-template-columns:70px 1fr 1fr;gap:8px;padding:8px 12px;border-radius:var(--radius-sm);margin-bottom:4px;align-items:center}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Neumonología</div>
+    <div class="sb-sub">Banco 2016–2025 · Bibliografía CABA 2026</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--blue)">45</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">8</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">1</div><div class="sb-stat-l">sprint</div></div>
+    </div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--blue)">Sprint CL4 · EPOC / Asma / Tabaco — 41 preg.</div>
+  <div class="nav-item active" style="--item-color:var(--blue)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">Tabaquismo y Prochaska</div><div class="nav-n">Etapas · Fagerström · Cesación</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">EPOC — Diagnóstico</div><div class="nav-n">Espirometría · GOLD · Fenotipos</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">EPOC — Tratamiento</div><div class="nav-n">LAMA · LABA · ICS · Oxígeno</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">EPOC — Exacerbación</div><div class="nav-n">Criterios Anthonisen · ATB · Corticoides</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Asma</div><div class="nav-n">Clasificación · Escalonamiento · Crisis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Derrame pleural</div><div class="nav-n">Criterios de Light · Exudado · Toracocentesis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--coral)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Nódulo pulmonar y cáncer</div><div class="nav-n">Fleischner · Tipos histológicos · Screening</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Neumotórax · HTP · Fibrosis</div><div class="nav-n">Clasificación · Drenaje · Vasodilat.</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══════════ NODO 1 — TABAQUISMO ═══════════ -->
+<div class="node active" id="n0" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Sprint CL4 · el más repetido del sprint</div>
+    <div class="node-title">Tabaquismo y cesación tabáquica</div>
+    <div class="node-subtitle">Etapas de Prochaska–DiClemente · Test de Fagerström · Vareniclina · Bupropión · Parches</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen da un paciente fumador con una actitud específica hacia el cigarrillo y pregunta en qué etapa de Prochaska está. La confusión más frecuente es entre contemplación y precontemplación. Después pregunta qué fármaco de cesación usar. Vareniclina es el más eficaz, con contraindicaciones específicas.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Etapas de Prochaska-DiClemente — la tabla que más pregunta el examen</div>
+    <div class="prochaska">
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--red2)">Precontemplación</div>
+        <div class="pr-desc">No piensa en dejar de fumar. <strong>No reconoce el daño</strong> o no le importa. "Fumo y no quiero dejar." Sin intención en los próximos 6 meses.</div>
+      </div>
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--amber2)">Contemplación</div>
+        <div class="pr-desc"><strong>Reconoce el daño y piensa en dejar</strong>, pero aún no está listo. "Sé que es malo y lo pienso, pero todavía no." Sin fecha concreta. Ambivalente. Horizonte: 6 meses.</div>
+      </div>
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--amber2)">Preparación</div>
+        <div class="pr-desc">Tiene <strong>intención de dejar en el próximo mes</strong> y ya hizo algo concreto (redujo cantidad, buscó información, fijó fecha). "Voy a dejar el mes que viene."</div>
+      </div>
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--teal2)">Acción</div>
+        <div class="pr-desc">Dejó de fumar hace <strong>menos de 6 meses</strong>. En proceso activo de cambio. Alto riesgo de recaída.</div>
+      </div>
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--teal2)">Mantenimiento</div>
+        <div class="pr-desc">Dejó hace <strong>más de 6 meses</strong>. Consolida el cambio. Prevención de recaída.</div>
+      </div>
+      <div class="pr-step">
+        <div class="pr-label" style="color:var(--purple2)">Recaída</div>
+        <div class="pr-desc">Volvió a fumar. Vuelve a una etapa previa (habitualmente contemplación o preparación). No es fracaso definitivo.</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida — contemplación vs precontemplación</div>
+      <p><strong>La diferencia clave:</strong><br>
+      Precontemplación = NO reconoce el daño O reconoce pero NO quiere dejar. Sin interés en cambiar.<br>
+      Contemplación = SÍ reconoce el daño Y piensa en dejar, PERO no está listo y no tiene fecha.<br><br>
+      El examen da: "paciente que sabe que el tabaco le hace mal pero dice que todavía no está listo para dejarlo" → <strong>CONTEMPLACIÓN</strong>, no precontemplación (él sí reconoce el daño).</p>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Intervención según etapa</div>
+      <p><strong>Precontemplación:</strong> información motivacional, plantear consecuencias (las "5 R").<br>
+      <strong>Contemplación/Preparación:</strong> entrevista motivacional, reforzar pros del abandono.<br>
+      <strong>Acción:</strong> farmacoterapia + apoyo conductual + seguimiento estrecho.<br>
+      <strong>Mantenimiento:</strong> prevención de recaídas, estrategias de afrontamiento.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Carga tabáquica — cómo calcularla</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Paquetes-año (pack-year)</div>
+      <p><strong>Fórmula:</strong> (Cigarrillos/día ÷ 20) × Años de fumador = Paquetes-año<br><br>
+      Ejemplo: 20 cigarrillos/día × 30 años = <strong>30 paquetes-año</strong><br>
+      Ejemplo: 40 cigarrillos/día × 20 años = 2 × 20 = <strong>40 paquetes-año</strong><br><br>
+      Relevancia clínica:<br>
+      ≥10 paquetes-año: riesgo aumentado de EPOC y cáncer<br>
+      ≥20 paquetes-año: indicación de screening de cáncer de pulmón con TC de baja dosis (en Argentina: 50–80 años con ≥20 paq-año)<br>
+      ≥30 paquetes-año: EPOC prácticamente garantizado</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Test de Fagerström — dependencia a la nicotina</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Pregunta más discriminante</div>
+        <p>"¿Cuánto tiempo pasa desde que se despierta hasta que fuma el primer cigarrillo?"</p>
+        <ul style="margin-top:6px">
+          <li>≤5 min → 3 puntos (alta dependencia)</li>
+          <li>6–30 min → 2 puntos</li>
+          <li>31–60 min → 1 punto</li>
+          <li>&gt;60 min → 0 puntos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Interpretación total (0–10 puntos)</div>
+        <ul>
+          <li>0–2: dependencia muy baja → intervención breve</li>
+          <li>3–4: dependencia baja</li>
+          <li>5: dependencia moderada → farmacoterapia recomendada</li>
+          <li>6–7: dependencia alta</li>
+          <li>8–10: dependencia muy alta → farmacoterapia indispensable</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Farmacoterapia de cesación tabáquica — jerarquía de eficacia</div>
+    <table class="tbl">
+      <tr><th>Fármaco</th><th>Mecanismo</th><th>Eficacia relativa</th><th>Contraindicaciones / precauciones</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Vareniclina</strong><br>(Champix)</td><td>Agonista parcial de receptor nicotínico α4β2. Bloquea el efecto de la nicotina Y reduce el craving</td><td style="color:var(--teal2)"><strong>La más eficaz (OR ~3x)</strong>. Duplica la tasa de abstinencia frente a placebo</td><td>Vigilancia con historia de depresión severa / ideación suicida (monitorear). <strong>Ajustar dosis en IRC grave.</strong> Náuseas frecuentes (tomar con comida)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Bupropión</strong><br>(Wellbutrin / Zyban)</td><td>Inhibidor recaptación dopamina-noradrenalina. Efecto antidepresivo + reduce craving</td><td style="color:var(--amber2)">Eficacia moderada (~2x placebo)</td><td style="color:var(--red2)"><strong>CONTRAINDICADO</strong> en: epilepsia / convulsiones, anorexia nerviosa, bulimia, uso reciente de IMAOs, traumatismo craneoencefálico</td></tr>
+      <tr><td><strong>TRN — parches</strong><br>(Nicorette patch)</td><td>Reemplazo de nicotina: reduce síntomas de abstinencia sin alquitrán ni CO</td><td>Eficacia moderada (~1.5–2x). Menor que vareniclina</td><td style="color:var(--red2)"><strong>CONTRAINDICADO en embarazo</strong>. Precaución: enfermedad CV activa (aunque datos recientes cuestionan esto). Puede combinarse con chicle de nicotina</td></tr>
+      <tr><td><strong>TRN — chicles / pastillas</strong></td><td>Idem parches, administración según necesidad (craving ad hoc)</td><td>Útil como complemento o independiente</td><td>Uso apropiado: mascar lentamente (técnica "park and chew"). No fumar simultáneamente</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — bupropión y convulsiones</div>
+      <p>El examen da un fumador con antecedente de epilepsia o convulsiones febriles. ¿Qué fármaco de cesación usás? <strong>Bupropión contraindicado</strong> → usar vareniclina o parches de nicotina. Si tiene depresión activa + tabaquismo: la vareniclina puede ser primera opción (monitorear cambios de ánimo).</p>
+    </div>
+    <div class="alert alert-trap" style="margin-top:8px">
+      <div class="alert-title">⚠️ Trampa — embarazada fumadora</div>
+      <p>Embarazada que quiere dejar de fumar → <strong>intervención conductual primero</strong>. Ningún fármaco de primera línea es seguro en embarazo: vareniclina y bupropión no aprobados. Parches: contraindicados formalmente (aunque alguna guía los considera en casos extremos). La consejería intensiva es lo primero.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-casos tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso 1 — Prochaska</div>
+      <p>Hombre 52 años. Fuma 30 cigarrillos/día. Dice: "Sé que me está matando, pero me cuesta horrores dejar. No sé cuándo voy a poder hacerlo." ¿En qué etapa está?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Contemplación.</strong> Reconoce el daño ("sé que me está matando") y piensa en dejar, pero no tiene fecha ni intención concreta en el próximo mes.</p>
+    </div>
+    <div class="alert alert-caso" style="margin-top:8px">
+      <div class="alert-title">Caso 2 — Farmacoterapia</div>
+      <p>Mujer 45 años, fumadora 25 cigarrillos/día, Fagerström 7. Antecedente de convulsión febril hace 10 años (sin medicación actual). Quiere dejar. ¿Qué fármaco indicás?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Vareniclina.</strong> Bupropión contraindicado (antecedente de convulsión). Parches segunda opción. Vareniclina es la más eficaz y sin contraindicación en este caso.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3" onclick="show(0)">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: EPOC Diagnóstico →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 2 — EPOC DIAGNÓSTICO ═══════════ -->
+<div class="node" id="n1" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Sprint CL4 · 41 preguntas</div>
+    <div class="node-title">EPOC — Diagnóstico y clasificación GOLD</div>
+    <div class="node-subtitle">Espirometría post-broncodilatador · FEV1/FVC &lt;0.7 · Estadios GOLD · Fenotipos</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">EPOC se diagnostica SOLO con espirometría. No con clínica, no con Rx, no con gasometría. El criterio es FEV1/FVC &lt;0.7 POST-broncodilatador. Sin el postBD no hay diagnóstico. El GOLD clasifica la gravedad por FEV1 y los síntomas. La prevalencia en Argentina es 14.5% en mayores de 40 años (dato que el examen pone).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Espirometría — los parámetros clave</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">CVF (Capacidad Vital Forzada)</div>
+        <ul>
+          <li>Volumen total exhalado en una espiración forzada máxima</li>
+          <li>Referencia: normal &gt;80% del teórico</li>
+          <li>Reducida en enfermedades restrictivas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">FEV1 (VEF₁)</div>
+        <ul>
+          <li>Volumen exhalado en el primer segundo de la espiración forzada</li>
+          <li>Refleja obstrucción al flujo aéreo</li>
+          <li>Reducido en EPOC y asma</li>
+          <li>Normal: &gt;80% del teórico</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 El criterio diagnóstico de EPOC — infaltable</div>
+      <p><strong>FEV1/FVC &lt; 0.70 (70%) POST-broncodilatador (postBD)</strong><br><br>
+      "Post-broncodilatador" = se administra un broncodilatador de acción corta (salbutamol 400 mcg) y se repite la espirometría 15–20 minutos después. Si el cociente sigue &lt;0.7 → EPOC confirmado (obstrucción fija, no reversible).<br><br>
+      Sin el postBD → no se puede hacer diagnóstico de EPOC.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — diagnóstico clínico de EPOC</div>
+      <p>El examen da: hombre 65 años, fumador 40 paquetes-año, disnea de esfuerzo, sibilancias, Rx con hiperinsuflación. ¿Diagnóstico de EPOC? → <strong>NO sin espirometría</strong>. Ese cuadro es altamente sugestivo pero el diagnóstico definitivo requiere espirometría con FEV1/FVC &lt;0.7 postBD. La respuesta "diagnóstico clínico" = error.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Patrón obstructivo vs restrictivo vs mixto</div>
+    <table class="tbl">
+      <tr><th>Patrón</th><th>FEV1/FVC</th><th>CVF</th><th>FEV1</th><th>Enfermedades</th></tr>
+      <tr><td style="color:var(--blue2)"><strong>Obstructivo</strong></td><td style="color:var(--red2)">&lt;0.70</td><td>Normal o ↓</td><td>↓</td><td>EPOC, Asma, Bronquiectasias</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Restrictivo</strong></td><td>Normal o &gt;0.70</td><td style="color:var(--red2)">↓ (&lt;80%)</td><td>↓ proporcional</td><td>Fibrosis pulmonar, cifoescoliosis, obesidad mórbida, miastenia</td></tr>
+      <tr><td><strong>Mixto</strong></td><td>&lt;0.70</td><td style="color:var(--red2)">↓</td><td style="color:var(--red2)">↓ ↓</td><td>EPOC + secuelas TBC, sarcoidosis</td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 Reversibilidad — diferencia EPOC vs Asma</div>
+      <p>Post-broncodilatador: si el FEV1 mejora &gt;12% Y &gt;200 mL → <strong>respuesta significativa = sugiere asma</strong> (obstrucción reversible).<br>
+      En EPOC la obstrucción es FIJA: mejora &lt;12% (o no mejora). La persistencia de FEV1/FVC &lt;0.7 postBD confirma EPOC.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación GOLD — gravedad por FEV1</div>
+    <div class="gold-row" style="background:var(--greenb)">
+      <div style="font-size:16px;font-weight:700;color:var(--green2)">GOLD 1</div>
+      <div style="font-size:13px;color:var(--green2)">Leve</div>
+      <div style="font-size:13px;color:var(--text2)">FEV1 ≥ 80% del teórico</div>
+    </div>
+    <div class="gold-row" style="background:var(--amberb)">
+      <div style="font-size:16px;font-weight:700;color:var(--amber2)">GOLD 2</div>
+      <div style="font-size:13px;color:var(--amber2)">Moderado</div>
+      <div style="font-size:13px;color:var(--text2)">FEV1 50–79%</div>
+    </div>
+    <div class="gold-row" style="background:var(--coralb)">
+      <div style="font-size:16px;font-weight:700;color:var(--coral2)">GOLD 3</div>
+      <div style="font-size:13px;color:var(--coral2)">Grave</div>
+      <div style="font-size:13px;color:var(--text2)">FEV1 30–49%</div>
+    </div>
+    <div class="gold-row" style="background:var(--redb)">
+      <div style="font-size:16px;font-weight:700;color:var(--red2)">GOLD 4</div>
+      <div style="font-size:13px;color:var(--red2)">Muy grave</div>
+      <div style="font-size:13px;color:var(--text2)">FEV1 &lt; 30%</div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:8px">GOLD 2026 también clasifica por síntomas (CAT / mMRC) y exacerbaciones → grupos A, B, E. Para el examen lo relevante es la clasificación por FEV1 y la triada: GOLD, síntomas, exacerbaciones para elegir el tratamiento.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fenotipos clínicos — "blue bloater" vs "pink puffer"</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Blue bloater (bronquítico crónico)</div>
+        <ul>
+          <li>Tos productiva crónica &gt;3 meses × 2 años consecutivos</li>
+          <li>Hipoxemia + hipercapnia + poliglobulia</li>
+          <li>Cianosis visible (azul)</li>
+          <li>Cor pulmonale: edema + ingurgitación yugular</li>
+          <li>Obesidad frecuente</li>
+          <li>PaO₂ baja, PaCO₂ alta → "retenedor de CO₂"</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Pink puffer (enfisematoso)</div>
+        <ul>
+          <li>Disnea progresiva, tos escasa o ausente</li>
+          <li>Hiperinsuflación: tórax en barril, uso de músculos accesorios, respiración en fruncido de labios</li>
+          <li>Sin cianosis ni poliglobulia marcada (rosado)</li>
+          <li>PaO₂ relativamente preservada, PaCO₂ normal o baja</li>
+          <li>Delgado, caquéctico</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">En la práctica, la mayoría de los pacientes tienen componentes de ambos. La distinción es útil para el examen como patrón de reconocimiento.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Prevalencia y epidemiología — dato de examen</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 El dato que repite el banco</div>
+      <p>La prevalencia de EPOC en Argentina es <strong>14.5%</strong> en personas mayores de 40 años (estudio PLATINO). Es una enfermedad <strong>subdiagnosticada</strong>: se estima que &gt;75% de los casos en estadio leve-moderado no están diagnosticados. Principal causa: tabaquismo (80–90% de los casos).<br><br>
+      El examen pregunta: "¿cuál es la prevalencia de EPOC en Argentina en mayores de 40 años?" → 14.5%.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: Tabaquismo</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: EPOC Tratamiento →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 3 — EPOC TRATAMIENTO ═══════════ -->
+<div class="node" id="n2" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Sprint CL4 · 41 preguntas</div>
+    <div class="node-title">EPOC — Tratamiento estable</div>
+    <div class="node-subtitle">LAMA primera línea · LABA · ICS · Oxigenoterapia domiciliaria · Rehabilitación</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El tratamiento del EPOC estable es escalonado y se elige según síntomas (CAT/mMRC) y exacerbaciones. La regla del examen: LAMA es el broncodilatador de primera línea en todos los grupos salvo GOLD 1 asintomático. ICS solo se agrega en fenotipos exacerbadores o con eosinofilia. La cesación tabáquica es la única intervención que cambia la historia natural.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Familias de fármacos broncodilatadores</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">SABA — β₂ agonistas de acción corta</div>
+        <ul>
+          <li><strong>Salbutamol</strong> (albuterol), fenoterol</li>
+          <li>Inicio: 5–15 min. Duración: 4–6 hs</li>
+          <li>Uso: rescate (crisis, PRN). NO mantenimiento</li>
+          <li>En asma: primer escalón</li>
+          <li>En EPOC: solo para síntomas agudos / broncoespasmo</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">LABA — β₂ agonistas de acción prolongada</div>
+        <ul>
+          <li><strong>Salmeterol, formoterol, indacaterol</strong></li>
+          <li>Duración: 12–24 hs. Uso: mantenimiento</li>
+          <li>En asma: SOLO combinado con ICS (NUNCA solo)</li>
+          <li>En EPOC: broncodilatador de mantenimiento</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">SAMA — anticolinérgico de acción corta</div>
+        <ul>
+          <li>Ipratropio (Atrovent)</li>
+          <li>Duración: 6–8 hs</li>
+          <li>Uso: rescate en EPOC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">LAMA — anticolinérgico de acción larga</div>
+        <ul>
+          <li><strong>Tiotropio</strong> (Spiriva), umeclidinio, glicopirronio</li>
+          <li>Duración: 24 hs. Uso: mantenimiento EPOC</li>
+          <li><strong>Primera línea en EPOC con síntomas moderados-graves</strong></li>
+          <li>Reduce exacerbaciones y hospitalizaciones</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Regla de oro del examen: LAMA = primera línea EPOC</div>
+      <p>En EPOC sintomático (GOLD 2+, grupo B o E de la clasificación combinada) → el broncodilatador de mantenimiento de primera línea es <strong>LAMA (tiotropio)</strong>, no SABA, no LABA solo, no ICS solo. Si no responde → agregar LABA (terapia dual LAMA+LABA).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ICS (Corticosteroides inhalados) — cuándo sí y cuándo no</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">AGREGAR ICS en EPOC — indicaciones</div>
+        <ul>
+          <li>≥2 exacerbaciones moderadas/año o ≥1 grave (grupo E)</li>
+          <li>Eosinófilos en sangre ≥300 céls/µL</li>
+          <li>Superposición EPOC-asma (ACOS / ACO)</li>
+          <li>Siempre: combinado con LABA (ICS/LABA)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">NO agregar ICS — contraindicaciones relativas</div>
+        <ul>
+          <li>Eosinófilos &lt;100 céls/µL → no hay beneficio, más daño</li>
+          <li>Neumonías a repetición (los ICS aumentan el riesgo de NAC en EPOC)</li>
+          <li>Infecciones por micobacterias recurrentes</li>
+          <li>EPOC estable sin exacerbaciones → no beneficio probado</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — ICS en EPOC como primera línea</div>
+      <p>El examen puede presentar un EPOC y poner "corticoide inhalado" como primera opción. <strong>Los ICS no son primera línea en EPOC</strong> (sí lo son en asma). En EPOC se agregan en combinación cuando hay exacerbaciones frecuentes o eosinofilia. Responder "ICS" como primer paso en EPOC sin criterios = error.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algoritmo de tratamiento según grupos GOLD combinado</div>
+    <table class="tbl">
+      <tr><th>Grupo</th><th>Características</th><th>Tratamiento inicial</th><th>Si no responde</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>A</strong></td><td>Pocos síntomas (CAT&lt;10 / mMRC 0–1) + pocas exacerbaciones (0–1 mod)</td><td>LAMA o LABA o SAMA</td><td>Cambiar clase o agregar</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>B</strong></td><td>Más síntomas (CAT≥10 / mMRC≥2) + pocas exacerbaciones (0–1 mod)</td><td style="color:var(--amber2)"><strong>LAMA + LABA (dual)</strong></td><td>Investigar causas de síntomas</td></tr>
+      <tr><td style="color:var(--red2)"><strong>E</strong></td><td>≥2 exacerbaciones moderadas o ≥1 grave/año</td><td style="color:var(--red2)"><strong>LAMA + LABA. Si eos ≥300: LAMA+LABA+ICS</strong></td><td>Roflumilast o azitromicina en exacerbadores</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Oxigenoterapia domiciliaria prolongada (ODP)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Indicaciones — la única intervención que prolonga vida en EPOC grave (junto con cesación)</div>
+      <p><strong>Criterios para indicar O₂ domiciliario (al menos 15 hs/día):</strong><br>
+      — PaO₂ ≤55 mmHg en reposo (SatO₂ ≤88%)<br>
+      — PaO₂ 55–60 mmHg + cor pulmonale O poliglobulia (Hto &gt;55%)<br><br>
+      <strong>Objetivo:</strong> mantener PaO₂ &gt;60 mmHg (SatO₂ &gt;90%).<br>
+      <strong>Duración mínima:</strong> 15 horas/día (incluye el sueño).<br><br>
+      <strong>NO indicar O₂ si:</strong> SatO₂ &gt;88% en reposo o si el paciente sigue fumando (riesgo de incendio + no reduce mortalidad en normoxémicos).</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — O₂ alto flujo en EPOC retenedor de CO₂</div>
+      <p>Paciente EPOC con hipercapnia crónica (PaCO₂ habitualmente elevada) → su estímulo respiratorio es la <strong>hipoxemia</strong> (no la hipercapnia como en personas normales). Si le das O₂ al 100% → eliminas el estímulo → apnea → retención de CO₂ grave → narcosis por CO₂.<br>
+      <strong>Correcto:</strong> O₂ titulado a SatO₂ 88–92% (no "normalizar"). Usar Venturi mask con FiO₂ conocida (24–28%).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Medidas no farmacológicas con evidencia</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Cesación tabáquica</div>
+        <p>La única intervención que modifica la historia natural del EPOC (frena la caída anual del FEV1). Beneficio en cualquier estadio. Prioridad absoluta.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Rehabilitación pulmonar</div>
+        <p>Mejora capacidad funcional y calidad de vida. Indicada en GOLD 2–4 con limitación funcional (mMRC ≥2). No mejora el FEV1 pero sí la tolerancia al ejercicio.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Vacunación</div>
+        <p>Antigripal anual (reduce exacerbaciones y hospitalizaciones). Neumocócica: VCN13 + VP23 (secuencial). Diphtheria-Tétanos-Pertussis si no recibida.</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">VMNI domiciliaria</div>
+        <p>En EPOC muy grave con hipercapnia crónica persistente (PaCO₂ &gt;52 mmHg). Reduce hospitalizaciones y mortalidad en ese subgrupo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: EPOC Dx</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: EPOC Exacerbación →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 4 — EXACERBACIÓN EPOC ═══════════ -->
+<div class="node" id="n3" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Sprint CL4 · 41 preguntas</div>
+    <div class="node-title">EPOC — Exacerbación aguda</div>
+    <div class="node-subtitle">Criterios de Anthonisen · ATB · Corticoides · VMNI · Hospitalización</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La exacerbación es el evento más peligroso del EPOC: cada episodio acelera el deterioro del FEV1 y aumenta el riesgo de muerte. El examen pregunta: ¿cuándo dar antibiótico? (criterios de Anthonisen), ¿qué ATB? (amoxicilina-clavulánico), y cuándo usar VMNI en lugar de ARM.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Definición y diagnóstico de exacerbación</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Exacerbación EPOC</div>
+      <p>Empeoramiento agudo de los síntomas respiratorios basales que requiere un cambio en el tratamiento habitual. Los 3 síntomas cardinales:<br>
+      1. Aumento de la <strong>disnea</strong><br>
+      2. Aumento del <strong>volumen del esputo</strong><br>
+      3. Aumento de la <strong>purulencia del esputo</strong><br><br>
+      Causas: infección (50–80% bacteriana o viral), contaminación ambiental, falta de adherencia al tratamiento.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios de Anthonisen — cuándo dar antibiótico</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Síntomas presentes</th><th>Antibiótico</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Tipo I (grave)</strong></td><td>Los 3 síntomas cardinales: disnea ↑ + volumen ↑ + purulencia ↑</td><td style="color:var(--red2)"><strong>SÍ, indicado</strong></td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Tipo II (moderado)</strong></td><td>2 de los 3 síntomas cardinales</td><td style="color:var(--amber2)"><strong>SÍ, indicado</strong></td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Tipo III (leve)</strong></td><td>Solo 1 síntoma cardinal + otro (IRS superior reciente, fiebre, taquicardia, taquipnea)</td><td style="color:var(--teal2)"><strong>NO siempre</strong> (considerar)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — el esputo purulento es el predictor más importante</div>
+      <p>De los tres criterios, la <strong>purulencia del esputo</strong> es el mejor predictor de infección bacteriana y el que más orienta al uso de antibiótico. Si hay esputo purulento + cualquier otro síntoma → antibiótico (tipo I o II según el caso).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de la exacerbación</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">1</div>
+        <div class="algo-text"><strong>Broncodilatadores de acción corta:</strong> SABA (salbutamol) + SAMA (ipratropio) nebulizados. Aumentar frecuencia y dosis. Base del tratamiento.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">2</div>
+        <div class="algo-text"><strong>Corticoides sistémicos:</strong> prednisona 40 mg/día VO × 5 días (o metilprednisolona IV en internados). Reducen duración y riesgo de fracaso terapéutico. No prolongar más de 5–7 días.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">3</div>
+        <div class="algo-text"><strong>Antibiótico si cumple Anthonisen I o II</strong> (o requiere ARM):<br>
+        — Sin riesgo de Pseudomonas: <strong>amoxicilina-clavulánico</strong> 875/125 mg c/8h × 5–7 días<br>
+        — Con riesgo de Pseudomonas (GOLD 3–4, exacerbaciones frecuentes, uso previo de corticoides): <strong>ciprofloxacina o levofloxacina</strong></div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--blueb);color:var(--blue2)">4</div>
+        <div class="algo-text"><strong>Oxígeno titulado</strong> a SatO₂ 88–92%. NO hiperoxygenar (riesgo narcosis hipercápnica).</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">5</div>
+        <div class="algo-text"><strong>VMNI (BiPAP):</strong> indicar si pH &lt;7.35 + PaCO₂ &gt;45 mmHg (acidosis respiratoria hipercápnica). Reduce necesidad de intubación y mortalidad. <strong>Primer escalón</strong> antes de la ARM en exacerbación grave.</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — ARM vs VMNI en exacerbación</div>
+      <p>EPOC grave con acidosis respiratoria (pH 7.28, PaCO₂ 72, taquipnea 30, confusión) → <strong>VMNI primero</strong> (BiPAP). No intubar directamente salvo: paciente inconsciente, paro respiratorio, VMNI contraindicada (no colabora, secreciones abundantes), fracaso de VMNI (pH sigue cayendo). La VMNI reduce mortalidad en este escenario.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios de hospitalización en exacerbación EPOC</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Hospitalizar si...</div>
+        <ul>
+          <li>SatO₂ &lt;90% al aire o hipoxemia grave (PaO₂ &lt;60)</li>
+          <li>Acidosis respiratoria: pH &lt;7.35</li>
+          <li>Disnea grave en reposo</li>
+          <li>Uso de músculos accesorios + agitación</li>
+          <li>FR &gt;25 rpm, FC &gt;110 lpm</li>
+          <li>Exacerbaciones recurrentes / fracaso terapéutico ambulatorio</li>
+          <li>Sin soporte social o incapacidad de cuidado domiciliario</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">UTI / ARM si...</div>
+        <ul>
+          <li>Disnea severa sin respuesta a tratamiento inicial</li>
+          <li>Acidosis grave: pH &lt;7.25 o deterioro rápido</li>
+          <li>Hipoxemia refractaria (PaO₂/FiO₂ &lt;200)</li>
+          <li>Alteración grave del sensorio: somnolencia, coma</li>
+          <li>Inestabilidad hemodinámica</li>
+          <li>Fracaso de VMNI</li>
+          <li>Parada respiratoria inminente</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Mujer 70 años, EPOC GOLD 3, exacerbadora frecuente. Consulta por aumento de disnea + esputo purulento ↑ + volumen de esputo ↑ (3 criterios). SatO₂ 85%. FR 28. pH 7.31 PaCO₂ 58. Está somnolienta pero responde.</p>
+      <p style="margin-top:6px"><strong>Conducta:</strong><br>
+      1. Salbutamol + ipratropio nebulizados<br>
+      2. O₂ a bajo flujo, meta SatO₂ 88–92% (Venturi al 28%)<br>
+      3. Prednisona 40 mg VO<br>
+      4. Amoxicilina-clavulánico 875/125 mg c/8h (Anthonisen I → ATB indicado)<br>
+      5. <strong>VMNI (BiPAP)</strong> → pH 7.31 + PaCO₂ 58 + somnolencia = acidosis hipercápnica → VMNI antes que ARM.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: EPOC Tto</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Asma →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 5 — ASMA ═══════════ -->
+<div class="node" id="n4" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL4 · alta frecuencia</div>
+    <div class="node-title">Asma bronquial</div>
+    <div class="node-subtitle">Clasificación por control · Escalonamiento GINA · Crisis grave · LABA nunca solo</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Asma es inflamación crónica con obstrucción REVERSIBLE. El diagnóstico se confirma con espirometría (FEV1/FVC &lt;0.7 + reversibilidad &gt;12% y &gt;200 mL). El tratamiento se escala según control: ICS son el pilar. LABA nunca sin ICS en asma (riesgo de muerte). La crisis grave es hipoxémica con respuesta a SABA.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico de asma — confirmación funcional</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Criterios diagnósticos (GINA)</div>
+        <ul>
+          <li>Síntomas variables: disnea episódica, sibilancias, tos nocturna, opresión torácica</li>
+          <li>Espirometría: FEV1/FVC &lt;0.7 + reversibilidad significativa</li>
+          <li>Reversibilidad: FEV1 ↑ &gt;12% Y &gt;200 mL post-SABA (200 mcg salbutamol)</li>
+          <li>O: variabilidad &gt;10% en PEAK-FLOW diurno × 2 semanas</li>
+          <li>O: HRB (hiperreactividad bronquial) en test de metacolina</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Diferencia EPOC vs Asma</div>
+        <ul>
+          <li>Asma: obstrucción REVERSIBLE (mejora &gt;12% con SABA)</li>
+          <li>EPOC: obstrucción FIJA (mejora &lt;12% o no mejora)</li>
+          <li>Asma: inicio joven, atópico, nocturno, reversible</li>
+          <li>EPOC: inicio &gt;40 años, fumador, progresiva, irreversible</li>
+          <li>ACOS (overlap): paciente con ambas características</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación por control (GINA) — base del escalonamiento</div>
+    <table class="tbl">
+      <tr><th>Control</th><th>Síntomas/semana</th><th>Nocturnos</th><th>SABA rescate</th><th>Limitación actividad</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Bien controlado</strong></td><td>≤2 veces/semana</td><td>Ninguno</td><td>≤2 veces/semana</td><td>Ninguna</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Parcialmente</strong></td><td>&gt;2 veces/semana</td><td>Alguno</td><td>&gt;2 veces/semana</td><td>Alguna</td></tr>
+      <tr><td style="color:var(--red2)"><strong>No controlado</strong></td><td colspan="4">3 o más características de "parcialmente controlado" en la misma semana</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Escalonamiento GINA — tratamiento por pasos</div>
+    <table class="tbl">
+      <tr><th>Paso</th><th>Controlador</th><th>Rescate</th><th>Perfil de paciente</th></tr>
+      <tr><td style="color:var(--teal2)">1</td><td>NINGUNO (o ICS baja dosis PRN)</td><td>SABA PRN</td><td>Síntomas infrecuentes (&lt;2×/semana), sin factores de riesgo</td></tr>
+      <tr><td style="color:var(--teal2)">2</td><td style="color:var(--teal2)"><strong>ICS baja dosis diario</strong></td><td>SABA PRN</td><td>Síntomas persistentes, sin ICS previo</td></tr>
+      <tr><td style="color:var(--amber2)">3</td><td style="color:var(--amber2)"><strong>ICS baja dosis + LABA</strong></td><td>SABA o Formoterol/ICS</td><td>No controlado con ICS solo</td></tr>
+      <tr><td style="color:var(--amber2)">4</td><td><strong>ICS media/alta dosis + LABA</strong></td><td>Idem</td><td>No controlado con paso 3</td></tr>
+      <tr><td style="color:var(--red2)">5</td><td><strong>ICS alta dosis + LABA + LAMA ± biológicos</strong> (omalizumab, mepolizumab)</td><td>Idem</td><td>Asma grave no controlada</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — LABA NUNCA solo en asma</div>
+      <p>En asma, el <strong>LABA siempre va combinado con ICS</strong>. El uso de LABA sin ICS en asma aumenta el riesgo de exacerbaciones graves y muerte. Si el examen da "agregar LABA solo" → incorrecto. La combinación es ICS + LABA (inhalador combinado o por separado).<br><br>
+      <strong>Excepción:</strong> en EPOC el LABA puede usarse solo o combinado con LAMA.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Crisis asmática — clasificación y manejo</div>
+    <table class="tbl">
+      <tr><th>Gravedad</th><th>Clínica</th><th>SatO₂ / PEFR</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)">Leve-moderada</td><td>Habla frases, FR &lt;25, FC &lt;110, sin uso de accesorios</td><td>SatO₂ &gt;95%, PEFR &gt;50%</td><td>SABA nebulizado c/20 min × 3. Corticoide VO si no mejora</td></tr>
+      <tr><td style="color:var(--amber2)">Moderada-grave</td><td>Habla palabras, FR &gt;25, FC &gt;110, uso de accesorios</td><td>SatO₂ 91–95%, PEFR 33–50%</td><td>SABA + ipratropio nebulizados. O₂. Corticoide IV/VO</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Grave / Status</strong></td><td>No puede hablar, cianosis, agitación/confusión, silencio auscultatorio</td><td style="color:var(--red2)">SatO₂ &lt;91%, PEFR &lt;33%</td><td style="color:var(--red2)">SABA + ipratropio + O₂ + corticoide IV + MgSO₄ IV 2 g + considerar ARM</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Sulfato de magnesio IV 2 g en crisis grave</div>
+      <p>En crisis asmática grave refractaria a SABA + corticoides → <strong>MgSO₄ IV 2 g en 20 minutos</strong>. Broncodilatador por antagonismo del calcio en músculo liso bronquial. Reduce tasa de hospitalización en crisis graves. Mismo mecanismo que en torsades de pointes (dato conexión).</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — silencio auscultatorio</div>
+      <p>"Paciente con asma, lleva 2 horas con disnea. A la auscultación: sin sibilancias." → ¿mejoró? <strong>NO</strong>. El silencio auscultatorio en el asma grave indica que no entra suficiente aire para generar sibilancias = obstrucción muy severa = signo de alarma. Más grave que las sibilancias abundantes.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: EPOC Exacerbación</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Derrame pleural →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 6 — DERRAME PLEURAL ═══════════ -->
+<div class="node" id="n5" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Neumonología transversal</div>
+    <div class="node-title">Derrame pleural</div>
+    <div class="node-subtitle">Trasudado vs exudado · Criterios de Light · Toracocentesis · Empiema · pH pleural</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Todo derrame pleural necesita ser clasificado: trasudado (problema sistémico → tratar causa) o exudado (problema pleural/pulmonar → investigar). Los criterios de Light hacen esa clasificación con 3 parámetros. El empiema es exudado + pH &lt;7.2 → drenaje obligatorio.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico clínico y radiológico</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Clínica</div>
+        <ul>
+          <li>Disnea progresiva (proporcional al volumen)</li>
+          <li>Dolor pleurítico (sugiere exudado)</li>
+          <li>Matidez a la percusión</li>
+          <li>Ausencia de murmullo vesicular</li>
+          <li>Egofanía en el límite superior</li>
+          <li>Soplo pleurítico (raro)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Rx tórax</div>
+        <ul>
+          <li>Ocupación del seno costofrénico → &gt;150–200 mL</li>
+          <li>Opacidad homogénea basal con concavidad superior (curva de Damoiseau)</li>
+          <li>Desplazamiento del mediastino HACIA EL LADO OPUESTO (≠ atelectasia)</li>
+          <li>Eco pleural: confirma y guía toracocentesis</li>
+          <li>TC: evalúa tabicaciones, engrosamiento pleural</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios de Light — el algoritmo diagnóstico del examen</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Exudado si cumple AL MENOS UNO de los siguientes (Light)</div>
+      <ol style="padding-left:16px;font-size:13px;line-height:1.8">
+        <li>Proteínas en líquido pleural / proteínas séricas &gt; <strong>0.5</strong></li>
+        <li>LDH en líquido pleural / LDH sérica &gt; <strong>0.6</strong></li>
+        <li>LDH en líquido pleural &gt; <strong>2/3 del límite superior normal sérico</strong> (habitualmente &gt;200 UI/L)</li>
+      </ol>
+      <p style="margin-top:8px">Si NO cumple ninguno → <strong>TRASUDADO</strong></p>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Característica</th><th style="color:var(--teal2)">Trasudado</th><th style="color:var(--amber2)">Exudado</th></tr>
+      <tr><td>Proteínas LP</td><td>&lt;3 g/dL</td><td>&gt;3 g/dL</td></tr>
+      <tr><td>Relación prot LP/sérica</td><td>&lt;0.5</td><td style="color:var(--amber2)">&gt;0.5</td></tr>
+      <tr><td>Relación LDH LP/sérica</td><td>&lt;0.6</td><td style="color:var(--amber2)">&gt;0.6</td></tr>
+      <tr><td>Glucosa LP</td><td>Normal (~sérica)</td><td>↓ (empiema, TBC, maligno)</td></tr>
+      <tr><td>pH LP</td><td>Normal (&gt;7.3)</td><td>Variable (↓ en empiema, TBC)</td></tr>
+      <tr><td>Causas principales</td><td>IC izquierda (más frecuente), cirrosis, síndrome nefrótico, hipoalbuminemia</td><td>NAC/empiema, TBC, malignidad, TEP, artritis reumatoidea, LES</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IC + diuréticos = falso exudado</div>
+      <p>Paciente con IC tratada con diuréticos puede tener un trasudado que "parece exudado" por concentración de las proteínas al reducirse el líquido. Si hay fuerte sospecha de IC: calcular gradiente de albúmina pleura-suero (GASP). Si &gt;1.2 g/dL → trasudado a pesar de criterios de Light.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Empiema — el exudado que siempre se drena</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">Dx</div>
+        <div class="algo-text"><strong>Criterios de empiema:</strong> pus macroscópico en el líquido pleural, O pH &lt;7.2, O glucosa &lt;40 mg/dL, O gram/cultivo positivo</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">!</div>
+        <div class="algo-text"><strong>Drenaje obligatorio</strong> con tubo pleural (toracotomía/VATS) + antibióticos IV. Solo con drenaje se resuelve el empiema. Sin drenaje → fibrotórax y sepsis persistente.</div>
+      </div>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Derrame paraneumónico</th><th>pH LP</th><th>Glucosa LP</th><th>Conducta</th></tr>
+      <tr><td>No complicado</td><td>&gt;7.3</td><td>&gt;60 mg/dL</td><td>Solo ATB. Toracocentesis diagnóstica</td></tr>
+      <tr><td>Complicado</td><td>7.0–7.2</td><td>40–60 mg/dL</td><td>ATB + drenaje (toracocentesis evacuadora o tubo)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Empiema franco</strong></td><td style="color:var(--red2)">&lt;7.0 o pus</td><td>&lt;40 mg/dL</td><td style="color:var(--red2)"><strong>DRENAJE URGENTE + ATB IV</strong></td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 Derrame por TBC — ADA elevada</div>
+      <p>Derrame exudativo linfocítico con <strong>ADA &gt;40–45 UI/L</strong> → muy sugestivo de TBC pleural. Diagnóstico: biopsia pleural (más rentable que cultivo de LP en TBC). Glucosa baja. Linfocitos &gt;50% de las células.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Asma</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Nódulo pulmonar →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 7 — NÓDULO / CÁNCER ═══════════ -->
+<div class="node" id="n6" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">Neumonología — oncología torácica</div>
+    <div class="node-title">Nódulo pulmonar solitario y cáncer de pulmón</div>
+    <div class="node-subtitle">Criterios de benignidad/malignidad · Criterios de Fleischner · Histología · Screening TC baja dosis</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El nódulo pulmonar solitario en el examen tiene una lógica binaria: ¿tiene características de benignidad o malignidad? Las características morfológicas en TC orientan la conducta (seguimiento vs resección). El cáncer de pulmón más frecuente actualmente es el adenocarcinoma en no fumadores. En fumadores pesados: el screening con TC de baja dosis reduce la mortalidad.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Nódulo pulmonar solitario — características clave</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--teal2)">Benignidad</th><th style="color:var(--red2)">Malignidad</th></tr>
+      <tr><td>Tamaño</td><td>&lt;6 mm</td><td style="color:var(--red2)">&gt;8 mm (mayor probabilidad)</td></tr>
+      <tr><td>Bordes</td><td>Lisos, bien definidos</td><td style="color:var(--red2)">Espiculados ("sol naciente"), lobulados, irregulares</td></tr>
+      <tr><td>Calcificación</td><td>Sólida central / laminar / en palomita de maíz / difusa → BENIGNO</td><td style="color:var(--red2)">Excéntrica o puntiforme → sospechoso</td></tr>
+      <tr><td>Densidad</td><td>Sólido homogéneo (puede ser benigno o maligno)</td><td style="color:var(--red2)">Vidrio esmerilado ("ground glass") o parte sólida + vidrio = sospecha alta</td></tr>
+      <tr><td>Crecimiento</td><td>Estable &gt;2 años en seguimiento → benigno</td><td style="color:var(--red2)">Crecimiento en seguimiento TC</td></tr>
+      <tr><td>PET-TC captación</td><td>SUV bajo (&lt;2.5)</td><td style="color:var(--red2)">SUV &gt;2.5 → alta actividad metabólica</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — calcificación no siempre es benigna</div>
+      <p>Calcificación central sólida, laminar, difusa o "palomita de maíz" → benigna. Pero calcificación <strong>excéntrica o puntiforme</strong> dentro del nódulo puede verse en malignidades. El patrón de calcificación importa tanto como su presencia.</p>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 Nódulos &lt;6 mm en bajo riesgo — no requieren seguimiento de rutina</div>
+      <p>Según criterios de Fleischner (2017): nódulo sólido &lt;6 mm en paciente de bajo riesgo → no se necesita seguimiento rutinario con TC. ≥6 mm: TC a 6–12 meses. Nódulo en vidrio esmerilado ≥6 mm: TC a 6–12 meses.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cáncer de pulmón — tipos histológicos</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Frecuencia actual</th><th>Características</th><th>Relación tabaco</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>Adenocarcinoma</strong></td><td style="color:var(--amber2)">Más frecuente hoy (~40%)</td><td>Periférico, puede ser el nódulo en vidrio esmerilado. Puede ocurrir en NO fumadores. Mutaciones EGFR, ALK</td><td>Moderada</td></tr>
+      <tr><td><strong>Carcinoma escamoso (epidermoide)</strong></td><td>~25–30%</td><td>Central, hiliar, cavitante. Hipercalcemia por PTHrP. Tabaquismo pesado</td><td>Alta</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Microcítico (SCLC)</strong></td><td>~15%</td><td>Central, disemina rápido. Síndromes paraneoplásicos (SIADH, Cushing ectópico, sínd. miasténico Lambert-Eaton). NUNCA cirugía como primera línea</td><td>Muy alta</td></tr>
+      <tr><td><strong>Células grandes</strong></td><td>~10%</td><td>Periférico, agresivo, heterogéneo</td><td>Alta</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 CPNM vs Microcítico — la distinción que pregunta el examen</div>
+      <p><strong>CPNM (no microcítico):</strong> adenocarcinoma + escamoso + células grandes → tratamiento principal: cirugía (estadio I–II) + quimio ± radioterapia.<br><br>
+      <strong>Microcítico (SCLC):</strong> resecable solo en estadio muy inicial (raro). Tratamiento: <strong>quimioterapia + radioterapia</strong> (NO cirugía como primera línea). Alta sensibilidad a la quimio inicialmente, pero recaída rápida. Pronóstico malo.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hipercalcemia en cáncer de pulmón</div>
+      <p>Carcinoma escamoso de pulmón → puede producir PTHrP (proteína relacionada con PTH) → hipercalcemia paraneoplásica. No es metástasis ósea (aunque el cáncer de pulmón también metastatiza en hueso). La hipercalcemia en el contexto de cáncer de pulmón con lesión central y cavitación → pensar escamoso + PTHrP.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Screening de cáncer de pulmón</div>
+    <div class="alert alert-green">
+      <div class="alert-title">✅ Indicación de screening con TC de baja dosis</div>
+      <p><strong>Criterios (USPSTF / guías argentinas):</strong><br>
+      Edad 50–80 años + ≥20 paquetes-año + fumador actual o exfumador con cese &lt;15 años<br><br>
+      Periodicidad: anual<br>
+      Beneficio: reduce mortalidad por cáncer de pulmón en un 20–24% en esta población<br><br>
+      NO está indicado en: menores de 50 años, &lt;20 paquetes-año, exfumadores con cese &gt;15 años, personas sanas sin exposición</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Derrame</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Neumotórax/HTP →</div>
+  </div>
+</div>
+
+<!-- ═══════════ NODO 8 — NEUMOTÓRAX / HTP / FPI ═══════════ -->
+<div class="node" id="n7" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Neumonología — urgencias y crónico</div>
+    <div class="node-title">Neumotórax · Hipertensión pulmonar · Fibrosis pulmonar idiopática</div>
+    <div class="node-subtitle">Espontáneo primario vs secundario · Drenaje · Clasificación OMS HTP · FPI diagnóstico</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres entidades con lógica diferente: neumotórax (urgencia según tensión), hipertensión pulmonar (diagnóstico por cateterismo, tratar según tipo), fibrosis pulmonar idiopática (patrón restrictivo + UIP en TC, pronóstico malo). El examen pregunta sobre el neumotórax a tensión como urgencia absoluta.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Neumotórax — clasificación y manejo</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Perfil</th><th>Conducta</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Espontáneo primario</strong></td><td>Joven alto delgado sin enfermedad pulmonar. Bulla apical. Pequeño</td><td>Pequeño (&lt;2 cm en Rx): observación + O₂. Grande: aspiración con aguja o tubo pleural</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Espontáneo secundario</strong></td><td>EPOC, asma, fibrosis, Marfan, histiocitosis. Peor tolerado</td><td>Siempre tubo pleural (peor reserva funcional)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>A tensión (emergencia)</strong></td><td>Válvula unidireccional: aire entra pero no sale. Mediastino desviado. Shock obstructivo</td><td style="color:var(--red2)"><strong>DESCOMPRESIÓN INMEDIATA con aguja (2° EIC línea medioclavicular) ANTES de Rx. Sin esperar confirmación radiológica</strong></td></tr>
+      <tr><td><strong>Traumático</strong></td><td>Trauma torácico. Hemotórax asociado frecuente</td><td>Tubo pleural. Toracotomía si hemotórax masivo (&gt;1.5 L)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — neumotórax a tensión y Rx</div>
+      <p>Paciente con trauma torácico + hipotensión + ingurgitación yugular + tráquea desviada + ausencia de murmullo vesicular unilateral → <strong>neumotórax a tensión</strong>. NO hay tiempo para Rx. La conducta es <strong>descompresión con aguja inmediata</strong> en el 2° espacio intercostal línea medioclavicular ipsilateral. Después se coloca tubo pleural definitivo. Si esperás el Rx el paciente muere.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipertensión pulmonar (HTP)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Definición hemodinámica</div>
+      <p>Presión arterial pulmonar media (PAPm) &gt;20 mmHg en reposo, medida por <strong>cateterismo cardíaco derecho</strong> (gold standard diagnóstico). La ecocardiografía es el screening (estima la presión sistólica pulmonar).</p>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Grupo OMS</th><th>Causa</th><th>Tratamiento específico</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Grupo 1 — HAP</strong></td><td>Idiopática, heritable, asociada a conectivopatías, VIH, fármacos, cardiopatías congénitas</td><td style="color:var(--red2)">Vasodilat. específicos: análogos de prostaciclina (epoprostenol), antagonistas ET-1 (bosentán), inhibidores PDE-5 (sildenafil)</td></tr>
+      <tr><td><strong>Grupo 2 — IC izquierda</strong></td><td>IC sistólica, diastólica, valvulopatías</td><td>Tratar causa cardíaca</td></tr>
+      <tr><td><strong>Grupo 3 — Enfermedad pulmonar</strong></td><td>EPOC, FPI, hipoxia crónica</td><td>O₂ domiciliario, tratar la enfermedad de base</td></tr>
+      <tr><td><strong>Grupo 4 — HPTEC</strong></td><td>Hipertensión pulmonar tromboembólica crónica post-TEP</td><td>Anticoagulación + tromboendarterectomía pulmonar</td></tr>
+      <tr><td><strong>Grupos 5</strong></td><td>Sarcoidosis, histiocitosis, enfermedades hematológicas</td><td>Tratar causa</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — vasodilat. específicos SOLO en grupo 1</div>
+      <p>Sildenafil, bosentán y análogos de prostaciclina están indicados en <strong>HAP del grupo 1</strong>. Si se usan en grupo 2 (IC izquierda) pueden empeorar el cuadro. Siempre confirmar el grupo antes de decidir tratamiento.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fibrosis pulmonar idiopática (FPI)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Diagnóstico</div>
+        <ul>
+          <li>Patrón restrictivo en espirometría (CVF ↓, FEV1/FVC normal o ↑)</li>
+          <li>DLCO (difusión de CO): muy disminuida</li>
+          <li>TC de alta resolución: patrón UIP (usual interstitial pneumonia)</li>
+          <li>UIP: "panal de abejas" + bronquiectasias de tracción en lóbulos inferiores y subpleurales</li>
+          <li>Biopsia quirúrgica si TC atípica (patrón posible o indeterminado)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Pronóstico y tratamiento</div>
+        <ul>
+          <li>Progresión irreversible. Mediana de supervivencia: 3–5 años desde diagnóstico</li>
+          <li>Antifibróticos: <strong>Pirfenidona</strong> o <strong>Nintedanib</strong> enlentecen progresión (no curan)</li>
+          <li>NO corticoides (empeoran o no benefician en FPI)</li>
+          <li>Trasplante pulmonar: única cura potencial</li>
+          <li>Diagnóstico diferencial: neumonitis por hipersensibilidad, conectivopatías</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Neumonología</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Tabaquismo (N1) ↔ EPOC (N2-4):</strong> el tabaco es causa del 85-90% del EPOC. La cesación modifica la historia natural</li>
+        <li><strong>EPOC (N2) ↔ Infectología (CL5):</strong> EPOC + síntomas respiratorios → NAC es la causa más frecuente de exacerbación infecciosa</li>
+        <li><strong>EPOC (N3) ↔ Cardiología:</strong> cor pulmonale en EPOC = IC derecha crónica. EPOC + FA = frecuente → no usar BB no selectivos</li>
+        <li><strong>HTP (N8) ↔ TEP (Cardio N10):</strong> TEP no resuelto → HTP tromboembólica crónica (Grupo 4)</li>
+        <li><strong>Derrame pleural (N6) ↔ IC:</strong> IC izquierda = causa más frecuente de trasudado pleural (derecho o bilateral)</li>
+        <li><strong>Nódulo pulmonar (N7) ↔ TBC (Infectología N2):</strong> granuloma por TBC = nódulo benigno con calcificación central. Siempre considerar en diagnóstico diferencial</li>
+        <li><strong>Asma (N5) ↔ Alergología:</strong> asma atópica, eosinofilia, IgE elevada → misma base inmune que rinitis alérgica y eccema (tríada atópica)</li>
+        <li><strong>Tabaquismo ↔ Salud Pública:</strong> Prochaska = modelo de cambio de conducta → aplica también a alcohol, drogas, sedentarismo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:12px;letter-spacing:.05em">✅ NEUMONOLOGÍA — 8/8 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 45 preguntas del banco (CL4 + neumo del CL5). Los temas más repetidos: Prochaska (contemplación vs precontemplación), espirometría postBD = único diagnóstico de EPOC, LAMA primera línea en EPOC sintomático, ICS nunca primero en EPOC, LABA nunca solo en asma, criterios de Light, neumotórax a tensión = aguja antes de Rx.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-b">CL4: 41 preg EPOC/Asma/Tabaco</span>
+      <span class="tag tag-t">GINA 2023 · GOLD 2024</span>
+      <span class="tag tag-a">GPC MSAL tabaquismo · Criterios de Light</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Nódulo/Cáncer</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div><!-- /content -->
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

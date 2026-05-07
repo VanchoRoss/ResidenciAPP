@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infectología Adultos — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;--border2:#3d4a6a;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --pink:#d4537e;--pink2:#ed93b1;--pinkb:#2e1020;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:270px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}
+.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}
+.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}
+.tag-g{background:var(--greenb);color:var(--green2)}
+.tag-c{background:var(--coralb);color:var(--coral2)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+hl{color:var(--nc);font-weight:600}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:4px}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid,.three-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Infectología Adultos</div>
+    <div class="sb-sub">Banco 2016–2025 · Bibliografía CABA 2026</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">91</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">10</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--purple)">2</div><div class="sb-stat-l">sprints</div></div>
+    </div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--teal)">Sprint CL5 · Respiratorio — 34 preg.</div>
+  <div class="nav-item active" style="--item-color:var(--teal)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">NAC</div><div class="nav-n">CURB-65 · tratamiento empírico · Rx</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">TBC</div><div class="nav-n">PPD · XpertMTB · HRZE · profilaxis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Influenza · COVID · Hantavirus</div><div class="nav-n">Oseltamivir · pulmón neutrofílico</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--purple)">Sprint CL6 · Sistémica — 61 preg.</div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">VIH / SIDA</div><div class="nav-n">TARGA · CD4 · profilaxis · PEP</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Sífilis y otras ITS</div><div class="nav-n">Estadios · VDRL · penicilina · gonorrea</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Hepatitis virales</div><div class="nav-n">Marcadores HBV · HCV · HAV</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Vectoriales y zoonosis</div><div class="nav-n">Dengue · Chagas · Hanta · Brucelosis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Sepsis y meningitis</div><div class="nav-n">qSOFA · ATB empírico · PL</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--coral)" onclick="show(8)">
+    <div class="nav-num">9</div>
+    <div class="nav-text"><div class="nav-name">Diarrea infecciosa y parasitosis</div><div class="nav-n">Clostridium · Giardia · TOH</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(9)">
+    <div class="nav-num">10</div>
+    <div class="nav-text"><div class="nav-name">Micosis · FOD · Neutropenia febril</div><div class="nav-n">Histoplasma · Criptococo · G-CSF</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ══════════════════════════════════════════ NODO 1 ══ -->
+<div class="node active" id="n0" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL5 · 34 preguntas</div>
+    <div class="node-title">NAC — Neumonía adquirida en la comunidad</div>
+    <div class="node-subtitle">CURB-65 · Criterios de hospitalización · Tratamiento empírico · Rx tórax</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La NAC mata por hipoxemia y sepsis. El examen pregunta tres cosas: ¿el diagnóstico? (clínica + Rx), ¿hospitalizás o no? (CURB-65), ¿qué antibiótico? (ambulatorio: amoxicilina o azitromicina. Hospitalizado: betalactámico + macrólido o quinolona respiratoria). El germen importa menos que la conducta.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico de NAC</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Criterios clínicos</div>
+        <ul>
+          <li>Fiebre + tos (con o sin expectoración)</li>
+          <li>Taquipnea, disnea, dolor pleurítico</li>
+          <li>Rales o matidez en auscultación</li>
+          <li>Sin hospitalización en los 14 días previos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Confirmación: Rx tórax</div>
+        <ul>
+          <li>Infiltrado o condensación nueva = diagnóstico</li>
+          <li>Condensación lobular típica → <em>S. pneumoniae</em></li>
+          <li>Infiltrado intersticial bilateral → atípicos (Mycoplasma, Chlamydophila, viral)</li>
+          <li>Cavitación → <em>S. aureus</em>, Klebsiella, TBC</li>
+          <li>Derrame pleural asociado → pensar empiema</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — condensación vs atelectasia en Rx</div>
+      <p><strong>Condensación:</strong> broncograma aéreo presente (el aire en bronquios rodea al parénquima consolidado). Estructura ocupada por líquido/células. <strong>Atelectasia:</strong> NO tiene broncograma aéreo. Volumen pulmonar reducido. El mediastino se desplaza HACIA el lado afectado. Condensación (neumonía) → mediastino CENTRADO o sin desplazamiento.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CURB-65 — escala de gravedad y decisión de internación</div>
+    <table class="tbl">
+      <tr><th>Letra</th><th>Variable</th><th>Punto</th></tr>
+      <tr><td><span class="tag tag-t">C</span></td><td>Confusión (nuevo inicio)</td><td>1</td></tr>
+      <tr><td><span class="tag tag-t">U</span></td><td>Urea &gt;7 mmol/L (BUN &gt;19 mg/dL o &gt;43 mg/dL)</td><td>1</td></tr>
+      <tr><td><span class="tag tag-t">R</span></td><td>Frecuencia Respiratoria ≥30 rpm</td><td>1</td></tr>
+      <tr><td><span class="tag tag-t">B</span></td><td>Presión arterial: sistólica &lt;90 mmHg o diastólica ≤60 mmHg</td><td>1</td></tr>
+      <tr><td><span class="tag tag-t">65</span></td><td>Edad ≥65 años</td><td>1</td></tr>
+    </table>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Puntaje</th><th>Mortalidad estimada</th><th>Conducta</th></tr>
+      <tr><td style="color:var(--teal2)">0–1</td><td>&lt;1–2%</td><td style="color:var(--teal2)"><strong>AMBULATORIO</strong></td></tr>
+      <tr><td style="color:var(--amber2)">2</td><td>~9%</td><td style="color:var(--amber2)"><strong>AMBULATORIO supervisado o internación breve</strong></td></tr>
+      <tr><td style="color:var(--red2)">3–5</td><td>15–40%</td><td style="color:var(--red2)"><strong>HOSPITALIZACIÓN. Puntaje 4–5: UTI</strong></td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 También hospitalizás si... (independiente del CURB-65)</div>
+      <p>SatO₂ &lt;94% · hipoxemia · inmunosupresión · falta de soporte social · comorbilidades graves descompensadas · imposibilidad de tomar medicación oral · no respuesta a ATB ambulatorio en 48–72 hs.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento antibiótico empírico</div>
+    <table class="tbl">
+      <tr><th>Escenario</th><th>Antibiótico de elección</th><th>Alternativa</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Ambulatorio sin comorbilidades</strong></td><td>Amoxicilina 1 g c/8h VO × 5–7 días</td><td>Azitromicina 500 mg/día × 5 días (si sospecha atípicos)</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Ambulatorio con comorbilidades</strong> (EPOC, DM, asplenia, IRC, uso reciente ATB)</td><td>Amoxicilina-clavulánico 875/125 mg c/8h + Azitromicina</td><td>Levofloxacina 750 mg/día × 5 días (monoterapia)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Hospitalizado, no UCI</strong></td><td>Ampicilina-sulbactam IV + Azitromicina IV</td><td>Ceftriaxona 1–2 g IV/día + Azitromicina IV, o Levofloxacina IV</td></tr>
+      <tr><td style="color:var(--red2)"><strong>UCI / NAC grave</strong></td><td>Betalactámico antipseudomónico + Azitromicina</td><td>+ agregar ATB anti-MRSA si riesgo (vancomicina o linezolid)</td></tr>
+      <tr><td><strong>Sospecha de aspiración</strong></td><td>Amoxicilina-clavulánico o Ampicilina-sulbactam</td><td>Cobertura anaeróbica siempre</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — NAC por Legionella</div>
+      <p>Paciente con NAC grave + hiponatremia + diarrea + confusión + exposición a torres de refrigeración o crucero → <strong>Legionella pneumophila</strong>. Diagnóstico: antígeno urinario para Legionella. Tratamiento: azitromicina o quinolona (NO betalactámico solo, no cubren intracelulares).</p>
+    </div>
+    <div class="alert alert-trap" style="margin-top:8px">
+      <div class="alert-title">⚠️ Trampa — NAC en ADVP o post-influenza</div>
+      <p>Post-influenza o usuario de drogas IV con cavitación en Rx → <strong>S. aureus</strong> (incluyendo MRSA). Agregar cobertura anti-MRSA: vancomicina o linezolid.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Gérmenes por contexto clínico — patrón del examen</div>
+    <table class="tbl">
+      <tr><th>Contexto</th><th>Germen a pensar</th><th>Pista clave</th></tr>
+      <tr><td>Neumonía lobar típica, joven sano</td><td><em>S. pneumoniae</em></td><td>Inicio brusco, expectoración herrumbrosa</td></tr>
+      <tr><td>Neumonía "atípica" intersticial, joven</td><td><em>Mycoplasma pneumoniae</em></td><td>Evolución lenta, sin respuesta a amoxicilina, aglutininas frías +</td></tr>
+      <tr><td>EPOC + NAC</td><td><em>H. influenzae</em>, <em>S. pneumoniae</em>, Moraxella</td><td>Comorbilidad EPOC</td></tr>
+      <tr><td>Inmunocomprometido (CD4&lt;200)</td><td><em>Pneumocystis jirovecii</em> (PCP)</td><td>Disnea progresiva, LDH elevada, infiltrado bilateral</td></tr>
+      <tr><td>Aspiración, mal estado dental</td><td>Anaerobios, polimicrobiana</td><td>Enfermedad periodontal, ingesta de alcohol, disfagia</td></tr>
+      <tr><td>Exposición a palomas / gallineros</td><td><em>Histoplasma capsulatum</em> / <em>Cryptococcus</em></td><td>Nódulo o condensación que no responde a ATB habituales</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-casos tipo examen</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso 1</div>
+      <p>Hombre 70 años. Fiebre 38.9°, tos con expectoración purulenta, FR 22 rpm, PA 120/80, BUN 14 mg/dL, orientado. CURB-65 = <strong>1</strong> (solo edad ≥65). SatO₂ 96%.</p>
+      <p style="margin-top:6px"><strong>Conducta: AMBULATORIO</strong> con amoxicilina 1 g c/8h × 5-7 días. No hay criterio de internación.</p>
+    </div>
+    <div class="alert alert-caso" style="margin-top:8px">
+      <div class="alert-title">Caso 2</div>
+      <p>Mujer 68 años. NAC confirmada. FR 32 rpm, confusión aguda, PA 85/60, BUN 48 mg/dL. CURB-65 = <strong>4</strong>.</p>
+      <p style="margin-top:6px"><strong>Conducta: HOSPITALIZACIÓN, probablemente UTI</strong>. Ceftriaxona IV + azitromicina IV. SatO₂ y hemocultivos antes del ATB.</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3" onclick="show(0)">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: TBC →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 2 ══ -->
+<div class="node" id="n1" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL5 · 34 preguntas</div>
+    <div class="node-title">Tuberculosis</div>
+    <div class="node-subtitle">PPD · XpertMTB/RIF · Tratamiento HRZE · TBC latente · Profilaxis con isoniacida</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">TBC es una enfermedad de largo plazo: el examen pregunta diagnóstico (PPD vs cultivo vs Xpert), tratamiento (HRZE, cuántas fases, cuántos meses) y especialmente TBC latente → cuándo dar isoniacida profiláctica. La clave es saber que PPD positivo no es TBC activa.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico de TBC activa — el algoritmo</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">1</div>
+        <div class="algo-text"><strong>Sospecha clínica:</strong> tos &gt;3 semanas + hemoptisis + pérdida de peso + sudoración nocturna + fiebre vespertina + contacto previo con TBC</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">2</div>
+        <div class="algo-text"><strong>Rx tórax:</strong> infiltrado de lóbulos superiores, cavitación, adenopatía hiliar. Puede ser normal en inmunocomprometidos</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">3</div>
+        <div class="algo-text"><strong>Baciloscopia (BAAR):</strong> 3 muestras de esputo en días consecutivos. Primer estudio de confirmación rápida. Sensibilidad ~60-80%. POSITIVO: iniciar tratamiento. NEGATIVO: no descarta</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">4</div>
+        <div class="algo-text"><strong>XpertMTB/RIF (GeneXpert):</strong> PCR que detecta M. tuberculosis Y resistencia a rifampicina en 2 horas. Primera línea en Argentina según Norma 2016. Sensibilidad &gt;95%. El estudio que el examen pregunta cuando hay acceso</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--tealb);color:var(--teal2)">5</div>
+        <div class="algo-text"><strong>Cultivo + antibiograma:</strong> gold standard, pero tarda 3–8 semanas (Löwenstein-Jensen) o 2–3 semanas (MGIT automatizado). Necesario para confirmar resistencias</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — PPD positivo NO es TBC activa</div>
+      <p>PPD (prueba de tuberculina) mide respuesta inmune, NO presencia del bacilo activo. PPD positivo = infección previa o latente (o vacunación BCG reciente). Para TBC activa siempre se necesita baciloscopia o Xpert positivo, o cultivo. El examen da un PPD de 12 mm y pregunta "¿cuál es el diagnóstico?" → respuesta: <strong>infección tuberculosa latente</strong>, no enfermedad activa.</p>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 Punto de corte del PPD según riesgo</div>
+      <p><strong>≥5 mm:</strong> VIH+, inmunosuprimidos, contacto estrecho con TBC activa, lesión fibrótica en Rx (TBC previa).<br>
+      <strong>≥10 mm:</strong> personal de salud, trabajadores de salud, presos, personas sin hogar, nacidos en país endémico, diabéticos, IRC, etc.<br>
+      <strong>≥15 mm:</strong> población general sin factores de riesgo.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de TBC activa — esquema HRZE</div>
+    <table class="tbl">
+      <tr><th>Fase</th><th>Duración</th><th>Fármacos</th><th>Objetivo</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Intensiva</strong></td><td style="color:var(--red2)"><strong>2 meses</strong></td><td>H + R + Z + E (4 fármacos)</td><td>Destruir bacilos activos en división rápida</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Mantenimiento</strong></td><td style="color:var(--teal2)"><strong>4 meses</strong></td><td>H + R (2 fármacos)</td><td>Eliminar bacilos persistentes</td></tr>
+      <tr><td colspan="4" style="color:var(--text3);font-size:12px">Total estándar: <strong>6 meses</strong> (2HRZE + 4HR)</td></tr>
+    </table>
+    <div class="cards-grid" style="margin-top:10px">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">¿Cuándo alargar a 9 meses?</div>
+        <ul>
+          <li>TBC meníngea: 2HRZE + 7HR = 9 meses</li>
+          <li>TBC ósea/articular: 9–12 meses</li>
+          <li>TBC miliar: algunos esquemas 9 meses</li>
+          <li>VIH+ con TBC pulmonar: igual que en no VIH</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Efectos adversos a conocer</div>
+        <ul>
+          <li><strong>Isoniacida (H):</strong> neuropatía periférica (dar piridoxina B6), hepatotoxicidad</li>
+          <li><strong>Rifampicina (R):</strong> hepatotoxicidad, coloración naranja de secreciones (orina, lágrimas), interacciones (anticonceptivos, metadona)</li>
+          <li><strong>Pirazinamida (Z):</strong> hiperuricemia, hepatotoxicidad</li>
+          <li><strong>Etambutol (E):</strong> neuritis óptica (ver visión de colores)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">TBC latente — cuándo y cómo tratar</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 ¿Cuándo tratar infección latente (IGRA/PPD +, sin TBC activa)?</div>
+      <p>Indicaciones prioritarias en Argentina (Norma Nacional):</p>
+      <ul>
+        <li>VIH positivo con PPD ≥5 mm (o IGRA +)</li>
+        <li>Contacto estrecho de caso bacilífero con PPD ≥5 mm</li>
+        <li>Conversión reciente de PPD (dentro del último año)</li>
+        <li>Imagen fibrótica en Rx compatible con TBC curada</li>
+        <li>Inmunosupresión: corticoides &gt;15 mg/día &gt;1 mes, anti-TNF, trasplantados</li>
+        <li>Niños &lt;5 años contacto de caso</li>
+      </ul>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Esquema</th><th>Duración</th><th>Eficacia</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Isoniacida (H) sola</strong></td><td>9 meses (preferido) o 6 meses</td><td>~70–90% de reducción del riesgo de progresión</td></tr>
+      <tr><td>Isoniacida + Rifapentina</td><td>3 meses (1 dosis/semana)</td><td>Equivalente, mejor adherencia</td></tr>
+      <tr><td>Rifampicina sola</td><td>4 meses</td><td>Alternativa si intolerancia a isoniacida</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — SIEMPRE descartar TBC activa antes de dar profilaxis</div>
+      <p>Si empezás isoniacida sola en un paciente con TBC activa no diagnosticada → seleccionás resistencia a isoniacida. Siempre Rx de tórax + baciloscopia × 3 antes de iniciar tratamiento de latente.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">TBC meníngea y extrapulmonar — lo que el examen suma</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">TBC meníngea</div>
+        <ul>
+          <li>LCR: pleocitosis mononuclear, glucosa baja, proteínas altas, ADA elevada</li>
+          <li>Diagnóstico: cultivo de LCR (lento), Xpert en LCR, ADA &gt;10 UI/L</li>
+          <li>Tratamiento: 2HRZE + 7HR = 9 meses + <strong>corticoides (dexametasona)</strong> en fase inicial (reduce mortalidad y secuelas)</li>
+          <li>Mortalidad alta aún con tratamiento</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">TBC miliar</div>
+        <ul>
+          <li>Diseminación hematógena masiva</li>
+          <li>Rx: nódulos "en grano de mijo" bilaterales difusos</li>
+          <li>Fiebre prolongada, adenopatías, hepatoesplenomegalia</li>
+          <li>Diagnóstico: hemocultivos en Löwenstein, baciloscopia (baja sensibilidad)</li>
+          <li>Mayor frecuencia en VIH, inmunosuprimidos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 28 años, VIH+ con CD4 250. PPD: 8 mm. Rx de tórax: normal. Baciloscopia × 3: negativas. Asintomático respiratorio. ¿Cuál es la conducta?</p>
+      <p style="margin-top:6px"><strong>Respuesta: Tratar infección tuberculosa latente con isoniacida 9 meses.</strong> En VIH el punto de corte es ≥5 mm, y este tiene 8 mm. La TBC activa fue descartada (Rx normal + baciloscopias negativas). Dar también piridoxina (B6) para prevenir neuropatía.</p>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: NAC</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Influenza/COVID →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 3 ══ -->
+<div class="node" id="n2" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">Sprint CL5 · 34 preguntas</div>
+    <div class="node-title">Influenza · COVID-19 · Hantavirus pulmonar</div>
+    <div class="node-subtitle">Oseltamivir · Grupos de riesgo · SDRA · Síndrome pulmonar por Hantavirus</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres infecciones respiratorias virales con una lógica diferente. Influenza: tratar con oseltamivir en grupos de riesgo las primeras 48h. COVID: soporte y antivirales selectivos. Hantavirus: el diagnóstico temprano es clínico (exposición a roedores) porque evoluciona a SDRA fatal rápidamente.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Influenza — diagnóstico, grupos de riesgo y tratamiento</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Clínica típica</div>
+        <ul>
+          <li>Inicio brusco (distingue de resfrío)</li>
+          <li>Fiebre alta (38.5–40°C), escalofríos</li>
+          <li>Mialgias intensas, cefalea, astenia</li>
+          <li>Síntomas respiratorios: tos seca, odinofagia</li>
+          <li>Período de incubación: 1–4 días</li>
+          <li>Contagio: 1 día antes hasta 5–7 días post-inicio</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Grupos de riesgo para complicaciones</div>
+        <ul>
+          <li>Embarazadas (cualquier trimestre)</li>
+          <li>Niños &lt;5 años (especialmente &lt;2 años)</li>
+          <li>Adultos ≥65 años</li>
+          <li>Enfermedad crónica: cardiopatía, neumopatía, DM, IRC, inmunocompromiso</li>
+          <li>Obesidad IMC &gt;40</li>
+          <li>Residentes de instituciones cerradas</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Oseltamivir — cuándo y cuánto</div>
+      <p><strong>Indicación:</strong> grupos de riesgo en las primeras <strong>48 horas</strong> del inicio de síntomas. También en cualquier paciente con influenza grave o que requiere hospitalización (sin límite de tiempo).<br><br>
+      <strong>Dosis adultos:</strong> 75 mg c/12h × 5 días. En gripe grave: 75 mg c/12h × 10 días o dosis doble.<br><br>
+      <strong>No se indica</strong> en influenza no complicada en adultos sanos menores de 65 sin factores de riesgo.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — amantadina ya no se usa en Argentina</div>
+      <p>Las cepas de influenza actuales (H1N1 pandémico) son resistentes a amantadina. El único antiviral vigente es <strong>oseltamivir</strong>. El zanamivir (inhalado) es alternativa.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">COVID-19 — manejo según gravedad</div>
+    <table class="tbl">
+      <tr><th>Gravedad</th><th>Definición</th><th>Conducta</th></tr>
+      <tr><td style="color:var(--teal2)">Leve</td><td>Síntomas sin disnea, SatO₂ ≥95%</td><td>Aislamiento domiciliario. Sintomático. Alta vigilancia</td></tr>
+      <tr><td style="color:var(--amber2)">Moderada</td><td>Neumonía, SatO₂ 90–94%</td><td>Hospitalización. O₂ suplementario. Dexametasona si requiere O₂</td></tr>
+      <tr><td style="color:var(--red2)">Grave</td><td>SatO₂ &lt;90%, SDRA, shock</td><td>UTI. VMNI o ARM. Decúbito prono. Dexametasona + Baricitinib o Tocilizumab</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Decúbito prono — cómo funciona</div>
+      <p>En SDRA/COVID grave: poner al paciente boca abajo mejora la ventilación de zonas posteriores del pulmón (las más afectadas). Mejora la oxigenación sin requerir mayor FiO₂. Se mantiene ≥16 horas por ciclo. También se usa en vigilia ("proning vigil") en pacientes no intubados con COVID.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hantavirus pulmonar — la urgencia que el examen repite</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Síndrome pulmonar por Hantavirus — reconocerlo es salvarlo</div>
+      <p><strong>Epidemiología:</strong> Argentina (especialmente sur y zona rural), exposición a roedores (ratón colilargo), actividades al aire libre.<br><br>
+      <strong>Fases:</strong><br>
+      1. Prodrómica (3–5 días): fiebre, mialgias, cefalea → parece gripe → ERROR diagnóstico<br>
+      2. Cardiopulmonar (&lt;48h): edema pulmonar NO cardiogénico → SDRA → shock cardiogénico → muerte<br><br>
+      <strong>Diagnóstico:</strong> serología IgM anti-Hantavirus (ELISA). RT-PCR en estadio precoz.<br><br>
+      <strong>Tratamiento:</strong> soporte intensivo (ARM, inotrópicos). NO hay antiviral efectivo. Mortalidad 30–50%.<br><br>
+      <strong>La clave del examen:</strong> dato de exposición a roedores en zona rural + deterioro respiratorio rápido = Hantavirus hasta demostrar lo contrario → internación inmediata.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Comparativo rápido — infecciones respiratorias virales</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th>Influenza</th><th>COVID-19</th><th>Hantavirus</th></tr>
+      <tr><td>Inicio</td><td>Brusco</td><td>Gradual (2–14 días incubación)</td><td>Brusco, prodrómica inespecífica</td></tr>
+      <tr><td>Síntoma dominante</td><td>Mialgias intensas</td><td>Ageusia/anosmia, disnea tardía</td><td>Edema pulmonar rápido</td></tr>
+      <tr><td>Contagio</td><td>Gotas (Flügge)</td><td>Aerosoles + gotas</td><td>Inhalación de heces/orina de roedor</td></tr>
+      <tr><td>Antiviral</td><td>Oseltamivir</td><td>Nirmatrelvir/ritonavir (Paxlovid) en riesgo</td><td>NO (soporte)</td></tr>
+      <tr><td>Vacuna disponible</td><td>Sí (anual, calendario)</td><td>Sí (esquema primario + refuerzos)</td><td>NO en Argentina</td></tr>
+    </table>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: TBC</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: VIH →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 4 ══ -->
+<div class="node" id="n3" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL6 · 61 preguntas</div>
+    <div class="node-title">VIH / SIDA</div>
+    <div class="node-subtitle">TARGA primera línea · Conteo CD4 · Enfermedades oportunistas · PEP · Ley</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">VIH en el examen tiene una lógica sistemática: el CD4 define el estadio y las profilaxis, la carga viral define eficacia del TARGA, y la ley 23.798 define los derechos del paciente. Primero pregunta el TARGA de primera línea, después qué profilaxis dar según CD4, y siempre PEP en exposición accidental.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico de VIH</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">1</div>
+        <div class="algo-text"><strong>Screening:</strong> ELISA de 4ª generación (detecta anticuerpos + antígeno p24). Alta sensibilidad. Período ventana ~18 días</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">2</div>
+        <div class="algo-text"><strong>Si ELISA positivo:</strong> confirmación con Western Blot o PCR cuantitativa de ARN viral (carga viral)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">3</div>
+        <div class="algo-text"><strong>Infección aguda:</strong> detectar con carga viral (ARN VIH) cuando ELISA aún puede ser negativo (período ventana). Cuadro mononucleósico</div>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Ley 23.798 — Test de VIH en adolescentes (pregunta de ley)</div>
+      <p>Desde la modificación legal: adolescente de <strong>13 años o más</strong> puede solicitar el test de VIH sin autorización de los padres, con confidencialidad garantizada. El examen siempre pone una edad (13, 14, 15, 16 años) y pregunta si necesita firma de los padres → NO.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">TARGA de primera línea — el esquema que más pregunta el examen</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Primera línea preferida en Argentina (guías actualizadas)</div>
+      <p><strong>DTG + TDF/FTC</strong> (dolutegravir + tenofovir disoproxil fumarato / emtricitabina)<br><br>
+      o alternativamente: <strong>BIC/TAF/FTC</strong> (bictegravir / tenofovir alafenamida / emtricitabina)<br><br>
+      El esquema es siempre 3 fármacos (2 ITIAN + 1 INSTI o 1 ITINN o 1 IP). El INSTI (dolutegravir, bictegravir) reemplazó al efavirenz como preferido por menor toxicidad y alta barrera genética a la resistencia.<br><br>
+      <strong>Regla fácil:</strong> DTG + TDF/FTC = 3 pastillas (o una combinación fija). Es el más preguntado.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — ¿cuándo iniciar TARGA?</div>
+      <p>El TARGA se inicia en <strong>TODOS los pacientes con VIH confirmado, sin importar el CD4</strong>. Esto cambió hace años: antes se esperaba a CD4 &lt;350. Ahora: tratamiento universal. La excepción temporal es coincidir con infección oportunista activa (Ej: meningitis por Criptococo → esperar 4–6 semanas antes de iniciar TARGA para evitar síndrome de reconstitución inmune).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CD4 y enfermedades oportunistas — la tabla más importante del nodo</div>
+    <table class="tbl">
+      <tr><th>CD4 (céls/mm³)</th><th>Infecciones/enfermedades oportunistas características</th></tr>
+      <tr><td style="color:var(--teal2)">&gt;500</td><td>Sin inmunosupresión significativa. Infecciones similares a población general. Candidiasis oral puede aparecer</td></tr>
+      <tr><td style="color:var(--amber2)">200–500</td><td>Candidiasis oral/esofágica. Herpes zóster. TBC pulmonar. Leucoplasia oral vellosa. Molluscum contagioso</td></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;200 → SIDA</strong></td><td><strong>PCP (Pneumocystis jirovecii)</strong>. Toxoplasmosis cerebral. TBC diseminada/miliar. Criptosporidiosis. Histoplasmosis. Cryptococosis meníngea</td></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;100</strong></td><td>CMV (retinitis, colitis). Complejo Mycobacterium avium (MAC). Microsporidiosis. Leucoencefalopatía multifocal progresiva (JC virus)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;50</strong></td><td>CMV generalizado, MAC diseminado, toxoplasmosis grave</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Profilaxis según CD4 — lo más preguntado</div>
+    <table class="tbl">
+      <tr><th>CD4</th><th>Profilaxis</th><th>Fármaco</th></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;200 céls/mm³</strong></td><td style="color:var(--red2)"><strong>PCP (Pneumocystis)</strong></td><td style="color:var(--red2)"><strong>TMP-SMX 1 comp fuerte/día</strong> (primera línea). Alt: pentamidina inhalada, dapsona</td></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;100 céls/mm³</strong></td><td>Toxoplasmosis (si IgG anti-Toxo positiva)</td><td>TMP-SMX 1 comp fuerte/día (misma dosis que para PCP, cubre ambas)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>&lt;50 céls/mm³</strong></td><td>MAC (Mycobacterium avium complex)</td><td>Azitromicina 1200 mg/semana o claritromicina 500 mg c/12h</td></tr>
+      <tr><td>Cualquier CD4</td><td>TBC latente (PPD ≥5 mm)</td><td>Isoniacida 9 meses + piridoxina</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — TMP-SMX y el CD4</div>
+      <p>TMP-SMX en VIH cumple dos funciones: profilaxis de PCP (CD4 &lt;200) Y profilaxis de toxoplasmosis (CD4 &lt;100 + IgG+). Con una sola pastilla se cubre ambas. El examen pone CD4 de 150 con toxo IgG positiva y pregunta profilaxis → TMP-SMX.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">PEP — Profilaxis post-exposición al VIH</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">!</div>
+        <div class="algo-text"><strong>URGENCIA:</strong> iniciar dentro de las <strong>72 horas</strong> de la exposición. Cuanto antes, mejor. Idealmente en las primeras 2 horas. Después de 72h: NO tiene beneficio.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">1</div>
+        <div class="algo-text"><strong>Exposición significativa:</strong> punción con aguja de paciente VIH+, mucosa con sangre, relación sexual sin preservativo con VIH+</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">2</div>
+        <div class="algo-text"><strong>Esquema preferido:</strong> DTG + TDF/FTC × 28 días (3 fármacos). Duración estricta: 4 semanas completas</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">3</div>
+        <div class="algo-text"><strong>Seguimiento:</strong> test de VIH basal, a las 6 semanas, 3 y 6 meses. También hepatitis B, C, sífilis</div>
+      </div>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 PrEP (Profilaxis pre-exposición)</div>
+      <p>TDF/FTC tomado diariamente por personas VIH negativas con alto riesgo (trabajadores sexuales, ADVP, parejas serodiscordantes). Eficacia &gt;90% con adherencia. Disponible en Argentina.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Infecciones oportunistas más preguntadas</div>
+    <table class="tbl">
+      <tr><th>Enfermedad</th><th>CD4</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>PCP</strong></td><td>&lt;200</td><td>Rx: infiltrado bilateral difuso "en vidrio esmerilado". LDH elevada. Lavado broncoalveolar con tinciones</td><td>TMP-SMX 15-20 mg/kg/día IV × 21 días + corticoides si PaO₂ &lt;70</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Toxoplasmosis cerebral</strong></td><td>&lt;100</td><td>RMN: lesiones anulares múltiples con efecto de masa, edema. Especialmente lóbulos frontales y ganglios basales. IgG anti-Toxo +</td><td>Pirimetamina + sulfadiazina + ácido folínico × 6 semanas</td></tr>
+      <tr><td style="color:var(--purple2)"><strong>Criptococosis meníngea</strong></td><td>&lt;100</td><td>LCR: presión elevada, células bajas, tinta china + (levaduras encapsuladas). Ag criptocócico sérico y en LCR</td><td>Anfotericina B + flucitosina × 2 sem → Fluconazol mantenimiento. Punciones de descarga para HIC</td></tr>
+      <tr><td style="color:var(--red2)"><strong>CMV retinitis</strong></td><td>&lt;50</td><td>Fondo de ojo: lesiones hemorrágicas perivasculares "pizza con queso"</td><td>Ganciclovir IV o valganciclovir VO</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Toxo vs Linfoma en SNC</div>
+      <p>Ambas dan lesiones en RMN con efecto de masa en VIH con CD4 &lt;100. <strong>Diferencia clave:</strong> Toxoplasmosis: múltiples lesiones, responde al tratamiento empírico en 2 semanas (test terapéutico). Linfoma primario del SNC: lesión única o pocas lesiones, NO responde a toxo-tratamiento, EBV+ en LCR. Si no mejora con 2 semanas de pirimetamina + sulfadiazina → biopsia cerebral.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Influenza</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Sífilis →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 5 ══ -->
+<div class="node" id="n4" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL6 · 61 preguntas</div>
+    <div class="node-title">Sífilis y otras ITS</div>
+    <div class="node-subtitle">Estadios · Diagnóstico VDRL / FTA-abs · Penicilina · Seguimiento · Gonorrea · Clamidia</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Sífilis es la ITS más preguntada. El examen da un VDRL y pregunta diagnóstico, tratamiento y seguimiento. La regla: VDRL en cualquier dilución (incluso 1:1) en un contexto compatible → tratar con penicilina. El seguimiento es con VDRL, nunca con FTA-abs. Y conocer las diferencias entre estadios es clave.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sífilis — estadios y clínica</div>
+    <table class="tbl">
+      <tr><th>Estadio</th><th>Tiempo</th><th>Lesión característica</th><th>Serología</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Primaria</strong></td><td>3–90 días post-contagio</td><td><strong>Chancro sifilítico:</strong> úlcera indolora, base limpia, indurada, borde definido. Adenopatía inguinal indolora bilateral</td><td>VDRL puede ser negativo o bajo título. FTA-abs ya positivo</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Secundaria</strong></td><td>4–10 semanas tras chancro</td><td>Rash palmoplantar (palmeras + plantas), condilomas planos, linfadenopatía generalizada, alopecia en "mordiscos de polilla"</td><td>VDRL muy positivo (títulos altos)</td></tr>
+      <tr><td>Latente precoz/tardía</td><td>1–2 años / &gt;2 años</td><td>Asintomático. Solo serología positiva</td><td>VDRL variable</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Terciaria</strong></td><td>Años-décadas</td><td>Gomas (granulomas), sífilis cardiovascular (aneurisma aórtico), neurosífilis (tabes dorsal, demencia)</td><td>VDRL puede ser bajo o negativo. FTA-abs positivo</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — rash palmoplantar es sífilis secundaria hasta que se demuestre lo contrario</div>
+      <p>El examen da: rash en palmas y plantas de las manos → diagnóstico diferencial: sífilis secundaria, psoriasis pustulosa, pitiriasis rosada, eccema dishidrótico. La clave: buscar VDRL. En el examen, si hay rash palmoplantar + VDRL 1:32 → sífilis secundaria.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Serología — VDRL vs FTA-abs</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">VDRL (reagínica, no treponémica)</div>
+        <ul>
+          <li>Cuantitativa: se expresa en diluciones (1:4, 1:16, 1:128...)</li>
+          <li>Se usa para: <strong>diagnóstico</strong> y <strong>seguimiento de tratamiento</strong></li>
+          <li>Baja en títulos con tratamiento exitoso</li>
+          <li>Falsos positivos: LES, embarazo, otras infecciones</li>
+          <li>Puede negativizarse con tratamiento</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">FTA-abs (treponémico específico)</div>
+        <ul>
+          <li>Cualitativo: positivo o negativo</li>
+          <li>Confirma infección por Treponema pallidum</li>
+          <li>Se positiviza antes (período primario)</li>
+          <li><strong>Permanece positivo de por vida</strong> (incluso con tratamiento)</li>
+          <li>NO sirve para seguimiento de eficacia del tratamiento</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida — seguimiento con VDRL, nunca con FTA-abs</div>
+      <p>El examen pregunta: "¿cuál es el estudio de seguimiento para confirmar respuesta al tratamiento de sífilis?" → <strong>VDRL cuantitativo</strong>. El FTA-abs no sirve porque permanece positivo de por vida. Respuesta exitosa = caída de 4 veces en el título de VDRL (ej: de 1:32 a 1:8) a los 6–12 meses.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de sífilis — penicilina por estadio</div>
+    <table class="tbl">
+      <tr><th>Estadio</th><th>Tratamiento</th><th>Dosis</th></tr>
+      <tr><td>Primaria · Secundaria · Latente precoz (&lt;1 año)</td><td style="color:var(--teal2)"><strong>Penicilina G benzatínica</strong></td><td style="color:var(--teal2)"><strong>2.4 millones UI IM, dosis única</strong></td></tr>
+      <tr><td>Latente tardía (&gt;1 año) · Terciaria (NO neurosífilis)</td><td>Penicilina G benzatínica</td><td>2.4 millones UI IM c/semana × 3 semanas (7.2 mill total)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Neurosífilis</strong></td><td style="color:var(--red2)"><strong>Penicilina G cristalina IV</strong></td><td style="color:var(--red2)"><strong>3–4 millones UI c/4h IV × 10–14 días</strong></td></tr>
+      <tr><td>Sífilis congénita</td><td>Penicilina G cristalina IV o procaínica IM</td><td>10–14 días</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — alergia a penicilina en sífilis</div>
+      <p>En <strong>no embarazadas</strong> alérgicas: doxiciclina 100 mg c/12h × 14 días (latente tardía: 28 días). En <strong>embarazadas</strong> alérgicas a penicilina: <strong>desensibilización a penicilina y tratar con penicilina igualmente</strong>. No hay alternativa válida para la sífilis en el embarazo. Ceftriaxona como alternativa en algunos casos.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Otras ITS — tabla comparativa esencial</div>
+    <table class="tbl">
+      <tr><th>ITS</th><th>Agente</th><th>Clínica</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Gonorrea</strong></td><td>Neisseria gonorrhoeae</td><td>Uretritis purulenta (H) / Cervicitis (M) / Faringitis / Proctitis. Puede diseminarse (artritis séptica)</td><td style="color:var(--teal2)"><strong>Ceftriaxona 500 mg IM dosis única</strong> + Azitromicina 1 g VO (cotratamiento clamidia)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Clamidia</strong></td><td>Chlamydia trachomatis</td><td>Uretritis mucopurulenta, cervicitis, proctitis, linfogranuloma venéreo (L1-L3)</td><td>Azitromicina 1 g VO dosis única O Doxiciclina 100 mg c/12h × 7 días</td></tr>
+      <tr><td><strong>Herpes genital</strong></td><td>VHS-2 (principalmente)</td><td>Vesículas/úlceras dolorosas genitales recurrentes. Primo infección más grave</td><td>Aciclovir 400 mg c/8h × 7–10 días (primo infección). Supresor: 400 mg c/12h crónico</td></tr>
+      <tr><td><strong>Chancroide</strong></td><td>Haemophilus ducreyi</td><td>Úlcera genital DOLOROSA + adenopatía inguinal supurativa (bubón). Diferencia del chancro sifilítico (indoloro)</td><td>Azitromicina 1 g VO dosis única o Ceftriaxona 250 mg IM</td></tr>
+      <tr><td><strong>Condilomas (HPV)</strong></td><td>VPH 6, 11</td><td>Verrugas genitales blandas. Papiloma laríngeo neonatal</td><td>Podofilotoxina tópica, crioterapia, imiquimod. Vacuna preventiva (no terapéutica)</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Regla úlcera genital — dolor = chancroide / herpes. Indolora = sífilis primaria</div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: VIH</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Hepatitis →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 6 ══ -->
+<div class="node" id="n5" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Sprint CL6 · 61 preguntas</div>
+    <div class="node-title">Hepatitis virales</div>
+    <div class="node-subtitle">Marcadores de HBV · HCV screening · HAV · Vacunación · Hepatitis fulminante</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen de hepatitis pregunta marcadores serológicos de HBV: qué es activo, qué es resuelto, qué es vacunado. Con 5 marcadores podés descifrar cualquier caso. HCV: asintomático largo tiempo, solo detectable con anti-VHC + PCR. HAV: fecal-oral, aguda, no crónica, vacuna efectiva.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hepatitis B — los 5 marcadores y cómo leerlos</div>
+    <table class="tbl">
+      <tr><th>Marcador</th><th>Qué significa</th><th>Activo / Vacunado / Resuelto</th></tr>
+      <tr><td style="color:var(--red2)"><strong>HBsAg</strong></td><td>Antígeno de superficie → virus presente (replicación activa o portador)</td><td style="color:var(--red2)">Positivo = INFECCIÓN (aguda o crónica)</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Anti-HBs</strong></td><td>Anticuerpo contra antígeno de superficie → neutralizante</td><td style="color:var(--teal2)">Positivo solo = VACUNADO. Con anti-HBc total + = RESUELTO (infección previa)</td></tr>
+      <tr><td><strong>Anti-HBc total</strong></td><td>Anticuerpo contra core → contacto previo con el virus (no vacuna)</td><td>Positivo = contacto real con el virus (infección pasada o activa)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Anti-HBc IgM</strong></td><td>IgM = respuesta AGUDA reciente</td><td style="color:var(--red2)">Positivo = INFECCIÓN AGUDA</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>HBeAg</strong></td><td>Antígeno de la envoltura interna → marcador de alta replicación viral</td><td style="color:var(--amber2)">Positivo = alta replicatividad, alta infectividad</td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 Patrones serológicos clave — memorizar estos 4</div>
+    </div>
+    <table class="tbl" style="margin-top:6px">
+      <tr><th>Situación</th><th>HBsAg</th><th>Anti-HBs</th><th>Anti-HBc total</th><th>Anti-HBc IgM</th></tr>
+      <tr><td style="color:var(--red2)">Infección aguda</td><td style="color:var(--red2)">+</td><td>–</td><td>+</td><td style="color:var(--red2)">+</td></tr>
+      <tr><td>Infección crónica</td><td style="color:var(--red2)">+</td><td>–</td><td>+</td><td>–</td></tr>
+      <tr><td style="color:var(--teal2)">Infección resuelta</td><td>–</td><td style="color:var(--teal2)">+</td><td>+</td><td>–</td></tr>
+      <tr><td style="color:var(--teal2)">Vacunado (no infectado)</td><td>–</td><td style="color:var(--teal2)">+</td><td style="color:var(--teal2)">–</td><td>–</td></tr>
+      <tr><td>Susceptible (nunca expuesto)</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — anti-HBc total positivo aislado ("anti-core window")</div>
+      <p>HBsAg negativo + Anti-HBs negativo + Anti-HBc total positivo = puede ser: infección resuelta donde Anti-HBs ya cayó a indetectable, o falso positivo. Si Anti-HBc IgM positivo → infección aguda aún. En la práctica: pedir carga viral HBV para confirmar.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hepatitis C</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Diagnóstico y screening</div>
+        <ul>
+          <li><strong>Screening:</strong> anti-VHC (ELISA)</li>
+          <li>Si anti-VHC positivo: <strong>PCR cuantitativa de ARN-VHC</strong> (confirma viremia activa)</li>
+          <li>Anti-VHC permanece positivo aunque el virus haya sido eliminado</li>
+          <li>Screening universal: adultos 18–79 años (1 vez en la vida en Argentina)</li>
+          <li>Mayor riesgo: ADVP, transfundidos pre-1992, hemodiálisis, VIH+</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tratamiento</div>
+        <ul>
+          <li>Antivirales de acción directa (AAD): curan &gt;95%</li>
+          <li>Sofosbuvir/velpatasvir, glecaprevir/pibrentasvir</li>
+          <li>12 semanas de tratamiento oral</li>
+          <li>NO hay vacuna para HCV</li>
+          <li>Criterio de curación: ARN-VHC indetectable 12 semanas post-tratamiento (RVS12)</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">HCV progresa a cirrosis en 20–30% en 20 años. La principal complicación del HCC (hepatocarcinoma) es frecuente en cirrosis por HCV.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hepatitis A y E</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Hepatitis A (HAV)</div>
+        <ul>
+          <li>Transmisión: fecal-oral, agua/alimentos contaminados</li>
+          <li>Siempre aguda, NUNCA crónica</li>
+          <li>Diagnóstico: anti-HAV IgM (aguda)</li>
+          <li>Tratamiento: soporte. Reposo, hidratación</li>
+          <li>Vacuna: 2 dosis. Calendario argentino (1 año de vida)</li>
+          <li>Profilaxis post-exposición: vacuna + IGIM en &lt;14 días</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Hepatitis fulminante</div>
+        <ul>
+          <li>Insuficiencia hepática aguda grave en &lt;8 semanas</li>
+          <li>Encefalopatía hepática + coagulopatía (TP &gt;15 seg)</li>
+          <li>Causas: HAV, HBV, drogas (paracetamol, isoniacida), Wilson</li>
+          <li>La HAV puede ser fulminante en embarazadas o inmunocomp.</li>
+          <li>Tratamiento: soporte + trasplante hepático urgente</li>
+          <li>Criterios de King's College para trasplante</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Vacunación contra hepatitis B</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Calendario y grupos especiales</div>
+      <p><strong>Calendario neonatal:</strong> 0, 1, 6 meses (3 dosis). Primera dosis idealmente en las primeras 12–24 hs de vida.<br><br>
+      <strong>Adultos no vacunados:</strong> vacunar a todos. Prioridad: personal de salud, ADVP, HSH, personas con múltiples parejas, VIH+, IRC/hemodiálisis, parejas de portadores.<br><br>
+      <strong>Hijos de madre HBsAg+:</strong> vacuna + IGHB (inmunoglobulina) en primeras 12 hs → reduce transmisión vertical de 90% a &lt;5%.<br><br>
+      <strong>Eficacia de la vacuna:</strong> se mide con anti-HBs ≥10 mUI/mL a 1–3 meses de completar el esquema.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Sífilis</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Vectoriales →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 7 ══ -->
+<div class="node" id="n6" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Sprint CL6 · 61 preguntas</div>
+    <div class="node-title">Enfermedades vectoriales y zoonosis</div>
+    <div class="node-subtitle">Dengue · Chagas · Brucelosis · Paludismo · Leishmaniasis · Fiebre amarilla · Hantavirus</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Estas enfermedades tienen un patrón epidemiológico que el examen explota: la exposición geográfica o vectorial es el dato que orienta el diagnóstico. El examen da el antecedente (viaje a zona endémica, picadura de insecto, contacto con animales) y pregunta qué pensar y qué hacer primero.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Dengue — la más preguntada del grupo</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Fases del dengue</div>
+        <ul>
+          <li><strong>Febril (días 1–3):</strong> fiebre alta, cefalea, mialgias, artralgia, rash. Leucopenia + plaquetopenia incipiente</li>
+          <li style="color:var(--red2)"><strong>Crítica (días 3–6 → defervescencia):</strong> baja la fiebre → PELIGRO. Extravasación de plasma → hemoconcentración, derrame pleural, ascitis, shock</li>
+          <li style="color:var(--teal2)"><strong>Recuperación (días 6–7+):</strong> reabsorción de fluidos. Bradicardia. Recuperación</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Signos de alarma (hospitalización urgente)</div>
+        <ul>
+          <li>Dolor abdominal intenso</li>
+          <li>Vómitos persistentes</li>
+          <li>Sangrado de mucosas</li>
+          <li>Derrame en cavidades (pleura, peritoneo)</li>
+          <li>Hepatomegalia dolorosa</li>
+          <li>Plaquetas &lt;100.000 con deterioro clínico</li>
+          <li>Hipotensión / shock</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — dengue y AINES / AAS</div>
+      <p>En dengue está <strong>CONTRAINDICADO</strong> usar AAS, ibuprofeno u otros AINEs (riesgo de sangrado por trombocitopenia + inhibición plaquetaria). Solo paracetamol para el dolor y fiebre. El examen siempre incluye AAS como opción incorrecta.</p>
+    </div>
+    <div class="alert alert-key" style="margin-top:8px">
+      <div class="alert-title">📌 Diagnóstico por fase</div>
+      <p><strong>Días 1–5 (fiebre):</strong> NS1 antígeno (alta sensibilidad) o RT-PCR.<br>
+      <strong>Días 5+ (ya sin fiebre):</strong> IgM anti-dengue (serología).<br>
+      Hemograma: plaquetopenia + hemoconcentración (Htco elevado) = signo de extravasación.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Chagas — la enfermedad crónica que no se debe olvidar</div>
+    <table class="tbl">
+      <tr><th>Fase</th><th>Duración</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Aguda</strong></td><td>Semanas–3 meses</td><td>Parasitemia alta → gota gruesa, microhematocrito, Strout. Serología: IgM anti-T. cruzi. Signo de Romaña (edema palpebral unilateral)</td><td style="color:var(--red2)"><strong>Benznidazol 5 mg/kg/día × 60 días</strong> (cura &gt;80%). Alternativa: Nifurtimox</td></tr>
+      <tr><td>Latente/indeterminada</td><td>Años–décadas</td><td>Solo serología (2 técnicas diferentes). Sin síntomas ni lesión de órgano</td><td>Benznidazol (indicar en niños, mujer en edad fértil, inmunocomp.). Adultos &gt;50 años: discutir</td></tr>
+      <tr><td style="color:var(--amber2)">Crónica cardíaca</td><td>20–30 años post-infección</td><td>Miocardiopatía dilatada, bloqueo de rama derecha, arritmias ventriculares. Holter, eco</td><td>Tratamiento de IC (IECA, betabloqueante), marcapasos/CDI según arritmia. Anticoagulación si trombos</td></tr>
+      <tr><td>Crónica digestiva</td><td>Idem</td><td>Megaesófago (disfagia + Rx), megacolon (constipación grave + Rx)</td><td>Quirúrgico o endoscópico según el caso</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Chagas en inmuno-comprometido (VIH)</div>
+      <p>Reactivación de Chagas en VIH con CD4 &lt;200 → encefalitis chagásica (lesiones en SNC parecidas a toxoplasmosis pero en zonas endémicas). Diagnóstico: parásito en LCR o lesiones en imagen. Tratamiento: Benznidazol.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Otras zoonosis e infecciones vectoriales</div>
+    <table class="tbl">
+      <tr><th>Enfermedad</th><th>Vector/Fuente</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Brucelosis</strong></td><td>Ingestión de lácteos no pasteurizados, contacto con ganado bovino/porcino/ovino, veterinarios</td><td>Rosa de bengala (rápido). Serología de Wright (confirmación). Hemocultivo en caldo bifásico</td><td style="color:var(--teal2)"><strong>Doxiciclina 100 mg c/12h × 6 semanas + Rifampicina 600 mg/día × 6 sem</strong> (o gentamicina las primeras 2 sem)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Paludismo (malaria)</strong></td><td>Picadura de Anopheles (zonas tropicales, norte argentino, viajeros)</td><td>Gota gruesa + extendido de sangre periférica (gold standard). RDT (test rápido)</td><td>Cloroquina (P. vivax, P. ovale, P. malariae en zonas sensibles). Artemisina + lumefantrina (P. falciparum o resistente). P. vivax: + Primaquina para erradicar hipnozoítos</td></tr>
+      <tr><td><strong>Leishmaniasis</strong></td><td>Picadura de Lutzomyia (flebótomo). Noroeste y noreste argentino</td><td>Biopsia + cultivo + PCR (visceral/cutánea). Serología (kala-azar). Parasitemia en médula en forma visceral</td><td>Anfotericina B liposomal (visceral). Glucantime (antimonial) para cutánea. Miltefosina oral emergente</td></tr>
+      <tr><td><strong>Leptospirosis</strong></td><td>Contacto con agua/suelo contaminado con orina de roedores. Inundaciones</td><td>Serología MAT (microaglutinación). PCR en fase aguda. IgM</td><td>Penicilina G IV o Doxiciclina × 7 días. Severa: Penicilina IV</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fiebre Hemorrágica Argentina (FHA)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Virus Junín — zona pampeana</div>
+      <p>Arenavirus transmitido por inhalación de aerosoles de orina de ratón maicero (<em>Calomys musculinus</em>) en zonas agrícolas pampeanas. Época: otoño (cosecha).<br><br>
+      <strong>Clínica:</strong> fiebre + cefalea + mialgias + trombocitopenia + leucopenia + signos hemorrágicos + afectación neurológica.<br><br>
+      <strong>Diagnóstico:</strong> RT-PCR o serología IgG/IgM.<br><br>
+      <strong>Tratamiento:</strong> <strong>plasma inmune de donantes convalecientes</strong> en primeras 8 días. Dramática reducción de mortalidad (de 30% a &lt;1%). Ribavirina como alternativa.<br><br>
+      <strong>Vacuna Candid#1:</strong> para poblaciones en riesgo (trabajadores rurales zona endémica). No en calendario general.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Hepatitis</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Sepsis/Meningitis →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 8 ══ -->
+<div class="node" id="n7" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Sprint CL6 · tiempo crítico</div>
+    <div class="node-title">Sepsis y meningitis bacteriana</div>
+    <div class="node-subtitle">qSOFA · Criterios SOFA · Antibióticos empíricos · Punción lumbar · Dexametasona</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Sepsis y meningitis son emergencias donde el tiempo desde diagnóstico hasta antibiótico es mortalidad. El examen pregunta: ¿cuándo sospechás sepsis? (qSOFA), ¿qué cultivos antes del antibiótico?, ¿qué ATB empírico usar?, y en meningitis: punción lumbar + dexametasona + ampicilina-gentamicina o ceftriaxona según edad.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sepsis — definición y criterios (Sepsis-3)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">qSOFA — herramienta de screening</div>
+        <ul>
+          <li>FR ≥22 rpm → 1 punto</li>
+          <li>Alteración del estado mental → 1 punto</li>
+          <li>PAS ≤100 mmHg → 1 punto</li>
+          <li><strong>qSOFA ≥2</strong> = sospechar disfunción orgánica (sepsis)</li>
+          <li>Uso: fuera de UCI, en guardia/sala</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Definición Sepsis-3 (2016)</div>
+        <ul>
+          <li><strong>Sepsis:</strong> disfunción orgánica potencialmente mortal causada por respuesta desregulada del huésped a una infección</li>
+          <li>Criterio: SOFA ≥2 en sospecha de infección</li>
+          <li><strong>Shock séptico:</strong> sepsis + vasopresores para mantener PAM ≥65 mmHg + lactato &gt;2 mmol/L</li>
+          <li>Mortalidad del shock séptico: &gt;40%</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Bundle de 1 hora (SSCG 2018) — el protocolo del examen</div>
+      <p>1. Hemocultivos × 2 (antes del ATB)<br>
+      2. Lactato sérico<br>
+      3. ATB empírico precoz (dentro de la 1ª hora)<br>
+      4. Fluidos IV si lactato &gt;4 o hipotensión: SF 30 mL/kg en 3 hs<br>
+      5. Vasopresores si persiste hipotensión: <strong>norepinefrina</strong> (de elección)</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hemocultivos ANTES del antibiótico (igual que endocarditis)</div>
+      <p>El examen pone la opción de dar antibiótico inmediatamente sin tomar cultivos → incorrecto. Los hemocultivos se toman en 15–20 minutos y no retrasan significativamente el ATB. Lo que importa es no demorar el antibiótico más de 1 hora.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ATB empírico en sepsis según origen sospechado</div>
+    <table class="tbl">
+      <tr><th>Foco sospechado</th><th>Gérmenes probables</th><th>ATB empírico</th></tr>
+      <tr><td>Pulmonar (NAC grave/HAP)</td><td>S. pneumoniae, Gram negativos, Legionella</td><td>Piperacilina-tazobactam + macrólido/quinolona</td></tr>
+      <tr><td>Abdominal (peritonitis, perforación)</td><td>Gram negativos entéricos, anaerobios, Enterococo</td><td>Piperacilina-tazobactam o Ceftriaxona + Metronidazol</td></tr>
+      <tr><td>Urinario (UTI complicada/pielonefritis grave)</td><td>E. coli, Klebsiella, Proteus</td><td>Ceftriaxona 2 g/día IV o Ciprofloxacina (si bajo riesgo resistencia)</td></tr>
+      <tr><td>Piel y partes blandas graves</td><td>S. aureus (incluyendo MRSA), estreptococo</td><td>Vancomicina + Piperacilina-tazobactam</td></tr>
+      <tr><td>Neutropenia febril</td><td>Gram negativos (Pseudomonas), Gram positivos</td><td>Piperacilina-tazobactam o Cefepime (antipseudomónico)</td></tr>
+      <tr><td>Catéter intravascular</td><td>S. epidermidis, S. aureus, Cándida</td><td>Vancomicina ± cobertura Gram negativa</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Meningitis bacteriana — diagnóstico y tratamiento urgente</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ PROTOCOLO CRÍTICO — orden estricto</div>
+      <p><strong>Secuencia correcta (máximo 30–60 min):</strong><br>
+      1. Hemocultivos × 2<br>
+      2. Dexametasona 0.15 mg/kg IV (ANTES o junto con el ATB, en infección neumocócica reduce mortalidad y sordera)<br>
+      3. ATB empírico IV inmediatamente<br>
+      4. TC craneal → si hay signos de hipertensión endocraneana, focalidad neurológica, inmunocompromiso → TC ANTES de PL<br>
+      5. Punción lumbar (LCR) para confirmar diagnóstico<br><br>
+      <strong>NO esperar el TC si el paciente no tiene HTIC ni foco → PL primero.</strong></p>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>LCR</th><th>Bacteriana</th><th>Viral</th><th>TBC / Hongos</th></tr>
+      <tr><td>Aspecto</td><td>Turbio / purulento</td><td>Claro</td><td>Claro / xantocrómico</td></tr>
+      <tr><td>Leucocitos</td><td>&gt;1000 PMN</td><td>10–500 mononucleares</td><td>100–500 mononucleares</td></tr>
+      <tr><td>Glucosa</td><td style="color:var(--red2)">MUY BAJA (&lt;40 mg/dL)</td><td>Normal</td><td style="color:var(--amber2)">Baja</td></tr>
+      <tr><td>Proteínas</td><td style="color:var(--red2)">MUY ALTA (&gt;200 mg/dL)</td><td>Normal / levemente ↑</td><td>Altas</td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 ATB empírico en meningitis según edad</div>
+      <p><strong>Neonatos (&lt;3 meses):</strong> Ampicilina + Gentamicina (o cefotaxima). Cubre S. agalactiae + E. coli + Listeria.<br><br>
+      <strong>Adultos 2 meses – 50 años:</strong> Ceftriaxona 2 g c/12h IV (cubre N. meningitidis y S. pneumoniae).<br><br>
+      <strong>Adultos &gt;50 años, inmunocomp., alcohólicos:</strong> Ceftriaxona + Ampicilina (agrega Listeria monocytogenes).<br><br>
+      <strong>Sospecha de N. meningitidis:</strong> profilaxis de contactos con rifampicina 600 mg c/12h × 2 días.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Hombre 24 años. Fiebre 40°C, cefalea 6 horas, rigidez de nuca, petequias. FR 26, PA 90/60, confuso. ¿Cuál es el orden correcto de acciones?</p>
+      <p style="margin-top:6px"><strong>Respuesta:</strong><br>
+      1. Hemocultivos × 2 inmediatos<br>
+      2. Dexametasona IV<br>
+      3. Ceftriaxona 2 g IV<br>
+      4. TC craneal (petequias + inestabilidad HD → evaluar antes de PL)<br>
+      5. PL si TC normal<br><br>
+      Diagnóstico probable: meningococcemia. Petequias + cuadro meníngeo = meningococo hasta descartar.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Vectoriales</div>
+    <div class="nav-btn" onclick="show(8)">Nodo 9: Diarrea/Parasitosis →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 9 ══ -->
+<div class="node" id="n8" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">Sprint CL6 · Gastrointestinal</div>
+    <div class="node-title">Diarrea infecciosa y parasitosis intestinal</div>
+    <div class="node-subtitle">Clostridium difficile · Colitis · Giardia · Parasitosis frecuentes · Bacteriuria asintomática</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La diarrea infecciosa se clasifica por duración (aguda &lt;14 días) y por características (acuosa vs disentérica). El examen pregunta cuándo tratar con antibióticos (no siempre) y reconocer el Clostridium difficile por su contexto (ATB reciente + colitis pseudomembranosa).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diarrea aguda — clasificación y enfoque inicial</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Características</th><th>Gérmenes</th><th>Conducta</th></tr>
+      <tr><td style="color:var(--teal2)">Secretora / acuosa</td><td>Muchas deposiciones líquidas sin sangre ni pus. Volumen alto. Generalmente autolimitada</td><td>Rotavirus, Norovirus, ETEC, Vibrio cholerae</td><td>Hidratación oral. ATB SOLO en cólera o viajero</td></tr>
+      <tr><td style="color:var(--red2)">Disentérica / inflamatoria</td><td>Deposiciones con sangre y/o pus. Fiebre. Pujos y tenesmo. Colitis</td><td>Shigella, E. coli EHEC (O157:H7), Salmonella, Campylobacter, Entamoeba</td><td>ATB según germen. Cuidado con EHEC (no ATB)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — E. coli EHEC (O157:H7): NUNCA antibióticos</div>
+      <p>Diarrea hemorrágica (sin fiebre alta) + epidemiología (carne mal cocida, brotes) → E. coli productor de toxina Shiga (STEC/EHEC). <strong>NO dar antibióticos</strong>: aumentan la liberación de toxina Shiga → precipitan Síndrome Urémico Hemolítico (SUH = microangiopatía trombótica + IRA + anemia hemolítica). Solo soporte/hidratación.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clostridium difficile — el gran protagonista del hospital</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Contexto clínico típico</div>
+        <ul>
+          <li>Uso de antibióticos de amplio espectro en los <strong>últimos 3 meses</strong> (especialmente fluoroquinolonas, clindamicina, cefalosporinas)</li>
+          <li>Hospitalización reciente o residencia en institución</li>
+          <li>Edad avanzada, inmunocompromiso, IBP</li>
+          <li>Diarrea acuosa frecuente (5–20 deposiciones/día), febrícula, dolor abdominal</li>
+          <li>Leucocitosis marcada (a veces &gt;30.000)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Diagnóstico y tratamiento</div>
+        <ul>
+          <li><strong>Diagnóstico:</strong> detección de toxinas A y B en materia fecal (EIA o PCR)</li>
+          <li><strong>Leve-moderado:</strong> Vancomicina oral 125 mg c/6h × 10 días (DE ELECCIÓN). Fidaxomicina alternativa</li>
+          <li>Metronidazol: ya no es de primera línea en adultos</li>
+          <li><strong>Fulminante / complicado:</strong> Vancomicina oral + Metronidazol IV + consulta quirúrgica</li>
+          <li><strong>SUSPENDER</strong> el antibiótico causante si es posible</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Metronidazol ya no es primera línea en C. difficile adultos</div>
+      <p>Las guías actualizadas (IDSA 2021) recomiendan vancomicina oral (o fidaxomicina) como primera línea. Metronidazol oral solo se usa cuando no hay vancomicina disponible o en infecciones muy leves. El examen puede tener metronidazol como opción tentadora → vancomicina oral es la correcta.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Parasitosis intestinales frecuentes en adultos</div>
+    <table class="tbl">
+      <tr><th>Parásito</th><th>Transmisión</th><th>Clínica</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Giardia lamblia</strong></td><td>Agua contaminada, fecal-oral</td><td>Diarrea acuosa con mala absorción, esteatorrea, distensión, meteorismo. Puede ser crónica</td><td>Coproparasitológico (quistes). Antígeno fecal (más sensible)</td><td style="color:var(--teal2)"><strong>Metronidazol 250 mg c/8h × 5–7 días</strong></td></tr>
+      <tr><td><strong>Enterobius vermicularis (oxiuro)</strong></td><td>Fecal-oral (autoinoculación)</td><td>Prurito anal nocturno (síntoma cardinal). Más en niños</td><td>Test de Graham (cinta adhesiva perianal al amanecer)</td><td>Mebendazol 100 mg dosis única (repetir a las 2 semanas). Tratar toda la familia</td></tr>
+      <tr><td><strong>Ascaris lumbricoides</strong></td><td>Suelo contaminado, frutas/verduras</td><td>Síntoma Löffler (tos, eosinofilia): larvas en pulmón. Adultos: obstrucción intestinal en niños</td><td>Coproparasitológico (huevos)</td><td>Albendazol 400 mg dosis única o Mebendazol</td></tr>
+      <tr><td><strong>Necátor/Uncinaria</strong></td><td>Penetración cutánea (suelo)</td><td>Dermatitis podal, anemia ferropénica por sangrado intestinal</td><td>Coproparasitológico (huevos de uncinaria)</td><td>Albendazol 400 mg dosis única</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Entamoeba histolytica</strong></td><td>Fecal-oral, agua</td><td>Disentería amebiana (heces con sangre y moco, "frambuesa en jalea"). Absceso hepático</td><td>Coproparasitológico + confirmación Ag fecal o PCR. Eco hepático para absceso</td><td style="color:var(--amber2)">Metronidazol 750 mg c/8h × 10 días + Paromomicina luminal para erradicar quistes</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Bacteriuria asintomática — cuándo tratar y cuándo NO</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">TRATAR bacteriuria asintomática</div>
+        <ul>
+          <li><strong>Embarazo:</strong> riesgo de pielonefritis y parto prematuro → screening y tratar siempre</li>
+          <li><strong>Antes de procedimiento urológico invasivo</strong> (RTUP, cistoscopia con biopsias)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">NO tratar bacteriuria asintomática</div>
+        <ul>
+          <li>Mujeres posmenopáusicas</li>
+          <li>Diabéticas asintomáticas</li>
+          <li>Catéter vesical crónico</li>
+          <li>Hombres asintomáticos</li>
+          <li>Pacientes con lesión medular</li>
+          <li>Ancianos institucionalizados</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida de bacteriuria asintomática</div>
+      <p>Mujer de 70 años con urocultivo positivo para E. coli, asintomática. ¿Tratás? <strong>NO</strong>. Solo se trata en embarazo y pre-procedimiento urológico. El resto → no tratar, aunque la paciente sea diabética o añosa. Esta trampa aparece múltiples veces en el banco.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(7)">← Nodo 8: Sepsis</div>
+    <div class="nav-btn" onclick="show(9)">Nodo 10: Micosis/FOD →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ NODO 10 ══ -->
+<div class="node" id="n9" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">Sprint CL6 · Inmunocomprometido</div>
+    <div class="node-title">Micosis oportunistas · FOD · Neutropenia febril</div>
+    <div class="node-subtitle">Histoplasma · Criptococo · Candida · Aspergillus · FOD clásica · Neutropenia y G-CSF</div>
+  </div>
+
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Las micosis oportunistas definen al paciente por su defecto inmune: Criptococo y PCP en CD4&lt;100, Aspergillus en neutropenia grave, Histoplasma en regiones endémicas con inmunocompromiso. La FOD clásica tiene diagnóstico diferencial amplio pero sistematizable. Neutropenia febril: siempre ATB antipseudomónico empírico en &lt;60 minutos.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Micosis sistémicas — resumen por patógeno</div>
+    <table class="tbl">
+      <tr><th>Hongo</th><th>Paciente típico</th><th>Diagnóstico</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--blue2)"><strong>Cryptococcus neoformans</strong></td><td>VIH CD4&lt;100, trasplantados, corticoides</td><td>Tinta china en LCR (levaduras capsuladas). Ag criptocócico sérico y LCR (muy sensible). Cultivo en agar Sabouraud</td><td>Anfotericina B + Flucitosina × 2 sem → Fluconazol 400 mg/día mantenimiento indefinido (hasta CD4 &gt;200 con TARGA)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Histoplasma capsulatum</strong></td><td>VIH, zona endémica (norte argentino, Misiones, Chaco), inmunocomp. Exposición a guano de aves/murciélagos</td><td>Antígeno en orina/sangre (el más útil). Cultivo (lento). Biopsia con tinciones especiales. Ag sérico</td><td>Itraconazol 200 mg c/12h × 12 semanas (leve-mod). Anfotericina B en enfermedad grave/diseminada</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Aspergillus fumigatus</strong></td><td>Neutropenia grave (&lt;100/mm³ &gt;10 días), trasplante de MO, corticoides altas dosis</td><td>TC de tórax: nódulos con "signo del halo" (hemorragia perilesional). Galactomanano en sangre/LBA. Cultivo</td><td style="color:var(--red2)"><strong>Voriconazol</strong> IV/VO (de elección). Alternativa: anfotericina B</td></tr>
+      <tr><td><strong>Candida spp.</strong></td><td>UTI, ADVP, catéteres centrales, CID, nutrición parenteral, antibióticos prolongados</td><td>Hemocultivo (candidiasis invasiva). Cultivo de mucosas (candidiasis oral/esofágica)</td><td>Oral/esofágica: fluconazol. Invasiva/candidemia: equinocandina (caspofungina) → fluconazol si sensible</td></tr>
+      <tr><td><strong>Pneumocystis jirovecii (PCP)</strong></td><td>VIH CD4&lt;200 (ya cubierto en Nodo 4)</td><td>LBA con Giemsa/plata. PCR. Rx/TC: infiltrado bilateral</td><td>TMP-SMX + corticoides (PaO₂ &lt;70)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Fiebre de origen desconocido (FOD) — enfoque sistemático</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Definición clásica de FOD (Petersdorf)</div>
+      <p>Temperatura &gt;38.3°C en múltiples ocasiones, durante &gt;3 semanas, sin diagnóstico después de 1 semana de estudio hospitalario exhaustivo (o 3 visitas ambulatorias).</p>
+    </div>
+    <table class="tbl" style="margin-top:10px">
+      <tr><th>Categoría</th><th>Frecuencia</th><th>Diagnósticos frecuentes</th></tr>
+      <tr><td style="color:var(--teal2)">Infecciosa</td><td>30–40%</td><td>TBC (la más frecuente en Argentina), endocarditis, abscesos ocultos, brucelosis, HIV, histoplasmosis</td></tr>
+      <tr><td style="color:var(--amber2)">Neoplásica</td><td>20–30%</td><td>Linfoma (Hodgkin y no Hodgkin), leucemia, carcinoma renal, hepatocarcinoma</td></tr>
+      <tr><td style="color:var(--purple2)">Enfermedades del tejido conectivo / autoimmune</td><td>10–20%</td><td>LES, AR, enfermedad de Still del adulto, vasculitis, enfermedad de Crohn</td></tr>
+      <tr><td>Otras / Misceláneas</td><td>5–10%</td><td>Fármacos, hipertiroidismo, embolismo pulmonar recurrente, sarcoidosis</td></tr>
+      <tr><td>Sin diagnóstico final</td><td>10–15%</td><td>Pronóstico generalmente benigno</td></tr>
+    </table>
+    <div class="alert alert-key" style="margin-top:10px">
+      <div class="alert-title">📌 Estudios de primera línea en FOD</div>
+      <p>Hemograma completo + VSG + PCR · Hepatograma + LDH · Hemocultivos × 3 (incluyendo ADVP: Brucella, Fungi) · Serología VIH · VDRL · FAN + anti-dsDNA · TSH · Rx tórax + Eco abdominal · PPD o IGRA · FE de orina · TC de tórax-abdomen-pelvis con contraste (si Rx + eco normales)</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Neutropenia febril — urgencia oncohematológica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Definición</div>
+        <ul>
+          <li>Neutrófilos absolutos &lt;500/mm³ (o &lt;1000 con descenso esperado)</li>
+          <li>Temperatura &gt;38.3°C en una toma o &gt;38°C persistente 1 hora</li>
+          <li>Contexto: quimioterapia (nadir días 7–14), trasplante MO</li>
+          <li>Germen: no se identifica en 50% de los casos</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Conducta urgente</div>
+        <ul>
+          <li>Hemocultivos periférico + por catéter central (2 sets)</li>
+          <li>Urocultivo, Rx tórax</li>
+          <li><strong>ATB empírico en &lt;60 minutos:</strong></li>
+          <li>Piperacilina-tazobactam 4.5 g c/6h IV o Cefepime 2 g c/8h IV</li>
+          <li>Agregar Vancomicina si: inestabilidad HD, sospecha catéter, mucositis grave</li>
+          <li>G-CSF: no de rutina inicial, considerar en alto riesgo</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 G-CSF (factor estimulante de colonias) — cuándo usarlo</div>
+      <p><strong>Profilaxis primaria:</strong> con quimioterapia con &gt;20% de riesgo de neutropenia febril. Filgrastim o pegfilgrastim.<br>
+      <strong>Profilaxis secundaria:</strong> paciente con episodio previo de neutropenia febril grave.<br>
+      <strong>Tratamiento:</strong> neutropenia febril de alto riesgo (sepsis, progresión a pesar de ATB, hongos). Reduce duración pero no mortalidad claramente.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de todo el eje infectología</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Nodo 4 (VIH) ↔ Nodo 10:</strong> CD4 &lt;100 → PCP + toxoplasma + criptococo + CMV + MAC (toda la cascada oportunista)</li>
+        <li><strong>Nodo 1 (NAC) ↔ Nodo 2 (TBC):</strong> ambas condensan en Rx; la TBC lo hace en lóbulos superiores con cavitación; la NAC no suele cavitar (excepto S. aureus)</li>
+        <li><strong>Nodo 5 (Sífilis) ↔ Nodo 4 (VIH):</strong> sífilis acelera progresión del VIH y aumenta riesgo de transmisión; co-infección muy frecuente → siempre buscar ambas</li>
+        <li><strong>Nodo 8 (Sepsis) ↔ Nodo 1 (NAC):</strong> NAC severa CURB ≥3 = sepsis de origen pulmonar → mismo bundle de manejo</li>
+        <li><strong>Nodo 7 (Dengue) ↔ Farmacología:</strong> AAS y AINEs contraindicados → conecta con trombocitopenia y riesgo hemorrágico</li>
+        <li><strong>Nodo 6 (HBV) ↔ Vacunas:</strong> HBV es la única hepatitis con vacuna en el calendario desde el nacimiento; saber esquema en neonato de madre HBsAg+</li>
+        <li><strong>Infectología ↔ Salud Pública:</strong> TBC = notificación obligatoria inmediata. VIH = notificación obligatoria (sin nombre). Dengue = alerta epidémica</li>
+        <li><strong>Nodo 9 (C. difficile) ↔ Gastro:</strong> colitis pseudomembranosa = complicación de ATB → conecta con indicación y abuso de antibióticos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--teal2);margin-bottom:12px;letter-spacing:.05em">✅ INFECTOLOGÍA ADULTOS — 10/10 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 91 preguntas del banco (CL5 + CL6). Los temas más repetidos: VIH (TARGA + profilaxis + PEP), sífilis (VDRL + penicilina + seguimiento), TBC (latente + esquema HRZE), dengue (fase de defervescencia + no AAS), bacteriuria asintomática (no tratar excepto embarazo), C. difficile (vancomicina oral, no metronidazol). Las trampas más frecuentes: dar ATB en EHEC-O157, tratar bacteriuria asintomática, usar metronidazol en C. difficile, dar AAS en dengue, seguir sífilis con FTA-abs.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-t">CL5: 34 preg respiratorio</span>
+      <span class="tag tag-p">CL6: 57 preg sistémico</span>
+      <span class="tag tag-a">ETMI Plus 2025</span>
+      <span class="tag tag-g">Norma TBC MSAL · Ley 23.798 · INDEC</span>
+    </div>
+  </div>
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(8)">← Nodo 9: Diarrea</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div><!-- /content -->
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

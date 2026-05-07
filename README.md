@@ -160,3 +160,8 @@ Notas:
 ```html
 <link rel="stylesheet" href="css/vars.css">
 ```
+
+
+## v35.19
+- Agrega 4 vaults nuevos a Aprender desde cero: Infectología adultos, Salud Pública/APS/Leyes, Endocrinología adultos y Neumología.
+- Corrige la selección del juego Calendario de vacunas con una única capa de interacción robusta.
