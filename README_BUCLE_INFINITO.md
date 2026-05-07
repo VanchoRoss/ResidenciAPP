@@ -1,62 +1,23 @@
-# Sistema de estudio — Residencia Médica Argentina 2026
+# Bucle Infinito 2.0 integrado a ResidenciAPP
 
-**CABA · Examen Integrador** · 974 preguntas históricas · 35 sprints · 4 ejes
+## Qué hace
 
-## Estructura del proyecto
+El módulo `bucle_infinito_2.html` funciona como motor de consolidación profunda. Lee métricas de ResidenciAPP en modo solo lectura y recomienda qué sprint conviene trabajar con IA.
 
-```
-residencia-2026/
-├── index.html                          ← Hub central (empezar acá)
-├── bucle_infinito_2.html               ← Sistema Bucle Infinito 2.0
-├── mapa_banco_real_4_ejes.html         ← Mapa del banco: 974 preg / 4 ejes
-├── clasificacion_clinica_adultos_525.html
-├── clasificacion_ginecologia_98_sprints.html
-├── clasificacion_obstetricia_88_sprints.html
-├── clasificacion_pediatria_200_sprints.html
-├── css/
-│   └── vars.css                        ← Variables CSS para uso standalone
-├── EJES_y_TEMARIO__Examen_Integrado_2026.docx
-└── CABA_Medicina__Bibliografi_a_Residencia_Ba_sica_2026.pdf
-```
+## Separación de datos
 
-## Cómo usar
+- Lee, sin modificar: `residenciapp_integrada_state`.
+- Lee el banco: `assets/data/questions.js`.
+- Guarda solo su propio estado: `bi2-ss` y `bi2-last`.
 
-1. Abrí `index.html` como punto de entrada
-2. Desde el hub accedés a todos los módulos
-3. Para el sistema de estudio activo: `bucle_infinito_2.html`
+Esto significa que el Bucle puede nutrirse de errores, cobertura y respuestas de la app principal, pero no altera respuestas, errores, sesiones, métricas ni progreso principal.
 
-### Uso con GitHub Pages
+## Uso con IA
 
-```bash
-git clone https://github.com/TU_USUARIO/residencia-2026
-cd residencia-2026
-# Activar GitHub Pages en Settings → Pages → Deploy from branch main / root
-```
+La forma recomendada en GitHub Pages es copiar el prompt estructurado y pegarlo en Gemini, Google AI Studio, Claude u otra IA.
 
-Luego accedé a: `https://TU_USUARIO.github.io/residencia-2026/`
+No se recomienda colocar una API key de Gemini directamente en el frontend público. Para una integración automática, usar un intermediario como Google Apps Script, Cloudflare Worker, Vercel Function o Firebase Function.
 
-## Módulos
+## Botón de inicio
 
-| Archivo | Descripción | Preguntas |
-|---------|-------------|-----------|
-| `bucle_infinito_2.html` | Sistema principal de estudio con tracker | — |
-| `mapa_banco_real_4_ejes.html` | Distribución real del banco histórico | 974 |
-| `clasificacion_clinica_adultos_525.html` | Clínica médica + cirugía adultos | 525 |
-| `clasificacion_ginecologia_98_sprints.html` | Ginecología por sprints | 98 |
-| `clasificacion_obstetricia_88_sprints.html` | Obstetricia por sprints | 88 |
-| `clasificacion_pediatria_200_sprints.html` | Pediatría por sprints | 200 |
-
-## Notas técnicas
-
-- `bucle_infinito_2.html` usa **localStorage** para persistir el estado de los sprints
-- Los archivos de clasificación originales usan variables CSS de Claude.ai — para renderizarlos fuera de ese entorno, incluir `<link rel="stylesheet" href="css/vars.css">` en el `<head>` de cada archivo
-- El progreso del Bucle Infinito 2.0 se lee desde `localStorage` key: `bi2-ss`
-
-## Fechas de examen
-
-- **CABA**: 10 de junio de 2026
-- **Integrador Nacional**: confirmar fecha oficial
-
-## Bibliografía base
-
-FASGO 2022 · ETMI Plus 2025 · MSAL · SAP · Calendario Nacional 2024 · IRAB-SAP 2021 · ADA 2024 · GOLD 2024 · Harrison 21
+El enlace superior vuelve a `index.html#dashboard`, es decir al panel principal de ResidenciAPP cuando el usuario ya tiene acceso concedido en ese navegador.
