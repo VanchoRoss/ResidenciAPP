@@ -134,3 +134,27 @@ Incluye NeuroPREP funcional con razonamiento guiado, calibración de confianza y
 - Se conserva el juego de calendario de vacunación.
 - Se agrega **Desafío IA por link**: el desafío y los resultados viajan en base64 dentro de la URL, sin backend.
 - La Anthropic API key se configura desde el botón ⚙ API de la sección Juegos y queda guardada en localStorage del navegador.
+
+## v35.17 · Bucle Infinito 2.0 integrado
+
+Esta versión agrega el módulo externo `bucle_infinito_2.html` y un hub complementario `bucle_hub.html` sin reemplazar el `index.html` principal de ResidenciAPP.
+
+Archivos nuevos:
+
+```txt
+bucle_infinito_2.html
+bucle_hub.html
+css/vars.css
+README_BUCLE_INFINITO.md
+assets/js/v35_17_bucle_module.js
+assets/css/v35_17_bucle_module.css
+```
+
+Notas:
+- El Bucle Infinito 2.0 guarda su progreso en `localStorage` con la key `bi2-ss`.
+- Ese progreso es independiente de las métricas principales de ResidenciAPP.
+- Si agregás archivos de clasificación standalone, incluí en su `<head>`:
+
+```html
+<link rel="stylesheet" href="css/vars.css">
+```
