@@ -1,0 +1,166 @@
+/* === ResidenciAPP v35.21 · reportes de errores + vacunas final === */
+.question-error-report{
+  position:relative;
+  isolation:isolate;
+}
+.question-error-report:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(135deg,rgba(245,158,11,.11),rgba(255,255,255,0) 45%);
+  z-index:-1;
+}
+.question-error-report .report-status{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  border-radius:999px;
+  padding:.25rem .55rem;
+  font-size:.68rem;
+  font-weight:950;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#92400e;
+  background:rgba(254,243,199,.9);
+  border:1px solid rgba(245,158,11,.35);
+}
+.question-error-report .report-status.is-sent{
+  color:#047857;
+  background:rgba(209,250,229,.9);
+  border-color:rgba(16,185,129,.35);
+}
+.question-error-report .report-status.is-pending{
+  color:#b45309;
+  background:rgba(254,243,199,.9);
+  border-color:rgba(251,191,36,.45);
+}
+.report-details summary::-webkit-details-marker{display:none;}
+.report-details summary{
+  width:max-content;
+  max-width:100%;
+  border-radius:1rem;
+  padding:.65rem .9rem;
+  background:rgba(255,255,255,.75);
+  border:1px solid rgba(245,158,11,.35);
+}
+.dark .report-details summary{background:rgba(15,23,42,.65);}
+.report-details summary:after{content:"  ▾";font-weight:900;}
+.report-details[open] summary:after{content:"  ▴";}
+.report-label{
+  display:block;
+  font-size:.68rem;
+  font-weight:950;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#94a3b8;
+}
+.report-label em{
+  font-style:normal;
+  letter-spacing:0;
+  text-transform:none;
+  font-weight:800;
+  color:#d97706;
+}
+.report-input{
+  margin-top:.5rem;
+  width:100%;
+  border-radius:1.25rem;
+  border:1px solid rgb(226 232 240);
+  background:rgba(255,255,255,.92);
+  padding:.85rem 1rem;
+  font-size:.9rem;
+  line-height:1.55;
+  font-weight:650;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.report-input:focus{
+  border-color:#f59e0b;
+  box-shadow:0 0 0 4px rgba(245,158,11,.13);
+}
+.dark .report-input{
+  border-color:rgb(51 65 85);
+  background:rgba(2,6,23,.78);
+}
+.report-radio{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  border-radius:1rem;
+  border:1px solid rgba(226,232,240,.95);
+  background:rgba(255,255,255,.78);
+  padding:.7rem .85rem;
+  font-size:.88rem;
+  font-weight:800;
+  color:#334155;
+  cursor:pointer;
+}
+.report-radio input{width:1rem;height:1rem;accent-color:#d97706;}
+.dark .report-radio{border-color:rgba(51,65,85,.95);background:rgba(2,6,23,.62);color:#e2e8f0;}
+.v3521-vaccine-board{
+  position:relative;
+  overflow:auto;
+  max-height:min(72vh,760px);
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+  scroll-behavior:auto;
+}
+.v3521-vaccine-board.is-dragging,
+.v3521-vaccine-board.is-dragging-ready{cursor:grabbing;}
+.v3521-vaccine-board table{min-width:1480px;}
+.v3521-vaccine-board .vaccine-cell{
+  min-width:86px;
+  height:58px;
+  padding:0;
+  position:relative;
+  touch-action:none!important;
+}
+.v3521-vaccine-board .vaccine-tap{
+  width:100%;
+  min-height:58px;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:0;
+  pointer-events:none!important;
+  user-select:none!important;
+  transition:background .08s ease,border-color .08s ease,box-shadow .08s ease!important;
+}
+.v3521-vaccine-board .vaccine-cell.is-selected .vaccine-tap{
+  background:rgba(24,119,214,.22)!important;
+  border-color:rgba(24,119,214,.82)!important;
+  box-shadow:inset 0 0 0 2px rgba(24,119,214,.22)!important;
+  color:#075985!important;
+}
+.dark .v3521-vaccine-board .vaccine-cell.is-selected .vaccine-tap{
+  color:#dbeafe!important;
+  background:rgba(59,130,246,.28)!important;
+}
+.v3521-vaccine-board .vaccine-mark{
+  font-size:18px!important;
+  font-weight:950!important;
+  line-height:1!important;
+}
+.vaccine-fullscreen-active{overflow:hidden;}
+#vaccineGamePanel.vaccine-fullscreen-mode{
+  position:fixed;
+  inset:12px;
+  z-index:9999;
+  overflow:auto;
+  border-radius:28px;
+  padding:18px;
+  background:rgb(248 250 252);
+  box-shadow:0 30px 80px rgba(15,23,42,.35);
+}
+.dark #vaccineGamePanel.vaccine-fullscreen-mode{background:rgb(2 6 23);}
+#vaccineGamePanel.vaccine-fullscreen-mode #vaccineGameBoard{max-height:calc(100vh - 220px);}
+@media (max-width:640px){
+  .question-error-report{padding:1rem;}
+  #vaccineGamePanel.vaccine-fullscreen-mode{inset:6px;border-radius:22px;padding:12px;}
+  .v3521-vaccine-board .vaccine-cell{min-width:78px;height:54px;}
+  .v3521-vaccine-board .vaccine-tap{min-height:54px;}
+}

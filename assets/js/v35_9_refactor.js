@@ -142,7 +142,7 @@
           <p class="mt-1 text-xs font-bold leading-5 text-slate-600 dark:text-slate-400">
             ${m.dangerZoneCount === 0
               ? 'Sin falsa seguridad detectada. Buen control metacognitivo.'
-              : 'Preguntas que fallaste estando seguro. El riesgo más alto del examen.'}
+              : 'Preguntas que respondiste incorrectamente estando seguro. El riesgo más alto del examen.'}
           </p>
           ${m.dangerZoneCount > 0 ? `
             <button class="mt-3 rounded-xl bg-${dangerColor}-600 px-3 py-2 text-xs font-black text-white hover:bg-${dangerColor}-700"
@@ -187,7 +187,7 @@
     const qs = m.dangerZoneIds.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean);
     if (!qs.length) return;
     setSession(qs, '🚨 Zona de peligro cognitivo',
-               m.dangerZoneCount + ' preguntas que fallaste estando seguro · razonamiento',
+               m.dangerZoneCount + ' preguntas respondidas incorrectamente estando seguro · razonamiento',
                'razonamiento', true, {mode:'practice'});
   };
 

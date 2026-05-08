@@ -1,0 +1,42 @@
+/* === ResidenciAPP v35.20 · estabilidad de vacunas y botones === */
+.v3520-vaccine-board{
+  position:relative;
+  overflow:auto;
+  max-height:min(72vh,760px);
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+.v3520-vaccine-board.is-dragging,
+.v3520-vaccine-board.is-dragging-ready{ cursor:grabbing; }
+.v3520-vaccine-board .vaccine-cell{ min-width:86px; height:58px; padding:0; }
+.v3520-vaccine-board .vaccine-tap{
+  width:100%;
+  min-height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:0;
+  pointer-events:none;
+}
+.v3520-vaccine-board .vaccine-cell.is-selected .vaccine-tap{ background:rgba(16,185,129,.16); }
+.v3520-vaccine-board .vaccine-mark{ font-weight:900; font-size:1rem; }
+.vaccine-fullscreen-active{ overflow:hidden; }
+#vaccineGamePanel.vaccine-fullscreen-mode{
+  position:fixed;
+  inset:12px;
+  z-index:9999;
+  overflow:auto;
+  border-radius:28px;
+  padding:18px;
+  background:rgb(248 250 252);
+  box-shadow:0 30px 80px rgba(15,23,42,.35);
+}
+.dark #vaccineGamePanel.vaccine-fullscreen-mode{ background:rgb(2 6 23); }
+#vaccineGamePanel.vaccine-fullscreen-mode #vaccineGameBoard{ max-height:calc(100vh - 220px); }
+@media (max-width:640px){
+  #vaccineGamePanel.vaccine-fullscreen-mode{ inset:6px; border-radius:22px; padding:12px; }
+  .v3520-vaccine-board .vaccine-cell{ min-width:78px; height:54px; }
+  .v3520-vaccine-board .vaccine-tap{ min-height:54px; }
+}

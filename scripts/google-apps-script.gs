@@ -1,5 +1,6 @@
 /**
- * ResidenciAPP · Bandeja de aportes colaborativos con imágenes + feedback aprobado
+ * ResidenciAPP · Bandeja de aportes colaborativos + reportes de errores
+ * v35.21
  *
  * Uso:
  * 1) Pegar este código en Google Apps Script.
@@ -7,28 +8,41 @@
  * 3) Implementar como Web App con acceso "Cualquier persona".
  * 4) Pegar la URL /exec en assets/js/config.js.
  *
- * Estados útiles en la columna Estado:
- * - pendiente: aporte recibido, no visible públicamente.
- * - aprobado: la app lo carga como feedback validado para todos.
- * - rechazado: no se carga.
+ * Estructura sugerida de la planilla:
+ * - Panel: vista manual / dashboard.
+ * - Feedback IA: aportes de explicación y feedback colaborativo.
+ * - Reportes de errores: problemas detectados por los usuarios.
+ *
+ * Compatibilidad:
+ * - Si ya existe una hoja llamada "Aportes", se usa como bandeja de feedback para no romper flujos viejos.
+ * - Si existe o se crea "Feedback IA", el script la prioriza.
  */
 const SPREADSHEET_ID = ''; // Opcional. Si el script está creado desde la Sheet, dejalo vacío.
-const SHEET_NAME = 'Aportes';
+const FEEDBACK_SHEET_NAME = 'Feedback IA';
+const LEGACY_FEEDBACK_SHEET_NAME = 'Aportes';
+const ERROR_REPORTS_SHEET_NAME = 'Reportes de errores';
 const IMAGE_FOLDER_NAME = 'ResidenciAPP Aportes - Imagenes';
 
 function doPost(e) {
   try {
     const ss = getSpreadsheet_();
-    const sheet = getOrCreateSheet_(ss, SHEET_NAME);
-    ensureHeader_(sheet);
-
     const raw = e && e.postData && e.postData.contents ? e.postData.contents : '{}';
     const payload = JSON.parse(raw);
+
+    if (payload.entryType === 'question_error_report' || payload.report) {
+      const sheet = getOrCreateSheet_(ss, ERROR_REPORTS_SHEET_NAME);
+      ensureErrorReportHeader_(sheet);
+      appendErrorReport_(sheet, payload);
+      return json_({ ok: true, type: 'question_error_report' });
+    }
+
+    const sheet = getFeedbackSheet_(ss);
+    ensureFeedbackHeader_(sheet);
+
     const q = payload.question || {};
     const c = payload.contribution || {};
     const image = c.image || null;
     const imageResult = image && image.data ? saveImage_(image, q, payload.submissionId) : null;
-
     const payloadForSheet = sanitizePayloadForSheet_(payload, imageResult);
 
     sheet.appendRow([
@@ -60,8 +74,8 @@ function doPost(e) {
       imageResult ? imageResult.fileId : '',
       JSON.stringify(payloadForSheet)
     ]);
-
-    return json_({ ok: true, image: imageResult });
+    formatFeedbackSheet_(sheet);
+    return json_({ ok: true, type: 'feedback', image: imageResult });
   } catch (err) {
     return json_({ ok: false, error: String(err && err.message ? err.message : err) });
   }
@@ -73,7 +87,10 @@ function doGet(e) {
     const records = getApprovedRecords_();
     return output_({ ok: true, records: records, count: records.length }, params.callback);
   }
-  return output_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST para aportes o GET ?mode=approved para feedback aprobado.' }, params.callback);
+  if (params.mode === 'health') {
+    return output_({ ok: true, app: 'ResidenciAPP Aportes', version: 'v35.21', sheets: [FEEDBACK_SHEET_NAME, ERROR_REPORTS_SHEET_NAME] }, params.callback);
+  }
+  return output_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST para aportes/reportes o GET ?mode=approved para feedback aprobado.' }, params.callback);
 }
 
 function getSpreadsheet_() {
@@ -87,7 +104,11 @@ function getOrCreateSheet_(ss, name) {
   return ss.getSheetByName(name) || ss.insertSheet(name);
 }
 
-function ensureHeader_(sheet) {
+function getFeedbackSheet_(ss) {
+  return ss.getSheetByName(FEEDBACK_SHEET_NAME) || ss.getSheetByName(LEGACY_FEEDBACK_SHEET_NAME) || ss.insertSheet(FEEDBACK_SHEET_NAME);
+}
+
+function ensureFeedbackHeader_(sheet) {
   if (sheet.getLastRow() > 0) return;
   sheet.appendRow([
     'Fecha',
@@ -118,13 +139,101 @@ function ensureHeader_(sheet) {
     'Imagen File ID',
     'Payload completo JSON sin base64'
   ]);
-  sheet.setFrozenRows(1);
+  formatFeedbackSheet_(sheet);
+}
+
+function ensureErrorReportHeader_(sheet) {
+  if (sheet.getLastRow() > 0) return;
+  sheet.appendRow([
+    'Fecha',
+    'Submission ID',
+    'Estado',
+    'Tipo de registro',
+    'Pregunta ID',
+    'Fuente',
+    'Año',
+    'Eje',
+    'Tema',
+    'Sprint',
+    'Enunciado original',
+    'Pregunta pegada / reportada',
+    'Opciones JSON',
+    'Respuesta cargada',
+    'Respuesta correcta texto',
+    'Qué está mal',
+    'Código del problema',
+    'Comentario adicional',
+    'URL',
+    'User Agent',
+    'Payload completo JSON'
+  ]);
+  formatErrorReportSheet_(sheet);
+}
+
+function appendErrorReport_(sheet, payload) {
+  const q = payload.question || {};
+  const r = payload.report || {};
+  sheet.appendRow([
+    new Date(),
+    payload.submissionId || '',
+    payload.status || 'pendiente',
+    payload.entryType || 'question_error_report',
+    q.id || '',
+    q.sourceLabel || q.source || '',
+    q.year || '',
+    q.eje || '',
+    q.tema || '',
+    q.sprint || '',
+    q.text || '',
+    r.questionText || q.reportedText || '',
+    q.options ? JSON.stringify(q.options) : '',
+    q.answer || '',
+    q.correctAnswerText || '',
+    r.issueLabel || '',
+    r.issueType || '',
+    r.additionalComment || '',
+    r.url || '',
+    r.userAgent || '',
+    JSON.stringify(payload)
+  ]);
+  formatErrorReportSheet_(sheet);
+}
+
+function formatFeedbackSheet_(sheet) {
+  try {
+    sheet.setFrozenRows(1);
+    sheet.setFrozenColumns(3);
+    sheet.getRange(1, 1, 1, 27).setFontWeight('bold').setFontColor('#ffffff').setBackground('#0f766e').setWrap(true);
+    sheet.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
+    sheet.getRange('C:C').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['pendiente', 'aprobado', 'rechazado', 'revisar'], true).build());
+    sheet.getRange('E:E').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['explicacion_completa', 'correccion_respuesta', 'dato_clave', 'bibliografia', 'nemotecnia', 'error_detectado', 'mejora_redaccion', 'reporte_error'], true).build());
+    sheet.autoResizeColumns(1, 12);
+    sheet.setColumnWidth(13, 360);
+    sheet.setColumnWidths(17, 5, 260);
+    sheet.setColumnWidth(27, 360);
+  } catch (err) {}
+}
+
+function formatErrorReportSheet_(sheet) {
+  try {
+    sheet.setFrozenRows(1);
+    sheet.setFrozenColumns(4);
+    sheet.getRange(1, 1, 1, 21).setFontWeight('bold').setFontColor('#ffffff').setBackground('#b45309').setWrap(true);
+    sheet.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
+    sheet.getRange('C:C').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['pendiente', 'corregido', 'descartado', 'revisar'], true).build());
+    sheet.getRange('P:P').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['La respuesta está mal', 'El feedback es incorrecto', 'La pregunta está mal'], true).build());
+    sheet.autoResizeColumns(1, 10);
+    sheet.setColumnWidth(11, 360);
+    sheet.setColumnWidth(12, 360);
+    sheet.setColumnWidth(18, 320);
+    sheet.setColumnWidth(21, 360);
+  } catch (err) {}
 }
 
 function getApprovedRecords_() {
   const ss = getSpreadsheet_();
-  const sheet = getOrCreateSheet_(ss, SHEET_NAME);
-  ensureHeader_(sheet);
+  const sheet = getFeedbackSheet_(ss);
+  ensureFeedbackHeader_(sheet);
   const values = sheet.getDataRange().getValues();
   if (values.length < 2) return [];
 
