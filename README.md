@@ -174,6 +174,14 @@ Notas:
 - Corrige Revancha de errores: las correctas salen de errores activos; las incorrectas permanecen como incorrectas.
 - Actualiza cache busting a `v=35.20` para GitHub Pages.
 
+## v35.23 · Notas móviles por nodo en Aprender desde cero
+
+- Agrega mini pizarras personales en cada nodo de Aprender desde cero.
+- Cada nota queda guardada por nodo en localStorage separado: `residenciapp.lessonNodeNotes.v35_23:<id_del_nodo>`.
+- Las notas se crean como iconos de papel, se abren al hacer click, pueden moverse, cerrarse, editarse, redimensionarse y eliminarse.
+- No modifica banco, IDs, métricas, sesiones, errores activos ni progreso principal.
+- Actualiza cache busting a `v=35.23` para GitHub Pages.
+
 ## v35.22 · Reportes de errores + vacunas final
 
 - Agrega debajo de cada pregunta un apartado de **Reportar error** con: enunciado editable, motivo del problema y comentario adicional.
