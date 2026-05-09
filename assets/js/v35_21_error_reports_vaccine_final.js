@@ -1,4 +1,4 @@
-/* === ResidenciAPP v35.21 · reportes de errores + vacunas final ===
+/* === ResidenciAPP v35.22 · reportes de errores + vacunas final ===
    Objetivos:
    - Agrega un reporte de error debajo de cada pregunta y lo envía al mismo endpoint de aportes.
    - Quita el botón público de configurar recepción del panel colaborativo.
@@ -13,7 +13,7 @@
   const qs = (s, r=document) => r.querySelector(s);
   const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
   const esc = (v='') => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const safe = (fn, fallback=null) => { try { return fn(); } catch(err){ console.warn('[v35.21]', err); return fallback; } };
+  const safe = (fn, fallback=null) => { try { return fn(); } catch(err){ console.warn('[v35.22]', err); return fallback; } };
   const REPORT_KEY = 'residenciapp_error_reports_v1';
 
   function getReportStore(){

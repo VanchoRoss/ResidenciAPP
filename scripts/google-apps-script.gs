@@ -1,6 +1,6 @@
 /**
  * ResidenciAPP · Bandeja de aportes colaborativos + reportes de errores
- * v35.21
+ * v35.22
  *
  * Uso:
  * 1) Pegar este código en Google Apps Script.
@@ -17,7 +17,7 @@
  * - Si ya existe una hoja llamada "Aportes", se usa como bandeja de feedback para no romper flujos viejos.
  * - Si existe o se crea "Feedback IA", el script la prioriza.
  */
-const SPREADSHEET_ID = ''; // Opcional. Si el script está creado desde la Sheet, dejalo vacío.
+const SPREADSHEET_ID = '13YcODZVJwzcWdGLU9-vhMU7s8DEh-3Up'; // Opcional. Si el script está creado desde la Sheet, dejalo vacío.
 const FEEDBACK_SHEET_NAME = 'Feedback IA';
 const LEGACY_FEEDBACK_SHEET_NAME = 'Aportes';
 const ERROR_REPORTS_SHEET_NAME = 'Reportes de errores';
@@ -88,7 +88,7 @@ function doGet(e) {
     return output_({ ok: true, records: records, count: records.length }, params.callback);
   }
   if (params.mode === 'health') {
-    return output_({ ok: true, app: 'ResidenciAPP Aportes', version: 'v35.21', sheets: [FEEDBACK_SHEET_NAME, ERROR_REPORTS_SHEET_NAME] }, params.callback);
+    return output_({ ok: true, app: 'ResidenciAPP Aportes', version: 'v35.22', sheets: [FEEDBACK_SHEET_NAME, ERROR_REPORTS_SHEET_NAME] }, params.callback);
   }
   return output_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST para aportes/reportes o GET ?mode=approved para feedback aprobado.' }, params.callback);
 }

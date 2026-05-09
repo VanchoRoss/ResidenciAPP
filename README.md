@@ -174,7 +174,7 @@ Notas:
 - Corrige Revancha de errores: las correctas salen de errores activos; las incorrectas permanecen como incorrectas.
 - Actualiza cache busting a `v=35.20` para GitHub Pages.
 
-## v35.21 · Reportes de errores + vacunas final
+## v35.22 · Reportes de errores + vacunas final
 
 - Agrega debajo de cada pregunta un apartado de **Reportar error** con: enunciado editable, motivo del problema y comentario adicional.
 - Los reportes se envían al mismo endpoint de Google Apps Script que los aportes colaborativos, pero se guardan en una pestaña separada: `Reportes de errores`.
@@ -182,4 +182,4 @@ Notas:
 - Quita de la UI pública el botón **Configurar recepción** del panel de feedback colaborativo. La recepción queda centralizada en `assets/js/config.js`.
 - Reemplaza las capas finales v35.19/v35.20 por `v35_21_error_reports_vaccine_final.js`, que guarda la celda inicial del tap para que el calendario de vacunas marque/desmarque aun con pointer capture activo.
 - Al terminar el juego de vacunas, se muestra un resumen separado de **aciertos, errores, faltantes y precisión**.
-- Actualiza cache busting a `v=35.21` para GitHub Pages.
+- Actualiza cache busting a `v=35.22` para GitHub Pages.
