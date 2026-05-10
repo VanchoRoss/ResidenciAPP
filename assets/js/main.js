@@ -1025,7 +1025,15 @@ const DATA = window.RESIDENCIAPP_DATA || {metadata:{}, summary_by_eje:[], summar
 
     function getContributionEndpoint(){
       ensureCollaborationState();
-      return (state.collaboration.inbox.endpoint || localStorage.getItem('residenciapp_contribution_endpoint') || CONTRIBUTION_CONFIG.endpoint || '').trim();
+      const officialEndpoint = (window.__RESIDENCIAPP_OFFICIAL_CONTRIBUTION_ENDPOINT__ || CONTRIBUTION_CONFIG.endpoint || '').trim();
+      if(officialEndpoint){
+        const storedEndpoint = (localStorage.getItem('residenciapp_contribution_endpoint') || '').trim();
+        const stateEndpoint = (state.collaboration.inbox.endpoint || '').trim();
+        if(storedEndpoint !== officialEndpoint) localStorage.setItem('residenciapp_contribution_endpoint', officialEndpoint);
+        if(stateEndpoint !== officialEndpoint){ state.collaboration.inbox.endpoint = officialEndpoint; saveState(); }
+        return officialEndpoint;
+      }
+      return (state.collaboration.inbox.endpoint || localStorage.getItem('residenciapp_contribution_endpoint') || '').trim();
     }
 
     function configureContributionInbox(){

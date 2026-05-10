@@ -191,3 +191,8 @@ Notas:
 - Reemplaza las capas finales v35.19/v35.20 por `v35_21_error_reports_vaccine_final.js`, que guarda la celda inicial del tap para que el calendario de vacunas marque/desmarque aun con pointer capture activo.
 - Al terminar el juego de vacunas, se muestra un resumen separado de **aciertos, errores, faltantes y precisión**.
 - Actualiza cache busting a `v=35.22` para GitHub Pages.
+
+
+## v35.24 · migración automática de endpoint colaborativo
+
+Esta versión fuerza el endpoint oficial de aportes en `config.js` y migra automáticamente navegadores que tenían guardada una URL vieja en `localStorage` o dentro de `residenciapp_integrada_state`. No modifica banco, IDs, métricas ni progreso.

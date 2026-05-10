@@ -36,7 +36,13 @@
     return safe(() => {
       if(typeof getContributionEndpoint === 'function') return getContributionEndpoint();
       const cfg = (window.RESIDENCIAPP_CONFIG && window.RESIDENCIAPP_CONFIG.contributions) || window.CONTRIBUTION_CONFIG || {};
-      return String(localStorage.getItem('residenciapp_contribution_endpoint') || cfg.endpoint || '').trim();
+      const official = String(window.__RESIDENCIAPP_OFFICIAL_CONTRIBUTION_ENDPOINT__ || cfg.endpoint || '').trim();
+      if(official){
+        const stored = String(localStorage.getItem('residenciapp_contribution_endpoint') || '').trim();
+        if(stored !== official) localStorage.setItem('residenciapp_contribution_endpoint', official);
+        return official;
+      }
+      return String(localStorage.getItem('residenciapp_contribution_endpoint') || '').trim();
     }, '');
   }
 

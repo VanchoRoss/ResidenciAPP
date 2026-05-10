@@ -1,39 +1,48 @@
 /**
  * ResidenciAPP · Bandeja de aportes colaborativos + reportes de errores
- * v35.22
+ * v35.24 FIX
  *
  * Uso:
- * 1) Pegar este código en Google Apps Script.
- * 2) Si el proyecto NO está vinculado a una Google Sheet, completar SPREADSHEET_ID.
- * 3) Implementar como Web App con acceso "Cualquier persona".
- * 4) Pegar la URL /exec en assets/js/config.js.
+ * 1) Pegar este código completo en Google Apps Script.
+ * 2) Implementar como Web App con acceso "Cualquier persona".
+ * 3) Usar la URL /exec en assets/js/config.js.
  *
- * Estructura sugerida de la planilla:
- * - Panel: vista manual / dashboard.
- * - Feedback IA: aportes de explicación y feedback colaborativo.
- * - Reportes de errores: problemas detectados por los usuarios.
- *
- * Compatibilidad:
- * - Si ya existe una hoja llamada "Aportes", se usa como bandeja de feedback para no romper flujos viejos.
- * - Si existe o se crea "Feedback IA", el script la prioriza.
+ * IMPORTANTE:
+ * - SPREADSHEET_ID debe ser el ID del Google Sheets DESTINO.
+ * - No poner la URL completa, solo el ID.
  */
-const SPREADSHEET_ID = '13YcODZVJwzcWdGLU9-vhMU7s8DEh-3Up'; // Opcional. Si el script está creado desde la Sheet, dejalo vacío.
+
+const SPREADSHEET_ID = '1hvu1GBKk3SMcA3TpDRGwcsRjxpM8SKL9tsv-415WAOU';
+
 const FEEDBACK_SHEET_NAME = 'Feedback IA';
 const LEGACY_FEEDBACK_SHEET_NAME = 'Aportes';
 const ERROR_REPORTS_SHEET_NAME = 'Reportes de errores';
 const IMAGE_FOLDER_NAME = 'ResidenciAPP Aportes - Imagenes';
 
+/**
+ * Recibe aportes y reportes desde ResidenciAPP.
+ */
 function doPost(e) {
   try {
     const ss = getSpreadsheet_();
-    const raw = e && e.postData && e.postData.contents ? e.postData.contents : '{}';
+
+    const raw = e && e.postData && e.postData.contents
+      ? e.postData.contents
+      : '{}';
+
     const payload = JSON.parse(raw);
 
     if (payload.entryType === 'question_error_report' || payload.report) {
       const sheet = getOrCreateSheet_(ss, ERROR_REPORTS_SHEET_NAME);
       ensureErrorReportHeader_(sheet);
       appendErrorReport_(sheet, payload);
-      return json_({ ok: true, type: 'question_error_report' });
+
+      return json_({
+        ok: true,
+        type: 'question_error_report',
+        spreadsheetId: ss.getId(),
+        spreadsheetUrl: ss.getUrl()
+      });
     }
 
     const sheet = getFeedbackSheet_(ss);
@@ -42,7 +51,11 @@ function doPost(e) {
     const q = payload.question || {};
     const c = payload.contribution || {};
     const image = c.image || null;
-    const imageResult = image && image.data ? saveImage_(image, q, payload.submissionId) : null;
+
+    const imageResult = image && image.data
+      ? saveImage_(image, q, payload.submissionId)
+      : null;
+
     const payloadForSheet = sanitizePayloadForSheet_(payload, imageResult);
 
     sheet.appendRow([
@@ -74,30 +87,93 @@ function doPost(e) {
       imageResult ? imageResult.fileId : '',
       JSON.stringify(payloadForSheet)
     ]);
+
     formatFeedbackSheet_(sheet);
-    return json_({ ok: true, type: 'feedback', image: imageResult });
+
+    return json_({
+      ok: true,
+      type: 'feedback',
+      image: imageResult,
+      spreadsheetId: ss.getId(),
+      spreadsheetUrl: ss.getUrl()
+    });
+
   } catch (err) {
-    return json_({ ok: false, error: String(err && err.message ? err.message : err) });
+    return json_({
+      ok: false,
+      error: String(err && err.message ? err.message : err)
+    });
   }
 }
 
+/**
+ * GET de diagnóstico y lectura de feedback aprobado.
+ */
 function doGet(e) {
-  const params = (e && e.parameter) || {};
-  if (params.mode === 'approved') {
+  const params = e && e.parameter ? e.parameter : {};
+  const mode = params.mode || '';
+
+  if (params.diagnostico === '1' || mode === 'diagnostico') {
+    const ss = getSpreadsheet_();
+
+    return output_({
+      ok: true,
+      app: 'ResidenciAPP Aportes',
+      diagnostico: true,
+      spreadsheetIdConfigurado: SPREADSHEET_ID,
+      spreadsheetIdReal: ss.getId(),
+      spreadsheetName: ss.getName(),
+      spreadsheetUrl: ss.getUrl(),
+      version: 'v35.24-fix',
+      fecha: new Date().toISOString()
+    }, params.callback);
+  }
+
+  if (mode === 'health') {
+    const ss = getSpreadsheet_();
+
+    return output_({
+      ok: true,
+      app: 'ResidenciAPP Aportes',
+      version: 'v35.24-fix',
+      spreadsheetIdReal: ss.getId(),
+      spreadsheetName: ss.getName(),
+      spreadsheetUrl: ss.getUrl(),
+      sheets: [
+        FEEDBACK_SHEET_NAME,
+        LEGACY_FEEDBACK_SHEET_NAME,
+        ERROR_REPORTS_SHEET_NAME
+      ]
+    }, params.callback);
+  }
+
+  if (mode === 'approved') {
     const records = getApprovedRecords_();
-    return output_({ ok: true, records: records, count: records.length }, params.callback);
+
+    return output_({
+      ok: true,
+      records: records,
+      count: records.length
+    }, params.callback);
   }
-  if (params.mode === 'health') {
-    return output_({ ok: true, app: 'ResidenciAPP Aportes', version: 'v35.22', sheets: [FEEDBACK_SHEET_NAME, ERROR_REPORTS_SHEET_NAME] }, params.callback);
-  }
-  return output_({ ok: true, app: 'ResidenciAPP Aportes', message: 'Endpoint activo. Usar POST para aportes/reportes o GET ?mode=approved para feedback aprobado.' }, params.callback);
+
+  return output_({
+    ok: true,
+    app: 'ResidenciAPP Aportes',
+    message: 'Endpoint activo. Usar POST para aportes/reportes o GET ?diagnostico=1 para verificar destino.',
+    version: 'v35.24-fix'
+  }, params.callback);
 }
 
+/**
+ * Abre siempre la planilla indicada por SPREADSHEET_ID.
+ */
 function getSpreadsheet_() {
-  if (SPREADSHEET_ID) return SpreadsheetApp.openById(SPREADSHEET_ID);
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) throw new Error('No hay Google Sheet activa. Completá SPREADSHEET_ID en el Apps Script.');
-  return ss;
+  if (!SPREADSHEET_ID) {
+    throw new Error('Falta completar SPREADSHEET_ID con el ID del Google Sheets destino.');
+  }
+
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
 }
 
 function getOrCreateSheet_(ss, name) {
@@ -105,11 +181,14 @@ function getOrCreateSheet_(ss, name) {
 }
 
 function getFeedbackSheet_(ss) {
-  return ss.getSheetByName(FEEDBACK_SHEET_NAME) || ss.getSheetByName(LEGACY_FEEDBACK_SHEET_NAME) || ss.insertSheet(FEEDBACK_SHEET_NAME);
+  return ss.getSheetByName(FEEDBACK_SHEET_NAME)
+    || ss.getSheetByName(LEGACY_FEEDBACK_SHEET_NAME)
+    || ss.insertSheet(FEEDBACK_SHEET_NAME);
 }
 
 function ensureFeedbackHeader_(sheet) {
   if (sheet.getLastRow() > 0) return;
+
   sheet.appendRow([
     'Fecha',
     'Submission ID',
@@ -139,11 +218,13 @@ function ensureFeedbackHeader_(sheet) {
     'Imagen File ID',
     'Payload completo JSON sin base64'
   ]);
+
   formatFeedbackSheet_(sheet);
 }
 
 function ensureErrorReportHeader_(sheet) {
   if (sheet.getLastRow() > 0) return;
+
   sheet.appendRow([
     'Fecha',
     'Submission ID',
@@ -167,12 +248,14 @@ function ensureErrorReportHeader_(sheet) {
     'User Agent',
     'Payload completo JSON'
   ]);
+
   formatErrorReportSheet_(sheet);
 }
 
 function appendErrorReport_(sheet, payload) {
   const q = payload.question || {};
   const r = payload.report || {};
+
   sheet.appendRow([
     new Date(),
     payload.submissionId || '',
@@ -196,6 +279,7 @@ function appendErrorReport_(sheet, payload) {
     r.userAgent || '',
     JSON.stringify(payload)
   ]);
+
   formatErrorReportSheet_(sheet);
 }
 
@@ -203,14 +287,48 @@ function formatFeedbackSheet_(sheet) {
   try {
     sheet.setFrozenRows(1);
     sheet.setFrozenColumns(3);
-    sheet.getRange(1, 1, 1, 27).setFontWeight('bold').setFontColor('#ffffff').setBackground('#0f766e').setWrap(true);
+
+    sheet
+      .getRange(1, 1, 1, 27)
+      .setFontWeight('bold')
+      .setFontColor('#ffffff')
+      .setBackground('#0f766e')
+      .setWrap(true);
+
     sheet.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
-    sheet.getRange('C:C').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['pendiente', 'aprobado', 'rechazado', 'revisar'], true).build());
-    sheet.getRange('E:E').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['explicacion_completa', 'correccion_respuesta', 'dato_clave', 'bibliografia', 'nemotecnia', 'error_detectado', 'mejora_redaccion', 'reporte_error'], true).build());
+
+    sheet
+      .getRange('C:C')
+      .setDataValidation(
+        SpreadsheetApp
+          .newDataValidation()
+          .requireValueInList(['pendiente', 'aprobado', 'rechazado', 'revisar'], true)
+          .build()
+      );
+
+    sheet
+      .getRange('E:E')
+      .setDataValidation(
+        SpreadsheetApp
+          .newDataValidation()
+          .requireValueInList([
+            'explicacion_completa',
+            'correccion_respuesta',
+            'dato_clave',
+            'bibliografia',
+            'nemotecnia',
+            'error_detectado',
+            'mejora_redaccion',
+            'reporte_error'
+          ], true)
+          .build()
+      );
+
     sheet.autoResizeColumns(1, 12);
     sheet.setColumnWidth(13, 360);
     sheet.setColumnWidths(17, 5, 260);
     sheet.setColumnWidth(27, 360);
+
   } catch (err) {}
 }
 
@@ -218,22 +336,53 @@ function formatErrorReportSheet_(sheet) {
   try {
     sheet.setFrozenRows(1);
     sheet.setFrozenColumns(4);
-    sheet.getRange(1, 1, 1, 21).setFontWeight('bold').setFontColor('#ffffff').setBackground('#b45309').setWrap(true);
+
+    sheet
+      .getRange(1, 1, 1, 21)
+      .setFontWeight('bold')
+      .setFontColor('#ffffff')
+      .setBackground('#b45309')
+      .setWrap(true);
+
     sheet.getRange('A:A').setNumberFormat('yyyy-mm-dd hh:mm');
-    sheet.getRange('C:C').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['pendiente', 'corregido', 'descartado', 'revisar'], true).build());
-    sheet.getRange('P:P').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['La respuesta está mal', 'El feedback es incorrecto', 'La pregunta está mal'], true).build());
+
+    sheet
+      .getRange('C:C')
+      .setDataValidation(
+        SpreadsheetApp
+          .newDataValidation()
+          .requireValueInList(['pendiente', 'corregido', 'descartado', 'revisar'], true)
+          .build()
+      );
+
+    sheet
+      .getRange('P:P')
+      .setDataValidation(
+        SpreadsheetApp
+          .newDataValidation()
+          .requireValueInList([
+            'La respuesta está mal',
+            'El feedback es incorrecto',
+            'La pregunta está mal'
+          ], true)
+          .build()
+      );
+
     sheet.autoResizeColumns(1, 10);
     sheet.setColumnWidth(11, 360);
     sheet.setColumnWidth(12, 360);
     sheet.setColumnWidth(18, 320);
     sheet.setColumnWidth(21, 360);
+
   } catch (err) {}
 }
 
 function getApprovedRecords_() {
   const ss = getSpreadsheet_();
   const sheet = getFeedbackSheet_(ss);
+
   ensureFeedbackHeader_(sheet);
+
   const values = sheet.getDataRange().getValues();
   if (values.length < 2) return [];
 
@@ -243,14 +392,24 @@ function getApprovedRecords_() {
 
   for (let r = 1; r < values.length; r++) {
     const row = values[r];
+
     const status = String(row[idx['Estado']] || '').trim().toLowerCase();
-    if (!['aprobado', 'aprobada', 'approved', 'validado', 'validada'].includes(status)) continue;
+
+    if (!['aprobado', 'aprobada', 'approved', 'validado', 'validada'].includes(status)) {
+      continue;
+    }
 
     let payload = null;
     const payloadRaw = row[idx['Payload completo JSON sin base64']];
+
     if (payloadRaw) {
-      try { payload = JSON.parse(payloadRaw); } catch (err) { payload = null; }
+      try {
+        payload = JSON.parse(payloadRaw);
+      } catch (err) {
+        payload = null;
+      }
     }
+
     const question = payload && payload.question ? payload.question : {};
     const contribution = payload && payload.contribution ? payload.contribution : {};
 
@@ -284,12 +443,17 @@ function getApprovedRecords_() {
       }
     });
   }
+
   return out;
 }
 
 function makeIndex_(headers) {
   const index = {};
-  headers.forEach((h, i) => { index[h] = i; });
+
+  headers.forEach((h, i) => {
+    index[h] = i;
+  });
+
   return new Proxy(index, {
     get(target, prop) {
       if (prop in target) return target[prop];
@@ -300,44 +464,72 @@ function makeIndex_(headers) {
 
 function toIso_(value) {
   if (!value) return '';
+
   try {
     const d = value instanceof Date ? value : new Date(value);
     return isNaN(d.getTime()) ? String(value) : d.toISOString();
-  } catch (err) { return String(value); }
+  } catch (err) {
+    return String(value);
+  }
 }
 
 function saveImage_(image, question, submissionId) {
   const dataUrl = String(image.data || '');
   const match = dataUrl.match(/^data:(.+);base64,(.+)$/);
-  if (!match) throw new Error('Formato de imagen inválido');
+
+  if (!match) {
+    throw new Error('Formato de imagen inválido');
+  }
 
   const mimeType = image.mimeType || match[1] || 'image/png';
   const base64 = match[2];
   const bytes = Utilities.base64Decode(base64);
+
   const safeQuestionId = sanitizeFileName_(question.id || 'pregunta');
   const safeName = sanitizeFileName_(image.name || 'imagen.png');
-  const fileName = [safeQuestionId, submissionId || Date.now(), safeName].join('__');
+
+  const fileName = [
+    safeQuestionId,
+    submissionId || Date.now(),
+    safeName
+  ].join('__');
 
   const folder = getOrCreateImageFolder_();
   const blob = Utilities.newBlob(bytes, mimeType, fileName);
   const file = folder.createFile(blob);
+
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
 
-  return { name: fileName, originalName: image.name || '', mimeType: mimeType, size: bytes.length, fileId: file.getId(), url: file.getUrl() };
+  return {
+    name: fileName,
+    originalName: image.name || '',
+    mimeType: mimeType,
+    size: bytes.length,
+    fileId: file.getId(),
+    url: file.getUrl()
+  };
 }
 
 function getOrCreateImageFolder_() {
   const folders = DriveApp.getFoldersByName(IMAGE_FOLDER_NAME);
-  if (folders.hasNext()) return folders.next();
+
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+
   return DriveApp.createFolder(IMAGE_FOLDER_NAME);
 }
 
 function sanitizeFileName_(name) {
-  return String(name || '').replace(/[\\/:*?"<>|#%{}$!`&@+=]/g, '-').replace(/\s+/g, '_').slice(0, 120);
+  return String(name || '')
+    .replace(/[\\/:*?"<>|#%{}$!`&@+=]/g, '-')
+    .replace(/\s+/g, '_')
+    .slice(0, 120);
 }
 
 function sanitizePayloadForSheet_(payload, imageResult) {
   const copy = JSON.parse(JSON.stringify(payload || {}));
+
   if (copy.contribution && copy.contribution.image) {
     copy.contribution.image = {
       name: copy.contribution.image.name || '',
@@ -348,14 +540,24 @@ function sanitizePayloadForSheet_(payload, imageResult) {
       data: '[base64 omitido para no saturar la planilla]'
     };
   }
+
   return copy;
 }
 
-function json_(obj) { return output_(obj, ''); }
+function json_(obj) {
+  return output_(obj, '');
+}
 
 function output_(obj, callback) {
-  const text = callback ? String(callback) + '(' + JSON.stringify(obj) + ');' : JSON.stringify(obj);
+  const text = callback
+    ? String(callback) + '(' + JSON.stringify(obj) + ');'
+    : JSON.stringify(obj, null, 2);
+
   return ContentService
     .createTextOutput(text)
-    .setMimeType(callback ? ContentService.MimeType.JAVASCRIPT : ContentService.MimeType.JSON);
+    .setMimeType(
+      callback
+        ? ContentService.MimeType.JAVASCRIPT
+        : ContentService.MimeType.JSON
+    );
 }
