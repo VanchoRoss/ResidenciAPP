@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hematología Adultos — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --pink:#d4537e;--pink2:#ed93b1;--pinkb:#2e1020;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-green{background:var(--greenb);border-color:var(--green);color:var(--green2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Anemia grid visual */
+.vcm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:8px}
+.vcm-card{border-radius:var(--radius);padding:14px;border:1px solid var(--border)}
+.vcm-title{font-size:12px;font-weight:700;margin-bottom:6px}
+.vcm-val{font-size:20px;font-weight:700;margin-bottom:4px}
+.vcm-item{font-size:11px;color:var(--text2);margin-bottom:3px;padding-left:8px;position:relative}
+.vcm-item::before{content:"·";position:absolute;left:0}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-t{background:var(--tealb);color:var(--teal2)}.tag-g{background:var(--greenb);color:var(--green2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}.tag-b{background:var(--blueb);color:var(--blue2)}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid,.vcm-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Hematología Adultos</div>
+    <div class="sb-sub">CL10 · banco 2016–2025 · 22 preguntas</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">22</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">8</div><div class="sb-stat-l">nodos</div></div>
+    </div>
+  </div>
+  <div class="sprint-label" style="color:var(--amber)">Anemias · Algoritmo central</div>
+  <div class="nav-item active" style="--item-color:var(--amber)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">Algoritmo de anemias por VCM</div><div class="nav-n">Microcítica · Normocítica · Macrocítica</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">Anemia ferropénica</div><div class="nav-n">Ferritina · transferrina · colonoscopia</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Anemia megaloblástica · Anemia de ERC</div><div class="nav-n">B12 · Folato · EPO · Post-gastrectomía</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--red)">Hemólisis · Trombocitopenias</div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">Anemias hemolíticas</div><div class="nav-n">AHAI Coombs · Esferocitosis · G6PD</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">PTI · PTT · SUH · Púrpuras</div><div class="nav-n">Coombs − · ADAMTS13 · Tratamiento</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--purple)">Hemostasia · Oncohematología</div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Coagulopatías — CID · Hemofilia · vWF</div><div class="nav-n">TP · KPTT · fibrinógeno · tratamiento</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Leucemias · Linfomas</div><div class="nav-n">LAM vs LAL · Hodgkin vs No Hodgkin · Estadios</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Policitemia · Mieloma · Transfusión</div><div class="nav-n">JAK2 · Proteína M · Umbrales de transfusión</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══ NODO 1 — ALGORITMO ANEMIAS ═══ -->
+<div class="node active" id="n0" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">CL10 · el nodo núcleo de hematología</div>
+    <div class="node-title">Algoritmo diagnóstico de anemias por VCM</div>
+    <div class="node-subtitle">El VCM organiza todo · Reticulocitos para producción vs destrucción · Ferritina como eje</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Anemia = Hb &lt;12 g/dL en mujeres / &lt;13 g/dL en hombres. El VCM (volumen corpuscular medio) es el primer paso de clasificación: microcítica (&lt;80), normocítica (80-100), macrocítica (&gt;100). Una vez clasificada, la ferritina y los reticulocitos te dicen el mecanismo. Este árbol resuelve el 80% de las preguntas de hematología.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Los 3 mundos de la anemia por VCM</div>
+    <div class="vcm-grid">
+      <div class="vcm-card" style="background:var(--redb);border-color:var(--red)">
+        <div class="vcm-title" style="color:var(--red2)">MICROCÍTICA</div>
+        <div class="vcm-val" style="color:var(--red2)">VCM &lt;80 fL</div>
+        <div class="vcm-item">Ferropénica (más frecuente)</div>
+        <div class="vcm-item">Anemia de enf. crónica (AEC)</div>
+        <div class="vcm-item">Talasemia</div>
+        <div class="vcm-item">Anemia sideroblástica</div>
+        <div style="font-size:11px;color:var(--red2);margin-top:6px">↓ síntesis de hemoglobina</div>
+      </div>
+      <div class="vcm-card" style="background:var(--amberb);border-color:var(--amber)">
+        <div class="vcm-title" style="color:var(--amber2)">NORMOCÍTICA</div>
+        <div class="vcm-val" style="color:var(--amber2)">VCM 80–100 fL</div>
+        <div class="vcm-item">Hemolítica (↑ reticulocitos)</div>
+        <div class="vcm-item">Hemorragia aguda</div>
+        <div class="vcm-item">Anemia aplásica (↓ reticulocitos)</div>
+        <div class="vcm-item">Anemia de ERC</div>
+        <div class="vcm-item">Anemia de enf. crónica (algunas)</div>
+        <div style="font-size:11px;color:var(--amber2);margin-top:6px">Reticulocitos organizan el sub-dx</div>
+      </div>
+      <div class="vcm-card" style="background:var(--purpleb);border-color:var(--purple)">
+        <div class="vcm-title" style="color:var(--purple2)">MACROCÍTICA</div>
+        <div class="vcm-val" style="color:var(--purple2)">VCM &gt;100 fL</div>
+        <div class="vcm-item">Déficit de B12 (megaloblástica)</div>
+        <div class="vcm-item">Déficit de folato (megaloblástica)</div>
+        <div class="vcm-item">Alcohol</div>
+        <div class="vcm-item">Hipotiroidismo</div>
+        <div class="vcm-item">Fármacos: metotrexato, hidroxiurea</div>
+        <div style="font-size:11px;color:var(--purple2);margin-top:6px">↓ síntesis de ADN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Reticulocitos — el paso 2 en anemia normocítica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">↑ Reticulocitos (&gt;2%) — médula produce, pero se pierde</div>
+        <ul>
+          <li>Anemia hemolítica (destrucción de GR)</li>
+          <li>Hemorragia aguda (pérdida de GR)</li>
+          <li>Respuesta a tratamiento (ferropénica con hierro)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">↓ Reticulocitos (&lt;1%) — médula no produce</div>
+        <ul>
+          <li>Anemia aplásica (fallo medular)</li>
+          <li>Anemia de ERC (falta EPO)</li>
+          <li>Infiltración medular (leucemias, mieloma)</li>
+          <li>Déficit de B12/folato (antes del tratamiento)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algoritmo completo — el árbol que resuelve todo</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">1</div>
+        <div class="algo-text"><strong>Hb baja → calcular VCM</strong><br>
+        &lt;80 → microcítica → Nodo 2 (ferritina)<br>
+        80–100 → normocítica → reticulocitos<br>
+        &gt;100 → macrocítica → Nodo 3 (B12/folato)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">2</div>
+        <div class="algo-text"><strong>Microcítica → FERRITINA primero</strong><br>
+        Ferritina baja (&lt;12 ng/mL) → ferropénica. Hierro bajo, TIBC alta.<br>
+        Ferritina alta o normal → AEC (reactante de fase aguda). Hierro bajo, TIBC baja.<br>
+        VCM muy bajo (&lt;70) + ferritina normal → pensar talasemia (electroforesis Hb)</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">3</div>
+        <div class="algo-text"><strong>Normocítica → RETICULOCITOS</strong><br>
+        ↑ reticulocitos → hemólisis o hemorragia aguda → Coombs, frotis<br>
+        ↓ reticulocitos → aplasia medular o ERC → EPO, aspirado/biopsia MO</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--amberb);color:var(--amber2)">4</div>
+        <div class="algo-text"><strong>Macrocítica → ¿Megaloblástica o no?</strong><br>
+        B12 y folato en sangre. Si bajos → megaloblástica. LDH ↑ y bilirrubina ↑ (eritropoyesis ineficaz)<br>
+        Si B12/folato normales → alcohol, hipotiroidismo, fármacos</div>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — ferritina elevada no descarta ferropenia</div>
+      <p>La ferritina es reactante de fase aguda: en infecciones, inflamación, cáncer o cirrosis puede estar elevada aunque haya ferropenia coexistente. En un paciente con enfermedad crónica e índices inflamatorios elevados, una ferritina de 50–80 ng/mL puede coexistir con deficiencia real de hierro. Si hay duda: hierro sérico + TIBC o receptor soluble de transferrina.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tabla de laboratorio — diferenciación rápida microcíticas</div>
+    <table class="tbl">
+      <tr><th>Parámetro</th><th style="color:var(--red2)">Ferropénica</th><th style="color:var(--amber2)">AEC</th><th style="color:var(--teal2)">Talasemia menor</th></tr>
+      <tr><td>Ferritina</td><td style="color:var(--red2)">↓ (&lt;12)</td><td style="color:var(--amber2)">Normal o ↑</td><td>Normal o ↑</td></tr>
+      <tr><td>Hierro sérico</td><td>↓</td><td>↓</td><td>Normal</td></tr>
+      <tr><td>TIBC (capacidad fijación hierro)</td><td style="color:var(--red2)">↑ (el cuerpo pide más hierro)</td><td style="color:var(--amber2)">↓ (secuestro de hierro)</td><td>Normal</td></tr>
+      <tr><td>Saturación transferrina</td><td>↓</td><td>↓</td><td>Normal</td></tr>
+      <tr><td>VCM</td><td>↓</td><td>Leve ↓ o normal</td><td style="color:var(--teal2)">↓↓ desproporcionado</td></tr>
+      <tr><td>Recuento GR</td><td>↓</td><td>↓</td><td style="color:var(--teal2)">Normal o ↑ (microcitos numerosos)</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Clave para distinguir talasemia menor de ferropénica</div>
+      <p>Índice de Mentzer = VCM / Recuento de GR (en millones/mm³)<br>
+      <strong>&lt;13 → talasemia</strong> (VCM muy bajo con muchos glóbulos rojos pequeños)<br>
+      <strong>&gt;13 → ferropénica</strong> (VCM bajo con pocos glóbulos rojos)<br>
+      Confirmación: electroforesis de hemoglobina → HbA2 &gt;3.5% = talasemia beta menor.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: Ferropénica →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 2 — FERROPÉNICA ═══ -->
+<div class="node" id="n1" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">CL10 · más frecuente en banco</div>
+    <div class="node-title">Anemia ferropénica</div>
+    <div class="node-subtitle">La causa más frecuente de anemia · Siempre buscar el origen · Colonoscopia en adultos</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La anemia ferropénica es la más frecuente en el mundo, pero el diagnóstico de ferropenia no es el final del trabajo — hay que encontrar la CAUSA. En adultos mayores con anemia ferropénica sin causa aparente: colonoscopia obligatoria para descartar cáncer colorrectal. La trampa del banco está en "tratar sin buscar la causa".</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Causas según el mecanismo</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Pérdida de sangre (más frecuente)</div>
+        <ul>
+          <li>Menorragia / metrorragia (mujeres en edad fértil: causa #1)</li>
+          <li>Sangrado digestivo: CCR, úlcera péptica, angiodisplasia, diverticulosis, hemorroides (causa #1 en adultos mayores)</li>
+          <li>Embarazo y puerperio</li>
+          <li>Donación frecuente de sangre</li>
+          <li>Cirugías o traumas</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Mala absorción / aporte insuficiente</div>
+        <ul>
+          <li>Enfermedad celíaca (malabsorción duodenal)</li>
+          <li>Gastrectomía o bypass gástrico (bypasea el duodeno)</li>
+          <li>Aclorhidria / IBP prolongados (hierro necesita ácido)</li>
+          <li>Dieta vegetariana estricta sin suplementación</li>
+          <li>Helicobacter pylori (consume hierro, genera gastritis)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más repetida del banco — colonoscopia en adulto con ferropenia</div>
+      <p>Todo adulto (especialmente hombre o mujer posmenopáusica) con anemia ferropénica sin causa aparente requiere <strong>colonoscopia para descartar cáncer colorrectal</strong>. El CCR de colon derecho sangra crónicamente de forma oculta → ferropenia progresiva sin hematoquecia visible. NO alcanza con tratar con hierro sin investigar la causa.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento con hierro</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Hierro oral (primera línea)</div>
+        <ul>
+          <li>Sulfato ferroso 300 mg c/8h (65 mg de hierro elemental por comprimido)</li>
+          <li>En ayunas o con vitamina C (mejor absorción)</li>
+          <li>No tomar con café, té, lácteos, calcio, IBP (reducen absorción)</li>
+          <li>EAs frecuentes: náuseas, constipación, heces oscuras</li>
+          <li>Reticulocitos suben en 5–10 días (respuesta al tratamiento)</li>
+          <li>Hb se normaliza en 4–8 semanas</li>
+          <li>Continuar 3–6 meses después de normalizar Hb (para reponer depósitos)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Hierro IV (indicaciones)</div>
+        <ul>
+          <li>Intolerancia al hierro oral (GI severos)</li>
+          <li>Malabsorción intestinal (celíaca, bypass gástrico)</li>
+          <li>Pérdidas que superan la absorción oral (HDA activa, ERC en hemodiálisis)</li>
+          <li>Necesidad de reposición rápida (pre-cirugía, IC)</li>
+          <li>Preparaciones: hierro sacarosa, hierro carboximaltosa (única dosis, segura)</li>
+          <li>Riesgo: reacciones alérgicas (raras con preparaciones modernas)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Cómo evaluar la respuesta al tratamiento</div>
+      <p><strong>A los 5–10 días:</strong> ↑ reticulocitos (signo más precoz de respuesta).<br>
+      <strong>A las 4 semanas:</strong> Hb debe subir ≥1 g/dL.<br>
+      <strong>Si NO hay respuesta:</strong> preguntar: ¿está tomando el hierro correctamente? ¿Hay pérdida continua? ¿Hay malabsorción? ¿El diagnóstico es correcto? (quizás es AEC, no ferropénica).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anemia de la enfermedad crónica (AEC)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Mecanismo y diagnóstico de la AEC</div>
+      <p>La inflamación crónica libera IL-6 → ↑ hepcidina → hepcidina bloquea la exportación de hierro desde los macrófagos y la absorción intestinal → el hierro está ahí pero no puede usarse.<br><br>
+      <strong>Laboratorio:</strong> ferritina ALTA (o normal) + hierro sérico BAJO + TIBC BAJA (diferente a ferropénica donde TIBC es alta) + saturación de transferrina baja + VCM normal o leve ↓.<br><br>
+      <strong>Causas:</strong> infección crónica (TBC, endocarditis), cáncer activo, ERC, AR, LES, cirrosis, IBD, IC.<br><br>
+      <strong>Tratamiento:</strong> tratar la enfermedad de base. En ERC: EPO recombinante. El hierro oral tiene poca eficacia (hepcidina bloquea la absorción). Hierro IV puede ayudar como coadyuvante.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa clásica — AEC vs Ferropénica: solo la TIBC los distingue</div>
+      <p>Ambas tienen hierro sérico bajo. La diferencia:<br>
+      Ferropénica: el cuerpo pide más hierro → TIBC ↑ (más transferrina disponible para "cargar" hierro).<br>
+      AEC: el hierro está secuestrado en macrófagos → TIBC ↓ o normal (no necesita más transportador).<br>
+      Y la ferritina: baja en ferropénica, alta en AEC.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: Algoritmo</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Megaloblástica / ERC →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 3 — MEGALOBLÁSTICA / ERC ═══ -->
+<div class="node" id="n2" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">CL10 · datos de laboratorio específicos</div>
+    <div class="node-title">Anemia megaloblástica y anemia de la ERC</div>
+    <div class="node-subtitle">B12 vs Folato · Post-gastrectomía · Neurológico de B12 · EPO en ERC</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Megaloblástica = déficit de B12 o folato → VCM &gt;100 + neutrófilos hipersegmentados (5+ lóbulos). La diferencia crítica: déficit de B12 da manifestaciones neurológicas (folato NO). La causa más frecuente de déficit de B12 en adultos es la gastritis autoinmune (anemia perniciosa). En ERC la anemia es normocítica por falta de EPO.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">B12 vs Folato — la diferencia que más pregunta el banco</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--purple2)">Déficit de B12</th><th style="color:var(--teal2)">Déficit de Folato</th></tr>
+      <tr><td>VCM</td><td>&gt;100 fL (macrocítica)</td><td>&gt;100 fL (macrocítica)</td></tr>
+      <tr><td>Neutrófilos hipersegmentados</td><td>SÍ (5+ lóbulos)</td><td>SÍ</td></tr>
+      <tr><td><strong>Manifestaciones neurológicas</strong></td><td style="color:var(--purple2)"><strong>SÍ — degeneración combinada subaguda de la médula</strong></td><td style="color:var(--teal2)"><strong>NO neurológico</strong></td></tr>
+      <tr><td>Tiempo de depósitos</td><td>3–5 años (mucho depósito en hígado)</td><td>3–4 meses (depósitos escasos)</td></tr>
+      <tr><td>Homocisteína</td><td>↑↑</td><td>↑↑</td></tr>
+      <tr><td>Ácido metilmalónico</td><td style="color:var(--purple2)">↑↑ (específico de B12)</td><td style="color:var(--teal2)">Normal (específico de folato)</td></tr>
+      <tr><td>Causas principales</td><td>Anemia perniciosa (anti-FI), gastrectomía, metformina, veganos estrictos, Crohn ileal</td><td>Alcohol, embarazo (↑ demanda), malabsorción, metotrexato, fenitoína</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — corregir folato sin corregir B12 empeora la neurología</div>
+      <p>Si un paciente tiene déficit de B12 con manifestaciones neurológicas y le das solo folato: mejora la anemia pero la neuropatía progresa (incluso puede empeorar). Siempre medir B12 Y folato antes de tratar. Si hay sospecha de déficit de B12: dar B12 primero o simultáneamente.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anemia perniciosa — la causa clásica de déficit B12</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Mecanismo</div>
+        <ul>
+          <li>Gastritis autoinmune → destruye células parietales → ↓ factor intrínseco (FI)</li>
+          <li>FI es necesario para absorber B12 en el íleon terminal</li>
+          <li>Sin FI → B12 no se absorbe → déficit progresivo en años</li>
+          <li>Anticuerpos anti-FI y anti-células parietales (positivos en 50–70%)</li>
+          <li>Achilia gástrica (↑ riesgo de cáncer gástrico → endoscopia)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Degeneración combinada subaguda de la médula</div>
+        <ul>
+          <li>Desmielinización de columnas laterales y posteriores de la médula</li>
+          <li>Columna posterior: pérdida de sensibilidad vibratoria y propioceptiva (diapasón, Romberg +)</li>
+          <li>Columna lateral: espasticidad, hiperreflexia, signo de Babinski</li>
+          <li>Puede preceder o ir sin anemia evidente</li>
+          <li>Tratamiento: cianocobalamina 1000 mcg IM × 7 días → mensual de por vida</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">B12 en contextos especiales</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Post-gastrectomía — dato que aparece en el banco</div>
+      <p>La gastrectomía total (o en Y de Roux en bariátrica) elimina las células parietales → sin factor intrínseco → malabsorción de B12. También: malabsorción de hierro (el bypass evita el duodeno donde se absorbe) y calcio/vitamina D.<br><br>
+      <strong>Suplementación obligatoria de por vida post-gastrectomía total:</strong> B12 IM mensual (no oral porque no hay FI), hierro IV, calcio + vitamina D.<br><br>
+      <strong>Metformina:</strong> uso prolongado interfiere con la absorción de B12 ileal → monitorear B12 anualmente en diabéticos con metformina.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anemia de la ERC — normocítica hipoproliferativa</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Mecanismo y diagnóstico</div>
+        <ul>
+          <li>Células peritubulares del riñón producen EPO (eritropoyetina)</li>
+          <li>ERC G3+ → masa renal ↓ → EPO ↓ → médula no produce GR</li>
+          <li>Anemia normocítica normocrómica + reticulocitos bajos</li>
+          <li>Diagnóstico de exclusión: descartar ferropenia, B12/folato, hemólisis antes de atribuirlo a ERC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tratamiento (ver también Nefrología N2)</div>
+        <ul>
+          <li>Corrección de ferropenia PRIMERO (hierro IV si en hemodiálisis)</li>
+          <li>Eritropoyetina recombinante (EPO): solo cuando TFGe &lt;45–50 y Hb &lt;10 g/dL</li>
+          <li>Meta Hb: 10–11.5 g/dL. NO sobrecorregir a 12+ (↑ riesgo trombótico y CV)</li>
+          <li>Si EPO no responde: buscar ferropenia funcional, infección, hiperPTH</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: Ferropénica</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: Hemolíticas →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 4 — HEMOLÍTICAS ═══ -->
+<div class="node" id="n3" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">CL10 · Coombs como bisagra</div>
+    <div class="node-title">Anemias hemolíticas</div>
+    <div class="node-subtitle">Coombs directo · AHAI · Esferocitosis hereditaria · G6PD · Diagnóstico por frotis</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La hemólisis se reconoce por su tríada bioquímica: LDH ↑ + bilirrubina indirecta ↑ + haptoglobina ↓. El test de Coombs directo divide el mundo hemolítico en dos: positivo = autoinmune (AHAI), negativo = causa intrínseca del GR (esferocitosis, G6PD) o fragmentación mecánica (microangiopática). Esta distinción es el corazón del Nodo 4 y 5.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tríada bioquímica de hemólisis + Coombs</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Marcadores de hemólisis (siempre buscar)</div>
+        <ul>
+          <li><strong>LDH ↑:</strong> liberada por los GR destruidos</li>
+          <li><strong>Bilirrubina indirecta ↑:</strong> hemoglobina → hemo → bilirrubina libre</li>
+          <li><strong>Haptoglobina ↓:</strong> la haptoglobina capta la Hb libre → se consume → baja</li>
+          <li>Reticulocitos ↑ (respuesta medular a la pérdida)</li>
+          <li>Hemoglobinuria (en hemólisis intravascular grave)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Test de Coombs directo (TCD)</div>
+        <ul>
+          <li>Detecta anticuerpos o complemento pegados a la superficie del GR</li>
+          <li><strong>Coombs + → AHAI</strong> (el sistema inmune ataca los propios GR)</li>
+          <li><strong>Coombs − → causa no inmune</strong> (intrínseca al GR o fragmentación mecánica)</li>
+          <li>Coombs indirecto: anticuerpos en suero (para pruebas de compatibilidad, no para hemólisis)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anemia hemolítica autoinmune (AHAI) — Coombs positivo</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Anticuerpo</th><th>Temperatura</th><th>Causas</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Por anticuerpos calientes (IgG)</strong><br>— más frecuente 80%</td><td>IgG (anti-GR activos a 37°C)</td><td>37°C</td><td>Idiopática (50%) · LES · Medicamentos (metildopa, penicilina, cefalosporinas, rifampicina) · LLC</td><td style="color:var(--teal2)"><strong>Corticoides (prednisona 1 mg/kg/día)</strong>. Si no responde: rituximab, esplenectomía</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Por anticuerpos fríos (IgM)</strong><br>— 15–20%</td><td>IgM (activos a &lt;30°C)</td><td>&lt;30°C</td><td>Idiopática · Mycoplasma pneumoniae · Mononucleosis (VEB) · Linfoma</td><td style="color:var(--amber2)">Calor + evitar frío. Rituximab. NO corticoides (ineficaces)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — corticoides ineficaces en AHAI por fríos</div>
+      <p>En AHAI por anticuerpos fríos (IgM), los corticoides son prácticamente ineficaces. El tratamiento es calor, evitar el frío, y rituximab. El banco puede dar una AHAI con antecedente de Mycoplasma y preguntar el tratamiento → no corticoides.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hemolíticas intrínsecas — Coombs negativo</div>
+    <table class="tbl">
+      <tr><th>Enfermedad</th><th>Defecto</th><th>Frotis / diagnóstico</th><th>Hallazgo característico</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>Esferocitosis hereditaria</strong></td><td>Defecto en proteínas del citoesqueleto del GR (espectrina, ankirina)</td><td>Esferocitos en frotis (sin zona central pálida). Test de fragilidad osmótica +</td><td>Esplenomegalia. Crisis hemolíticas + colelitiasis (pigmentaria por ↑ bilirrubina). Esplenectomía en casos graves</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Déficit de G6PD</strong></td><td>Defecto enzimático (locus X → afecta principalmente hombres)</td><td>Cuerpos de Heinz en frotis (Hb oxidada precipitada). GR en "mordida"</td><td>Hemólisis episódica desencadenada por: infecciones, antipalúdicos (primaquina), nitrofurantoína, AAS, habas (favismo)</td></tr>
+      <tr><td style="color:var(--purple2)"><strong>Hemoglobinuria paroxística nocturna (HPN)</strong></td><td>Defecto en proteínas GPI que protegen al GR del complemento</td><td>Test de Ham (hemólisis en suero acidificado). Citometría de flujo: ausencia CD55, CD59</td><td>Hemólisis nocturna + trombosis en venas inusuales (portal, hepática = Budd-Chiari) + citopenias. Tratar con eculizumab</td></tr>
+      <tr><td><strong>Drepanocitosis (anemia falciforme)</strong></td><td>Mutación puntual en globina β (Glu→Val) → HbS</td><td>GR en forma de hoz (falciformes) en frotis</td><td>Crisis vasooclusivas (dolor intenso), ACV en niños, infecciones por encapsulados (asplenia funcional). Hidroxiurea aumenta HbF</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Joven masculino 22 años, sin antecedentes. Viaja a zona de malaria. Le dan primaquina como profilaxis. A los 3 días aparece ictericia, orina oscura, taquicardia. Hb 7.2 g/dL, LDH 890, bilirrubina indirecta 4.2. Coombs directo negativo.</p>
+      <p style="margin-top:6px"><strong>Diagnóstico: déficit de G6PD.</strong> La primaquina desencadenó la hemólisis episódica. Coombs − (no autoinmune). Frotis: cuerpos de Heinz. Suspender primaquina, soporte, transfusión si Hb cae más.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Megaloblástica</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: PTI · PTT · SUH →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 5 — PTI / PTT / SUH ═══ -->
+<div class="node" id="n4" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">CL10 · diferenciación crítica en banco</div>
+    <div class="node-title">PTI · PTT · SUH · Púrpuras</div>
+    <div class="node-subtitle">La microangiopatía trombótica (MAT) vs destrucción inmune · ADAMTS13 · Tratamiento</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Trombocitopenia puede ser por destrucción periférica (PTI: inmune, solo plaquetas bajas) o por microangiopatía trombótica (PTT y SUH: plaquetas bajas + anemia hemolítica + falla de órganos). La distinción es vital porque el tratamiento es opuesto: PTI → corticoides, PTT → plasmaféresis urgente (NUNCA plaquetas), SUH → soporte (NUNCA ATB si E. coli O157).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Microangiopatía trombótica (MAT) — reconocer el síndrome</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Tríada de MAT</div>
+      <p>1. <strong>Anemia hemolítica microangiopática:</strong> Coombs NEGATIVO (no inmune) + esquistocitos en frotis (GR fragmentados por fibrina en microvasos)<br>
+      2. <strong>Trombocitopenia</strong> (consumo de plaquetas en los trombos)<br>
+      3. <strong>Daño de órgano blanco</strong> (riñón, SNC, corazón según el tipo)<br><br>
+      LDH muy elevada + bilirrubina indirecta ↑ + haptoglobina ↓ = hemólisis. Coombs negativo + esquistocitos = MAT.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">PTT vs SUH — la diferencia más preguntada</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--purple2)">PTT (Púrpura Trombótica Trombocitopénica)</th><th style="color:var(--amber2)">SUH (Síndrome Urémico Hemolítico)</th></tr>
+      <tr><td>Mecanismo</td><td>Déficit de <strong>ADAMTS13</strong> → vWF ultra-largo → microtrombos plaquetarios</td><td>Toxina Shiga (Stx) de E. coli O157:H7 o Shigella → daño endotelial renal directo</td></tr>
+      <tr><td>Población</td><td>Adultos (especialmente mujeres)</td><td style="color:var(--amber2)">Niños &lt;5 años (más frecuente causa de IRA en niños)</td></tr>
+      <tr><td>Órgano predominante</td><td style="color:var(--purple2)">SNC (confusión, convulsiones, ACV)</td><td style="color:var(--amber2)">Riñón (IRA oligúrica o anúrica)</td></tr>
+      <tr><td>ADAMTS13</td><td style="color:var(--purple2)">&lt;10% (muy baja)</td><td>Normal</td></tr>
+      <tr><td>Diarrea previa</td><td>No obligatoria</td><td style="color:var(--amber2)">SÍ (diarrea hemorrágica por E. coli O157:H7, 5–10 días antes)</td></tr>
+      <tr><td>Tratamiento</td><td style="color:var(--purple2)"><strong>PLASMAFÉRESIS URGENTE</strong> + corticoides + rituximab</td><td style="color:var(--amber2)"><strong>Soporte (diálisis si IRA grave).</strong> Eculizumab en SUH atípico</td></tr>
+      <tr><td>Antibióticos</td><td>No aplica</td><td style="color:var(--red2)"><strong>CONTRAINDICADOS</strong> (aumentan liberación de toxina Shiga → empeoran)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — nunca dar plaquetas en PTT ni antibióticos en SUH por E. coli O157</div>
+      <p><strong>PTT:</strong> transfundir plaquetas está <strong>contraindicado</strong> (las plaquetas alimentan los microtrombos → empeoran el SNC y la isquemia). Tratamiento = plasmaféresis urgente.<br>
+      <strong>SUH por E. coli O157:</strong> los antibióticos rompen la bacteria y liberan más toxina Shiga → mayor daño renal. Solo soporte (hidratación, diálisis si IRA grave).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">PTI — la trombocitopenia inmune aislada</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Diagnóstico de PTI</div>
+        <ul>
+          <li>Trombocitopenia (&lt;100.000/mm³) aislada</li>
+          <li>SIN anemia hemolítica (no es MAT)</li>
+          <li>SIN causa secundaria identificable (LES, VIH, HCV, fármacos)</li>
+          <li>Diagnóstico de exclusión</li>
+          <li>Frotis: plaquetas grandes (megaplaquetas) = producción compensatoria</li>
+          <li>Médula ósea: megacariocitos ↑ (no problema de producción, problema de destrucción)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tratamiento según gravedad</div>
+        <ul>
+          <li>Plaquetas &gt;30.000, asintomático → observación</li>
+          <li>Plaquetas &lt;30.000 con síntomas o &lt;20.000 → <strong>prednisona 1 mg/kg/día × 4 semanas</strong></li>
+          <li>Refractario o recaída → rituximab (anti-CD20), IgG IV, agonistas TPO (eltrombopag)</li>
+          <li><strong>Esplenectomía:</strong> PTI crónica (&gt;12 meses) refractaria a 2° línea → cura en 60–70%</li>
+          <li>Hemorragia grave: IGIV + corticoides + plaquetas (en este caso sí se pueden dar)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — PTI en niños vs adultos</div>
+      <p>PTI en niños: generalmente post-viral (2–6 semanas después de IRS), autolimitada en semanas. Mayoría se resuelve sola sin tratamiento en 6 meses. PTI en adultos: más crónica, necesita tratamiento si &lt;30.000 con síntomas. El examen puede dar un niño con petequias post-IRS → PTI infantil → solo observación si &gt;20.000 y sin sangrado grave.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Púrpura de Schönlein-Henoch (vasculitis IgA)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Tétrada de Schönlein-Henoch — diagnóstico clínico</div>
+      <p>1. Púrpura palpable (no trombocitopénica — plaquetas NORMALES) en miembros inferiores y glúteos<br>
+      2. Artritis o artralgias<br>
+      3. Dolor abdominal (cólico, puede haber invaginación intestinal en niños)<br>
+      4. Nefritis (hematuria, proteinuria)<br><br>
+      <strong>Plaquetas normales + Coombs negativo = no es PTI ni MAT.</strong> Es una vasculitis IgA (depósitos de IgA en pequeños vasos). Más frecuente en niños post-infección estreptocócica. Autolimitada en la mayoría. Tratamiento: soporte, corticoides si hay nefritis grave.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: Hemolíticas</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Coagulopatías →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 6 — COAGULOPATÍAS ═══ -->
+<div class="node" id="n5" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">CL10 · urgencia hematológica</div>
+    <div class="node-title">Coagulopatías — CID · Hemofilia · Enfermedad de von Willebrand</div>
+    <div class="node-subtitle">TP · KPTT · Fibrinógeno · Tratamiento específico por factor</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Las coagulopatías se diagnostican con el triángulo TP-KPTT-fibrinógeno. CID = todo alterado (TP↑ + KPTT↑ + fibrinógeno↓ + plaquetas↓) + esquistocitos. Hemofilia A y B = KPTT aislado elevado (vía intrínseca). El tto de CID es tratar la causa + plasma; el de hemofilia es el factor específico deficiente.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">TP vs KPTT — qué explora cada uno</div>
+    <table class="tbl">
+      <tr><th>Prueba</th><th>Vía explorada</th><th>Factores</th><th>Se prolonga en</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>TP (tiempo de protrombina)</strong><br>expresado como INR</td><td>Extrínseca + Común</td><td>VII, X, V, II, I (fibrinógeno)</td><td>Déficit vitamina K, warfarina/acenocumarol, enfermedad hepática, CID</td></tr>
+      <tr><td style="color:var(--purple2)"><strong>KPTT (tiempo parcial de tromboplastina)</strong></td><td>Intrínseca + Común</td><td>XII, XI, IX, VIII, X, V, II, I</td><td>Hemofilia A (VIII↓), Hemofilia B (IX↓), heparina, lupus anticoagulante, vWF grave</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Ambos prolongados</strong></td><td>Vía común</td><td>X, V, II, I</td><td>CID, enfermedad hepática grave, déficit vitamina K grave, anticoagulantes orales directos</td></tr>
+      <tr><td style="color:var(--teal2)">Tiempo de sangría / función plaquetaria</td><td>Plaquetas + vWF</td><td>—</td><td>PTI, Enfermedad de von Willebrand, AAS, uremia</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">CID — coagulación intravascular diseminada</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 CID: activación descontrolada de la coagulación → consumo de factores → hemorragia + trombosis simultáneas</div>
+      <p><strong>Laboratorio:</strong> TP ↑ + KPTT ↑ + fibrinógeno ↓ + plaquetas ↓ + dímero D ↑↑↑ + esquistocitos en frotis.<br><br>
+      <strong>Causas desencadenantes:</strong> sepsis (la más frecuente) · trauma grave · quemaduras · CID obstétrica (DPPNI, líquido amniótico) · neoplasias (leucemia promielocítica aguda M3) · mordedura de serpiente.<br><br>
+      <strong>Tratamiento:</strong> tratar la causa + soporte.<br>
+      — Hemorragia activa: plasma fresco congelado (PFC) + concentrado de plaquetas + crioprecipitado (fibrinógeno)<br>
+      — La heparina se reserva para CID con predominio trombótico (poco frecuente)</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hemofilia A y B — diferencias y tratamiento</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--amber2)">Hemofilia A</th><th style="color:var(--teal2)">Hemofilia B</th></tr>
+      <tr><td>Factor deficiente</td><td>Factor VIII</td><td>Factor IX</td></tr>
+      <tr><td>Herencia</td><td>Recesiva ligada a X (varones afectados, mujeres portadoras)</td><td>Ídem</td></tr>
+      <tr><td>Frecuencia</td><td>80% de las hemofilias</td><td>20% de las hemofilias</td></tr>
+      <tr><td>Pruebas</td><td>KPTT ↑ · TP normal · Factor VIII ↓</td><td>KPTT ↑ · TP normal · Factor IX ↓</td></tr>
+      <tr><td>Clínica</td><td colspan="2">Hemartrosis (articulaciones más afectadas: rodilla, tobillo, codo) · hematomas musculares profundos · hemorragias espontáneas</td></tr>
+      <tr><td>Tratamiento</td><td style="color:var(--amber2)">Concentrado de Factor VIII o Emicizumab (biespecífico)</td><td style="color:var(--teal2)">Concentrado de Factor IX</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Enfermedad de von Willebrand</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Fisiopatología</div>
+        <ul>
+          <li>El vWF tiene 2 funciones: adhesión plaquetaria al subendotelio + proteger el Factor VIII de la degradación</li>
+          <li>Déficit de vWF → sangrado mucoso (epistaxis, menorragia) + KPTT ↑ leve (por falta de protección al FVIII)</li>
+          <li>Herencia autosómica dominante (tipo 1 más frecuente)</li>
+          <li>Tiempo de sangría prolongado + KPTT levemente ↑ + TP normal + plaquetas normales</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tipos y tratamiento</div>
+        <ul>
+          <li>Tipo 1 (~70%): déficit cuantitativo parcial. Tratamiento: desmopresina (DDAVP) IV o intranasal → libera vWF de las células endoteliales. Efecto transitorio</li>
+          <li>Tipo 2: defecto cualitativo. Desmopresina puede no servir</li>
+          <li>Tipo 3: déficit grave. Concentrado de vWF/FVIII</li>
+          <li>Ácido tranexámico: para sangrado mucoso (menorragia, dental)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — EvW vs PTI vs Hemofilia por el patrón de sangrado</div>
+      <p>EvW: sangrado mucoso (epistaxis, menorragia). KPTT leve ↑. Plaquetas normales.<br>
+      PTI: petequias + equimosis. Plaquetas muy bajas. Coagulación normal.<br>
+      Hemofilia: hemartrosis + hematomas profundos. KPTT ↑↑. Plaquetas normales.<br>
+      El tipo de sangrado orienta el diagnóstico antes del laboratorio.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: PTI/PTT</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Leucemias/Linfomas →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 7 — LEUCEMIAS / LINFOMAS ═══ -->
+<div class="node" id="n6" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">CL10 · oncohematología</div>
+    <div class="node-title">Leucemias y Linfomas</div>
+    <div class="node-subtitle">LAM vs LAL · Hodgkin vs No Hodgkin · Estadios Ann Arbor · CLL · Blastos</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen no pide oncología de detalle sino reconocimiento de patrón: el linfoma de Hodgkin tiene células de Reed-Sternberg, es de jóvenes, tiene síntomas B, y se cura con ABVD. La leucemia aguda se diagnostica por &gt;20% de blastos en médula. La LLC es la leucemia crónica más frecuente en adultos y tiene evolución indolente. Los estadios Ann Arbor se aplican a ambos linfomas.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Leucemias agudas — LAM vs LAL</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--amber2)">LAM (mieloide)</th><th style="color:var(--teal2)">LAL (linfoide)</th></tr>
+      <tr><td>Edad predominante</td><td>Adultos (&gt;40 años)</td><td style="color:var(--teal2)">Niños (más frecuente en &lt;10 años)</td></tr>
+      <tr><td>Diagnóstico</td><td colspan="2"><strong>&gt;20% de blastos en médula ósea</strong> (aspirado/biopsia). Inmunofenotipo por citometría de flujo.</td></tr>
+      <tr><td>Hallazgos especiales</td><td>Bastones de Auer en los blastos (LAM específico, especialmente M3/LAM promielocítica)</td><td>Adenopatías + esplenomegalia más marcadas. LDH muy alta</td></tr>
+      <tr><td>Subtipo más importante</td><td style="color:var(--red2)"><strong>LAM-M3 (promielocítica):</strong> t(15;17), PML-RARα. Riesgo de CID grave. Tratamiento: ATRA (ácido all-trans retinoico) + arsénico → cura en 90%</td><td>ALL-B con t(9;22) Philadelphia: pronóstico adverso → trasplante</td></tr>
+      <tr><td>Tratamiento base</td><td>Citarabina + antraciclinas (7+3). Trasplante en segunda remisión o alto riesgo</td><td>Poliquimioterapia multidroga. Profilaxis SNC. Trasplante según riesgo</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — LAM-M3 y CID: ATRA es urgente</div>
+      <p>La LAM promielocítica (M3) libera factores procoagulantes de los gránulos de los blastos → CID potencialmente letal. El ATRA diferencia las células y frena la CID. Es una emergencia hematológica: iniciar ATRA apenas se sospecha M3 (bastones de Auer + blastos con gránulos abundantes) sin esperar la confirmación genética.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Linfomas — Hodgkin vs No Hodgkin</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--blue2)">Linfoma de Hodgkin</th><th style="color:var(--amber2)">Linfoma No Hodgkin (LNH)</th></tr>
+      <tr><td>Histología patognomónica</td><td style="color:var(--blue2)"><strong>Células de Reed-Sternberg</strong> (células gigantes bi o multinucleadas con nucléolo prominente "ojo de búho")</td><td>Tipos múltiples: difuso de células B grandes (LDCGB), folicular, del manto, Burkitt, etc.</td></tr>
+      <tr><td>Distribución ganglionar</td><td>Contigua y ordenada (de ganglio en ganglio)</td><td>Saltada y diseminada (no predecible)</td></tr>
+      <tr><td>Edad/sexo</td><td>Bimodal: 15–35 años y &gt;55 años</td><td>Adultos mayores en general</td></tr>
+      <tr><td>VEB</td><td>Asociado (especialmente esclerosis nodular)</td><td>Algunos tipos (Burkitt: EBV+)</td></tr>
+      <tr><td>Síntomas B</td><td style="color:var(--blue2)">Fiebre + sudoración nocturna + pérdida de peso &gt;10% en 6 meses</td><td>Menos frecuentes pero posibles</td></tr>
+      <tr><td>Tratamiento estadio I–II</td><td>ABVD (adriamicina, bleomicina, vinblastina, dacarbazina) ± radioterapia. Excelente pronóstico</td><td>R-CHOP en LDCGB. Varía por subtipo</td></tr>
+      <tr><td>Pronóstico</td><td style="color:var(--teal2)">Muy bueno (curable en 80–90%)</td><td>Variable según subtipo</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estadios Ann Arbor — aplica a ambos tipos de linfoma</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--greenb);color:var(--green2)">I</div><div class="algo-text"><strong>Una sola región ganglionar</strong> (o un único sitio extralinfático IE)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">II</div><div class="algo-text"><strong>Dos o más regiones ganglionares</strong> en el <strong>mismo lado del diafragma</strong></div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">III</div><div class="algo-text"><strong>Regiones ganglionares en ambos lados del diafragma</strong> (puede incluir bazo = IIIS)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">IV</div><div class="algo-text"><strong>Diseminación extralinfática difusa</strong> (médula ósea, hígado, pulmón, hueso)</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-top:6px">Se agrega A (sin síntomas B) o B (con fiebre/sudoración/pérdida de peso). Ej: Estadio IIB = 2 regiones ipsilaterales + síntomas B.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">LLC — Leucemia Linfocítica Crónica (la crónica más frecuente)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 LLC — reconocimiento en banco</div>
+      <p>Linfocitosis periférica de linfocitos pequeños y maduros (&gt;5.000/mm³ × &gt;3 meses). Frotis: linfocitos con núcleo denso, "sombras de Gumprecht" (linfocitos aplastados por el frotis).<br><br>
+      Clínica: adenopatías indoloras difusas, esplenomegalia, anemia (AHAI por anticuerpos calientes), trombocitopenia.<br>
+      Clasificación de Rai: 0 (solo linfocitosis) → IV (trombocitopenia). Estadio 0-II sin síntomas: observación. Estadio III-IV o con síntomas: ibrutinib, venetoclax, o fludarabina+rituximab.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Coagulopatías</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Policitemia / Mieloma →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 8 — POLICITEMIA / MIELOMA / TRANSFUSIÓN ═══ -->
+<div class="node" id="n7" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">CL10 · datos de laboratorio específicos</div>
+    <div class="node-title">Policitemia vera · Mieloma múltiple · Transfusión</div>
+    <div class="node-subtitle">JAK2 · Proteína M · Hipercalcemia · Umbral de transfusión · Reacciones transfusionales</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres temas distintos que completan el sprint. Policitemia vera: JAK2 mutado + masa eritrocitaria aumentada → flebotomía + hidroxiurea. Mieloma múltiple: proteína M + lisis ósea + IRA + hipercalcemia → la tétrada CRAB. Transfusión: el umbral de Hb &lt;7 g/dL salva vidas y sangre.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Policitemia vera (PV)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Diagnóstico</div>
+        <ul>
+          <li>Hb &gt;16.5 g/dL (H) / &gt;16 g/dL (M) + esplenomegalia + prurito acuagénico (al bañarse)</li>
+          <li><strong>JAK2 V617F mutado en &gt;95%</strong> de los casos → diagnóstico</li>
+          <li>EPO sérica: baja (el exceso de GR suprime EPO, a diferencia de poliglobulia secundaria donde EPO está alta)</li>
+          <li>Triada: GR↑ + leucocitos↑ + plaquetas↑ (pancitosis)</li>
+          <li>Riesgo: trombosis (ACV, IAM, Budd-Chiari) + transformación a mielofibrosis o LMA</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Tratamiento</div>
+        <ul>
+          <li><strong>Flebotomías:</strong> meta Hto &lt;45%. Primera línea en todos.</li>
+          <li>AAS 100 mg/día: reduce el riesgo trombótico</li>
+          <li>Hidroxiurea: citorreducción en pacientes de alto riesgo (&gt;60 años, trombosis previa)</li>
+          <li>Ruxolitinib (inhibidor JAK2): si hidroxiurea falla o intolerancia</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — policitemia vera vs poliglobulia secundaria</div>
+      <p>Poliglobulia secundaria: EPO elevada (respuesta a hipoxia — EPOC, fumadores, apnea del sueño, altura) o producción ectópica de EPO (carcinoma renal, HCC). Policitemia vera: EPO baja (el exceso de GR suprime la producción de EPO) + JAK2 +. El signo del prurito acuagénico es casi patognomónico de PV.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Mieloma múltiple — tétrada CRAB</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Criterios CRAB de mieloma múltiple</div>
+      <p><strong>C</strong>alcemia elevada (&gt;11 mg/dL) — hipercalcemia por osteolisis<br>
+      <strong>R</strong>enal — IRA (cadenas ligeras tóxicas en túbulos = riñón de mieloma)<br>
+      <strong>A</strong>nemia (&lt;10 g/dL) — infiltración medular + anemia de enf. crónica<br>
+      <strong>B</strong>ones — lesiones líticas óseas ("en sacabocado") en cráneo, columna, costillas. Dolor óseo severo<br><br>
+      <strong>Diagnóstico:</strong> proteína M en electroforesis de proteínas séricas (pico monoclonal) + inmunoelectroforesis + plasmocitos en médula ósea &gt;10%.<br>
+      <strong>Beta-2 microglobulina:</strong> marcador pronóstico.<br>
+      <strong>Tratamiento:</strong> bortezomib + lenalidomida + dexametasona (VRd). Trasplante autólogo en aptos.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — fractura patológica en adulto mayor con hipercalcemia = descartar mieloma</div>
+      <p>Adulto mayor con dolor dorsal crónico + fractura vertebral + anemia + hipercalcemia + IRA sin causa aparente → pensar mieloma. Solicitar electroforesis de proteínas + inmunofijación. La VSG suele ser muy alta. Las Rx muestran lesiones líticas sin reacción perióstica (diferencia con metástasis que pueden tener reacción perióstica).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Umbrales de transfusión — el banco repite estos números</div>
+    <table class="tbl">
+      <tr><th>Situación clínica</th><th>Umbral de transfusión</th><th>Razonamiento</th></tr>
+      <tr><td style="color:var(--teal2)">Adulto sano, no cardíaco, asintomático</td><td style="color:var(--teal2)"><strong>Hb &lt;7 g/dL</strong></td><td>Umbral restrictivo demostrado no inferior al liberal. Reduce transfusiones y complicaciones</td></tr>
+      <tr><td style="color:var(--amber2)">Adulto con cardiopatía isquémica o ICC</td><td style="color:var(--amber2)"><strong>Hb &lt;8 g/dL</strong></td><td>El miocardio isquémico necesita más O₂ → umbral más alto</td></tr>
+      <tr><td>Post-cirugía cardíaca</td><td>&lt;7.5–8 g/dL</td><td>Según evidencia del contexto</td></tr>
+      <tr><td style="color:var(--red2)">Hemorragia activa con inestabilidad HD</td><td style="color:var(--red2)">Sin umbral fijo — transfundir para mantener HD</td><td>Emergencia: transfundir hasta estabilizar</td></tr>
+      <tr><td>Plaquetas — profiláctico</td><td>&lt;10.000/mm³ (sin sangrado)</td><td>En &lt;20.000 si hay fiebre/procedimientos</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — transfundir cuando el paciente está "incómodo" vs umbral real</div>
+      <p>El examen puede presentar un paciente con Hb de 8.5 g/dL asintomático y preguntar si transfundir. Respuesta: <strong>NO</strong> (umbral es &lt;7 sin cardiopatía). La transfusión no es inocua: riesgo infeccioso, reacciones, aloinmunización, TRALI (lesión pulmonar aguda post-transfusión), sobrecarga circulatoria (TACO). Solo se transfunde cuando hay indicación objetiva.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Hematología</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>Ferropénica (N2) ↔ Gastro:</strong> cáncer colorrectal como causa en adulto → colonoscopia obligatoria</li>
+        <li><strong>Ferropénica (N2) ↔ Celíaca:</strong> malabsorción duodenal de hierro → anemia ferropénica sin causa aparente → anti-tTG IgA</li>
+        <li><strong>B12 (N3) ↔ Gastro:</strong> post-gastrectomía → déficit B12 por falta de factor intrínseco → suplementación IM</li>
+        <li><strong>AHAI (N4) ↔ LLC:</strong> la LLC genera anticuerpos anti-GR propios → AHAI por fríos o calientes coexistente</li>
+        <li><strong>SUH (N5) ↔ Infectología/Pediatría:</strong> E. coli O157:H7 → no dar ATB → SUH en niños pequeños con diarrea hemorrágica</li>
+        <li><strong>CID (N6) ↔ Obstetricia:</strong> DPPNI, eclampsia grave, muerte fetal → CID obstétrica = causa más frecuente de CID en la guardia obstétrica</li>
+        <li><strong>Mieloma (N8) ↔ Nefrología:</strong> IRA por depósito de cadenas ligeras en túbulos renales + hipercalcemia → siempre en el DD de IRA en adulto mayor</li>
+        <li><strong>Policitemia (N8) ↔ Trombosis:</strong> PV + trombosis venosas en sitios inusuales (Budd-Chiari) = HPN o PV. JAK2 distingue PV</li>
+        <li><strong>Anemia ERC (N3) ↔ Nefrología N2:</strong> la EPO es el tratamiento de la anemia de ERC G3+. Meta Hb 10–11.5 g/dL, no más</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--amber2);margin-bottom:12px">✅ HEMATOLOGÍA ADULTOS — 8/8 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 22 preguntas del banco (CL10). Los temas más repetidos: algoritmo de anemias por VCM, ferropénica con colonoscopia obligatoria en adultos, AEC (ferritina alta + TIBC baja), PTT vs SUH (ADAMTS13 + diferencia de tratamiento), PTI con esplenectomía como segunda línea, hemofilia KPTT aislado, CID tétrada completa, mieloma CRAB, umbral de transfusión Hb &lt;7.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-a">CL10: 22 preg</span>
+      <span class="tag tag-t">Anemias · Hemólisis · Trombocitopenias · Coagulopatías · Oncohemato</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Leucemias/Linfomas</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div>
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

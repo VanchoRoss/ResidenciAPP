@@ -8,7 +8,7 @@
   const OFFICIAL_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzBedKHq9STrQIgqjOKiU66SRm9VlEQOgAlxArdqR-QHqblveXgKtZm_nCUVvjz_8e8IQ/exec';
   const STATE_KEY = 'residenciapp_integrada_state';
   const ENDPOINT_KEY = 'residenciapp_contribution_endpoint';
-  const MIGRATION_KEY = 'residenciapp_endpoint_migration_v35_24';
+  const MIGRATION_KEY = 'residenciapp_endpoint_migration_v35_25';
 
   window.RESIDENCIAPP_CONFIG = {
     contributions: {
@@ -30,7 +30,7 @@
   window.CONTRIBUTION_CONFIG = window.RESIDENCIAPP_CONFIG.contributions;
 
   /**
-   * Migración automática v35.24.
+   * Migración automática v35.25.
    * Corrige navegadores que tenían guardado un endpoint viejo en localStorage
    * o dentro del estado principal de ResidenciAPP.
    *
@@ -68,9 +68,9 @@
       }));
 
       window.__RESIDENCIAPP_OFFICIAL_CONTRIBUTION_ENDPOINT__ = OFFICIAL_ENDPOINT;
-      console.info('[ResidenciAPP] Endpoint colaborativo v35.24 verificado:', OFFICIAL_ENDPOINT);
+      console.info('[ResidenciAPP] Endpoint colaborativo v35.25 verificado:', OFFICIAL_ENDPOINT);
     } catch(err){
-      console.warn('[ResidenciAPP] No se pudo migrar endpoint colaborativo v35.24:', err);
+      console.warn('[ResidenciAPP] No se pudo migrar endpoint colaborativo v35.25:', err);
     }
   }
 

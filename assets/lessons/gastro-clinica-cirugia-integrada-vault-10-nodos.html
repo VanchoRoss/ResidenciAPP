@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastroenterología + Cirugía Integrada — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:265px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-cx{background:var(--coralb);border-color:var(--coral);color:var(--coral2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Cirugía banner */
+.cx-banner{background:var(--coralb);border:1px solid var(--coral);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px}
+.cx-banner-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--coral2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cx-banner p,.cx-banner li{font-size:13px;color:var(--coral2);line-height:1.6;margin-bottom:3px}
+.cx-banner ul{padding-left:16px}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-t{background:var(--tealb);color:var(--teal2)}.tag-c{background:var(--coralb);color:var(--coral2)}
+.tag-g{background:var(--greenb);color:var(--green2)}.tag-p{background:var(--purpleb);color:var(--purple2)}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Gastroenterología + Cirugía</div>
+    <div class="sb-sub">CL12 Gastro + integración quirúrgica · banco 2016–2025</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--coral)">15+</div><div class="sb-stat-l">preg Gastro</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">10</div><div class="sb-stat-l">nodos</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">Cx</div><div class="sb-stat-l">integrado</div></div>
+    </div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--coral)">Esófago · Estómago</div>
+  <div class="nav-item active" style="--item-color:var(--coral)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">ERGE y esófago de Barrett</div><div class="nav-n">IBP · endoscopia · cirugía</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--coral)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">Úlcera péptica + H. pylori</div><div class="nav-n">Triple terapia · complicaciones · Cx</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--red)">Urgencias digestivas</div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Hemorragia digestiva alta</div><div class="nav-n">Rockall · endoscopia · variceal</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">Apendicitis + peritonitis</div><div class="nav-n">Alvarado · Cx urgente · complicaciones</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Obstrucción intestinal + íleo</div><div class="nav-n">Niveles hidroaéreos · bridas · vólvulo</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--amber)">Vía biliar · Páncreas</div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Colelitiasis · colecistitis · coledocolitiasis</div><div class="nav-n">Murphy · CPRE · colecistectomía</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Pancreatitis aguda</div><div class="nav-n">Ranson · Baltazar · necrosis infectada</div></div>
+  </div>
+
+  <div class="sprint-label" style="color:var(--purple)">Hígado · Intestino</div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Cirrosis y sus complicaciones</div><div class="nav-n">Child-Pugh · ascitis · PBE · encefalopatía</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(8)">
+    <div class="nav-num">9</div>
+    <div class="nav-text"><div class="nav-name">Crohn vs Colitis Ulcerosa</div><div class="nav-n">Diferencias · tratamiento · Cx</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--blue)" onclick="show(9)">
+    <div class="nav-num">10</div>
+    <div class="nav-text"><div class="nav-name">Celíaca · Hepatitis alcohólica · Cáncer colorrectal</div><div class="nav-n">Anti-tTG · Maddrey · screening</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══ NODO 1 — ERGE ═══ -->
+<div class="node active" id="n0" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">CL12 Gastro · banco 2016–2025</div>
+    <div class="node-title">ERGE y esófago de Barrett</div>
+    <div class="node-subtitle">Diagnóstico clínico · IBP primera línea · endoscopia · progresión a adenocarcinoma</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">ERGE es una enfermedad del esfínter esofágico inferior. El diagnóstico es clínico (pirosis + regurgitación). El tratamiento es IBP. La endoscopia se hace cuando no responde o hay síntomas de alarma. Barrett es la complicación más temida porque progresa a adenocarcinoma de esófago. Cirugía solo en casos muy seleccionados.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico y clínica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--coral2)">Síntomas típicos</div>
+        <ul>
+          <li>Pirosis: ardor retroesternal que sube desde el epigastrio</li>
+          <li>Regurgitación ácida</li>
+          <li>Empeora con: decúbito, comidas copiosas, alcohol, chocolate, mentol, tabaco</li>
+          <li>Mejora con: antiácidos, posición erecta</li>
+          <li>Diagnóstico clínico → iniciar tratamiento empírico con IBP</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Síntomas de alarma → endoscopia</div>
+        <ul>
+          <li>Disfagia u odinofagia</li>
+          <li>Pérdida de peso involuntaria</li>
+          <li>Anemia ferropénica</li>
+          <li>Vómitos recurrentes</li>
+          <li>Hematemesis o melena</li>
+          <li>Masa palpable epigástrica</li>
+          <li>Síntomas &gt;5 años o en mayores de 50 años</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Síntomas atípicos de ERGE — el banco los pone como trampa</div>
+      <p>Tos crónica nocturna (sin causa respiratoria aparente) · laringitis posterior (ronquera matinal) · asma de difícil control · dolor torácico no cardíaco · aftas orales recurrentes. Si no hay cardiopatía y hay tos crónica → buscar ERGE.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento escalonado</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--coralb);color:var(--coral2)">1</div><div class="algo-text"><strong>Medidas no farmacológicas:</strong> elevar cabecera de la cama (no solo almohada), no acostarse hasta 2 hs después de comer, evitar alcohol/tabaco/chocolate/grasas/mentol, reducir peso en obesos.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--coralb);color:var(--coral2)">2</div><div class="algo-text"><strong>IBP primera línea:</strong> omeprazol, pantoprazol, lansoprazol, esomeprazol. Dosis estándar 30–60 min antes del desayuno × 4–8 semanas. Los IBP son superiores a los antiH2 (ranitidina).</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--coralb);color:var(--coral2)">3</div><div class="algo-text"><strong>Si recurrente o refractario:</strong> endoscopia para descartar Barrett o esofagitis grave (Los Ángeles C/D).</div></div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IBP y nefritis intersticial</div>
+      <p>Los IBP (omeprazol, pantoprazol) son causa frecuente de <strong>nefritis tubulointersticial aguda</strong> (ver Nodo Nefrología 4). Paciente con ERC que empeora sin causa aparente + IBP crónico → pensar NTIA. Dato que el banco conecta entre ejes.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Esófago de Barrett — la complicación que hay que saber</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">¿Qué es?</div>
+        <ul>
+          <li>Metaplasia del epitelio esofágico: escamoso → columnar intestinal (células caliciformes)</li>
+          <li>Consecuencia de ERGE crónica (exposición ácida prolongada)</li>
+          <li>Diagnóstico: endoscopia + biopsia (histología con células caliciformes = diagnóstico definitivo)</li>
+          <li>Más frecuente: hombres blancos &gt;50 años, obesos, fumadores</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Riesgo de progresión a adenocarcinoma</div>
+        <ul>
+          <li>Barrett sin displasia: riesgo bajo (0.3–0.5%/año) → IBP + endoscopia c/3–5 años</li>
+          <li>Displasia de bajo grado: IBP + ablación endoscópica o vigilancia estrecha</li>
+          <li>Displasia de alto grado: resección endoscópica o cirugía (esofagectomía)</li>
+          <li>El adenocarcinoma esofágico es la neoplasia de más rápido aumento en el mundo occidental</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Indicaciones quirúrgicas en ERGE</div>
+    <p><strong>Fundoplicatura de Nissen (laparoscópica):</strong> envoltura del fondo gástrico alrededor del EEI.</p>
+    <ul>
+      <li>ERGE severa con respuesta inadecuada a IBP a largo plazo</li>
+      <li>Paciente joven que no quiere medicación crónica</li>
+      <li>Hernia hiatal grande sintomática (hernia paraesofágica: cirugía siempre por riesgo de estrangulación)</li>
+      <li>Complicaciones: esofagitis severa (Los Ángeles C/D) refractaria</li>
+    </ul>
+    <p style="margin-top:8px"><strong>Esofagectomía:</strong> Barrett con displasia de alto grado o adenocarcinoma localizado.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: Úlcera péptica →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 2 — ÚLCERA ═══ -->
+<div class="node" id="n1" style="--nc:var(--coral)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--coralb);color:var(--coral2)">CL12 Gastro · alta frecuencia</div>
+    <div class="node-title">Úlcera péptica y Helicobacter pylori</div>
+    <div class="node-subtitle">Diagnóstico · Erradicación · Complicaciones quirúrgicas: perforación, HDA, obstrucción</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El 90% de las úlceras duodenales y el 70% de las gástricas son por H. pylori. Si erradicás el H. pylori, la úlcera se cura y no recidiva. El tratamiento inicial es siempre médico. La cirugía solo entra cuando hay complicación: perforación (urgencia), hemorragia que no responde a endoscopia, o estenosis pilórica.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico de H. pylori</div>
+    <table class="tbl">
+      <tr><th>Método</th><th>Cuándo usar</th><th>Observaciones</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Test del aliento con urea (C13)</strong></td><td>Diagnóstico inicial sin endoscopia, control post-erradicación</td><td>Gold standard no invasivo. Suspender IBP 2 semanas y ATB 4 semanas antes. Más sensible que antígeno fecal</td></tr>
+      <tr><td><strong>Antígeno fecal</strong></td><td>Alternativa al test de aliento</td><td>Útil para confirmar erradicación. Suspender IBP 2 semanas antes</td></tr>
+      <tr><td><strong>Biopsia + test de ureasa rápida (CLO test)</strong></td><td>Con endoscopia</td><td>Gold standard en endoscopia. Sensibilidad 85–95%</td></tr>
+      <tr><td><strong>Serología (IgG anti-H. pylori)</strong></td><td>NO para diagnóstico activo</td><td>Solo muestra exposición previa. NO sirve para confirmar erradicación (permanece positivo)</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — serología no sirve para control post-erradicación</div>
+      <p>El examen pregunta "¿cómo controlás la erradicación del H. pylori?" → test del aliento con urea C13 o antígeno fecal, 4 semanas después de terminar el tratamiento. La serología permanece positiva años después de la erradicación → no sirve para el control.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Triple terapia de erradicación — el esquema estándar</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Triple terapia estándar (7–14 días)</div>
+      <p><strong>IBP + Amoxicilina 1 g c/12h + Claritromicina 500 mg c/12h × 14 días</strong><br><br>
+      Si alergia a penicilina: <strong>IBP + Metronidazol + Claritromicina</strong><br>
+      Cuádruple terapia (si fallo de primera línea): IBP + Bismuto + Metronidazol + Tetraciclina<br><br>
+      Confirmar erradicación con test de aliento ≥4 semanas después de terminar el tratamiento (y ≥2 semanas sin IBP).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diferencias entre úlcera gástrica y duodenal</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--amber2)">Úlcera GÁSTRICA</th><th style="color:var(--teal2)">Úlcera DUODENAL</th></tr>
+      <tr><td>Dolor</td><td>Empeora con comida (posprandial 15–30 min)</td><td>Mejora con comida, empeora en ayunas (nocturno)</td></tr>
+      <tr><td>Etiología</td><td>H. pylori 70%, AINEs, alcohol, estrés</td><td>H. pylori 90%, hipersecreción ácida</td></tr>
+      <tr><td>Riesgo de malignidad</td><td style="color:var(--red2)">SÍ (carcinoma gástrico) → biopsia siempre</td><td>No (benigna en esencia)</td></tr>
+      <tr><td>Control endoscópico</td><td style="color:var(--red2)">Endoscopia de control post-tratamiento (verificar cicatrización y excluir malignidad)</td><td>No necesario si respuesta al tratamiento</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — úlcera gástrica siempre biopsia</div>
+      <p>Toda úlcera gástrica debe biopsiarse en la endoscopia inicial para descartar carcinoma gástrico. La úlcera duodenal es prácticamente siempre benigna y no requiere biopsia de rutina. Si el examen da una úlcera gástrica → "¿qué hacer a continuación?" → endoscopia + biopsia.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Complicaciones de la úlcera péptica</div>
+    <table class="tbl">
+      <tr><th>Complicación</th><th>Clínica</th><th>Conducta inicial</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Hemorragia</strong> (más frecuente ~75%)</td><td>Hematemesis, melena, anemia aguda. Taquicardia, hipotensión</td><td>Estabilización HD + endoscopia urgente + hemostasia (ver Nodo 3)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Perforación</strong> (~10%)</td><td>Dolor abdominal brusco, intenso, generalizado. Abdomen en tabla (rigidez muscular). Signos de peritonitis. Rx: aire libre subdiafragmático</td><td>Cirugía urgente (ver Cx banner)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Estenosis pilórica</strong> (~5%)</td><td>Vómitos postprandiales abundantes (de retención), con restos de alimentos sin bilis. Distensión gástrica. Alcalosis metabólica + hipocalemia (por vómitos)</td><td>Estabilizar, corregir electrolitos. Dilatación endoscópica o cirugía</td></tr>
+      <tr><td><strong>Penetración</strong></td><td>Dolor que irradia al dorso, no cede con antiácidos. Úlcera posterior penetra al páncreas</td><td>IBP a altas dosis + erradicación. Cirugía si refractaria</td></tr>
+    </table>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Cirugía en complicaciones de úlcera péptica</div>
+    <p><strong>Perforación:</strong> urgencia quirúrgica. Laparoscopia o laparotomía → cierre primario (sutura de Graham) + lavado peritoneal. Post-op: IBP + erradicación H. pylori.</p>
+    <p style="margin-top:6px"><strong>Hemorragia refractaria a endoscopia:</strong> gastrectomía parcial o sutura de la arteria gastroduodenal (úlcera posterior de bulbo duodenal = erosiona la a. gastroduodenal).</p>
+    <p style="margin-top:6px"><strong>Estenosis pilórica crónica:</strong> gastroyeyunoanastomosis o piloroplastia. En la era de IBP y H. pylori, la cirugía electiva es rara.</p>
+    <p style="margin-top:6px"><strong>Vagotomía:</strong> ya casi no se usa (IBP y H. pylori la reemplazaron). Dato histórico que el banco a veces pone.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: ERGE</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: HDA →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 3 — HDA ═══ -->
+<div class="node" id="n2" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">CL12 Gastro · urgencia digestiva</div>
+    <div class="node-title">Hemorragia digestiva alta (HDA)</div>
+    <div class="node-subtitle">Escala de Rockall · Endoscopia urgente · HDA variceal · HDA no variceal</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">HDA = sangrado proximal al ángulo de Treitz. La urgencia es la endoscopia en las primeras 24 hs. Hay dos mundos: HDA no variceal (úlcera péptica principalmente → adrenalina + hemoclips) y HDA variceal (cirrosis → terlipresina + octreótido + ATB + endoscopia). Las diferencias de manejo son totales.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Presentación clínica y estabilización inicial</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Manifestaciones</div>
+        <ul>
+          <li>Hematemesis (sangre fresca o "en posos de café")</li>
+          <li>Melena (heces negras, pastosas, brillantes, malolientes)</li>
+          <li>Puede haber hematoquecia si sangrado masivo y tránsito rápido</li>
+          <li>Anemia aguda: taquicardia, hipotensión, mareos, sincope</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Manejo inicial urgente</div>
+        <ul>
+          <li>2 vías venosas gruesas (14-16G)</li>
+          <li>SF 0.9% o Ringer lactato para estabilizar PA</li>
+          <li>Hemograma, coagulación, cruce y reserva de sangre</li>
+          <li>Suspender anticoagulantes/antiagregantes si es posible</li>
+          <li>Meta: PA sistólica &gt;90 mmHg, FC &lt;100 lpm</li>
+          <li>Transfusión: umbral Hb &lt;7 g/dL (o &lt;8 si IC o coronariopatía)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Escala de Rockall — riesgo de resangrado y mortalidad</div>
+    <table class="tbl">
+      <tr><th>Variable</th><th>0 puntos</th><th>1 punto</th><th>2 puntos</th></tr>
+      <tr><td>Edad</td><td>&lt;60 años</td><td>60–79 años</td><td>≥80 años</td></tr>
+      <tr><td>Shock</td><td>No. FC &lt;100, PAS &gt;100</td><td>Taquicardia. FC &gt;100, PAS &gt;100</td><td>Hipotensión. PAS &lt;100</td></tr>
+      <tr><td>Comorbilidad</td><td>Ninguna</td><td>IC, cardiopatía isquémica, EPOC</td><td>IR, hepatopatía, malignidad</td></tr>
+      <tr><td>Diagnóstico endoscópico</td><td>Mallory-Weiss, sin lesión</td><td>Úlcera, erosiones, esofagitis</td><td>Neoplasia GI alta</td></tr>
+      <tr><td>Estigmas de hemorragia reciente</td><td>Sin estigmas, sin sangre</td><td>—</td><td>Sangre en estómago, vaso visible, coágulo adherido</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Interpretación Rockall</div>
+      <p>Rockall pre-endoscópico (primeras 3 variables): ≤2 → bajo riesgo → alta posible con seguimiento ambulatorio.<br>
+      Rockall post-endoscópico: ≤2 → resangrado raro, alta temprana. ≥8 → alta mortalidad, UTI.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">HDA no variceal — manejo endoscópico</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">1</div><div class="algo-text"><strong>IBP IV en bolo:</strong> omeprazol o pantoprazol 80 mg IV en bolo + infusión 8 mg/h × 72 hs. Reduce el resangrado y la mortalidad. Iniciar antes de la endoscopia.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">2</div><div class="algo-text"><strong>Endoscopia urgente (&lt;24 hs)</strong>: diagnóstica y terapéutica. Forrest Ia (sangrado activo a chorro) y Ib (sangrado en napa): hemostasia endoscópica obligatoria. Forrest IIa (vaso visible): tratar. Forrest IIb (coágulo): considerar. Forrest IIc/III (plana/limpia): solo IBP oral.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">3</div><div class="algo-text"><strong>Hemostasia endoscópica:</strong> inyección de adrenalina (epinefrina 1:10.000) + clip hemostático o termocoagulación. Combinación superior a monoterapia.</div></div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IBP antes de la endoscopia, NO esperar</div>
+      <p>Los IBP IV se inician antes de la endoscopia aunque no se haya visto la úlcera todavía. Reducen el estigma hemorrágico en la endoscopia y el riesgo de resangrado. El examen puede preguntar "¿cuándo iniciar IBP?" → Inmediatamente al diagnóstico de HDA probable.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">HDA variceal — el manejo diferente y más complejo</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Protocolo variceal — 4 pilares simultáneos</div>
+      <p><strong>1. Vasoconstrictor esplácnico (bajar presión portal):</strong><br>
+      Terlipresina 2 mg IV c/4h (de elección) o Somatostatina/Octreótido (100 mcg bolo + 25–50 mcg/h infusión continua). Iniciar al sospechar el diagnóstico, antes de la endoscopia. Mantener 3–5 días.<br><br>
+      <strong>2. Endoscopia urgente (&lt;12 hs):</strong><br>
+      Ligadura con bandas (de elección) o escleroterapia. Identifica y trata la variz sangrante.<br><br>
+      <strong>3. Antibióticos preventivos:</strong><br>
+      Norfloxacina 400 mg c/12h VO o Ceftriaxona 1 g/día IV × 7 días. Reduce la translocación bacteriana y la peritonitis bacteriana espontánea post-HDA. Reduce mortalidad.<br><br>
+      <strong>4. Profilaxis de encefalopatía:</strong><br>
+      Lactulosa + rifaximina. Evitar opiáceos y benzodiazepinas.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — antibióticos en HDA variceal son obligatorios</div>
+      <p>El ATB preventivo en HDA variceal no es opcional. La infección bacteriana (especialmente PBE) se produce en el 40–50% de los cirróticos que sangran y duplica la mortalidad. La pregunta "¿qué se agrega en la HDA variceal que no se hace en la no variceal?" → ATB + vasoconstrictor esplácnico.</p>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Cirugía en HDA</div>
+    <p><strong>HDA no variceal:</strong> cirugía cuando falla la hemostasia endoscópica (2 intentos endoscópicos). Sutura de úlcera + ligadura del vaso sangrante o gastrectomía parcial según el caso. Hoy en día el 95% se resuelve endoscópicamente.</p>
+    <p style="margin-top:6px"><strong>HDA variceal refractaria:</strong> TIPS (Transjugular Intrahepatic Portosystemic Shunt) cuando falla la ligadura endoscópica. Reduce la presión portal sin cirugía. Shunt portosistémico quirúrgico: hoy casi abandonado.</p>
+    <p style="margin-top:6px"><strong>Taponamiento con sonda de Sengstaken-Blakemore:</strong> puente temporal en sangrado masivo variceal incontrolable. Máximo 12–24 hs, no es tratamiento definitivo.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: Úlcera</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: Apendicitis →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 4 — APENDICITIS ═══ -->
+<div class="node" id="n3" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Cirugía · urgencia más frecuente</div>
+    <div class="node-title">Apendicitis aguda y peritonitis</div>
+    <div class="node-subtitle">Score de Alvarado · Diagnóstico diferencial · Apendicectomía · Peritonitis secundaria</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La apendicitis es la urgencia quirúrgica abdominal más frecuente. El diagnóstico es clínico + score de Alvarado. La TC confirma en casos dudosos. El tratamiento es siempre quirúrgico (apendicectomía laparoscópica). El error más peligroso es confundirla con gastroenteritis y mandarlo de alta.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Score de Alvarado — diagnóstico de apendicitis</div>
+    <table class="tbl">
+      <tr><th>Variable</th><th>Puntos</th></tr>
+      <tr><td>Migración del dolor a FID (fosa ilíaca derecha)</td><td>1</td></tr>
+      <tr><td>Anorexia</td><td>1</td></tr>
+      <tr><td>Náuseas/vómitos</td><td>1</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Sensibilidad en FID</strong></td><td style="color:var(--red2)"><strong>2</strong></td></tr>
+      <tr><td style="color:var(--red2)"><strong>Rebote en FID</strong></td><td style="color:var(--red2)"><strong>1</strong></td></tr>
+      <tr><td>Temperatura &gt;37.3°C</td><td>1</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Leucocitosis &gt;10.000</strong></td><td style="color:var(--red2)"><strong>2</strong></td></tr>
+      <tr><td>Desviación a la izquierda</td><td>1</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Interpretación Alvarado</div>
+      <p>1–4: Baja probabilidad → observación / alta con seguimiento.<br>
+      5–6: Probable → observación hospitalaria ± TC abdominal.<br>
+      7–8: Muy probable → cirugía sin demora.<br>
+      9–10: Diagnóstico clínico de apendicitis → cirugía urgente.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Signos clínicos de apendicitis</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Signos de exploración</div>
+        <ul>
+          <li><strong>Punto de McBurney:</strong> unión del 1/3 externo con 2/3 interno de la línea espino-umbilical</li>
+          <li><strong>Signo de Blumberg:</strong> rebote en FID (descompresión brusca dolorosa)</li>
+          <li><strong>Signo de Rovsing:</strong> palpación en FII provoca dolor en FID (desplazamiento de gas)</li>
+          <li><strong>Signo del psoas:</strong> dolor en FID al elevar la pierna derecha extendida (apéndice retrocecal)</li>
+          <li><strong>Signo del obturador:</strong> dolor con rotación interna del muslo derecho</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Diagnósticos diferenciales clave</div>
+        <ul>
+          <li><strong>Mujer:</strong> EPI (enfermedad pélvica inflamatoria), quiste ovárico roto, embarazo ectópico (siempre β-HCG)</li>
+          <li>Adenitis mesentérica (niños tras IRS)</li>
+          <li>Cólico renal derecho (dolor cólico irradiado a genitales)</li>
+          <li>Divertículo de Meckel inflamado</li>
+          <li>Enteritis terminal (Crohn), ileítis por Yersinia</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — β-HCG en toda mujer en edad fértil con dolor FID</div>
+      <p>Antes de operar a una mujer con sospecha de apendicitis: <strong>siempre descartar embarazo ectópico con β-HCG</strong>. Un embarazo ectópico derecho puede simular perfectamente una apendicitis. El error de operarla por apendicitis cuando en realidad tiene un ectópico roto puede ser fatal.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estadios y complicaciones</div>
+    <table class="tbl">
+      <tr><th>Estadio</th><th>Hallazgo</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)">Catarral / edematosa</td><td>Apéndice edematoso, rojo. Sin perforación.</td><td>Apendicectomía laparoscópica. ABX: cefazolina profiláctica</td></tr>
+      <tr><td style="color:var(--amber2)">Flemonosa / supurada</td><td>Exudado purulento en la serosa. Leucocitosis marcada.</td><td>Apendicectomía + ATB post-op (ampicilina-sulbactam o ceftriaxona + metronidazol)</td></tr>
+      <tr><td style="color:var(--red2)">Gangrenosa</td><td>Necrosis de la pared apendicular. Riesgo inminente de perforación.</td><td>Cirugía urgente + ATB</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Perforada + peritonitis</strong></td><td>Peritonitis localizada (plastron) o generalizada (libre). Abdomen en tabla.</td><td>Laparotomía urgente + lavado peritoneal + drenaje + ATB IV prolongado</td></tr>
+      <tr><td>Plastron apendicular</td><td>Masa en FID palpable (apéndice rodeado de epiplón). Semanas de evolución.</td><td>ATB IV + drenaje si absceso. Apendicectomía diferida 6–8 semanas ("interval appendectomy")</td></tr>
+    </table>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Apendicectomía — técnica y decisión</div>
+    <p><strong>Laparoscópica:</strong> estándar de elección. Menor dolor postoperatorio, menos infección de herida, recuperación más rápida.</p>
+    <p style="margin-top:6px"><strong>Laparotomía (incisión de McBurney o Rockey-Davis):</strong> si laparoscopia no disponible, perforación con peritonitis grave, o necesidad de exploración abdominal ampliada.</p>
+    <p style="margin-top:6px"><strong>Tratamiento antibiótico solo (sin cirugía):</strong> opción en apendicitis no complicada en adultos seleccionados (sin fecalito, sin perforación en TC). Tasa de recurrencia ~20% al año. NO es el estándar en Argentina para el examen de residencia → respuesta correcta sigue siendo apendicectomía.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: HDA</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Obstrucción intestinal →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 5 — OBSTRUCCIÓN INTESTINAL ═══ -->
+<div class="node" id="n4" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Cirugía · Rx diagnóstica</div>
+    <div class="node-title">Obstrucción intestinal y síndrome de íleo</div>
+    <div class="node-subtitle">Bridas · Vólvulo · Hernias · Niveles hidroaéreos · Íleo paralítico vs mecánico</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Obstrucción mecánica vs íleo paralítico: la distinción es clínica y radiológica. Mecánica = causa física que bloquea el tránsito (bridas, hernia estrangulada, vólvulo, tumor). Paralítica = el intestino no se mueve (post-cirugía, sepsis, hipocalemia). La Rx con niveles hidroaéreos confirma la mecánica. El vólvulo sigmoideo tiene imagen patognomónica en Rx.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Mecánica vs paralítica — diferenciación crítica</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--red2)">Obstrucción MECÁNICA</th><th style="color:var(--amber2)">Íleo PARALÍTICO</th></tr>
+      <tr><td>Dolor</td><td>Cólico (intermitente, tipo "cuchilladas")</td><td>Constante, sordo, difuso</td></tr>
+      <tr><td>Ruidos intestinales</td><td style="color:var(--red2)">Aumentados, en "oleada" (borborigmos)</td><td style="color:var(--amber2)">Abolidos (silencio abdominal)</td></tr>
+      <tr><td>Distensión abdominal</td><td>Presente (proximal a la obstrucción)</td><td>Generalizada y simétrica</td></tr>
+      <tr><td>Vómitos</td><td>Sí. Fecaloides si obstrucción distal</td><td>Sí (más tardíos)</td></tr>
+      <tr><td>Rx</td><td>Niveles hidroaéreos escalonados + asas dilatadas</td><td>Distensión de todo el colon e intestino delgado sin niveles francos</td></tr>
+      <tr><td>Causas</td><td>Bridas (más frecuente), hernias estranguladas, vólvulo, tumor colorrectal obstructivo, fecaloma</td><td>Postoperatorio, hipocalemia, peritonitis difusa, sepsis, opiáceos, mesentérica</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Causas de obstrucción mecánica — las más preguntadas</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Bridas (adherencias) — más frecuente</div>
+        <ul>
+          <li>Consecuencia de cirugía abdominal previa (peritoneo cicatriza)</li>
+          <li>Obstrucción de intestino delgado típicamente</li>
+          <li>Manejo inicial: sonda nasogástrica + SRL IV + observación 24–48h</li>
+          <li>Si no mejora o hay estrangulación → cirugía (laparoscopia)</li>
+          <li>Estrangulación = isquemia → urgencia → cirugía inmediata</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Vólvulo sigmoideo — imagen patognomónica</div>
+        <ul>
+          <li>Torsión del sigma sobre su mesenterio → obstrucción en asa cerrada</li>
+          <li>Rx: imagen en "grano de café" o "tubo de cámara" en el cuadrante superior</li>
+          <li>Más frecuente en ancianos, constipados crónicos, usuarios de laxantes</li>
+          <li>Tratamiento: rectosigmoidoscopia rígida para reducción endoscópica + sonda rectal de descompresión</li>
+          <li>Si falla o hay necrosis → colostomía de Hartmann</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — hernia estrangulada = cirugía urgente sin reducción manual forzada</div>
+      <p>Hernia inguinal que ya no puede reducirse manualmente (hernia irreductible) y tiene signos de obstrucción + isquemia (cambio de color de la piel, dolor intenso, fiebre) = <strong>hernia estrangulada → cirugía urgente</strong>. Intentar reducir a la fuerza puede perforar el intestino isquémico. El "taxis" (reducción manual) solo está permitido en hernias incarceradas recientes sin signos de isquemia.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Signos de alarma que indican cirugía urgente</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Estrangulación — no demorar la cirugía</div>
+      <p>Signos de isquemia intestinal dentro de una obstrucción:<br>
+      — Dolor continuo y severo (deja de ser cólico)<br>
+      — Fiebre + leucocitosis marcada<br>
+      — Peritonismo (defensa muscular, rebote)<br>
+      — Gas en pared intestinal o porta en TC (neumatosis intestinal) → isquemia avanzada<br>
+      — Hipotensión, taquicardia → sepsis<br><br>
+      Cualquiera de estos = <strong>cirugía de urgencia sin demorar</strong>. La estrangulación tiene mortalidad de 30–50% si no se opera en tiempo.</p>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Algoritmo quirúrgico en obstrucción intestinal</div>
+    <p><strong>Sin estrangulación:</strong> SNG + reposición IV + observación 24–48h. Si mejora → alta. Si no mejora → cirugía laparoscópica (lisis de bridas).</p>
+    <p style="margin-top:6px"><strong>Con estrangulación:</strong> cirugía urgente. Si hay intestino viable → resección + anastomosis primaria. Si está comprometido la vitalidad en colon derecho → hemicolectomía derecha. En colon izquierdo/sigma → operación de Hartmann (colostomía + muñón rectal).</p>
+    <p style="margin-top:6px"><strong>Vólvulo de ciego:</strong> laparotomía urgente (no hay tratamiento endoscópico eficaz a diferencia del sigma).</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: Apendicitis</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Colelitiasis →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 6 — VÍA BILIAR ═══ -->
+<div class="node" id="n5" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Cirugía · muy preguntado</div>
+    <div class="node-title">Colelitiasis · Colecistitis aguda · Coledocolitiasis · Colangitis</div>
+    <div class="node-subtitle">Signo de Murphy · Eco abdominal · CPRE · Colecistectomía laparoscópica · Tríada de Charcot</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La vía biliar tiene una escalera de complicaciones: colelitiasis (asintomática) → cólico biliar → colecistitis aguda → coledocolitiasis (cálculo en colédoco) → colangitis (la urgencia máxima). Cada escalón tiene su tratamiento específico. La ecografía es el primer estudio siempre. La colecistectomía laparoscópica es el tratamiento definitivo de los cálculos vesiculares sintomáticos.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">La escalera de la patología biliar</div>
+    <table class="tbl">
+      <tr><th>Entidad</th><th>Clínica</th><th>Laboratorio</th><th>Estudio</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--teal2)">Colelitiasis asintomática</td><td>Sin síntomas</td><td>Normal</td><td>Eco abdominal (incidental)</td><td>Observación. No cirugía si asintomática salvo cálculo &gt;3 cm o riesgo de cáncer vesicular</td></tr>
+      <tr><td style="color:var(--teal2)">Cólico biliar</td><td>Dolor hipocondrio derecho / epigástrico posprandial (grasas). Dura 20 min–6h, cede solo. SIN fiebre</td><td>Normal o levemente alterado</td><td>Eco: cálculos + engrosamiento vesicular</td><td>Analgesia (AINES, espasmolíticos). Colecistectomía electiva laparoscópica</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Colecistitis aguda</strong></td><td>Dolor HD continuo + <strong>fiebre</strong> + Murphy +. Dolor persistente &gt;6 hs</td><td>Leucocitosis. FA y GGT leve ↑. Bilirrubina normal o leve ↑</td><td>Eco: paredes engrosadas (&gt;3mm) + cálculos + líquido pericolecistitico</td><td>ATB (ampicilina-sulbactam). Colecistectomía laparoscópica en 24–72 hs (no diferir)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Coledocolitiasis</strong></td><td>Ictericia obstructiva. Coluria (orina oscura). Acolia (heces pálidas). Dolor. Sin fiebre si sin infección</td><td>Bilirrubina directa ↑↑. FA y GGT ↑↑. TGO/TGP leve ↑</td><td>Eco: vías biliares dilatadas (&gt;6 mm). CPRE confirma y trata</td><td>CPRE (esfinterotomía + extracción del cálculo) + colecistectomía posterior</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Colangitis aguda</strong></td><td>Tríada de Charcot: fiebre + ictericia + dolor. Pentada de Reynolds: + hipotensión + confusión = colangitis grave/séptica</td><td>Leucocitosis severa. Bilirrubina ↑↑. PCR elevada</td><td>Eco + TC. CPRE urgente</td><td>ATB IV urgente + CPRE descompresiva urgente (&lt;24–48 hs). UTI si hemodinámicamente inestable</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — Murphy ecográfico vs signo de Murphy clínico</div>
+      <p>El signo de Murphy clínico = dolor al presionar en hipocondrio derecho durante la inspiración profunda (el paciente corta la inspiración). El Murphy ecográfico = dolor máximo con el transductor de eco sobre la vesícula. Ambos sugieren colecistitis aguda, pero el Murphy puede estar ausente en ancianos y diabéticos (neuropatía autonómica → dolor atenuado). Ojo con el diagnóstico en estos grupos.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Las 4 Fs — factores de riesgo de colelitiasis</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Mnemotecnia clásica que el banco pone</div>
+      <p><strong>Fat (gordo) · Forty (40 años) · Female (mujer) · Fertile (fértil)</strong> = factores de riesgo para colelitiasis de colesterol. La prevalencia en mujeres con estas características es del 20–30%. También: multiparidad, anticonceptivos orales, pérdida de peso rápida, cirrosis, enfermedad ileal (Crohn), dieta rica en colesterol.</p>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Decisiones quirúrgicas en patología biliar</div>
+    <p><strong>Colecistectomía laparoscópica:</strong> gold standard. Indicada en colelitiasis sintomática (cólico biliar, colecistitis). Ventajas: mínima invasión, recuperación en 24-48h, retorno laboral en 1 semana. Convertir a laparotomía: si hay sangrado incontrolable, anatomía confusa, lesión de vías biliares.</p>
+    <p style="margin-top:6px"><strong>Colecistectomía en colecistitis aguda:</strong> laparoscópica dentro de las primeras 72 hs del inicio de síntomas (cirugía "temprana") → mejor resultado que diferir. Si el paciente es de alto riesgo: colecistostomía percutánea de drenaje temporal + colecistectomía diferida.</p>
+    <p style="margin-top:6px"><strong>CPRE en coledocolitiasis:</strong> esfinterotomía + extracción del cálculo con canastilla de Dormia o balón. Seguida de colecistectomía electiva (para evitar recurrencia). Si hay colangitis grave: CPRE urgente antes que cualquier otra cosa.</p>
+    <p style="margin-top:6px"><strong>Coledocotomía quirúrgica:</strong> cuando CPRE falla o no está disponible. Incisión del colédoco + extracción del cálculo + colocación de tubo en T (Kehr).</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Obstrucción</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Pancreatitis →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 7 — PANCREATITIS ═══ -->
+<div class="node" id="n6" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Gastro + Cirugía · alta especificidad</div>
+    <div class="node-title">Pancreatitis aguda</div>
+    <div class="node-subtitle">Causas · Criterios de Ranson · Clasificación Baltazar · Necrosis infectada · Cx</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Pancreatitis aguda = inflamación del páncreas por activación intraglandular de enzimas. Causa más frecuente: cálculos biliares (50%) y alcohol (30%). La gravedad se estratifica con Ranson y Baltazar. La cirugía solo entra en la necrosis infectada. El resto es manejo médico de soporte: ayuno, fluidos, analgesia, nutrición enteral precoz.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diagnóstico y causas</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Criterios diagnósticos (2 de 3)</div>
+        <ul>
+          <li>Dolor abdominal característico (epigástrico irradiado en "faja" hacia el dorso)</li>
+          <li>Lipasa sérica ≥3× el límite superior normal (más específica que amilasa)</li>
+          <li>Hallazgos en imagen (TC o RM) compatibles</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Causas principales</div>
+        <ul>
+          <li>Litiasis biliar (~50%): cálculo impactado en ampolla de Vater</li>
+          <li>Alcohol (~30%): crónica + episodio agudo</li>
+          <li>Hipertrigliceridemia grave (&gt;1000 mg/dL)</li>
+          <li>Hipercalcemia (hiperPTH primario)</li>
+          <li>Fármacos: azatioprina, didanosina (VIH), valproato, estrógenos</li>
+          <li>CPRE post-procedimiento</li>
+          <li>Idiopática (~20%)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — lipasa vs amilasa</div>
+      <p>La <strong>lipasa</strong> es más específica y sensible que la amilasa para pancreatitis. La amilasa puede elevarse en otras condiciones: parotiditis, úlcera perforada, obstrucción intestinal, embarazo ectópico. La lipasa se normaliza más lento (3–14 días vs 5–7 días amilasa). El examen pregunta "¿qué enzima usás para diagnóstico?" → lipasa.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios de Ranson — severidad en las primeras 48 hs</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Al ingreso</div>
+        <ul>
+          <li>Edad &gt;55 años</li>
+          <li>Leucocitos &gt;16.000/mm³</li>
+          <li>Glucosa &gt;200 mg/dL</li>
+          <li>LDH &gt;350 UI/L</li>
+          <li>AST &gt;250 UI/L</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">A las 48 hs</div>
+        <ul>
+          <li>↓ Hematocrito &gt;10%</li>
+          <li>↑ BUN &gt;5 mg/dL</li>
+          <li>Ca⁺⁺ sérico &lt;8 mg/dL</li>
+          <li>PO₂ arterial &lt;60 mmHg</li>
+          <li>Déficit de bases &gt;4 mEq/L</li>
+          <li>Secuestro de fluidos &gt;6 L</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Interpretación Ranson</div>
+      <p>0–2 criterios: leve → mortalidad &lt;1%. Manejo ambulatorio o breve internación.<br>
+      3–4 criterios: moderada → mortalidad ~15%. Hospitalización, vigilancia.<br>
+      ≥5 criterios: grave → mortalidad &gt;40%. UTI.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación de Baltazar — TC abdominal</div>
+    <table class="tbl">
+      <tr><th>Grado</th><th>Hallazgo en TC</th><th>Necrosis</th><th>Puntuación</th></tr>
+      <tr><td style="color:var(--teal2)">A</td><td>Páncreas normal</td><td>0%</td><td>0</td></tr>
+      <tr><td style="color:var(--teal2)">B</td><td>Aumento focal o difuso del páncreas</td><td>0%</td><td>1</td></tr>
+      <tr><td style="color:var(--amber2)">C</td><td>B + inflamación peripancreática</td><td>0%</td><td>2</td></tr>
+      <tr><td style="color:var(--amber2)">D</td><td>C + 1 colección líquida peripancreática</td><td>30–50%</td><td>3</td></tr>
+      <tr><td style="color:var(--red2)">E</td><td>C + ≥2 colecciones o gas en páncreas</td><td>&gt;50%</td><td>4</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — TC no se hace de rutina al ingreso</div>
+      <p>La TC abdominal con contraste se indica cuando: diagnóstico es incierto, pancreatitis severa (Ranson ≥3), falla orgánica, no mejora en 48–72 hs, o para descartar necrosis infectada (BAAF guiada por TC). <strong>No en la primera hora de ingreso</strong> en todos los casos. La TC se hace idealmente a las 48–72 hs del inicio cuando el proceso pancreático está más definido.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de soporte — el pilar fundamental</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">1</div><div class="algo-text"><strong>Hidratación agresiva:</strong> 250–500 mL/h de Ringer lactato en las primeras 12–24 hs. El Ringer lactato es superior al SF (reduce acidosis y respuesta inflamatoria).</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">2</div><div class="algo-text"><strong>Analgesia potente:</strong> ketorolac IV, morfina. La morfina NO está contraindicada en pancreatitis (mito). El dolor descontrolado es peor que el riesgo teórico del espasmo del esfínter de Oddi.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">3</div><div class="algo-text"><strong>Nutrición enteral precoz:</strong> sonda nasoyeyunal si no tolera vía oral. Preferible a nutrición parenteral total (reduce complicaciones infecciosas). Reiniciar dieta oral cuando disminuye el dolor y la lipasa.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">4</div><div class="algo-text"><strong>NO antibióticos profilácticos de rutina:</strong> la profilaxis ATB en pancreatitis necrótica estéril NO reduce la mortalidad. Solo ATB si hay necrosis infectada (BAAF + o deterioro clínico).</div></div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — antibióticos en pancreatitis necrótica estéril</div>
+      <p>El examen puede dar pancreatitis grave (Baltazar D/E) y preguntar si se dan ATB profilácticos. Respuesta: <strong>NO</strong>. Los ATB solo se dan cuando hay evidencia de infección: fiebre alta persistente, deterioro clínico, aire en el parénquima pancreático en TC (gas = infección bacteriana), o BAAF positiva para gérmenes.</p>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Cirugía en pancreatitis aguda</div>
+    <p><strong>Necrosis pancreática INFECTADA:</strong> única indicación quirúrgica de urgencia en la pancreatitis. Diagnóstico: BAAF percutánea guiada por TC (Gram + cultivo) + gas en el páncreas en TC.<br>
+    Tratamiento: <strong>necrosectomía</strong> (retiro de tejido necrótico infectado). Opciones: drenaje percutáneo mínimamente invasivo (primero), videoscopia retroperitoneal, o laparotomía si falla el abordaje mínimamente invasivo.</p>
+    <p style="margin-top:6px"><strong>Pseudoquiste pancreático:</strong> colección líquida &gt;4 semanas sin necrosis. Si asintomático y estable → observación. Si sintomático (dolor, compresión, infección) → drenaje endoscópico (cistogastrostomía o cistoyeyunostomía endoscópica). Cirugía si falla el abordaje endoscópico.</p>
+    <p style="margin-top:6px"><strong>Pancreatitis biliar:</strong> colecistectomía laparoscópica durante la misma internación (antes del alta) para evitar recurrencia. La recurrencia de pancreatitis biliar es del 30–50% si no se opera.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Colelitiasis</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Cirrosis →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 8 — CIRROSIS ═══ -->
+<div class="node" id="n7" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">CL12 Gastro · alta rentabilidad</div>
+    <div class="node-title">Cirrosis hepática y sus complicaciones</div>
+    <div class="node-subtitle">Child-Pugh · Ascitis + PBE · Encefalopatía · Várices · Hepatocarcinoma · TIPS</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La cirrosis es la enfermedad hepática terminal. El examen pregunta: clasificar con Child-Pugh, manejar las complicaciones (ascitis, PBE, encefalopatía, HDA variceal), y saber cuándo trasplantar. Las complicaciones tienen manejo muy específico y cada una tiene su trampa en el banco.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación de Child-Pugh — pronóstico de la cirrosis</div>
+    <table class="tbl">
+      <tr><th>Variable</th><th>1 punto</th><th>2 puntos</th><th>3 puntos</th></tr>
+      <tr><td>Encefalopatía</td><td>Ausente</td><td>Grado 1–2</td><td>Grado 3–4</td></tr>
+      <tr><td>Ascitis</td><td>Ausente</td><td>Leve/moderada (responde a diuréticos)</td><td>Tensa (refractaria)</td></tr>
+      <tr><td>Bilirrubina total (mg/dL)</td><td>&lt;2</td><td>2–3</td><td>&gt;3</td></tr>
+      <tr><td>Albúmina (g/dL)</td><td>&gt;3.5</td><td>2.8–3.5</td><td>&lt;2.8</td></tr>
+      <tr><td>TP (INR)</td><td>&lt;1.7</td><td>1.7–2.3</td><td>&gt;2.3</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Interpretación Child-Pugh</div>
+      <p>A (5–6 puntos): cirrosis compensada. Supervivencia 1 año ~100%, 2 años ~85%.<br>
+      B (7–9 puntos): descompensación moderada. Supervivencia 2 años ~60%.<br>
+      C (10–15 puntos): descompensación severa. Supervivencia 1 año &lt;35%. <strong>Candidato a trasplante hepático.</strong></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ascitis y peritonitis bacteriana espontánea (PBE)</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">Tratamiento de la ascitis</div>
+        <ul>
+          <li>Leve: restricción de Na (&lt;2 g/día)</li>
+          <li>Moderada: espironolactona 100–400 mg/día ± furosemida 40–160 mg/día</li>
+          <li>Tensa: paracentesis evacuadora + albúmina IV (8 g por litro evacuado, si &gt;5 L)</li>
+          <li>Refractaria: TIPS o trasplante hepático</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">PBE — diagnóstico y tratamiento</div>
+        <ul>
+          <li>Diagnóstico: <strong>PMN ≥250/mm³ en líquido ascítico</strong> (sin necesidad de cultivo positivo)</li>
+          <li>Cultivo del LA (siembra directa en frascos de hemocultivo al lado de la cama)</li>
+          <li>Tratamiento: <strong>Ceftriaxona 2 g/día IV × 5 días</strong> (o amoxicilina-clavulánico)</li>
+          <li>Agregar albúmina IV 1.5 g/kg al diagnóstico + 1 g/kg a las 48h (reduce síndrome hepatorrenal)</li>
+          <li>Profilaxis secundaria: norfloxacina 400 mg/día VO indefinida</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — PMN 250 diagnostica PBE aunque el cultivo sea negativo</div>
+      <p>La PBE se diagnostica con PMN ≥250 células/mm³ en el líquido ascítico. NO esperar el resultado del cultivo para iniciar antibióticos (el cultivo es negativo en el 40% de los casos de PBE). Si el paciente cirrótico tiene fiebre, dolor abdominal o encefalopatía → punción ascítica + contar PMN → si ≥250 → tratar.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Encefalopatía hepática</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Precipitantes (buscar siempre)</div>
+        <ul>
+          <li>Infección (PBE, ITU, NAC)</li>
+          <li>Hemorragia digestiva (sangre en intestino → amonio)</li>
+          <li>Constipación (↑ producción de amonio)</li>
+          <li>Diuréticos en exceso (hipovolemia, hipocalemia)</li>
+          <li>Sedantes/opiáceos/benzodiacepinas</li>
+          <li>Incumplimiento del tratamiento</li>
+          <li>TIPS (shunt portosistémico quirúrgico)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Tratamiento</div>
+        <ul>
+          <li>Tratar la causa precipitante</li>
+          <li>Lactulosa: 25–45 g c/8–12h VO. Meta: 2–3 deposiciones blandas/día (baja el amonio colónico)</li>
+          <li>Rifaximina 550 mg c/12h: antibiótico no absorbible que reduce bacterias productoras de amonio. Profilaxis de recurrencia</li>
+          <li>Evitar sedantes (benzodiazepinas CI relativa), opiáceos</li>
+          <li>Flumazenil: puede mejorar transitoriamente en encefalopatía por BDZ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síndrome hepatorrenal (SHR) — la complicación más grave</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 SHR — IRA funcional en cirrótico</div>
+      <p>IRA en un cirrótico con ascitis, sin causa renal intrínseca y sin hipovolemia. Mecanismo: vasoconstricción renal por activación del SRAA + SNS.<br><br>
+      <strong>Tipo 1 (agudo):</strong> creatinina se duplica a &gt;2.5 mg/dL en &lt;2 semanas. Alta mortalidad sin trasplante.<br>
+      <strong>Tipo 2 (crónico):</strong> ascitis refractaria + deterioro renal gradual.<br><br>
+      <strong>Tratamiento de SHR tipo 1:</strong> Terlipresina 0.5–2 mg c/4–6h IV + Albúmina IV 1 g/kg/día × 2 días → vasoconstrictor esplácnico que reduce la vasoconstricción renal. Trasplante hepático: única cura definitiva.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hepatocarcinoma (HCC) — vigilancia en cirrosis</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Screening del HCC en cirrosis</div>
+      <p>Todo paciente cirrótico debe recibir <strong>ecografía hepática + alfafetoproteína (AFP) cada 6 meses</strong>.<br>
+      Si eco muestra nódulo &gt;1 cm → TC o RM dinámica con contraste (patrón wash-in/wash-out = diagnóstico de HCC sin biopsia).<br>
+      Tratamiento según estadio BCLC: A (único &lt;2 cm) → resección o ablación. A–B → TACE (quimioembolización). C (metástasis) → sorafenib. D (terminal) → paliativo.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Pancreatitis</div>
+    <div class="nav-btn" onclick="show(8)">Nodo 9: Crohn vs CU →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 9 — CROHN vs CU ═══ -->
+<div class="node" id="n8" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">CL12 Gastro · diferenciación crítica</div>
+    <div class="node-title">Enfermedad de Crohn vs Colitis Ulcerosa</div>
+    <div class="node-subtitle">Diferencias clave · Manifestaciones extraintestinales · Tratamiento · Cuándo operar</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Las Enfermedad Inflamatoria Intestinal (EII) tiene dos entidades. El examen las diferencia por distribución, histología y complicaciones: Crohn = "salta" (segmentario), afecta todo el tubo digestivo, granulomas, fístulas. CU = "continua" desde el recto, solo colon, úlceras superficiales. La CU se cura con colectomía total; el Crohn no (reaparece después de la cirugía).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tabla comparativa — la más preguntada de EII</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--amber2)">Crohn</th><th style="color:var(--teal2)">Colitis ulcerosa (CU)</th></tr>
+      <tr><td>Distribución</td><td style="color:var(--amber2)">Segmentaria ("salteada"). Desde boca a ano</td><td style="color:var(--teal2)">Continua, siempre desde RECTO hacia proximal</td></tr>
+      <tr><td>Capa afectada</td><td>Transmural (todas las capas)</td><td>Mucosa y submucosa solamente</td></tr>
+      <tr><td>Recto</td><td>Puede respetar el recto (50%)</td><td style="color:var(--teal2)">Siempre afectado</td></tr>
+      <tr><td>Histología</td><td style="color:var(--amber2)">Granulomas (patognomónico si presentes)</td><td>Sin granulomas. Abscesos en criptas</td></tr>
+      <tr><td>Complicaciones</td><td style="color:var(--amber2)">Fístulas (enterocutánea, entero-vesical, perianal) · Abscesos · Estenosis · Mal absorción</td><td style="color:var(--teal2)">Megacolon tóxico · Hemorragia masiva · Mayor riesgo de cáncer colorrectal</td></tr>
+      <tr><td>Manifestaciones EI</td><td>Artritis periférica, uveítis, eritema nudoso, pioderma gangrenoso, colangitis esclerosante primaria (más en CU)</td><td>Idem pero colangitis esclerosante más frecuente</td></tr>
+      <tr><td>Cirugía ¿cura?</td><td style="color:var(--amber2)">NO (reaparece en otro segmento)</td><td style="color:var(--teal2)">SÍ (colectomía total cura la CU)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento médico de EII</div>
+    <table class="tbl">
+      <tr><th>Fase</th><th>CU leve-moderada</th><th>CU grave</th><th>Crohn</th></tr>
+      <tr><td style="color:var(--teal2)">Inducción</td><td>Mesalazina (5-ASA) VO + tópico (enema, supositorios para distal)</td><td>Corticoides IV (metilprednisolona 60 mg/día) + ciclosporina IV si no responde</td><td>Corticoides VO (prednisona). Budesonida para ileítis terminal</td></tr>
+      <tr><td style="color:var(--teal2)">Mantenimiento</td><td>Mesalazina VO indefinida</td><td>Azatioprina, infliximab (anti-TNF)</td><td>Azatioprina, metotrexato. Anti-TNF (infliximab, adalimumab) en enfermedad moderada-grave</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — mesalazina en Crohn</div>
+      <p>Mesalazina (5-ASA) es el pilar del mantenimiento en CU. En Crohn, su utilidad es mucho más limitada y no está recomendada como tratamiento de mantenimiento en la mayoría de los casos. El examen puede tentarte a dar 5-ASA en Crohn como si fuera CU → la respuesta correcta para Crohn moderado-grave es azatioprina o anti-TNF.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Megacolon tóxico — urgencia de la CU</div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Criterios de Jalan y conducta urgente</div>
+      <p><strong>Megacolon tóxico</strong> = dilatación del colon transverso &gt;6 cm + síntomas sistémicos (fiebre &gt;38.6°C, taquicardia &gt;120, leucocitosis &gt;10.500 o anemia).<br><br>
+      Puede ocurrir en CU (más frecuente) o en Crohn. También en colitis infecciosa por C. difficile, CMV.<br><br>
+      <strong>Conducta:</strong> suspender opiáceos y anticólicos (empeoran la dilatación), hidratación IV, SNG, corticoides IV. Si no mejora en 48–72h o perforación inminente → <strong>colectomía subtotal urgente</strong>.</p>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Cirugía en EII</div>
+    <p><strong>CU — indicaciones quirúrgicas:</strong><br>
+    Urgente: megacolon tóxico refractario · colitis fulminante · hemorragia masiva · perforación.<br>
+    Electiva: CU refractaria al tratamiento médico máximo · displasia de alto grado / cáncer · intolerancia a la medicación.<br>
+    Cirugía de elección: <strong>proctocolectomía total con bolsa ileal-anal (IPAA = "pouch")</strong>. El pouch reemplaza el recto → el paciente continente. La colectomía total cura la CU del colon pero el paciente sigue en riesgo de pouchitis.</p>
+    <p style="margin-top:8px"><strong>Crohn — indicaciones quirúrgicas (sin curar la enfermedad):</strong><br>
+    Fístulas complejas sin respuesta médica · estenosis fibrosas sintomáticas · abscesos que no drenan con antibióticos + drenaje percutáneo · perforación · neoplasia.<br>
+    Principio fundamental: <strong>resección mínima</strong> (quitar solo el segmento enfermo con márgenes sanos). La enfermedad reaparece en la anastomosis.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(7)">← Nodo 8: Cirrosis</div>
+    <div class="nav-btn" onclick="show(9)">Nodo 10: Celíaca / Alcoholismo / CCR →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 10 — CELÍACA / ALCOHÓLICA / CCR ═══ -->
+<div class="node" id="n9" style="--nc:var(--blue)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--blueb);color:var(--blue2)">CL12 Gastro · datos precisos</div>
+    <div class="node-title">Enfermedad celíaca · Hepatitis alcohólica · Cáncer colorrectal</div>
+    <div class="node-subtitle">Anti-tTG IgA · Marsh · Maddrey · Screening colonoscopia · Cx colorrectal</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Tres entidades distintas que comparten el sprint. Celíaca: el diagnóstico es serológico (anti-tTG IgA) + histológico. Hepatitis alcohólica: CAGE para detección, escala de Maddrey para gravedad, corticoides si Maddrey ≥32. Cáncer colorrectal: el screening con colonoscopia a los 50 años salva vidas, y su cirugía (hemicolectomía) tiene lógica anatómica.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Enfermedad celíaca</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Diagnóstico</div>
+        <ul>
+          <li><strong>Screening:</strong> Anti-transglutaminasa IgA (anti-tTG IgA) → más sensible y específico</li>
+          <li>Si anti-tTG IgA positivo → endoscopia + biopsia duodenal (confirmación)</li>
+          <li>Clasificación Marsh: 0 (normal), I (linfocitos ↑), II (hiperplasia criptas), III (atrofia vellosidades) → IIIA, IIIB, IIIC (atrofia subtotal a total)</li>
+          <li>Déficit de IgA total (5% de celíacos) → falso negativo de anti-tTG IgA → usar anti-tTG IgG</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Clínica y tratamiento</div>
+        <ul>
+          <li>Diarrea crónica, malabsorción, pérdida de peso, flatulencias</li>
+          <li>Déficits nutricionales: hierro (anemia ferropénica), B12, vitaminas ADEK, calcio (osteoporosis)</li>
+          <li>Presentación atípica: aftas orales, dermatitis herpetiforme, infertilidad, hepatitis celíaca</li>
+          <li>Tratamiento: <strong>dieta sin gluten de por vida</strong> (trigo, cebada, centeno)</li>
+          <li>No respuesta a la dieta → linfoma de células T intestinal (complicación grave)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — no suspender gluten antes de la biopsia</div>
+      <p>Si el paciente suspende el gluten antes de la endoscopia, la biopsia puede ser normal (el intestino se repara). El diagnóstico de celíaca requiere que el paciente esté consumiendo gluten al momento de la biopsia. Secuencia: sospecha → anti-tTG con gluten activo → biopsia con gluten → dieta sin gluten.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hepatitis alcohólica y cirrosis alcohólica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">CAGE — screening de alcoholismo</div>
+        <ul>
+          <li><strong>C</strong>ut down: ¿alguna vez intentó reducir el consumo?</li>
+          <li><strong>A</strong>nnoyed: ¿le molestó que le dijeran que bebía mucho?</li>
+          <li><strong>G</strong>uilty: ¿se sintió culpable por beber?</li>
+          <li><strong>E</strong>ye-opener: ¿necesitó beber al levantarse?</li>
+          <li>≥2 respuestas positivas: probable alcoholismo → sensibilidad ~70–85%</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Escala de Maddrey (DF)</div>
+        <ul>
+          <li>DF = 4.6 × (TP paciente − TP control) + bilirrubina total (mg/dL)</li>
+          <li>DF ≥ 32 → hepatitis alcohólica grave → corticoides (prednisolona 40 mg/día × 28 días)</li>
+          <li>Contraindicaciones de corticoides: infección activa, hemorragia digestiva activa, insuficiencia renal grave</li>
+          <li>Alternativa si CI a corticoides: pentoxifilina</li>
+          <li>Abstinencia alcohólica: SIEMPRE, es el tratamiento fundamental</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Laboratorio característico de hepatitis alcohólica</div>
+      <p>AST / ALT &gt;2 (proporción AST:ALT, a diferencia de hepatitis vírica donde ALT &gt; AST). GGT muy elevada (marcador de consumo). Macrocitosis (VCM &gt;100 fL). Bilirrubina elevada. Si hay fibrosis avanzada → trombocitopenia (esplenomegalia).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cáncer colorrectal — screening, diagnóstico y cirugía</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Screening (ya cubierto en Salud Pública)</div>
+        <ul>
+          <li>SOMF (sangre oculta en materia fecal): anual desde los 50 años</li>
+          <li>Colonoscopia: cada 10 años desde los 50 años (o antes si SOMF positivo, antecedentes familiares, poliposis)</li>
+          <li>Colonoscopia en alto riesgo: cada 1–3 años (poliposis adenomatosa familiar, CCR hereditario no poliposo = Síndrome de Lynch)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Síntomas y diagnóstico</div>
+        <ul>
+          <li>Colon derecho: anemia ferropénica + masa palpable (asintomático largo tiempo)</li>
+          <li>Colon izquierdo: cambios en el hábito intestinal + sangre visible en heces + obstrucción</li>
+          <li>Recto: tenesmo, hematoquecia, cambio en el calibre de las heces</li>
+          <li>Diagnóstico: colonoscopia con biopsia</li>
+          <li>Estadificación: TC tórax-abdomen-pelvis + CEA (marcador tumoral para seguimiento)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="cx-banner">
+    <div class="cx-banner-title">🔪 Cirugía del cáncer colorrectal — anatomía manda la técnica</div>
+    <p><strong>Principio: resección del tumor + márgenes libres + linfadenectomía regional.</strong></p>
+    <p style="margin-top:6px"><strong>Colon derecho (ciego, ascendente, ángulo hepático):</strong> hemicolectomía derecha + ileotransversostomía (anastomosis íleo-transverso).</p>
+    <p style="margin-top:6px"><strong>Colon transverso:</strong> colectomía segmentaria transversa o hemicolectomía derecha extendida.</p>
+    <p style="margin-top:6px"><strong>Colon izquierdo (ángulo esplénico, descendente, sigma):</strong> hemicolectomía izquierda + anastomosis colorrectal.</p>
+    <p style="margin-top:6px"><strong>Recto (los 2/3 distales):</strong> resección anterior baja (conserva esfínter) o amputación abdominoperineal (Miles) si tumor muy cerca del esfínter (a &lt;3 cm del margen anal) → colostomía definitiva. La decisión entre conservar o no el esfínter depende del margen distal libre.</p>
+    <p style="margin-top:6px"><strong>Metástasis hepáticas:</strong> si son resecables → resección hepática laparoscópica o abierta. Sobrevida a 5 años del 40–60% con resección completa.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Gastro + Cirugía</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>HDA (N3) ↔ Cirrosis (N8):</strong> várices esofágicas como causa de HDA = consecuencia de la hipertensión portal de la cirrosis. Manejo totalmente diferente a la HDA no variceal</li>
+        <li><strong>Pancreatitis (N7) ↔ Colelitiasis (N6):</strong> el 50% de las pancreatitis agudas son biliares → siempre eco biliar en toda pancreatitis. Colecistectomía en la misma internación</li>
+        <li><strong>Celíaca (N10) ↔ Anemia (Hemato):</strong> anemia ferropénica en adulto sin causa aparente → descartar celíaca con anti-tTG IgA. También conecta con déficit de B12 y folato</li>
+        <li><strong>AINES ↔ Úlcera (N2) ↔ IRA (Nefrología N1):</strong> los AINEs generan úlcera péptica (+ H. pylori) y simultáneamente bloquean prostaglandinas renales → IRA prerrenal en pacientes con ERC o IC. El mismo fármaco genera dos problemas distintos</li>
+        <li><strong>IBP (N1) ↔ NTI (Nefrología N4):</strong> los IBP son causa frecuente de nefritis intersticial aguda. El dato conecta el uso crónico de IBP con deterioro renal inexplicado</li>
+        <li><strong>Cirrosis (N8) ↔ Infectología:</strong> la cirrosis genera inmunocompromiso (déficit de opsoninas) → PBE por E. coli, Klebsiella o Streptococo pneumoniae. La profilaxis es norfloxacina</li>
+        <li><strong>CCR (N10) ↔ Anemia ferropénica (Hemato):</strong> anemia ferropénica en adulto mayor sin causa aparente → colonoscopia obligatoria para descartar CCR hemorrágico de colon derecho</li>
+        <li><strong>Crohn (N9) ↔ Nefro:</strong> el Crohn ileal genera malabsorción de oxalato → hiperoxaluria → litiasis renal de oxalato cálcico</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--coral2);margin-bottom:12px">✅ GASTROENTEROLOGÍA + CIRUGÍA INTEGRADA — 10/10 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Vault integrado CL12-Gastro + cirugía abdominal. Cubrís: ERGE + Barrett, úlcera péptica + H. pylori, HDA (variceal y no variceal), apendicitis, obstrucción intestinal, colelitiasis-colangitis-colecistitis, pancreatitis aguda, cirrosis-complicaciones, Crohn vs CU, celíaca, hepatitis alcohólica, y cáncer colorrectal con su cirugía anatómica.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-c">CL12 Gastro: 15 preg</span>
+      <span class="tag tag-t">Cirugía integrada</span>
+      <span class="tag tag-a">HDA · colecistectomía · apendicectomía · Hartmann · colectomía</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(8)">← Nodo 9: Crohn vs CU</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div>
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>

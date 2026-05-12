@@ -196,3 +196,12 @@ Notas:
 ## v35.24 · migración automática de endpoint colaborativo
 
 Esta versión fuerza el endpoint oficial de aportes en `config.js` y migra automáticamente navegadores que tenían guardada una URL vieja en `localStorage` o dentro de `residenciapp_integrada_state`. No modifica banco, IDs, métricas ni progreso.
+
+## v35.25 · Repaso inteligente + biblioteca limpia + anotaciones en nodos
+
+- Corrige el botón **Trabajar esta** del Repaso inteligente para abrir esa pregunta sola en repaso libre con feedback inmediato.
+- Reordena **Aprender desde cero**: primero se selecciona eje, luego tema, y recién después se listan nodos.
+- Agrega subrayado/resaltado dentro del nodo abierto con varios colores.
+- Agrega notas fijables dentro del texto del nodo, guardadas por nodo en localStorage.
+- Integra nuevos vaults: Gastroenterología + Cirugía, Hematología adultos, Nefrología + Medio Interno.
+- Mantiene banco, IDs, métricas, sesiones, errores y progreso principal sin modificar.

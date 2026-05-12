@@ -1,0 +1,25 @@
+/* === ResidenciAPP v35.25 · Repaso + biblioteca limpia + anotaciones en nodos === */
+#learnView .learn-start-panel{border:1px solid rgba(148,163,184,.26);background:linear-gradient(135deg,rgba(255,255,255,.92),rgba(240,253,250,.76));box-shadow:0 24px 60px rgba(15,23,42,.10)}
+.dark #learnView .learn-start-panel{background:linear-gradient(135deg,rgba(15,23,42,.96),rgba(19,78,74,.22));border-color:rgba(51,65,85,.9);box-shadow:0 24px 70px rgba(0,0,0,.38)}
+#learnView .learn-chip-btn{border:1px solid rgba(148,163,184,.28);background:rgba(255,255,255,.88);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+#learnView .learn-chip-btn:hover{transform:translateY(-1px);box-shadow:0 16px 32px rgba(15,23,42,.10);border-color:rgba(20,184,166,.48)}
+.dark #learnView .learn-chip-btn{background:rgba(15,23,42,.72);border-color:rgba(71,85,105,.7)}
+#learnView .learn-chip-btn.is-active{border-color:rgba(13,148,136,.65);background:rgba(240,253,250,.92);box-shadow:0 18px 42px rgba(20,184,166,.14)}
+.dark #learnView .learn-chip-btn.is-active{background:rgba(20,184,166,.12);border-color:rgba(45,212,191,.45)}
+#learnView .lesson-card-3525{border:1px solid rgba(148,163,184,.24);background:rgba(255,255,255,.92);box-shadow:0 18px 42px rgba(15,23,42,.07);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+#learnView .lesson-card-3525:hover{transform:translateY(-2px);box-shadow:0 22px 48px rgba(15,23,42,.12);border-color:rgba(20,184,166,.48)}
+.dark #learnView .lesson-card-3525{background:rgba(15,23,42,.72);border-color:rgba(51,65,85,.86);box-shadow:0 18px 42px rgba(0,0,0,.28)}
+#learnView .lesson-card-3525.is-current{border-color:rgba(13,148,136,.75);background:rgba(240,253,250,.95)}
+.dark #learnView .lesson-card-3525.is-current{background:rgba(20,184,166,.10);border-color:rgba(45,212,191,.42)}
+#lessonViewer.lesson-viewer-3525{overflow:hidden;border-color:rgba(20,184,166,.25)}
+.lesson-toolbar-3525{position:sticky;top:0;z-index:36;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,232,240,.95)}
+.dark .lesson-toolbar-3525{background:rgba(15,23,42,.86);border-bottom-color:rgba(30,41,59,.95)}
+.lesson-toolbar-btn-3525{border:1px solid rgba(148,163,184,.28);border-radius:1rem;padding:.62rem .82rem;font-size:.72rem;font-weight:950;transition:background .16s ease,transform .16s ease,border-color .16s ease}
+.lesson-toolbar-btn-3525:hover{transform:translateY(-1px);background:rgba(248,250,252,.95);border-color:rgba(20,184,166,.5)}
+.dark .lesson-toolbar-btn-3525:hover{background:rgba(30,41,59,.95)}
+body.lesson-focus #learnView > div{max-width:none!important}
+body.lesson-focus #lessonViewer{position:fixed!important;inset:1rem!important;z-index:80!important;overflow:auto!important;border-radius:1.5rem!important;box-shadow:0 30px 120px rgba(0,0,0,.38)}
+body.lesson-focus #lessonFrame{height:calc(100vh - 12rem)!important;min-height:0!important}
+body.lesson-focus #sidebar,body.lesson-focus #overlay{display:none!important}
+.v3525-soft-hidden{display:none!important}
+@media(max-width:1024px){#learnView .learn-layout-3525{grid-template-columns:1fr!important}#lessonFrame{min-height:640px!important;height:72vh!important}}

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nefrología + Medio Interno — Vault Completo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2435;--bg4:#252d42;
+  --border:#2e3650;
+  --text:#e8ecf4;--text2:#9ba8c4;--text3:#606b8a;
+  --teal:#3dc4a0;--teal2:#6ddcba;--tealb:#0e2e25;
+  --amber:#e8a94a;--amber2:#f5c97a;--amberb:#3a2e10;
+  --red:#e05252;--red2:#f07a7a;--redb:#2e1010;
+  --purple:#7b72e8;--purple2:#a89cef;--purpleb:#1e1a3a;
+  --blue:#4fa8e8;--blue2:#80c4f0;--blueb:#0e2338;
+  --green:#5dc46a;--green2:#8ad895;--greenb:#0d2c12;
+  --coral:#d85a30;--coral2:#f0997b;--coralb:#2e1a0a;
+  --radius:10px;--radius-sm:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;min-height:100vh}
+#sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-header{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.06em;text-transform:uppercase}
+.sb-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.sb-stats{display:flex;gap:8px;margin-top:10px}
+.sb-stat{background:var(--bg3);border-radius:var(--radius-sm);padding:5px 8px;text-align:center;flex:1}
+.sb-stat-n{font-size:16px;font-weight:700}
+.sb-stat-l{font-size:10px;color:var(--text3);margin-top:1px}
+.sprint-label{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg3)}
+.nav-item.active{background:var(--bg4);border-left-color:var(--item-color)}
+.nav-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg4);flex-shrink:0}
+.nav-item.active .nav-num{background:var(--item-color);color:#0f1117}
+.nav-text{flex:1;min-width:0}
+.nav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.active .nav-name{color:var(--item-color)}
+.nav-n{font-size:10px;color:var(--text3);margin-top:1px}
+#content{flex:1;overflow-y:auto;padding:32px 36px;max-width:900px}
+.node{display:none}.node.active{display:block}
+.node-header{margin-bottom:28px}
+.node-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.node-title{font-size:26px;font-weight:700;color:var(--text);line-height:1.2;margin-bottom:6px}
+.node-subtitle{font-size:14px;color:var(--text2)}
+.idea-madre{background:var(--bg3);border-left:4px solid var(--nc);border-radius:0 var(--radius) var(--radius) 0;padding:14px 18px;margin-bottom:24px}
+.idea-madre-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nc);margin-bottom:6px}
+.idea-madre-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.5}
+.section{margin-bottom:28px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:4px}
+.tbl th{background:var(--bg3);color:var(--text2);font-weight:600;text-align:left;padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--bg3)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.tag-r{background:var(--redb);color:var(--red2)}.tag-a{background:var(--amberb);color:var(--amber2)}
+.tag-p{background:var(--purpleb);color:var(--purple2)}.tag-t{background:var(--tealb);color:var(--teal2)}
+.tag-b{background:var(--blueb);color:var(--blue2)}.tag-g{background:var(--greenb);color:var(--green2)}
+.alert{border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;border-left:3px solid}
+.alert-trap{background:var(--redb);border-color:var(--red);color:var(--red2)}
+.alert-key{background:var(--amberb);border-color:var(--amber);color:var(--amber2)}
+.alert-caso{background:var(--blueb);border-color:var(--blue);color:var(--blue2)}
+.alert-conexion{background:var(--purpleb);border-color:var(--purple);color:var(--purple2)}
+.alert-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.alert p,.alert li{font-size:13px;line-height:1.6;margin-bottom:3px}
+.alert ul,.alert ol{padding-left:16px}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.card-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.card p,.card li{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:2px}
+.card ul{padding-left:14px}
+.algo{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.algo-step{display:flex;align-items:flex-start;gap:10px;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px}
+.algo-n{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.algo-text{font-size:13px;line-height:1.5}
+.algo-text strong{color:var(--text)}
+.nav-arrows{display:flex;gap:8px;margin-top:32px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+/* Formula box */
+.formula{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:8px;font-family:monospace}
+.formula-name{font-size:11px;font-weight:700;color:var(--nc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;font-family:'Segoe UI',system-ui,sans-serif}
+.formula-eq{font-size:15px;color:var(--text);margin-bottom:3px}
+.formula-mem{font-size:12px;color:var(--text2);margin-top:4px;font-family:'Segoe UI',system-ui,sans-serif}
+/* ion display */
+.ion-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:8px}
+.ion-card{border-radius:var(--radius);padding:12px;text-align:center}
+.ion-val{font-size:22px;font-weight:700}
+.ion-name{font-size:11px;color:var(--text2);margin-top:3px}
+.ion-range{font-size:12px;margin-top:4px}
+@media(max-width:800px){body{flex-direction:column}#sidebar{width:100%;height:auto;position:static}#content{padding:20px 16px}.cards-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Nefrología + Medio Interno</div>
+    <div class="sb-sub">Banco 2016–2025 · CL11 · 30 preguntas</div>
+    <div class="sb-stats">
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--teal)">30</div><div class="sb-stat-l">preguntas</div></div>
+      <div class="sb-stat"><div class="sb-stat-n" style="color:var(--amber)">8</div><div class="sb-stat-l">nodos</div></div>
+    </div>
+  </div>
+  <div class="sprint-label" style="color:var(--teal)">Nefrología — 19 preguntas</div>
+  <div class="nav-item active" style="--item-color:var(--teal)" onclick="show(0)">
+    <div class="nav-num">1</div>
+    <div class="nav-text"><div class="nav-name">IRA — Insuficiencia renal aguda</div><div class="nav-n">Prerrenal · Renal · Posrenal · KDIGO</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(1)">
+    <div class="nav-num">2</div>
+    <div class="nav-text"><div class="nav-name">ERC — Enfermedad renal crónica</div><div class="nav-n">Estadios · Complicaciones · Diálisis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(2)">
+    <div class="nav-num">3</div>
+    <div class="nav-text"><div class="nav-name">Síndrome nefrótico vs nefrítico</div><div class="nav-n">Etiologías · Proteinuria · Hematuria</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--teal)" onclick="show(3)">
+    <div class="nav-num">4</div>
+    <div class="nav-text"><div class="nav-name">Glomerulopatías y NTI</div><div class="nav-n">Membranosa · GNFS · LES · Nefritis intersticial</div></div>
+  </div>
+  <div class="sprint-label" style="color:var(--amber)">Medio Interno — 11 preguntas</div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(4)">
+    <div class="nav-num">5</div>
+    <div class="nav-text"><div class="nav-name">Sodio — Hiponatremia y SIADH</div><div class="nav-n">Clasificación · SIADH · Corrección</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--amber)" onclick="show(5)">
+    <div class="nav-num">6</div>
+    <div class="nav-text"><div class="nav-name">Potasio — Hipo e hipercalemia</div><div class="nav-n">ECG · Causas · Tratamiento urgente</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--red)" onclick="show(6)">
+    <div class="nav-num">7</div>
+    <div class="nav-text"><div class="nav-name">Equilibrio ácido-base</div><div class="nav-n">Anión GAP · Acidosis metabólica · Alcalosis</div></div>
+  </div>
+  <div class="nav-item" style="--item-color:var(--purple)" onclick="show(7)">
+    <div class="nav-num">8</div>
+    <div class="nav-text"><div class="nav-name">Calcio · Fósforo · Magnesio</div><div class="nav-n">Hipo/hipercalcemia · ERC y mineral</div></div>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- ═══ NODO 1 — IRA ═══ -->
+<div class="node active" id="n0" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">CL11 · Nefrología · 19 preguntas</div>
+    <div class="node-title">IRA — Insuficiencia / Lesión Renal Aguda</div>
+    <div class="node-subtitle">Prerrenal · Intrínseca · Posrenal · Criterios KDIGO · Manejo inicial</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La IRA se clasifica en 3 tipos por mecanismo, no por valores de laboratorio. El examen da el escenario clínico y vos decís dónde está el problema: antes del riñón (prerrenal = falta de flujo), en el riñón (intrínseca = daño tubular/glomerular), o después del riñón (posrenal = obstrucción). El FENa es la prueba que los distingue.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Clasificación fisiopatológica — las 3 causas</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Mecanismo</th><th>Causas típicas</th><th>Orina</th><th>FENa</th></tr>
+      <tr><td style="color:var(--teal2)"><strong>Prerrenal</strong><br>(más frecuente ~55%)</td><td>↓ perfusión renal. Riñón estructuralmente sano pero con poco flujo</td><td>Deshidratación, hemorragia, IC severa, sepsis, quemaduras, cirrosis con síndrome hepatorrenal</td><td>Concentrada (↑ densidad, ↑ osmolaridad). Na urinario &lt;20 mEq/L. Creatinina urinaria alta</td><td style="color:var(--teal2)"><strong>&lt;1%</strong> (riñón retiene Na activamente)</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Intrínseca / Renal</strong><br>(~40%)</td><td>Daño del parénquima: túbulos (más frecuente), glomérulos, vasos, intersticio</td><td>NTA: isquemia prolongada (la prerrenal evolucionada), nefrotóxicos (aminoglucósidos, contraste, cisplatino, AINES, mioglobina/rabdomiólisis)</td><td>Isoestenúrica (↓ densidad). Na urinario &gt;40 mEq/L. Cilindros granulosos pardos (NTA)</td><td style="color:var(--amber2)"><strong>&gt;2%</strong> (túbulo dañado no puede retener Na)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Posrenal</strong><br>(~5%)</td><td>Obstrucción al flujo urinario ↑ presión intratubular → ↓ TFG</td><td>HBP, litiasis ureteral bilateral, tumor pélvico, vejiga neurogénica, estenosis uretral</td><td>Variable. Siempre buscar globo vesical en ecografía</td><td>Variable inicialmente, &gt;2% si prolongada</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 FENa — fracción de excreción de sodio</div>
+      <p><strong>FENa (%) = (Na urinario × Creatinina plasmática) / (Na plasmático × Creatinina urinaria) × 100</strong><br><br>
+      FENa &lt;1% → prerrenal (el riñón sano "roba" todo el Na para preservar volumen)<br>
+      FENa &gt;2% → intrínseca (túbulo dañado no puede retener Na)<br><br>
+      <strong>Trampa:</strong> el FENa no sirve si el paciente tomó diuréticos (aumentan el Na urinario artificialmente → FENa falsamente alta en prerrenal). En ese caso, usar FEUrea.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Criterios KDIGO para diagnóstico de IRA</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">Definición (cualquiera de los 3)</div>
+        <ul>
+          <li>↑ Creatinina ≥0.3 mg/dL en 48 hs</li>
+          <li>↑ Creatinina ≥1.5× el basal en 7 días</li>
+          <li>Diuresis &lt;0.5 mL/kg/h por ≥6 hs</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Estadios KDIGO</div>
+        <ul>
+          <li>Estadio 1: Cr ×1.5–1.9 basal o ↑ 0.3 mg/dL</li>
+          <li>Estadio 2: Cr ×2.0–2.9 basal</li>
+          <li>Estadio 3: Cr ×3.0 o &gt;4 mg/dL o anuria &gt;12h o diálisis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Necrosis tubular aguda (NTA) — la más frecuente de las intrínsecas</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Causas isquémicas</div>
+        <ul>
+          <li>Prerrenal prolongada que progresa a NTA</li>
+          <li>Sepsis (vasoplejía + NTA)</li>
+          <li>Cirugía mayor con hipotensión</li>
+          <li>Regla: prerrenal → si no se corrige en horas → NTA</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Causas nefrotóxicas</div>
+        <ul>
+          <li>Aminoglucósidos (gentamicina, amikacina): daño tubular proximal. No-oligúrica, aparece días después de inicio</li>
+          <li>Contraste yodado: factores de riesgo: ERC, DM, deshidratación. Prevención: hidratación previa</li>
+          <li>Mioglobinuria (rabdomiólisis): CPK muy alta, orina oscura ("color Coca-Cola"), K⁺ alto</li>
+          <li>AINES: especialmente en ERC o IC (bloquean PGs vasodilatadoras aferentes)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — rabdomiólisis y tira reactiva</div>
+      <p>Rabdomiólisis: la tira reactiva orina da "sangre positivo" pero el sedimento urinario NO tiene glóbulos rojos → la mioglobina (no eritrocitos) reacciona con la tira. CPK &gt;1000 UI/L + K⁺ elevado + IRA → rabdomiólisis. Tratamiento: hidratación agresiva con SF para lavar los tubos.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Manejo de la IRA — pasos generales</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">1</div><div class="algo-text"><strong>Determinar el tipo:</strong> historia clínica (deshidratación? nefrotóxico? globo vesical?) + FENa + eco renal. Descartar posrenal siempre (eco o sondeo vesical)</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">2</div><div class="algo-text"><strong>Prerrenal:</strong> reposición de volumen con SF IV. Monitorear diuresis. Tratar la causa (hemorragia, sepsis, IC). FENa &lt;1% confirma.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">3</div><div class="algo-text"><strong>Suspender nefrotóxicos:</strong> AINEs, aminoglucósidos, contraste, IECA/ARA-II si hay hipovolemia o estenosis bilateral de arteria renal</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--tealb);color:var(--teal2)">4</div><div class="algo-text"><strong>Controlar complicaciones metabólicas:</strong> hipercalemia → ECG → tratamiento urgente. Acidosis metabólica. Hipervolemia con sobrecarga pulmonar.</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">🚨</div><div class="algo-text"><strong>Indicaciones de diálisis urgente (AEIOU):</strong> Acidosis refractaria · Electrolitos (K⁺ &gt;6.5 refractario) · Intoxicaciones (litio, metanol, salicilatos) · Overload (sobrecarga hídrica refractaria) · Uremia sintomática (encefalopatía, pericarditis)</div></div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — IECA en estenosis bilateral de arteria renal</div>
+      <p>La TFG en la estenosis de arteria renal <strong>depende de la angiotensina II</strong> para mantener la vasoconstricción eferente y así mantener la presión de filtración. Si das IECA/ARA-II → dilatas la eferente → cae la presión de filtración → IRA aguda grave. Esta es la única situación donde el IECA causa IRA. Siempre controlar creatinina a los 7 días de iniciar IECA.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Mini-caso</div>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso</div>
+      <p>Mujer 70 años, diabetes, HTA. Creatinina basal 1.0 mg/dL. Ingresa con diarrea 3 días, PA 90/60, creatinina 2.4 mg/dL. Na urinario 12 mEq/L. Se le habían iniciado AINEs por dolor articular hace 1 semana.</p>
+      <p style="margin-top:6px"><strong>Diagnóstico: IRA prerrenal + componente de AINES.</strong> Na urinario &lt;20 → prerrenal (FENa &lt;1%). Tratamiento: 1) Suspender AINES. 2) SF IV para reposición de volumen. 3) Monitorear diuresis y creatinina. La ERC basal y los AINES que bloquean la vasodilatación aferente (PGE2) agravan la hipoperfusión.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" style="opacity:.3">← Anterior</div>
+    <div class="nav-btn" onclick="show(1)">Nodo 2: ERC →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 2 — ERC ═══ -->
+<div class="node" id="n1" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">CL11 · muy preguntado</div>
+    <div class="node-title">ERC — Enfermedad Renal Crónica</div>
+    <div class="node-subtitle">Definición · Estadios por TFGe · Complicaciones · Indicaciones de diálisis</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">La ERC se define por tiempo (≥3 meses) + criterio (TFGe &lt;60 O marcador de daño renal). El examen pregunta en qué estadio está el paciente y qué complicaciones tiene ese estadio: anemia (eritropoyetina↓), hiperfosfatemia, hipocalcemia, hiperparatiroidismo secundario, acidosis metabólica. Cada estadio tiene una restricción farmacológica distinta.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Definición y diagnóstico de ERC</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Definición de ERC (KDIGO 2012)</div>
+      <p>Presencia durante <strong>≥3 meses</strong> de al menos UNO de los siguientes:<br>
+      1. <strong>TFGe &lt;60 mL/min/1.73m²</strong><br>
+      2. <strong>Marcador de daño renal:</strong> albuminuria ≥30 mg/g (microalbuminuria), hematuria de origen renal, alteración en imagen (riñones pequeños, cicatriciales, poliquistosis), biopsia con alteración histológica, alteración tubular (síndrome de Fanconi)<br><br>
+      <strong>¡Clave!</strong> Una TFGe &lt;60 por menos de 3 meses es una IRA, no ERC. El tiempo es diagnóstico.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Estadios de ERC por TFGe (G1–G5)</div>
+    <table class="tbl">
+      <tr><th>Estadio</th><th>TFGe (mL/min/1.73m²)</th><th>Descripción</th><th>Acciones prioritarias</th></tr>
+      <tr><td style="color:var(--green2)"><strong>G1</strong></td><td>≥90</td><td>Normal o alta (con marcador de daño)</td><td>Diagnóstico, tratar la causa, protección CV</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>G2</strong></td><td>60–89</td><td>Levemente disminuida</td><td>Ralentizar progresión: IECA/ARA-II, control PA, dejar de fumar</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>G3a / G3b</strong></td><td>45–59 / 30–44</td><td>Moderada</td><td>Ajustar dosis de fármacos. Vigilar complicaciones (anemia, HPT2°). IECA. iSGLT2</td></tr>
+      <tr><td style="color:var(--coral2)"><strong>G4</strong></td><td>15–29</td><td>Grave</td><td>Preparar para terapia de reemplazo renal (TRR). Suspender metformina. Restricción proteica.</td></tr>
+      <tr><td style="color:var(--red2)"><strong>G5</strong></td><td>&lt;15 o diálisis</td><td>Falla renal (ERCT)</td><td>TRR: hemodiálisis, diálisis peritoneal, trasplante</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text3);margin-top:6px">Fórmulas de estimación de TFGe: CKD-EPI (más precisa, recomendada actualmente) y MDRD (más usada históricamente). Ambas usan creatinina sérica, edad, sexo. NO usar la fórmula de Cockcroft-Gault para estadificar (es del aclaramiento de creatinina, no TFGe).</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Complicaciones crónicas de la ERC — por estadio</div>
+    <table class="tbl">
+      <tr><th>Complicación</th><th>Mecanismo</th><th>Aparece en</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>Anemia</strong></td><td>↓ síntesis de eritropoyetina (células peritubulares)</td><td>G3 en adelante (TFGe &lt;50)</td><td>Eritropoyetina recombinante (EPO) + hierro IV. Meta Hb 10–11.5 g/dL. NO más de 12 g/dL (mayor riesgo CV)</td></tr>
+      <tr><td style="color:var(--red2)"><strong>HiperPTH secundario</strong></td><td>↑ fósforo → ↓ FGF-23 → ↓ calcitriol → ↓ Ca → ↑ PTH. El riñón no puede activar vitamina D.</td><td>G3b en adelante</td><td>Restricción de fósforo dietario. Quelantes del fósforo (carbonato de calcio, sevelamer). Calcitriol (vitamina D activa). Cinacalcet (si PTH muy alta refractaria)</td></tr>
+      <tr><td><strong>Acidosis metabólica</strong></td><td>↓ excreción de H⁺ y NH₄⁺. ↓ reabsorción de bicarbonato</td><td>G4–G5</td><td>Bicarbonato oral. Meta HCO₃⁻ ≥22 mEq/L. Frena progresión de la ERC</td></tr>
+      <tr><td><strong>Hipercalemia</strong></td><td>↓ excreción renal de K⁺</td><td>G3b–G5 (antes si IECA/ARA-II)</td><td>Restricción de K en dieta. Suspender IECA/ARA-II si K&gt;5.5. Kayexalato, patiromer. Diálisis</td></tr>
+      <tr><td><strong>HTA</strong></td><td>↑ volumen, activación SRAA, endotelina</td><td>Desde G1–G2</td><td>IECA/ARA-II (primera línea). Meta PA &lt;130/80 si proteinuria</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — anemia de ERC: causa y meta Hb</div>
+      <p>La anemia de ERC es normocítica normocrómica (no ferropénica) porque la causa es déficit de EPO, no de hierro. Pero antes de dar EPO: descartar ferropenia coexistente (muy frecuente) y corregirla con hierro IV. Si se da EPO con hierro bajo → respuesta parcial.<br>
+      Meta Hb: 10–11.5 g/dL. Corregir a 12 o más → aumenta mortalidad cardiovascular (demostrado en ensayos).</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Principales causas de ERC en Argentina</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--coral2)">Las 3 más frecuentes</div>
+        <ul>
+          <li><strong>1° Diabetes mellitus</strong> (nefropatía diabética) ~35–40%</li>
+          <li><strong>2° HTA</strong> (nefroangioesclerosis) ~25–30%</li>
+          <li><strong>3° Glomerulonefritis</strong> (primarias y secundarias) ~15%</li>
+          <li>Otras: litiasis, riñón poliquístico, nefritis intersticial crónica, obstrucción</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Fármacos que ajustar o suspender</div>
+        <ul>
+          <li>TFGe &lt;30: <strong>suspender metformina</strong></li>
+          <li>TFGe &lt;20–25: suspender iSGLT2</li>
+          <li>TFGe &lt;10: ajustar/suspender AINES, aminoglucósidos</li>
+          <li>Ajustar dosis: digoxina, atenolol, gabapentina, enoxaparina, allopurinol</li>
+          <li>Requiere ajuste según TFGe: la mayoría de los ATB</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(0)">← Nodo 1: IRA</div>
+    <div class="nav-btn" onclick="show(2)">Nodo 3: Nefrótico vs Nefrítico →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 3 — NEFRÓTICO vs NEFRÍTICO ═══ -->
+<div class="node" id="n2" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">CL11 · distinción clave</div>
+    <div class="node-title">Síndrome nefrótico vs síndrome nefrítico</div>
+    <div class="node-subtitle">Proteinuria masiva vs hematuria · Etiologías principales · Edema · Tratamiento</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Dos síndromes que el examen diferencia por sus datos de laboratorio: nefrótico = proteinuria masiva (&gt;3.5 g/día) + edema + hipoalbuminemia + hiperlipidemia. Nefrítico = hematuria + proteinuria leve-moderada + HTA + ↓ función renal. La causa más frecuente en adultos: nefrótico = membranosa, nefrítico = GN post-estreptocócica.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tabla comparativa — el núcleo del nodo</div>
+    <table class="tbl">
+      <tr><th>Característica</th><th style="color:var(--blue2)">Síndrome NEFRÓTICO</th><th style="color:var(--amber2)">Síndrome NEFRÍTICO</th></tr>
+      <tr><td><strong>Lesión principal</strong></td><td>Daño en la barrera de filtración (podocitos) → proteinuria masiva</td><td>Inflamación glomerular → hematuria + proliferación celular</td></tr>
+      <tr><td><strong>Proteinuria</strong></td><td style="color:var(--blue2)"><strong>&gt;3.5 g/día (masiva)</strong> — cociente proteína/creatinina &gt;3</td><td style="color:var(--amber2)">Leve-moderada (&lt;3.5 g/día)</td></tr>
+      <tr><td><strong>Hematuria</strong></td><td>Generalmente AUSENTE</td><td style="color:var(--amber2)"><strong>PRESENTE</strong> — cilindros hemáticos (patognomónicos)</td></tr>
+      <tr><td><strong>Hipoalbuminemia</strong></td><td style="color:var(--blue2)"><strong>SÍ</strong> (pérdida masiva de albúmina por orina)</td><td>Generalmente NO o leve</td></tr>
+      <tr><td><strong>Edema</strong></td><td style="color:var(--blue2)"><strong>Marcado</strong> (anasarca posible): por ↓ presión oncótica</td><td>Leve-moderado: retención de Na y agua</td></tr>
+      <tr><td><strong>HTA</strong></td><td>Variable (puede ser por ERC)</td><td style="color:var(--amber2)"><strong>Frecuente</strong> (hipervolemia)</td></tr>
+      <tr><td><strong>Función renal</strong></td><td>Generalmente preservada al inicio</td><td style="color:var(--amber2)"><strong>↓ TFG</strong> (IRA frecuente)</td></tr>
+      <tr><td><strong>Lípidos</strong></td><td style="color:var(--blue2)"><strong>Hiperlipidemia + lipiduria</strong> (compensación por ↓ albúmina)</td><td>Normal</td></tr>
+      <tr><td><strong>Complemento</strong></td><td>Normal (excepto GN membranoproliferativa)</td><td style="color:var(--amber2)"><strong>↓C3</strong> (post-estreptocócica, GNMP, lúpica)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síndrome nefrótico — etiologías principales por edad</div>
+    <table class="tbl">
+      <tr><th>Edad</th><th>Causa más frecuente</th><th>Característica</th></tr>
+      <tr><td>Niños 1–8 años</td><td style="color:var(--teal2)"><strong>Nefropatía de cambios mínimos (NCM)</strong></td><td>Responde muy bien a corticoides. Microscopía óptica NORMAL. Electromicroscopia: fusión de pedicelos</td></tr>
+      <tr><td style="color:var(--blue2)"><strong>Adultos</strong></td><td style="color:var(--blue2)"><strong>Nefropatía membranosa</strong></td><td>Causa idiopática (50%) o secundaria (LES, HBV, HCV, sífilis, medicamentos: penicilamina, AINES). Anticuerpos anti-PLA2R. Riesgo de TEP (pérdida antitrombina III)</td></tr>
+      <tr><td>Adultos con DM</td><td>Nefropatía diabética</td><td>Microalbuminuria → macroalbuminuria → síndrome nefrótico. IECA/ARA-II + iSGLT2</td></tr>
+      <tr><td>Adultos con VIH o ADVP</td><td>GNFS (GESF)</td><td>Glomeruloesclerosis focal y segmentaria. Pobre respuesta a corticoides</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Síndrome nefrítico — etiologías</div>
+    <table class="tbl">
+      <tr><th>Causa</th><th>Contexto clínico</th><th>Complemento</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--amber2)"><strong>GN post-estreptocócica</strong></td><td>2–3 semanas post-faringitis o impétigo por Streptococo A. Niños &gt; adultos. Hematuria macroscópica + HTA + ↓TFG</td><td style="color:var(--amber2)">↓C3</td><td>Soporte (PA, diuresis). No antibióticos (el daño es autoinmune, no infeccioso activo)</td></tr>
+      <tr><td><strong>Nefritis lúpica</strong></td><td>LES: mujer joven, rash, artralgias. Clasificación ISN/RPS Clase I–VI (biopsia)</td><td>↓C3 + ↓C4 (patrón lúpico)</td><td>Según clase: clase III/IV → ciclofosfamida o micofenolato + corticoides</td></tr>
+      <tr><td><strong>GNMP (membranoproliferativa)</strong></td><td>Patrón mixto nefrótico-nefrítico. Asociada a HBV, HCV, crioglobulinemia</td><td>↓C3 ± ↓C4</td><td>Tratar enfermedad de base</td></tr>
+      <tr><td><strong>Granulomatosis con poliangeítis (GPA)</strong></td><td>Vasculitis ANCA+, pulmón y riñón. GNMP pauciinmune (sin depósitos)</td><td>Normal</td><td>Ciclofosfamida + corticoides</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — nefrótico + TEP</div>
+      <p>La nefropatía membranosa (y el síndrome nefrótico en general) produce estado de hipercoagulabilidad porque se pierden proteínas anticoagulantes (antitrombina III, proteína C y S) por la orina. La trombosis más temida es la TVP de la vena renal → TEP. Si ves síndrome nefrótico + disnea súbita → TEP hasta descartar.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(1)">← Nodo 2: ERC</div>
+    <div class="nav-btn" onclick="show(3)">Nodo 4: Glomerulopatías / NTI →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 4 — GLOMERULOPATÍAS / NTI ═══ -->
+<div class="node" id="n3" style="--nc:var(--teal)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--tealb);color:var(--teal2)">CL11 · datos de biopsia</div>
+    <div class="node-title">Glomerulopatías específicas y nefritis tubulointersticial</div>
+    <div class="node-subtitle">Nefropatía IgA · GESF · Amiloidosis · NTI aguda por fármacos · Patrón de biopsia</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El examen da el patrón de la biopsia o el contexto clínico y pregunta el diagnóstico. Los pares más preguntados: nefropatía IgA (el nefrítico del joven con infección reciente), amiloidosis (el nefrótico del paciente con enfermedad crónica o mieloma), y NTI aguda (el paciente con ATB + fiebre + eosinofilia + IRA).</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Glomerulopatías primarias — reconocimiento por patrón</div>
+    <table class="tbl">
+      <tr><th>Enfermedad</th><th>Patrón clínico</th><th>Microscopía / depósitos</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--blue2)"><strong>Nefropatía IgA (Berger)</strong></td><td>Hematuria macroscópica que coincide con IRS (1–3 días después). Joven. Sin intervalo. Nefrítica leve.</td><td>Depósitos de IgA en mesangio (inmunofluorescencia)</td><td>IECA, corticoides si proteinuria &gt;1 g/día + progresión</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Cambios mínimos (NCM)</strong></td><td>Síndrome nefrótico puro. Niños. Sin HTA ni hematuria. Inicio brusco.</td><td>MO normal. EM: fusión de pedicelos</td><td>Prednisona → remisión en 90%. Recaídas frecuentes.</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>GESF (glomeruloesclerosis focal y segmentaria)</strong></td><td>Nefrótico con HTA y hematuria leve. Adultos, VIH, ADVP, obesos mórbidos. Progresa a ERC.</td><td>Esclerosis focal y segmentaria en glomérulos</td><td>Corticoides (respuesta parcial). Ciclosporina en resistentes. Controlar PA</td></tr>
+      <tr><td><strong>Membranosa</strong></td><td>Nefrótico puro en adulto. Riesgo TVP/TEP (ver Nodo 3). Anti-PLA2R +</td><td>Depósitos subepiteliales ("spike pattern"). MO: engrosamiento de MB</td><td>Observar (30% remisión espontánea). Rituximab o ciclofosfamida si progresión</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Diferencia clave: Nefropatía IgA vs GN post-estreptocócica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue2)">Nefropatía IgA (Berger)</div>
+        <ul>
+          <li>Hematuria <strong>COINCIDE</strong> con la infección (1–3 días)</li>
+          <li>No hay intervalo libre</li>
+          <li>Puede repetirse con cada IRS</li>
+          <li>Complemento: <strong>NORMAL</strong></li>
+          <li>Adultos jóvenes</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">GN post-estreptocócica</div>
+        <ul>
+          <li>Hematuria aparece <strong>2–3 semanas DESPUÉS</strong> de la infección</li>
+          <li>Intervalo libre (período silente)</li>
+          <li>Una sola presentación típicamente</li>
+          <li>Complemento: <strong>C3 BAJO</strong></li>
+          <li>Niños más que adultos</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa más preguntada de nefrología</div>
+      <p>"Paciente de 25 años, hace 2 días tiene faringitis y hoy presenta orina color rojiza". → <strong>Nefropatía IgA</strong> (coincide con infección). <br>
+      "Paciente de 8 años, hace 3 semanas tuvo faringitis, hoy consulta por edema facial y orina oscura". → <strong>GN post-estreptocócica</strong> (intervalo de 2–3 semanas). <br>El tiempo entre infección y hematuria es la clave.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Nefritis tubulointersticial aguda (NTIA)</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 La tríada de la NTIA + la pista del fármaco</div>
+      <p><strong>Tríada clásica:</strong> Fiebre + Rash cutáneo + Eosinofilia (solo presente en 10–15% — NO descarta la NTIA si falta)<br><br>
+      <strong>Laboratorio:</strong> IRA + eosinofiluria (células de Hansel) + piuria estéril (leucocitos en orina sin bacterias) + cilindros leucocitarios<br><br>
+      <strong>Causas más frecuentes:</strong><br>
+      — Antibióticos: <strong>betalactámicos</strong> (especialmente meticilina/nafcilina), rifampicina, quinolonas, sulfonamidas<br>
+      — AINES (causa creciente)<br>
+      — Omeprazol/IBP (causa subestimada)<br>
+      — Enfermedades sistémicas: sarcoidosis, LES, síndrome de Sjögren<br><br>
+      <strong>Tratamiento:</strong> suspender el fármaco causal → mejora habitualmente en días. Si persiste tras 1–2 semanas: corticoides.</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — NTIA por IBP</div>
+      <p>Los IBP (omeprazol, pantoprazol) son una causa frecuente de NTIA que el examen inserta. Paciente con ERC crónica que empeora sin causa aparente + uso de IBP crónico → NTIA. No siempre hay rash ni eosinofilia. El diagnóstico es de biopsia renal. Suspender IBP → mejoría parcial o total.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(2)">← Nodo 3: Nefrótico/Nefrítico</div>
+    <div class="nav-btn" onclick="show(4)">Nodo 5: Sodio / SIADH →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 5 — SODIO ═══ -->
+<div class="node" id="n4" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Medio Interno · más preguntado</div>
+    <div class="node-title">Trastornos del sodio — Hiponatremia y SIADH</div>
+    <div class="node-subtitle">Clasificación por volemia · Osmolaridad · SIADH vs Cerebral salt wasting · Corrección</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Hiponatremia = Na &lt;135 mEq/L. El algoritmo diagnóstico empieza por la osmolaridad plasmática y luego por el volumen extracelular. SIADH es la causa más frecuente en hospitalizados: Na bajo + orina concentrada + euvolemia. La corrección rápida de hiponatremia crónica = desmielinización osmótica pontina (mielinólisis). Máximo 8–10 mEq/L por día.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Valores normales de referencia — medio interno</div>
+    <div class="ion-grid">
+      <div class="ion-card" style="background:var(--blueb);border:1px solid var(--border)">
+        <div class="ion-val" style="color:var(--blue2)">Na⁺</div>
+        <div class="ion-name">Sodio</div>
+        <div class="ion-range" style="color:var(--teal2)">135–145 mEq/L</div>
+      </div>
+      <div class="ion-card" style="background:var(--amberb);border:1px solid var(--border)">
+        <div class="ion-val" style="color:var(--amber2)">K⁺</div>
+        <div class="ion-name">Potasio</div>
+        <div class="ion-range" style="color:var(--teal2)">3.5–5.0 mEq/L</div>
+      </div>
+      <div class="ion-card" style="background:var(--tealb);border:1px solid var(--border)">
+        <div class="ion-val" style="color:var(--teal2)">HCO₃⁻</div>
+        <div class="ion-name">Bicarbonato</div>
+        <div class="ion-range" style="color:var(--teal2)">22–26 mEq/L</div>
+      </div>
+      <div class="ion-card" style="background:var(--purpleb);border:1px solid var(--border)">
+        <div class="ion-val" style="color:var(--purple2)">pH</div>
+        <div class="ion-name">Sangre arterial</div>
+        <div class="ion-range" style="color:var(--teal2)">7.35–7.45</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algoritmo diagnóstico de hiponatremia — paso a paso</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">1</div><div class="algo-text"><strong>Medir osmolaridad plasmática:</strong><br>
+      — Hipotónica (&lt;280) → la verdadera (la clínicamente relevante) → seguir al paso 2<br>
+      — Isotónica (280–295) → pseudohiponatremia: hipertrigliceridemia masiva, hiperproteinemia<br>
+      — Hipertónica (&gt;295) → desplazamiento osmótico: hiperglucemia (por cada 100 mg/dL de glucosa ↑, el Na baja 1.6 mEq/L), manitol</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">2</div><div class="algo-text"><strong>Evaluar el volumen extracelular (VEC):</strong><br>
+      — Hipovolémica: signos de deshidratación, mucosas secas, hipotensión → pérdidas de Na y agua<br>
+      — Euvolémica: sin edema ni deshidratación → SIADH, hipotiroidismo, insuficiencia suprarrenal<br>
+      — Hipervolémica: edema, ascitis → IC, cirrosis, síndrome nefrótico, IRA/ERC</div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--amberb);color:var(--amber2)">3</div><div class="algo-text"><strong>Medir Na urinario:</strong><br>
+      — Na urinario &lt;20 mEq/L → riñón retiene Na → causa extrarrenal (diarrea, vómitos, quemaduras, 3° espacio)<br>
+      — Na urinario &gt;20 mEq/L → riñón pierde Na → causa renal (SIADH, diuréticos, insuficiencia suprarrenal, nefropatía pierde-sal)</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">SIADH — la causa de hiponatremia más preguntada</div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Criterios diagnósticos de SIADH</div>
+      <p>1. Na plasmático &lt;135 mEq/L<br>
+      2. Osmolaridad plasmática &lt;280 mOsm/kg (hipotónica)<br>
+      3. <strong>Osmolaridad urinaria &gt;100 mOsm/kg</strong> (orina inapropiadamente concentrada)<br>
+      4. Na urinario &gt;20–40 mEq/L<br>
+      5. <strong>Euvolemia</strong> (sin edema, sin deshidratación)<br>
+      6. Función renal, tiroidea y suprarrenal normales<br><br>
+      <strong>Causas de SIADH:</strong> SNC (meningitis, ACV, TCE, tumores), pulmonar (NAC, TBC, ca. microcítico), fármacos (carbamazepina, haloperidol, ISRS, ciclofosfamida, AVP), hipotiroidismo, estrés/dolor postoperatorio</p>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — SIADH vs Cerebral Salt Wasting (CSW)</div>
+      <p>Ambos: Na bajo + Na urinario alto + osmolaridad urinaria alta. ¿Cómo distinguirlos?<br>
+      <strong>SIADH:</strong> euvolémico (sin signos de deshidratación). Volumen plasmático NORMAL o levemente aumentado.<br>
+      <strong>CSW:</strong> hipovolémico (deshidratación + ↑ hematocrito + ↑ BUN). Pérdida renal de Na por disfunción tubular en contexto de lesión cerebral (hemorragia subaracnoidea típicamente).<br>
+      Tratamiento opuesto: SIADH → restricción hídrica. CSW → reposición de Na y volumen.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tratamiento de la hiponatremia — la velocidad importa</div>
+    <table class="tbl">
+      <tr><th>Tipo</th><th>Velocidad de corrección</th><th>Tratamiento</th></tr>
+      <tr><td style="color:var(--red2)"><strong>Aguda sintomática</strong> (&lt;48h, convulsiones, coma)</td><td>Rápida: 1–2 mEq/L/h hasta mejoría neurológica, luego lento</td><td>NaCl 3% IV en bolo 100–150 mL. Meta: subir Na 4–6 mEq/L en 1ª hora para revertir síntomas</td></tr>
+      <tr><td style="color:var(--teal2)"><strong>Crónica asintomática</strong> (&gt;48h o duración desconocida)</td><td style="color:var(--red2)"><strong>MÁXIMO 8–10 mEq/L en 24 hs</strong> (10–12 mEq/L en primeras 24h en epilepsia activa)</td><td>SIADH: restricción hídrica 500–1000 mL/día. Tolvaptán (antagonista V2 receptor ADH) en SIADH refractario o severo. Tratar la causa</td></tr>
+    </table>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Trampa — desmielinización osmótica pontina (síndrome de mielinólisis central)</div>
+      <p>Corrección demasiado rápida de hiponatremia crónica (más de 10–12 mEq/L en 24h) → desmielinización de la protuberancia → disartria, disfagia, paraparesia, estado locked-in, muerte. Ocurre especialmente en: desnutridos, alcohólicos, hipocalémicos, enfermedad hepática. La prevención es la clave: LENTO siempre en hiponatremia crónica.</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(3)">← Nodo 4: Glomerulopatías</div>
+    <div class="nav-btn" onclick="show(5)">Nodo 6: Potasio →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 6 — POTASIO ═══ -->
+<div class="node" id="n5" style="--nc:var(--amber)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--amberb);color:var(--amber2)">Medio Interno · urgencia cardíaca</div>
+    <div class="node-title">Trastornos del potasio</div>
+    <div class="node-subtitle">Hipocalemia · Hipercalemia · ECG · Tratamiento urgente</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El potasio mata por arritmias. La hipercalemia tiene un algoritmo ECG-dependiente: si hay cambios en el ECG → gluconato de calcio PRIMERO (estabiliza membrana) → luego bajar el K⁺. La hipocalemia se complica con alcalosis metabólica y aumenta la toxicidad por digoxina. En la ERC, ambos se ven frecuentemente.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipercalemia — el que puede matar en minutos</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Causas frecuentes</div>
+        <ul>
+          <li>ERC (más frecuente)</li>
+          <li>IECA / ARA-II + K⁺ alto basal</li>
+          <li>CAD (acidosis → K⁺ sale de la célula)</li>
+          <li>Rabdomiólisis (K⁺ intramuscular se libera)</li>
+          <li>Insuficiencia suprarrenal (Addison)</li>
+          <li>Heparina, AINES (bloquean aldosterona)</li>
+          <li>Pseudohipercalemia: muestra hemolizada</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">ECG progresivo (de menor a mayor K⁺)</div>
+        <ul>
+          <li>K⁺ 5.5–6.0: <strong>ondas T picudas y simétricas</strong> (primer signo)</li>
+          <li>K⁺ 6.0–7.0: ensanchamiento del PR + aplanamiento de onda P</li>
+          <li>K⁺ 7.0–8.0: ensanchamiento del QRS ("ola sinusoidal")</li>
+          <li>K⁺ &gt;8.0–9.0: fibrilación ventricular / asistolia</li>
+          <li>Mnemotecnia: <strong>T altas → P baja → QRS ancho → FV</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-trap">
+      <div class="alert-title">⚠️ Algoritmo de hipercalemia urgente — orden estricto</div>
+      <p><strong>1° Estabilizar la membrana cardíaca (si hay cambios en el ECG):</strong><br>
+      → <strong>Gluconato de calcio 10% 10 mL IV en 2–3 min</strong>. Efecto en minutos. NO baja el K⁺, solo antagoniza su efecto en el corazón. Repite si ECG no mejora.<br><br>
+      <strong>2° Desplazar K⁺ al interior celular (efecto transitorio 2–6 hs):</strong><br>
+      → Insulina regular 10 UI IV + Dextrosa 50% 50 mL (para evitar hipoglucemia)<br>
+      → Bicarbonato IV (si hay acidosis concomitante)<br>
+      → Nebulización de salbutamol 20 mg (activación β2 → K⁺ hacia la célula)<br><br>
+      <strong>3° Eliminar K⁺ del organismo (definitivo):</strong><br>
+      → Furosemida IV (si hay función renal residual)<br>
+      → Kayexalato (resina de intercambio oral o rectal)<br>
+      → <strong>Hemodiálisis</strong> (si ERC terminal, K⁺ &gt;6.5 refractario, o cambios ECG graves)</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hipocalemia — causas y consecuencias</div>
+    <table class="tbl">
+      <tr><th>Causa</th><th>Mecanismo</th><th>K⁺ urinario</th></tr>
+      <tr><td style="color:var(--teal2)">Pérdidas digestivas: vómitos, diarrea, laxantes, fístulas</td><td>Pérdida directa de K⁺ digestivo (diarrea) o alcalosis + aldosterona secundaria (vómitos → HCO₃⁻ → SRAA)</td><td>&lt;20 mEq/L (causa extrarrenal)</td></tr>
+      <tr><td style="color:var(--amber2)">Diuréticos (tiazidas, furosemida)</td><td>↑ flujo al túbulo distal → ↑ secreción de K⁺ por kaliuresis</td><td>&gt;20 mEq/L (causa renal)</td></tr>
+      <tr><td>Hiperaldosteronismo primario</td><td>Aldosterona → retiene Na + excreta K⁺</td><td>&gt;20 mEq/L + HTA</td></tr>
+      <tr><td>Síndrome de Cushing</td><td>Cortisol en exceso tiene actividad mineralocorticoide</td><td>&gt;20 mEq/L + HTA + síntomas Cushing</td></tr>
+      <tr><td>Alcalosis metabólica</td><td>H⁺ sale de la célula → K⁺ entra (por cada 0.1↑pH, K⁺ baja 0.3–0.6 mEq/L)</td><td>Variable</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Consecuencias de hipocalemia grave (&lt;2.5 mEq/L)</div>
+      <p>ECG: ↑ amplitud onda U (después de T), aplanamiento/inversión de T, QT largo → Torsades de Pointes.<br>
+      Muscular: debilidad muscular → parálisis flácida ascendente (simula Guillain-Barré).<br>
+      Renal: poliuria (diabetes insípida nefrogénica por hipocalemia crónica).<br>
+      Potencia la toxicidad de digoxina (el K⁺ y digoxina compiten por el sitio Na-K ATPasa → hipocalemia + digoxina = arritmias graves).</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(4)">← Nodo 5: Sodio</div>
+    <div class="nav-btn" onclick="show(6)">Nodo 7: Equilibrio ácido-base →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 7 — EQUILIBRIO ÁCIDO-BASE ═══ -->
+<div class="node" id="n6" style="--nc:var(--red)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--redb);color:var(--red2)">Medio Interno · lógica algorítmica</div>
+    <div class="node-title">Equilibrio ácido-base</div>
+    <div class="node-subtitle">Algoritmo de 4 pasos · Anión GAP · Acidosis metabólica con AG · Delta-delta</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">El equilibrio ácido-base se resuelve con un algoritmo de 4 pasos que nunca falla. El paso clave es el anión gap (AG): si está elevado, hay una anión acumulado que consume el bicarbonato (acidosis metabólica con AG alto). La mnemotecnia MUDPILES te da las causas. Si el AG es normal, el bicarbonato se perdió sin que haya anión agregado.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Algoritmo de interpretación — los 4 pasos</div>
+    <div class="algo">
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">1</div>
+        <div class="algo-text"><strong>¿Hay acidosis o alcalosis?</strong><br>pH &lt;7.35 → acidosis. pH &gt;7.45 → alcalosis. pH 7.35–7.45 → puede haber trastorno compensado.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">2</div>
+        <div class="algo-text"><strong>¿Es metabólica o respiratoria?</strong><br>HCO₃⁻ bajo + acidosis → metabólica. PaCO₂ alto + acidosis → respiratoria.<br>HCO₃⁻ alto + alcalosis → metabólica. PaCO₂ bajo + alcalosis → respiratoria.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">3</div>
+        <div class="algo-text"><strong>¿La compensación es adecuada?</strong> (si no lo es, hay trastorno mixto)<br>Acidosis metabólica: PaCO₂ esperado = (1.5 × HCO₃⁻) + 8 ± 2 (Winter).<br>Si PaCO₂ real &lt; esperado → alcalosis respiratoria agregada. Si PaCO₂ real &gt; esperado → acidosis respiratoria agregada.</div>
+      </div>
+      <div class="algo-step">
+        <div class="algo-n" style="background:var(--redb);color:var(--red2)">4</div>
+        <div class="algo-text"><strong>Si hay acidosis metabólica: calcular el anión GAP</strong><br>AG = Na⁺ - (Cl⁻ + HCO₃⁻). Normal: 8–12 mEq/L (con albúmina normal).<br>AG alto → ácido acumulado (consume HCO₃⁻). AG normal → pérdida de HCO₃⁻ con retención de Cl⁻ (acidosis hiperclorémica).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Anión GAP — las 2 grandes categorías de acidosis metabólica</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--red2)">Acidosis metabólica con AG ALTO (&gt;12)</div>
+        <p style="font-size:12px;color:var(--amber2);margin-bottom:6px">Mnemotecnia: <strong>MUDPILES</strong></p>
+        <ul>
+          <li><strong>M</strong>etanol</li>
+          <li><strong>U</strong>remia (IRA/ERC avanzada)</li>
+          <li><strong>D</strong>KA/Diabetic ketoacidosis (CAD)</li>
+          <li><strong>P</strong>ropylene glycol · <strong>P</strong>araldehyde</li>
+          <li><strong>I</strong>soniacida / hierro</li>
+          <li><strong>L</strong>actic acidosis (shock, sepsis, metformina)</li>
+          <li><strong>E</strong>tanol (ketoacidosis alcohólica)</li>
+          <li><strong>S</strong>alicilatos (aspirina)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber2)">Acidosis metabólica con AG NORMAL (hiperclorémica)</div>
+        <ul>
+          <li>Pérdidas digestivas de HCO₃⁻: <strong>diarrea</strong> (la más frecuente), fístulas intestinales</li>
+          <li>Pérdidas renales de HCO₃⁻: <strong>acidosis tubular renal (ATR)</strong></li>
+          <li>Infusión de SF en exceso (dilucional)</li>
+          <li>ATR tipo 1 (distal): no acidifica orina. Litiasis de oxalato · hipocalemia</li>
+          <li>ATR tipo 2 (proximal): no reabsorbe HCO₃⁻. Síndrome de Fanconi</li>
+          <li>ATR tipo 4: hipercalemia + hipotensión. Hipoaldosteronismo. ERC diabética</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Corrección del AG por albúmina</div>
+      <p>Por cada 1 g/dL que la albúmina cae por debajo de 4 g/dL, el AG normal disminuye ~2.5 mEq/L.<br>
+      AG corregido = AG calculado + 2.5 × (4 − albúmina del paciente)<br><br>
+      Paciente con albúmina 2 g/dL: el AG "normal" es en realidad 7 en vez de 12. Un AG de 10 en este paciente en realidad es equivalente a un AG de 15 → AG elevado → acidosis con AG alto enmascarada.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cuadro completo de trastornos ácido-base</div>
+    <table class="tbl">
+      <tr><th>Trastorno</th><th>pH</th><th>HCO₃⁻</th><th>PaCO₂</th><th>Causa clásica del banco</th></tr>
+      <tr><td style="color:var(--red2)">Acidosis metabólica</td><td>↓</td><td style="color:var(--red2)">↓</td><td>↓ (comp.)</td><td>CAD, IRA/ERC, diarrea, shock séptico</td></tr>
+      <tr><td style="color:var(--red2)">Acidosis respiratoria</td><td>↓</td><td>↑ (comp.)</td><td style="color:var(--red2)">↑</td><td>EPOC exacerbado, SNC deprimido, miastenia grave</td></tr>
+      <tr><td style="color:var(--teal2)">Alcalosis metabólica</td><td>↑</td><td style="color:var(--teal2)">↑</td><td>↑ (comp.)</td><td>Vómitos, diuréticos, hiperaldosteronismo, Cushing</td></tr>
+      <tr><td style="color:var(--teal2)">Alcalosis respiratoria</td><td>↑</td><td>↓ (comp.)</td><td style="color:var(--teal2)">↓</td><td>Hiperventilación (ansiedad, TEP, altitude, sepsis temprana, embarazo)</td></tr>
+    </table>
+    <div class="alert alert-caso">
+      <div class="alert-title">Caso clínico resuelto</div>
+      <p>Paciente 55 años, diabético, con vómitos 2 días. ABG: pH 7.52, PaCO₂ 48, HCO₃⁻ 38, Cl⁻ 88, Na⁺ 138.</p>
+      <p style="margin-top:6px"><strong>Paso 1:</strong> pH 7.52 → alcalosis.<br>
+      <strong>Paso 2:</strong> HCO₃⁻ 38 (↑) + alcalosis → alcalosis metabólica.<br>
+      <strong>Paso 3:</strong> PaCO₂ 48. Compensación esperada: HCO₃⁻ 38 → PaCO₂ esperado = 40 + 0.7×(38-24) = 49.8 ≈ 50. Actual: 48 ≈ esperado → compensación adecuada.<br>
+      <strong>AG:</strong> 138 - (88+38) = 12 → normal.<br>
+      <strong>Diagnóstico:</strong> Alcalosis metabólica pura compensada. Causa: vómitos (pérdida de H⁺ + Cl⁻ → ↑ HCO₃⁻).</p>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(5)">← Nodo 6: Potasio</div>
+    <div class="nav-btn" onclick="show(7)">Nodo 8: Calcio / Fósforo →</div>
+  </div>
+</div>
+
+<!-- ═══ NODO 8 — CALCIO / FÓSFORO ═══ -->
+<div class="node" id="n7" style="--nc:var(--purple)">
+  <div class="node-header">
+    <div class="node-badge" style="background:var(--purpleb);color:var(--purple2)">Nodo integrador · conexiones transversales</div>
+    <div class="node-title">Calcio · Fósforo · Magnesio · Medio interno integrado</div>
+    <div class="node-subtitle">Hipocalcemia · Hipercalcemia · ERC y alteraciones minerales · Magnesio en obstetricia</div>
+  </div>
+  <div class="idea-madre">
+    <div class="idea-madre-label">💡 Idea madre</div>
+    <div class="idea-madre-text">Los trastornos de calcio, fósforo y magnesio se conectan entre sí por la vitamina D y la PTH. En la ERC todo se desregula: fósforo sube, calcitriol baja, calcio baja, PTH sube (hiperPTH secundario). Los signos clínicos de hipocalcemia (Chvostek, Trousseau) y el magnesio como anticonvulsivante en preeclampsia y torsades son datos que el banco repite.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Calcio — hipocalcemia e hipercalcemia (resumen integrado)</div>
+    <table class="tbl">
+      <tr><th>Trastorno</th><th>PTH</th><th>Fósforo</th><th>Vit D activa</th><th>Causa principal</th><th>Signo/Tratamiento</th></tr>
+      <tr><td style="color:var(--blue2)"><strong>Hipocalcemia leve</strong><br>(Ca &lt;8.5 mg/dL)</td><td>↑ (reactiva)</td><td>↑</td><td>↓</td><td>ERC · Déficit vit D · post-tiroidectomía</td><td>Chvostek + Trousseau. Calcio oral + calcitriol</td></tr>
+      <tr><td style="color:var(--red2)"><strong>Hipocalcemia grave/aguda</strong><br>(Ca &lt;7 mg/dL o síntomas)</td><td>↑</td><td>↑</td><td>↓</td><td>Pancreatitis aguda · post-cx paratiroides</td><td>Tetania · convulsiones · QT largo. <strong>Gluconato Ca 10% IV urgente</strong></td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Hipercalcemia</strong><br>(Ca &gt;10.5 mg/dL)</td><td style="color:var(--teal2)">↑ (HiperPTH primario)</td><td>↓</td><td>↑</td><td>Adenoma paratiroideo (más frec. ambulatorio)</td><td>Renal (litiasis, nefrocalcinosis), ósea, digestiva</td></tr>
+      <tr><td style="color:var(--amber2)"><strong>Hipercalcemia</strong><br>(neoplásica)</td><td style="color:var(--red2)">↓ (suprimida)</td><td>Variable</td><td>Varía</td><td>PTHrP (ca. escamoso pulmón, mama) · Mieloma · Metástasis óseas</td><td>SF IV agresivo + furosemida + bifosfonatos IV urgente</td></tr>
+    </table>
+    <div class="alert alert-key">
+      <div class="alert-title">📌 Calcio corregido por albúmina</div>
+      <p>El calcio sérico total está ligado a la albúmina. Si la albúmina es baja → el calcio total parece bajo pero el calcio libre (ionizado) puede ser normal.<br>
+      <strong>Ca corregido = Ca medido + 0.8 × (4 − albúmina del paciente)</strong><br>
+      Ejemplo: Ca 7.5 mg/dL con albúmina 2 g/dL → Ca corregido = 7.5 + 0.8×2 = 9.1 mg/dL → normal.<br>
+      Siempre corregir antes de diagnosticar hipocalcemia.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ciclo mineral en la ERC — el más preguntado</div>
+    <div class="algo">
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">1</div><div class="algo-text">↓ TFGe → riñón no excreta fósforo → <strong>↑ fósforo sérico</strong></div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">2</div><div class="algo-text">↑ FGF-23 (intenta excretar el fósforo) → inhibe la 1α-hidroxilasa renal → <strong>↓ calcitriol (1,25-OH-VitD)</strong></div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">3</div><div class="algo-text">↓ calcitriol → ↓ absorción intestinal de Ca → <strong>↓ calcio sérico</strong></div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--purpleb);color:var(--purple2)">4</div><div class="algo-text">↓ Ca + ↑ P → estimulan paratiroides → <strong>↑ PTH = hiperparatiroidismo secundario</strong></div></div>
+      <div class="algo-step"><div class="algo-n" style="background:var(--redb);color:var(--red2)">!</div><div class="algo-text">PTH crónica elevada → reabsorción ósea → <strong>osteodistrofia renal</strong> (osteomalacia + fibrosis ósea). Calcificaciones vasculares. ↑ mortalidad CV</div></div>
+    </div>
+    <p style="font-size:13px;margin-top:8px;color:var(--text2)"><strong>Tratamiento:</strong> restricción fósforo + quelantes (carbonato de calcio o sevelamer) + calcitriol. Si PTH muy elevada refractaria: cinacalcet o paratiroidectomía.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Magnesio — los 2 contextos clínicos que pregunta el examen</div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal2)">MgSO₄ en torsades de pointes y crisis asmática</div>
+        <ul>
+          <li>Torsades de pointes (TV polimórfica por QT largo): <strong>MgSO₄ 2 g IV en 5 min</strong></li>
+          <li>Crisis asmática grave refractaria: MgSO₄ 2 g IV en 20 min (ver Neumo N5)</li>
+          <li>Mecanismo: antagonismo del canal de calcio → broncodilatación y estabilización de membrana cardíaca</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--purple2)">MgSO₄ en preeclampsia grave / eclampsia</div>
+        <ul>
+          <li>Profilaxis y tratamiento de convulsiones en preeclampsia severa y eclampsia</li>
+          <li>Dosis: 4 g IV en 20 min (carga) + 1 g/h infusión mantenimiento</li>
+          <li>Antídoto de toxicidad: <strong>gluconato de calcio 1 g IV</strong></li>
+          <li>Monitorear: diuresis (&gt;25 mL/h), FR (&gt;12 rpm), reflejo rotuliano (debe estar presente)</li>
+          <li>Signo de toxicidad MgSO₄: abolición del reflejo rotuliano → nivel plasmático Mg muy alto → paro respiratorio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Conexiones transversales de Nefrología + Medio Interno</div>
+    <div class="alert alert-conexion">
+      <ul>
+        <li><strong>IRA (N1) ↔ Hipercalemia (N6):</strong> IRA = causa más frecuente de hipercalemia en guardia. K⁺ no puede excretarse → acumula</li>
+        <li><strong>ERC (N2) ↔ Ciclo mineral (N8):</strong> hiperPTH secundario es la complicación crónica más compleja de la ERC tardía</li>
+        <li><strong>SIADH (N5) ↔ Infectología:</strong> NAC por Legionella, meningitis, TBC pulmonar → causas frecuentes de SIADH en guardia</li>
+        <li><strong>Ácido-base (N7) ↔ DM (Endocrinología N3):</strong> CAD = acidosis metabólica con AG alto + cetonemia. El K⁺ en CAD es un puzzle: K⁺ sérico normal o alto al inicio (por acidosis), pero K⁺ corporal total depletado</li>
+        <li><strong>Hipocalemia (N6) ↔ HTA (Cardio N2):</strong> hiperaldosteronismo primario = HTA + hipocalemia + K⁺ urinario alto. El par diagnóstico más frecuente de HTA secundaria en mujer joven</li>
+        <li><strong>ERC (N2) ↔ Anemia (Hemato):</strong> anemia normocítica normocrómica por ↓ EPO = hallazgo habitual en ERC G3+. No confundir con ferropénica (microcítica)</li>
+        <li><strong>Hipercalcemia (N8) ↔ Oncología:</strong> ca. escamoso pulmón + hipercalcemia = PTHrP. Mieloma múltiple + hipercalcemia = osteolisis. Ambos con PTH suprimida</li>
+        <li><strong>Acidosis metabólica (N7) ↔ ERC (N2):</strong> la ERC estadio G4–G5 genera acidosis metabólica con AG moderado. Tratamiento: bicarbonato oral frena la progresión de la ERC</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border-radius:var(--radius);padding:20px;margin-top:28px;border:1px solid var(--border)">
+    <div style="font-size:13px;font-weight:700;color:var(--teal2);margin-bottom:12px;letter-spacing:.05em">✅ NEFROLOGÍA + MEDIO INTERNO — 8/8 nodos completos</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6">Cubriste 30 preguntas del banco (CL11). Los temas más repetidos: FENa para distinguir IRA prerrenal de intrínseca, ERC definición ≥3 meses + TFGe&lt;60, síndrome nefrótico adulto = membranosa, Nefropatía IgA vs post-estreptocócica (timing de hematuria), SIADH (euvolemia + orina concentrada), corrección lenta de hiponatremia crónica (≤10 mEq/día), hipercalemia → gluconato de calcio primero, acidosis con AG alto = MUDPILES.</p>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-t">CL11: 30 preg Nefro + Medio Interno</span>
+      <span class="tag tag-a">KDIGO 2012/2021 · Guías MSAL</span>
+    </div>
+  </div>
+
+  <div class="nav-arrows">
+    <div class="nav-btn" onclick="show(6)">← Nodo 7: Ácido-base</div>
+    <div class="nav-btn" onclick="show(0)">↑ Volver al Nodo 1</div>
+  </div>
+</div>
+
+</div>
+<script>
+const nodes=document.querySelectorAll('.node');
+const items=document.querySelectorAll('.nav-item');
+function show(i){
+  nodes.forEach(n=>n.classList.remove('active'));
+  items.forEach(n=>n.classList.remove('active'));
+  nodes[i].classList.add('active');
+  items[i].classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
+</body>
+</html>
