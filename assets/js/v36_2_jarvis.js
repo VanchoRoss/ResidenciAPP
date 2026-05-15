@@ -19,7 +19,7 @@
   // ─── CONFIGURACIÓN ─────────────────────────────────────────────
   const API_KEY_STORAGE = 'jarvis_gemini_key';
   const HISTORY_STORAGE = 'jarvis_history';
-  const MODEL = 'gemini-1.5-flash';
+  const MODEL = 'gemini-2.0-flash';
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
   // ─── ESTADO ────────────────────────────────────────────────────
