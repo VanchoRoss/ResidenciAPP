@@ -205,3 +205,8 @@ Esta versión fuerza el endpoint oficial de aportes en `config.js` y migra autom
 - Agrega notas fijables dentro del texto del nodo, guardadas por nodo en localStorage.
 - Integra nuevos vaults: Gastroenterología + Cirugía, Hematología adultos, Nefrología + Medio Interno.
 - Mantiene banco, IDs, métricas, sesiones, errores y progreso principal sin modificar.
+
+
+## v35.27
+- Agrega el nodo `Neurología + Psiquiatría — Vault completo` a Aprender desde 0.
+- Mantiene intactas métricas, progreso, banco y reportes.

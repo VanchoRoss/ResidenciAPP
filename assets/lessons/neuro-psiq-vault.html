@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neurología + Psiquiatría · Nodos de Estudio · Residencia 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Archivo+Narrow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:     #0c0e14;
+  --bg1:    #10131a;
+  --bg2:    #151921;
+  --bg3:    #1a1f2a;
+  --bg4:    #1f2535;
+  --line:   #252d3d;
+  --line2:  #2e3850;
+  --text:   #e2e8f5;
+  --text2:  #8898b8;
+  --text3:  #506080;
+  --font:   'Archivo', sans-serif;
+  --narrow: 'Archivo Narrow', sans-serif;
+  --mono:   'JetBrains Mono', monospace;
+
+  --neuro:  #7dd3fc;  /* sky blue */
+  --psiq:   #c4b5fd;  /* violet */
+  --warn:   #fbbf24;
+  --red:    #f87171;
+  --green:  #4ade80;
+  --cyan:   #22d3ee;
+  --orange: #fb923c;
+
+  --neuro-dim: #061828;
+  --psiq-dim:  #150e2a;
+  --warn-dim:  #1c1200;
+  --red-dim:   #1a0808;
+  --green-dim: #021a09;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── SIDEBAR ── */
+#sb {
+  width: 210px;
+  min-width: 210px;
+  background: var(--bg1);
+  border-right: 1px solid var(--line);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+}
+.sb-top {
+  padding: 14px 12px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.sb-title {
+  font-family: var(--narrow);
+  font-size: 13px; font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.sb-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.sb-section {
+  font-size: 9px; text-transform: uppercase;
+  letter-spacing: .12em; color: var(--text3);
+  font-weight: 600; padding: 10px 12px 3px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 11.5px;
+  border-left: 2px solid transparent;
+  transition: all .12s;
+  text-decoration: none;
+}
+.sb-item:hover { background: var(--bg2); color: var(--text); }
+.sb-item.active { background: var(--bg2); color: var(--text); }
+.sb-item.active.neuro { border-left-color: var(--neuro); }
+.sb-item.active.psiq { border-left-color: var(--psiq); }
+.sb-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.sb-n { margin-left: auto; font-size: 9px; font-family: var(--mono); color: var(--text3); background: var(--bg3); padding: 1px 5px; border-radius: 3px; }
+
+/* ── MAIN ── */
+#main { margin-left: 210px; flex: 1; padding: 22px 26px; max-width: 900px; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── NODE HEADER ── */
+.nh { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.nh-eye { font-size: 9px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 3px; }
+.nh-title { font-family: var(--narrow); font-size: 21px; font-weight: 700; color: var(--text); }
+.nh-tag { font-size: 12px; color: var(--text2); margin-top: 3px; font-style: italic; }
+.nh-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.chip { font-size: 9px; font-family: var(--mono); padding: 2px 7px; border-radius: 3px; border: 1px solid; }
+.chip.n { border-color: var(--neuro); color: var(--neuro); background: var(--neuro-dim); }
+.chip.p { border-color: var(--psiq); color: var(--psiq); background: var(--psiq-dim); }
+.chip.w { border-color: var(--warn); color: var(--warn); background: var(--warn-dim); }
+.chip.g { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+/* ── IDEA MADRE ── */
+.im {
+  background: linear-gradient(120deg, #0a1628 0%, var(--bg3) 100%);
+  border: 1px solid var(--neuro);
+  border-radius: 7px; padding: 12px 14px;
+  margin-bottom: 16px; font-size: 13px; line-height: 1.55;
+}
+.im.psiq { border-color: var(--psiq); background: linear-gradient(120deg, #0e0a20 0%, var(--bg3) 100%); }
+.im strong { color: var(--cyan); }
+.im.psiq strong { color: var(--psiq); }
+
+/* ── TABS ── */
+.tw { display: flex; gap: 1px; border-bottom: 1px solid var(--line); margin-bottom: 14px; flex-wrap: wrap; }
+.tb {
+  padding: 5px 13px; font-size: 11px; cursor: pointer;
+  font-family: var(--font); color: var(--text3); background: none; border: none;
+  border-bottom: 2px solid transparent; position: relative; bottom: -1px;
+  transition: all .12s;
+}
+.tb:hover { color: var(--text2); }
+.tb.active { color: var(--text); border-bottom-color: var(--neuro); }
+.tb.active.p { border-bottom-color: var(--psiq); }
+.tp { display: none; }
+.tp.active { display: block; }
+
+/* ── TABLES ── */
+.vt { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 12px; }
+.vt th { background: var(--bg3); border: 1px solid var(--line2); padding: 6px 9px; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); font-weight: 600; text-align: left; }
+.vt td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; line-height: 1.4; }
+.vt tr:hover td { background: var(--bg3); }
+.vt td.k { font-family: var(--mono); color: var(--cyan); font-weight: 500; }
+.vt td.w { color: var(--warn); }
+.vt td.r { color: var(--red); }
+.vt td.g { color: var(--green); }
+.vt td.d { color: var(--text2); font-size: 11px; }
+
+/* ── ALGO ── */
+.algo { background: var(--bg2); border: 1px solid var(--line); border-left: 3px solid var(--cyan); border-radius: 6px; padding: 11px 13px; margin-bottom: 10px; }
+.algo.p { border-left-color: var(--psiq); }
+.algo-t { font-weight: 600; color: var(--cyan); font-size: 12px; margin-bottom: 7px; }
+.algo.p .algo-t { color: var(--psiq); }
+.step { display: flex; gap: 7px; margin-bottom: 5px; line-height: 1.4; font-size: 12px; }
+.step .n { background: var(--cyan); color: #000; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.step .n.p { background: var(--psiq); }
+.step .n.w { background: var(--warn); }
+.step .n.r { background: var(--red); }
+.step .t { flex: 1; }
+.step strong { color: var(--cyan); }
+.step.ps strong { color: var(--psiq); }
+
+/* ── TRAMPA ── */
+.trap { background: var(--warn-dim); border: 1px solid var(--warn); border-radius: 6px; padding: 10px 13px; margin-bottom: 8px; }
+.trap-h { font-size: 10px; font-weight: 700; color: var(--warn); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+.trap-b { font-size: 12px; line-height: 1.5; }
+
+/* ── CARDS ── */
+.cg { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.card { background: var(--bg2); border: 1px solid var(--line); border-radius: 7px; padding: 11px 13px; }
+.card-t { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin-bottom: 7px; }
+.card-b { font-size: 12px; line-height: 1.45; }
+@media (max-width:680px) { .cg { grid-template-columns: 1fr; } }
+
+/* ── UL ── */
+ul.vl { list-style: none; }
+ul.vl li { padding: 3px 0 3px 13px; position: relative; font-size: 12px; line-height: 1.4; }
+ul.vl li::before { content: '▸'; position: absolute; left: 0; color: var(--text3); font-size: 9px; top: 5px; }
+ul.vl li strong { color: var(--cyan); }
+ul.vl.ps li strong { color: var(--psiq); }
+ul.vl.w li::before { color: var(--warn); }
+
+/* ── ALERT ── */
+.al { display: flex; gap: 9px; padding: 9px 12px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
+.al-i { font-size: 14px; flex-shrink: 0; }
+.al.b { background: var(--neuro-dim); border: 1px solid var(--neuro); }
+.al.p { background: var(--psiq-dim); border: 1px solid var(--psiq); }
+.al.w { background: var(--warn-dim); border: 1px solid var(--warn); }
+.al.r { background: var(--red-dim); border: 1px solid var(--red); }
+.al.g { background: var(--green-dim); border: 1px solid var(--green); }
+
+/* ── FRASE ── */
+.fr { background: var(--psiq-dim); border: 1px solid var(--psiq); border-radius: 5px; padding: 8px 12px; font-size: 12px; font-style: italic; margin-bottom: 8px; }
+.fr span { color: var(--psiq); font-weight: 600; font-style: normal; }
+.fr.n { background: var(--neuro-dim); border-color: var(--neuro); }
+.fr.n span { color: var(--neuro); }
+
+/* ── SECTION ── */
+.sec { margin-bottom: 20px; }
+.sec-t { font-size: 10px; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; color: var(--text3); margin-bottom: 9px; padding-bottom: 5px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; }
+.sec-t::before { content: ''; width: 3px; height: 11px; background: var(--neuro); border-radius: 2px; }
+.sec-t.p::before { background: var(--psiq); }
+
+hr.d { border: none; border-top: 1px solid var(--line); margin: 14px 0; }
+
+.cx-tag { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-family: var(--mono); background: var(--bg3); border: 1px solid var(--line2); color: var(--text3); padding: 2px 7px; border-radius: 10px; cursor: pointer; margin: 2px; transition: all .12s; }
+.cx-tag:hover { border-color: var(--neuro); color: var(--neuro); }
+.cx-tag::before { content: '↗'; font-size: 8px; }
+</style>
+</head>
+<body>
+
+<nav id="sb">
+  <div class="sb-top">
+    <div class="sb-title">Neuro · Psiq</div>
+    <div class="sb-sub">CL9 (31 preg) + CL12-Psiq (15 preg)</div>
+  </div>
+
+  <div class="sb-section">Neurología — CL9</div>
+  <a class="sb-item neuro active" onclick="show('acv')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>ACV + AIT<span class="sb-n">★★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('demencia')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>Demencias<span class="sb-n">★★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('parkinson')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>Parkinson<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('guillain')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>Guillain-Barré<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('sincope')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>Síncope vs Convulsión<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('cefalea')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>Cefaleas<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item neuro" onclick="show('tce')">
+    <div class="sb-dot" style="background:var(--neuro)"></div>TCE + Hematomas<span class="sb-n">★</span>
+  </a>
+
+  <div class="sb-section">Psiquiatría — CL12</div>
+  <a class="sb-item psiq" onclick="show('ley26657')">
+    <div class="sb-dot" style="background:var(--psiq)"></div>Ley 26.657<span class="sb-n">★★★</span>
+  </a>
+  <a class="sb-item psiq" onclick="show('suicidio')">
+    <div class="sb-dot" style="background:var(--psiq)"></div>Riesgo Suicida<span class="sb-n">★★★</span>
+  </a>
+  <a class="sb-item psiq" onclick="show('ansiedad')">
+    <div class="sb-dot" style="background:var(--psiq)"></div>Ansiedad / Pánico<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item psiq" onclick="show('depresion')">
+    <div class="sb-dot" style="background:var(--psiq)"></div>Depresión<span class="sb-n">★★</span>
+  </a>
+  <a class="sb-item psiq" onclick="show('sustancias')">
+    <div class="sb-dot" style="background:var(--psiq)"></div>Consumo Sustancias<span class="sb-n">★★</span>
+  </a>
+
+  <div style="margin-top:auto;padding:10px 12px;font-size:9px;color:var(--text3);border-top:1px solid var(--line)">
+    Harrison 21ª · Ley 26.657 · Temario Integrador 2026
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ════════════════════════════════════
+     ACV + AIT
+════════════════════════════════════ -->
+<div id="page-acv" class="page active">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★★★</div>
+    <div class="nh-title">ACV Isquémico + AIT</div>
+    <div class="nh-tag">Primera causa de discapacidad neurológica en adultos · conectado a FA → anticoagulación</div>
+    <div class="nh-chips">
+      <span class="chip n">★★★ banco</span>
+      <span class="chip n">FA → ACO</span>
+      <span class="chip w">rtPA &lt;4.5h</span>
+    </div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen pregunta principalmente 3 cosas sobre ACV: 1) <strong>trombolítico dentro de las 4.5h</strong> como conducta inicial en isquémico, 2) <strong>anticoagulación si hay FA como causa</strong> (no AAS), y 3) diferencia ACV isquémico vs hemorrágico en la TAC.</div>
+
+  <div class="tw">
+    <button class="tb active" onclick="tab(this,'acv','dx')">Diagnóstico</button>
+    <button class="tb" onclick="tab(this,'acv','tto')">Tratamiento</button>
+    <button class="tb" onclick="tab(this,'acv','ait')">AIT</button>
+    <button class="tb" onclick="tab(this,'acv','trampas')">Trampas</button>
+  </div>
+
+  <div id="acv-dx" class="tp active">
+    <div class="sec"><div class="sec-t">Clasificación</div>
+      <table class="vt">
+        <tr><th>Tipo</th><th>Mecanismo</th><th>TAC inicial</th><th>Frecuencia</th></tr>
+        <tr><td><strong>Isquémico</strong></td><td class="d">Trombo/émbolo ocluye arteria cerebral</td><td class="g">Normal en las primeras horas (RMN DWI más sensible)</td><td class="k">80–85%</td></tr>
+        <tr><td><strong>Hemorrágico intraparenquimatoso</strong></td><td class="d">HTA, malformación vascular, anticoag.</td><td class="r">Hiperdensidad inmediata</td><td class="k">10–15%</td></tr>
+        <tr><td><strong>HSA</strong></td><td class="d">Rotura de aneurisma sacular</td><td class="r">Hiperdensidad en cisuras, fisuras · PUNCIÓN LUMBAR si TAC normal</td><td class="k">5%</td></tr>
+      </table>
+    </div>
+
+    <div class="sec"><div class="sec-t">Clínica según territorio</div>
+      <table class="vt">
+        <tr><th>Arteria</th><th>Síntomas típicos</th></tr>
+        <tr><td class="d">ACM (la más frecuente)</td><td>Hemiparesia + hemianestesia contralateral + afasia (si hemisferio dominante) + hemianopsia</td></tr>
+        <tr><td class="d">ACA</td><td>Paresia de MMII &gt; MMSS</td></tr>
+        <tr><td class="d">ACP / vértebro-basilar</td><td>Ataxia, diplopía, disfagia, alteración de consciencia</td></tr>
+        <tr><td class="d">Lacunar</td><td>Motor puro / sensitivo puro / ataxia-hemiparesia — sin afectación cortical</td></tr>
+      </table>
+    </div>
+
+    <div class="sec"><div class="sec-t">Causas del ACV isquémico</div>
+      <ul class="vl">
+        <li><strong>FA</strong> = causa cardioembólica más frecuente → anticoagulación, no antiagregación</li>
+        <li>Ateroesclerosis de grandes vasos (carótida, basilar)</li>
+        <li>Enfermedad de pequeño vaso (lacunar): HTA crónica</li>
+        <li>Otras: endocarditis, disección carotídea, estados de hipercoagulabilidad</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="acv-tto" class="tp">
+    <div class="al b"><div class="al-i">🧠</div><div>El tiempo es cerebro: se pierden ~1.9 millones de neuronas por minuto en un ACV. La ventana terapéutica del trombolítico es la clave del examen.</div></div>
+
+    <div class="algo">
+      <div class="algo-t">Algoritmo ACV isquémico agudo</div>
+      <div class="step"><div class="n">1</div><div class="t">ABC + acceso venoso + glucemia (descartar hipoglucemia como causa)</div></div>
+      <div class="step"><div class="n">2</div><div class="t"><strong>TAC sin contraste URGENTE</strong> → descartar hemorrágico antes de trombolítico</div></div>
+      <div class="step"><div class="n">3</div><div class="t">Si isquémico confirmado + <strong>≤4.5h de inicio + sin contraindicaciones</strong> → <strong>rtPA (alteplase) 0.9 mg/kg IV</strong> (máx 90 mg, 10% en bolo, resto en 60 min)</div></div>
+      <div class="step"><div class="n">4</div><div class="t">Si oclusión de gran vaso → <strong>trombectomía mecánica</strong> (hasta 24h en casos seleccionados)</div></div>
+      <div class="step"><div class="n">5</div><div class="t"><strong>AAS 325 mg</strong> si no se usó trombolítico o 24h después de rtPA</div></div>
+      <div class="step"><div class="n">6</div><div class="t">Si ACV isquémico por FA → <strong>anticoagulación oral</strong> (no AAS) · iniciar 4–14 días post-ACV</div></div>
+    </div>
+
+    <div class="sec"><div class="sec-t">Contraindicaciones absolutas al trombolítico (rtPA)</div>
+      <table class="vt">
+        <tr><th>CI absoluta</th><th>CI relativa</th></tr>
+        <tr><td class="r">ACV hemorrágico previo · ACV isquémico reciente &lt;3 meses · TAC con hemorragia · cirugía mayor &lt;14 días · HTA grave &gt;185/110 sin control · glucemia &lt;50 o &gt;400</td><td class="w">Anticoagulación actual · embarazo · RCP reciente · plaquetas &lt;100.000</td></tr>
+      </table>
+    </div>
+
+    <div class="sec"><div class="sec-t">Prevención secundaria según causa</div>
+      <table class="vt">
+        <tr><th>Causa</th><th>Tratamiento preventivo</th></tr>
+        <tr><td class="d">FA (cardioembólico)</td><td class="g">Anticoagulación oral (NACO o warfarina) — NO AAS</td></tr>
+        <tr><td class="d">Ateroesclerosis / lacunar</td><td class="g">AAS + estatinas + control de FRCV</td></tr>
+        <tr><td class="d">Estenosis carotídea &gt;70% sintomática</td><td class="g">Endarterectomía o stent carotídeo</td></tr>
+        <tr><td class="d">Todos</td><td class="g">Control estricto HTA, DM2, tabaquismo, dislipemia</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div id="acv-ait" class="tp">
+    <div class="sec"><div class="sec-t">AIT — Ataque Isquémico Transitorio</div>
+      <div class="al b"><div class="al-i">⚡</div><div>AIT = déficit neurológico focal que <strong>resuelve completamente en &lt;24h</strong> (en la práctica casi siempre en &lt;1h). El riesgo de ACV en los próximos 2 días es del 3–10%.</div></div>
+      <table class="vt">
+        <tr><th>Score ABCD²</th><th>Puntos</th></tr>
+        <tr><td>Edad ≥60 años</td><td class="k">1</td></tr>
+        <tr><td>Presión arterial ≥140/90</td><td class="k">1</td></tr>
+        <tr><td>Clínica: hemiparesia unilateral (2) · alteración del habla sin paresia (1)</td><td class="k">1–2</td></tr>
+        <tr><td>Duración ≥60 min (2) · 10–59 min (1)</td><td class="k">1–2</td></tr>
+        <tr><td>Diabetes</td><td class="k">1</td></tr>
+      </table>
+      <div style="font-size:11px;color:var(--text2);margin-top:5px">ABCD² ≥4: riesgo alto → evaluación urgente · hospitalización · antiagregación inmediata · ecocardiograma + Holter si se sospecha FA.</div>
+    </div>
+  </div>
+
+  <div id="acv-trampas" class="tp">
+    <div class="trap"><div class="trap-h">Trampa 1: ACV isquémico por FA → siempre ACO, nunca AAS</div><div class="trap-b">Si el examen da FA + ACV o FA + AIT, la respuesta correcta es anticoagulación oral. El AAS NO es suficiente en cardioembólicos por FA (no previene el re-ACV).</div></div>
+    <div class="trap"><div class="trap-h">Trampa 2: No dar trombolítico sin TAC</div><div class="trap-b">Antes del rtPA hay que descartar hemorragia con TAC. Si la TAC es normal y hay síntomas de ACV, eso es compatible con isquémico → dar rtPA si está dentro de las 4.5h.</div></div>
+    <div class="trap"><div class="trap-h">Trampa 3: HSA con TAC normal → punción lumbar</div><div class="trap-b">Cefalea "en trueno" (la peor de la vida, inicio brusco) → sospecha de HSA. Si la TAC es normal (puede serlo en 5-15% de los casos) → punción lumbar buscando xantocromía.</div></div>
+    <div class="trap"><div class="trap-h">Trampa 4: ACV hemorrágico → NO trombolítico, NO AAS</div><div class="trap-b">Si la TAC muestra hiperdensidad → hemorrágico. Contraindicación absoluta de trombolíticos y AAS. Tratamiento: control de TA, revertir anticoagulación si la toma.</div></div>
+    <div class="fr n"><span>Frase:</span> "TAC urgente para diferenciar isquémico de hemorrágico → si isquémico en &lt;4.5h → rtPA. Si FA es la causa → ACO siempre, no AAS."</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     DEMENCIAS
+════════════════════════════════════ -->
+<div id="page-demencia" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★★★</div>
+    <div class="nh-title">Demencias</div>
+    <div class="nh-tag">Alzheimer = causa más frecuente · deterioro cognitivo progresivo · diagnóstico clínico</div>
+    <div class="nh-chips"><span class="chip n">Alzheimer 60–70%</span><span class="chip n">Curable = descartar siempre</span></div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen pregunta la <strong>causa más frecuente</strong> (Alzheimer), las <strong>causas reversibles</strong> que deben descartarse siempre, y la diferencia entre Alzheimer y otras demencias (DFT, Lewy, vascular). El diagnóstico es clínico + neuropsicológico.</div>
+
+  <div class="sec"><div class="sec-t">Clasificación y frecuencia</div>
+    <table class="vt">
+      <tr><th>Demencia</th><th>%</th><th>Característica clave</th></tr>
+      <tr><td><strong>Alzheimer</strong></td><td class="k">60–70%</td><td class="d">Inicio insidioso, pérdida de memoria episódica primero, luego otras funciones. Afasia, apraxia, agnosia. Más frecuente en mujeres.</td></tr>
+      <tr><td>Vascular</td><td class="k">15–20%</td><td class="d">Deterioro escalonado. Factores de riesgo CV. Puede solaparse con Alzheimer.</td></tr>
+      <tr><td>Cuerpos de Lewy</td><td class="k">~5%</td><td class="d">Fluctuación + alucinaciones visuales bien formadas + parkinsonismo. Hipersensibilidad a antipsicóticos.</td></tr>
+      <tr><td>Frontotemporal (DFT)</td><td class="k">5–10%</td><td class="d">Cambios de personalidad/conducta ANTES que la memoria. Desinhibición, apatía. Edad más joven (&lt;65a).</td></tr>
+      <tr><td><strong>Reversibles (siempre descartar)</strong></td><td class="k">5–10%</td><td class="r">Hipotiroidismo · déficit B12 · neurosífilis · normal pressure hydrocephalus (NPH) · depresión (pseudodemencia)</td></tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t">Estudio diagnóstico inicial</div>
+    <div class="algo">
+      <div class="algo-t">Protocolo mínimo ante sospecha de demencia</div>
+      <div class="step"><div class="n">1</div><div class="t"><strong>Evaluación clínica + neuropsicológica:</strong> MMSE (Mini Mental State Examination) o MoCA</div></div>
+      <div class="step"><div class="n">2</div><div class="t"><strong>Laboratorio:</strong> hemograma, TSH, B12, folato, glucemia, función renal, VDRL (neurosífilis), VIH si factores de riesgo</div></div>
+      <div class="step"><div class="n">3</div><div class="t"><strong>Neuroimagen:</strong> TAC o RMN de cerebro (descartar hematoma subdural crónico, hidrocefalia, tumores)</div></div>
+      <div class="step"><div class="n">4</div><div class="t">EEG si se sospecha encefalopatía o crisis epiléptica</div></div>
+    </div>
+  </div>
+
+  <div class="cg">
+    <div class="card">
+      <div class="card-t">Normal Pressure Hydrocephalus (NPH)</div>
+      <div class="card-b"><strong style="color:var(--cyan)">Tríada de Hakim-Adams:</strong> demencia + alteración de la marcha (magnética, "pegada al suelo") + incontinencia urinaria. TAC: hidrocefalia sin atrofia cortical proporcional. Tratamiento: derivación ventrículo-peritoneal.</div>
+    </div>
+    <div class="card">
+      <div class="card-t">Tratamiento Alzheimer</div>
+      <div class="card-b">
+        <ul class="vl">
+          <li><strong>Leve-moderado:</strong> inhibidores de colinesterasa (donepecilo, rivastigmina, galantamina)</li>
+          <li><strong>Moderado-severo:</strong> memantina (antagonista NMDA) sola o combinada</li>
+          <li>Tratar síntomas no cognitivos: antipsicóticos atípicos (con cautela en Lewy)</li>
+          <li>NO curativos: retrasan progresión</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: depresión vs demencia (pseudodemencia)</div><div class="trap-b">La depresión puede presentarse como deterioro cognitivo, especialmente en ancianos. Clave diferencial: en depresión el paciente <em>se queja</em> del olvido ("no sé nada"); en Alzheimer <em>no es consciente</em> del problema. La pseudodemencia mejora con antidepresivos.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: Cuerpos de Lewy → nunca antipsicóticos típicos</div><div class="trap-b">Los pacientes con demencia por cuerpos de Lewy tienen hipersensibilidad severa a antipsicóticos (pueden generar rigidez severa, crisis autonómicas, muerte). Los antipsicóticos atípicos (quetiapina) son la única opción si es necesario.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     PARKINSON
+════════════════════════════════════ -->
+<div id="page-parkinson" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★★</div>
+    <div class="nh-title">Enfermedad de Parkinson</div>
+    <div class="nh-tag">Síndrome extrapiramidal más frecuente · Pérdida de dopamina en sustancia nigra</div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen pregunta la <strong>tríada clínica</strong>, la <strong>causa del síndrome</strong> (dopamina) y el <strong>tratamiento de primera línea</strong>. También el diagnóstico diferencial: Parkinson idiopático vs parkinsonismo secundario (fármacos, vascular, Lewy).</div>
+
+  <div class="sec"><div class="sec-t">Tríada clásica (TRAP)</div>
+    <table class="vt">
+      <tr><th>Signo</th><th>Descripción</th><th>Tipo</th></tr>
+      <tr><td><strong>T</strong>emblor de reposo</td><td>4–6 Hz, "contar monedas/hacer pastillas". Mejora con movimiento voluntario.</td><td class="k">El más reconocible</td></tr>
+      <tr><td><strong>R</strong>igidez</td><td>Resistencia en "tubo de plomo" o "rueda dentada" (rigidez + temblor)</td><td class="k">Pasiva</td></tr>
+      <tr><td><strong>A</strong>cinesia/Bradicinesia</td><td>Lentitud de movimientos. Marcha festinante, micrografía, hipomimia.</td><td class="k">El más incapacitante</td></tr>
+      <tr><td><strong>P</strong>ostural instability</td><td>Inestabilidad postural → caídas (signo tardío)</td><td class="d">Aparece después</td></tr>
+    </table>
+  </div>
+
+  <div class="cg">
+    <div class="card">
+      <div class="card-t">Fisiopatología clave</div>
+      <div class="card-b"><ul class="vl">
+        <li>Degeneración de neuronas <strong>dopaminérgicas</strong> en la sustancia nigra (pars compacta)</li>
+        <li>Cuerpos de Lewy (α-sinucleína) como hallazgo patológico</li>
+        <li>Desequilibrio dopamina/acetilcolina en el estriado</li>
+        <li>Síntomas aparecen cuando se pierde el <strong>~80%</strong> de neuronas dopaminérgicas</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Tratamiento</div>
+      <div class="card-b"><ul class="vl">
+        <li><strong>Levodopa + carbidopa:</strong> fármaco más eficaz. Carbidopa inhibe metabolismo periférico de L-DOPA → más llega al SNC</li>
+        <li><strong>Agonistas dopaminérgicos</strong> (pramipexol, ropinirol): en jóvenes para retrasar levodopa</li>
+        <li><strong>IMAO-B</strong> (selegilina, rasagilina): leve efecto sintomático y posible neuroprotección</li>
+        <li>Fenómeno "on-off" y discinesias: complicaciones de levodopa a largo plazo</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-t">Diagnóstico diferencial: parkinsonismo secundario</div>
+    <table class="vt">
+      <tr><th>Causa</th><th>Clínica diferencial</th></tr>
+      <tr><td class="d">Fármacos (metoclopramida, haloperidol, risperidona)</td><td class="w">Causa más frecuente de parkinsonismo secundario. Reversible al suspender el fármaco</td></tr>
+      <tr><td class="d">Vascular ("parkinsonismo de la mitad inferior")</td><td class="d">Marcha alterada predominante, sin temblor, no responde bien a levodopa</td></tr>
+      <tr><td class="d">Parálisis supranuclear progresiva (PSP)</td><td class="d">Parálisis de la mirada vertical + caídas hacia atrás + mal responde a levodopa</td></tr>
+    </table>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: metoclopramida y haloperidol causan parkinsonismo</div><div class="trap-b">Son bloqueadores dopaminérgicos. Si el examen da un paciente con signos de parkinsonismo que tomaba metoclopramida (por gastritis, náuseas) o antipsicóticos típicos → el diagnóstico es parkinsonismo inducido por fármacos → suspender el fármaco.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     GUILLAIN-BARRÉ
+════════════════════════════════════ -->
+<div id="page-guillain" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★★</div>
+    <div class="nh-title">Síndrome de Guillain-Barré (SGB)</div>
+    <div class="nh-tag">Polirradiculoneuropatía inflamatoria aguda · parálisis ascendente · LCR disociación albumino-citológica</div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> SGB es una neuropatía desmielinizante autoinmune post-infecciosa (frecuentemente post-Campylobacter, post-viral o post-Zika). La <strong>parálisis ascendente + LCR con disociación albumino-citológica</strong> (proteínas altas, células normales) es el patrón diagnóstico del examen.</div>
+
+  <div class="cg">
+    <div class="card">
+      <div class="card-t">Clínica</div>
+      <div class="card-b"><ul class="vl">
+        <li>Debilidad <strong>ascendente simétrica</strong> (empieza en MMII)</li>
+        <li>Arreflexia (pérdida de reflejos osteotendinosos)</li>
+        <li>Parestesias en guante y calcetín</li>
+        <li>Riesgo vital: <strong>compromiso respiratorio</strong> (diafragma) y autonómico (arritmias)</li>
+        <li>Precede infección 2–4 semanas antes</li>
+      </ul></div>
+    </div>
+    <div class="card">
+      <div class="card-t">LCR — disociación albumino-citológica</div>
+      <div class="card-b">
+        <table class="vt" style="margin:0">
+          <tr><th>Parámetro</th><th>Resultado</th></tr>
+          <tr><td>Proteínas</td><td class="r">Elevadas (&gt;45 mg/dl)</td></tr>
+          <tr><td>Células</td><td class="g">Normales (&lt;10/mm³)</td></tr>
+          <tr><td>Glucosa</td><td class="g">Normal</td></tr>
+        </table>
+        <div style="margin-top:6px;font-size:11px;color:var(--text2)">Este patrón = disociación albumino-citológica. Máximo a las 2–3 semanas del inicio.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-t">Tratamiento</div>
+    <div class="algo">
+      <div class="algo-t">Manejo SGB</div>
+      <div class="step"><div class="n">1</div><div class="t">Monitoreo hospitalario estricto (UCI si necesario): <strong>función respiratoria + autonómica</strong></div></div>
+      <div class="step"><div class="n">2</div><div class="t">Indicación de IOT/ARM: capacidad vital &lt;20 ml/kg o progresión rápida</div></div>
+      <div class="step"><div class="n">3</div><div class="t"><strong>Inmunoglobulina IV</strong> (IVIG) 0.4 g/kg/día por 5 días — o plasmaféresis (ambas equivalentes)</div></div>
+      <div class="step"><div class="n r">✗</div><div class="t" style="color:var(--red)"><strong>Corticoides NO tienen beneficio</strong> en SGB (pueden empeorar)</div></div>
+    </div>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: SGB no se trata con corticoides</div><div class="trap-b">A diferencia de otras enfermedades autoinmunes, los corticoides están contraindicados en SGB. El tratamiento es IVIG o plasmaféresis. Esta trampa se repite en el banco.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: no confundir con mielopatía o Eaton-Lambert</div><div class="trap-b">SGB: arreflexia + parálisis ascendente. En mielitis transversa: nivel sensitivo definido + compromiso de esfínteres. En SGB los esfínteres generalmente están preservados.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     SÍNCOPE vs CONVULSIÓN
+════════════════════════════════════ -->
+<div id="page-sincope" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología + CL2 · Cardiología · ★★</div>
+    <div class="nh-title">Síncope vs Convulsión</div>
+    <div class="nh-tag">Pérdida transitoria de conciencia · diagnóstico diferencial clínico · historia clínica es clave</div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen da un paciente con pérdida de conciencia y pregunta si es síncope o convulsión. Los <strong>signos discriminadores</strong> son los que importan: movimientos tónico-clónicos, confusión post-ictal, mordedura de lengua (convulsión) vs pródromos vegetativos, recuperación rápida (síncope).</div>
+
+  <div class="sec"><div class="sec-t">Diferencial clave síncope vs convulsión</div>
+    <table class="vt">
+      <tr><th>Característica</th><th>Síncope</th><th>Convulsión</th></tr>
+      <tr><td>Pródromos</td><td class="g">Náuseas, diaforesis, mareo, visión borrosa</td><td class="r">Aura (según tipo) o ninguno</td></tr>
+      <tr><td>Duración</td><td class="g">&lt;1 minuto</td><td class="r">Variable (mayor en crisis generalizadas)</td></tr>
+      <tr><td>Movimientos</td><td class="g">Pueden haber sacudidas breves (síncope convulsivo)</td><td class="r">Tónico-clónicos, focales, ausencias</td></tr>
+      <tr><td>Mordedura de lengua</td><td class="g">Rara (borde anterior)</td><td class="r">Frecuente, borde lateral</td></tr>
+      <tr><td>Relajación de esfínteres</td><td class="g">Rara</td><td class="r">Frecuente en generalizadas</td></tr>
+      <tr><td>Estado post-ictal</td><td class="g">Recuperación rápida (&lt;1 min)</td><td class="r">Confusión, somnolencia, cefalea (minutos a horas)</td></tr>
+      <tr><td>ECG</td><td class="w">Buscar arritmia, BAV, QT largo</td><td class="g">Normal</td></tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t">Clasificación del síncope</div>
+    <table class="vt">
+      <tr><th>Tipo</th><th>Mecanismo</th><th>Clínica</th></tr>
+      <tr><td><strong>Vasovagal</strong> (el más frecuente)</td><td class="d">Hiperactividad vagal → bradicardia + vasodilatación</td><td class="d">Desencadenado por estrés, dolor, calor, bipedestación prolongada. Pródromos completos.</td></tr>
+      <tr><td>Ortostático</td><td class="d">Caída de TA al ponerse de pie (&gt;20/10 mmHg en 3 min)</td><td class="d">Deshidratación, fármacos (diuréticos, antihipertensivos), neuropatía autonómica</td></tr>
+      <tr><td>Cardiogénico</td><td class="d">Arritmia (BAV, TV) o obstrucción (estenosis Ao)</td><td class="r">Sin pródromos, durante esfuerzo o en reposo. Alta mortalidad. ECG + Holter urgente.</td></tr>
+      <tr><td>Situacional</td><td class="d">Tos, micción, defecación, deglución</td><td class="d">Maniobra de Valsalva → bradicardia refleja</td></tr>
+    </table>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: síncope convulsivo no es epilepsia</div><div class="trap-b">En algunos síncopes (especialmente cardíacos) puede haber sacudidas breves por hipoperfusión cerebral. No confundir con epilepsia. La recuperación rápida y el ECG alterado orientan a síncope.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: síncope de esfuerzo → siempre estudiar el corazón</div><div class="trap-b">Síncope durante el ejercicio es de causa cardíaca hasta que se demuestre lo contrario (estenosis aórtica severa, miocardiopatía hipertrófica, arritmia ventricular). Ecocardiograma + Holter urgentes.</div></div>
+
+  <div class="fr n"><span>Frase:</span> "Post-ictal largo + mordedura lateral de lengua + relajación de esfínteres = epilepsia. Pródromos vegetativos + recuperación &lt;1 min = síncope vasovagal. Síncope de esfuerzo = cardiogénico hasta que se demuestre lo contrario."</div>
+</div>
+
+<!-- ════════════════════════════════════
+     CEFALEAS
+════════════════════════════════════ -->
+<div id="page-cefalea" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★★</div>
+    <div class="nh-title">Cefaleas</div>
+    <div class="nh-tag">Primarias (migraña, tensional, en racimo) vs secundarias — siempre descartar causas graves</div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen pregunta identificar el tipo de cefalea por su patrón, y los <strong>signos de alarma</strong> que obligan a estudiar con neuroimagen. La migraña y la cefalea en racimo tienen tratamientos específicos preguntados.</div>
+
+  <div class="sec"><div class="sec-t">Comparativo cefaleas primarias</div>
+    <table class="vt">
+      <tr><th></th><th>Tensional</th><th>Migraña</th><th>Cefalea en Racimo</th></tr>
+      <tr><td class="d">Localización</td><td>Bilateral, "en casco"</td><td class="k">Unilateral (generalmente)</td><td class="r">Unilateral, periocular</td></tr>
+      <tr><td class="d">Calidad</td><td>Opresiva, no pulsátil</td><td class="k">Pulsátil</td><td class="r">Excruciante, quemante</td></tr>
+      <tr><td class="d">Intensidad</td><td>Leve-moderada</td><td class="k">Moderada-severa</td><td class="r">Severísima (la más intensa)</td></tr>
+      <tr><td class="d">Duración</td><td>30 min – 7 días</td><td class="k">4–72 horas</td><td class="r">15–180 minutos</td></tr>
+      <tr><td class="d">Síntomas asociados</td><td>Ninguno</td><td class="k">Náuseas, foto/fonofobia, aura en 1/3</td><td class="r">Síntomas autonómicos ipsilaterales: lagrimeo, inyección conjuntival, ptosis, rinorrea</td></tr>
+      <tr><td class="d">Comportamiento</td><td>Continúa actividades</td><td class="k">Busca oscuridad y silencio</td><td class="r">Agitado, camina</td></tr>
+      <tr><td class="d">Tratamiento agudo</td><td>AINEs, paracetamol</td><td class="k">Triptanes, AINEs, ergotamina</td><td class="r">O₂ 100% + sumatriptán SC</td></tr>
+      <tr><td class="d">Profilaxis</td><td>Amitriptilina</td><td class="k">Propranolol, amitriptilina, valproato, topiramato</td><td class="r">Verapamilo</td></tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t">Señales de alarma (cefalea secundaria) — neuroimagen obligatoria</div>
+    <ul class="vl w">
+      <li><strong>Cefalea en trueno:</strong> brusca, máxima intensidad en segundos → HSA hasta que se demuestre lo contrario</li>
+      <li><strong>Primer episodio en &gt;50 años</strong></li>
+      <li>Asociada a fiebre + rigidez de nuca → meningitis</li>
+      <li>Cefalea progresiva con cambio de características</li>
+      <li>Cefalea con foco neurológico o alteración de conciencia</li>
+      <li>Empeora en decúbito o con Valsalva (HTE)</li>
+      <li>Inmunodeprimidos o portadores de HIV</li>
+    </ul>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: migraña con aura y anticonceptivos orales</div><div class="trap-b">La migraña con aura aumenta el riesgo de ACV isquémico. Los ACO (especialmente los que contienen estrógenos) están contraindicados en mujeres con migraña con aura. Se prefieren métodos progestágenos solos.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     TCE + HEMATOMAS
+════════════════════════════════════ -->
+<div id="page-tce" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL9 · Neurología · Prioridad ★</div>
+    <div class="nh-title">TCE + Hematomas Intracraneales</div>
+    <div class="nh-tag">Epidural (arteria meníngea media) · Subdural (venas puente) · Glasgow</div>
+  </div>
+
+  <div class="im"><strong>Idea madre:</strong> El examen pregunta el <strong>diagnóstico diferencial entre hematoma epidural y subdural</strong> por su patrón clínico y TAC, y la <strong>escala de Glasgow</strong> como medida de severidad del TCE.</div>
+
+  <div class="sec"><div class="sec-t">Clasificación TCE por Glasgow</div>
+    <table class="vt">
+      <tr><th>Severidad</th><th>Glasgow</th><th>Conducta</th></tr>
+      <tr><td class="g">Leve</td><td class="k">13–15</td><td>TAC si: &gt;60a, anticoagulados, pérdida conciencia, amnesia, cefalea, vómitos, convulsión</td></tr>
+      <tr><td class="w">Moderado</td><td class="k">9–12</td><td>TAC + hospitalización + observación</td></tr>
+      <tr><td class="r">Severo</td><td class="k">≤8</td><td>IOT + TAC urgente + UCI</td></tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t">Hematoma epidural vs subdural</div>
+    <table class="vt">
+      <tr><th></th><th>Epidural (HED)</th><th>Subdural agudo (HSD)</th><th>Subdural crónico</th></tr>
+      <tr><td class="d">Origen</td><td class="k">Art. meníngea media</td><td class="k">Venas puente</td><td class="k">Venas puente (microtrauma)</td></tr>
+      <tr><td class="d">Mecanismo</td><td>Fractura temporal, traumatismo directo</td><td>Trauma severo (aceleración-desaceleración)</td><td>Traumatismo mínimo o espontáneo, ancianos, anticoag.</td></tr>
+      <tr><td class="d">Intervalo lúcido</td><td class="r">Clásico (horas): pérdida → recuperación → deterioro</td><td class="r">Raro, deterioro inmediato</td><td class="d">Semanas de evolución</td></tr>
+      <tr><td class="d">TAC</td><td class="k">Hiperdensidad biconvexa (lenticular)</td><td class="k">Hiperdensidad cóncava (media luna)</td><td class="w">Hipodensidad o isodensa (media luna)</td></tr>
+      <tr><td class="d">Pupila dilatada</td><td>Ipsilateral al hematoma</td><td>Variable</td><td>Variable</td></tr>
+      <tr><td class="d">Tratamiento</td><td class="r">Evacuación quirúrgica urgente</td><td class="r">Quirúrgico si sintomático</td><td class="w">Quirúrgico si síntomas · en ancianos puede ser conservador</td></tr>
+    </table>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: intervalo lúcido es del epidural, no del subdural</div><div class="trap-b">El patrón clásico de TCE → breve pérdida de conciencia → recuperación → nuevo deterioro (intervalo lúcido) corresponde al hematoma epidural. El hematoma subdural agudo suele causar deterioro neurológico inmediato sin intervalo lúcido claro.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     LEY 26.657
+════════════════════════════════════ -->
+<div id="page-ley26657" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL12 · Psiquiatría · Prioridad ★★★</div>
+    <div class="nh-title">Ley 26.657 — Salud Mental</div>
+    <div class="nh-tag">Ley Nacional de Salud Mental · derechos del paciente · internación voluntaria e involuntaria</div>
+    <div class="nh-chips"><span class="chip p">★★★ banco</span><span class="chip p">Legislativa</span><span class="chip w">Internación involuntaria</span></div>
+  </div>
+
+  <div class="im psiq"><strong>Idea madre:</strong> La Ley 26.657 es la ley nacional de salud mental de Argentina (2010). El examen pregunta principalmente los <strong>criterios de internación involuntaria</strong>, los <strong>derechos del paciente</strong>, el rol del equipo interdisciplinario, y la diferencia entre internación voluntaria e involuntaria.</div>
+
+  <div class="tw">
+    <button class="tb p active" onclick="tab(this,'ley26657','def')">Principios</button>
+    <button class="tb p" onclick="tab(this,'ley26657','intern')">Internación</button>
+    <button class="tb p" onclick="tab(this,'ley26657','trampas')">Trampas</button>
+  </div>
+
+  <div id="ley26657-def" class="tp active">
+    <div class="sec"><div class="sec-t p">Principios fundamentales</div>
+      <ul class="vl ps">
+        <li><strong>Presunción de capacidad:</strong> toda persona tiene capacidad jurídica para tomar decisiones sobre su salud mental</li>
+        <li><strong>Abordaje interdisciplinario:</strong> no puede haber diagnóstico ni tratamiento a cargo de un solo profesional</li>
+        <li><strong>Comunidad antes que internación:</strong> la internación es el último recurso, no el primero</li>
+        <li><strong>Consentimiento informado:</strong> el paciente debe consentir cualquier tratamiento</li>
+        <li><strong>Confidencialidad:</strong> derecho a que se mantenga en reserva la información sobre su salud mental</li>
+        <li>La salud mental es parte inescindible de la salud integral: <strong>no puede discriminarse</strong></li>
+        <li><strong>Antecedentes penales no pueden considerarse diagnóstico</strong></li>
+      </ul>
+    </div>
+
+    <div class="sec"><div class="sec-t p">Derechos del paciente (art. 7)</div>
+      <ul class="vl ps">
+        <li>Recibir atención sanitaria y social integral y humanizada</li>
+        <li><strong>No ser identificado ni discriminado</strong> por un padecimiento mental</li>
+        <li>Recibir tratamiento <strong>en la comunidad</strong> de residencia</li>
+        <li>Ser informado en forma adecuada sobre su diagnóstico y tratamiento</li>
+        <li><strong>No ser objeto de investigación</strong> sin consentimiento</li>
+        <li>No ser sometido a trabajos forzados</li>
+        <li>Contar con un <strong>abogado</strong> (defensor) durante la internación involuntaria</li>
+        <li>Poder comunicarse libremente con su abogado, familiar o allegado</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="ley26657-intern" class="tp">
+    <div class="cg">
+      <div class="card">
+        <div class="card-t" style="color:var(--green)">Internación voluntaria</div>
+        <div class="card-b"><ul class="vl ps">
+          <li>El propio paciente la solicita</li>
+          <li>Puede revocarla en cualquier momento</li>
+          <li>El equipo puede oponerse solo si hay riesgo cierto e inminente</li>
+          <li>No requiere autorización judicial</li>
+        </ul></div>
+      </div>
+      <div class="card">
+        <div class="card-t" style="color:var(--red)">Internación involuntaria — criterios (art. 20)</div>
+        <div class="card-b"><ul class="vl ps">
+          <li><strong>Riesgo cierto e inminente</strong> para sí mismo o para terceros</li>
+          <li>Que el riesgo no pueda evitarse con tratamiento ambulatorio</li>
+          <li>Se debe <strong>buscar el menos restrictivo</strong> de los dispositivos</li>
+          <li>Firma del equipo interdisciplinario (no alcanza un solo profesional)</li>
+          <li>Notificar al juez dentro de las <strong>10 horas</strong></li>
+          <li>El juez debe pronunciarse en <strong>5 días hábiles</strong></li>
+          <li>Revisión cada 30 días por el equipo + órgano de revisión</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="algo p">
+      <div class="algo-t">Protocolo de internación involuntaria</div>
+      <div class="step ps"><div class="n p">1</div><div class="t"><strong>Evaluación interdisciplinaria</strong> (no puede decidirlo un solo médico)</div></div>
+      <div class="step ps"><div class="n p">2</div><div class="t">Constatar <strong>riesgo cierto e inminente</strong> para sí o terceros</div></div>
+      <div class="step ps"><div class="n p">3</div><div class="t">Verificar que el tratamiento ambulatorio <strong>no es suficiente</strong></div></div>
+      <div class="step ps"><div class="n p">4</div><div class="t">Notificar al <strong>Órgano de Revisión</strong> y al <strong>Juez dentro de las 10 horas</strong></div></div>
+      <div class="step ps"><div class="n p">5</div><div class="t">Designar un <strong>abogado defensor</strong> al paciente</div></div>
+      <div class="step ps"><div class="n p">6</div><div class="t">Revisión cada <strong>30 días</strong> por el equipo tratante</div></div>
+    </div>
+  </div>
+
+  <div id="ley26657-trampas" class="tp">
+    <div class="trap"><div class="trap-h">Trampa 1: un solo médico NO puede internar involuntariamente</div><div class="trap-b">La Ley 26.657 exige que la decisión de internación involuntaria sea tomada por un equipo interdisciplinario (médico psiquiatra + psicólogo + trabajo social al menos). Un médico solo no alcanza.</div></div>
+    <div class="trap"><div class="trap-h">Trampa 2: el juez tiene 5 días, no 24h</div><div class="trap-b">El juez debe pronunciarse en 5 días hábiles desde la notificación (que debe realizarse dentro de las 10 horas). No confundir los plazos.</div></div>
+    <div class="trap"><div class="trap-h">Trampa 3: diagnóstico de salud mental NO puede basarse en antecedentes penales</div><div class="trap-b">Explícitamente prohibido por la ley. El diagnóstico debe basarse en evaluación clínica interdisciplinaria.</div></div>
+    <div class="trap"><div class="trap-h">Trampa 4: la internación psiquiátrica NO es para "peligrosidad general"</div><div class="trap-b">El criterio legal es "riesgo cierto e inminente", no una peligrosidad abstracta o crónica. El peligro debe ser real y presente.</div></div>
+    <div class="fr"><span>Frase:</span> "Internación involuntaria = riesgo cierto e inminente + equipo interdisciplinario + notificar al juez en 10h + revisar cada 30 días + abogado defensor."</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     RIESGO SUICIDA
+════════════════════════════════════ -->
+<div id="page-suicidio" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL12 · Psiquiatría · Prioridad ★★★</div>
+    <div class="nh-title">Riesgo Suicida en Guardia</div>
+    <div class="nh-tag">Evaluación estructurada · factores de riesgo y protectores · intervención en guardia</div>
+    <div class="nh-chips"><span class="chip p">★★★ banco</span><span class="chip p">Guardia</span></div>
+  </div>
+
+  <div class="im psiq"><strong>Idea madre:</strong> El examen pregunta cómo evaluar el riesgo suicida en la guardia y qué conducta tomar. Los <strong>factores de riesgo</strong> y la <strong>presencia de plan e intención</strong> son los determinantes de internación.</div>
+
+  <div class="sec"><div class="sec-t p">Factores de riesgo para suicidio</div>
+    <div class="cg">
+      <div class="card">
+        <div class="card-t" style="color:var(--red)">Factores de riesgo</div>
+        <div class="card-b"><ul class="vl ps">
+          <li>Intento previo de suicidio (el mayor FR)</li>
+          <li>Depresión mayor, trastorno bipolar, esquizofrenia</li>
+          <li>Abuso de alcohol / sustancias</li>
+          <li>Sexo masculino (mayor letalidad)</li>
+          <li>Aislamiento social, divorcio, viudez</li>
+          <li>Pérdidas recientes (trabajo, relación, salud)</li>
+          <li>Enfermedad crónica / dolor crónico</li>
+          <li>Acceso a medios letales (armas, medicamentos)</li>
+          <li>Antecedente familiar de suicidio</li>
+        </ul></div>
+      </div>
+      <div class="card">
+        <div class="card-t" style="color:var(--green)">Factores protectores</div>
+        <div class="card-b"><ul class="vl ps">
+          <li>Apoyo social y familiar real</li>
+          <li>Razones para vivir (hijos, proyectos, creencias)</li>
+          <li>Acceso y adherencia al tratamiento de salud mental</li>
+          <li>Sexo femenino (mayor tentativa pero menor letalidad)</li>
+          <li>Capacidad de resolución de problemas</li>
+          <li>Religiosidad / espiritualidad</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Evaluación en guardia — preguntar siempre</div>
+    <div class="algo p">
+      <div class="algo-t">Secuencia de evaluación del riesgo suicida</div>
+      <div class="step ps"><div class="n p">1</div><div class="t"><strong>¿Tiene ideación suicida?</strong> — frecuencia, intensidad, control</div></div>
+      <div class="step ps"><div class="n p">2</div><div class="t"><strong>¿Tiene plan?</strong> — método específico + acceso al medio</div></div>
+      <div class="step ps"><div class="n p">3</div><div class="t"><strong>¿Tiene intención de actuar?</strong> — tiempo definido</div></div>
+      <div class="step ps"><div class="n p">4</div><div class="t">Evaluar <strong>intentos previos</strong> (número, métodos, circunstancias)</div></div>
+      <div class="step ps"><div class="n p">5</div><div class="t">Determinar factores de riesgo y protectores</div></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Estratificación y conducta</div>
+    <table class="vt">
+      <tr><th>Riesgo</th><th>Características</th><th>Conducta</th></tr>
+      <tr><td class="g">Bajo</td><td>Ideación pasiva, sin plan, sin intención, factores protectores presentes</td><td class="g">Tratamiento ambulatorio, seguimiento, contención familiar, reducción de acceso a medios letales</td></tr>
+      <tr><td class="w">Moderado</td><td>Ideación activa con cierta plan, sin intención inmediata</td><td class="w">Valorar internación, intensificar seguimiento, incluir a la familia</td></tr>
+      <tr><td class="r">Alto</td><td>Plan definido + intención + acceso al medio + poca contención social</td><td class="r">Internación psiquiátrica (voluntaria o involuntaria)</td></tr>
+    </table>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: preguntar sobre suicidio no "pone la idea en la cabeza"</div><div class="trap-b">Un mito frecuente es evitar preguntar sobre suicidio por temor a sugestionarlo. La evidencia muestra lo contrario: preguntar directamente es seguro, reduce la angustia del paciente y permite la evaluación correcta.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: el intento previo es el mayor factor de riesgo</div><div class="trap-b">Un intento previo aumenta el riesgo de suicidio consumado entre 20 y 40 veces. Siempre preguntar por intentos anteriores, método utilizado y circunstancias.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     ANSIEDAD / PÁNICO
+════════════════════════════════════ -->
+<div id="page-ansiedad" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL12 · Psiquiatría · Prioridad ★★</div>
+    <div class="nh-title">Trastornos de Ansiedad + Crisis de Pánico</div>
+    <div class="nh-tag">Los más frecuentes en APS · ISRS primera línea · crisis de pánico = diagnóstico diferencial clave</div>
+  </div>
+
+  <div class="im psiq"><strong>Idea madre:</strong> La crisis de pánico (trastorno de pánico) es la que más pregunta el banco: diagnóstico diferencial con causas orgánicas (IAM, TEP, hipertiroidismo), y el tratamiento (ISRS a largo plazo + benzodiacepinas a corto plazo).</div>
+
+  <div class="sec"><div class="sec-t p">Comparativo trastornos de ansiedad</div>
+    <table class="vt">
+      <tr><th>Trastorno</th><th>Característica</th><th>Tratamiento 1ª línea</th></tr>
+      <tr><td><strong>Trastorno de Pánico</strong></td><td>Crisis de miedo intenso + síntomas físicos + miedo a nueva crisis. Inicio abrupto, máximo en 10 min.</td><td class="k">ISRS (largo plazo) + BZD (corto plazo en crisis)</td></tr>
+      <tr><td>TAG (Trastorno de Ansiedad Generalizada)</td><td>Preocupación excesiva e incontrolable ≥6 meses sobre múltiples temas. Tensión muscular, insomnio.</td><td class="k">ISRS o IRSN (venlafaxina)</td></tr>
+      <tr><td>Fobia social / TSS</td><td>Miedo intenso a situaciones sociales. Evitación.</td><td class="k">ISRS + TCC</td></tr>
+      <tr><td>TEPT</td><td>Post-trauma: reexperimentación, evitación, hiperactivación. &gt;1 mes post-evento.</td><td class="k">ISRS (sertralina/paroxetina)</td></tr>
+      <tr><td>TOC</td><td>Obsesiones + compulsiones que consumen &gt;1h/día</td><td class="k">ISRS a dosis altas + TCC</td></tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Crisis de pánico — síntomas (4+ de estos)</div>
+    <div class="cg">
+      <div class="card">
+        <div class="card-t">Síntomas físicos</div>
+        <div class="card-b">Taquicardia / palpitaciones · Disnea · Sudoración · Temblor · Mareo · Parestesias · Náuseas · Dolor torácico · Escalofríos / sofocos</div>
+      </div>
+      <div class="card">
+        <div class="card-t">Síntomas psicológicos</div>
+        <div class="card-b">Despersonalización (sentirse ajeno a uno mismo) · Desrealización · Miedo a morir · Miedo a "volverse loco" · Miedo a perder el control</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: descartar causa orgánica antes de diagnóstico de pánico</div><div class="trap-b">La primera crisis de pánico debe diferenciarse de: IAM (ECG + troponinas), TEP (TAC helicoidal), hipertiroidismo (TSH), arritmia (ECG), hipoglucemia (glucemia). No diagnosticar pánico sin descartar orgánico.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: bupropión contraindicado en pacientes con historial de convulsiones</div><div class="trap-b">También aplica en trastornos de la conducta alimentaria (bulimia). Usarlo para depresión/ansiedad en estos pacientes es un error.</div></div>
+</div>
+
+<!-- ════════════════════════════════════
+     DEPRESIÓN
+════════════════════════════════════ -->
+<div id="page-depresion" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL12 · Psiquiatría · Prioridad ★★</div>
+    <div class="nh-title">Síndrome Depresivo Mayor</div>
+    <div class="nh-tag">Criterios DSM · ISRS primera línea · diferencial con duelo y pseudodemencia</div>
+  </div>
+
+  <div class="im psiq"><strong>Idea madre:</strong> El examen pregunta los <strong>criterios diagnósticos</strong> (2 síntomas núcleo + duración ≥2 semanas), el <strong>tratamiento de primera línea</strong> (ISRS), y los diferenciales clave (duelo, hipotiroidismo, pseudodemencia).</div>
+
+  <div class="sec"><div class="sec-t p">Criterios DSM — Episodio Depresivo Mayor</div>
+    <div class="al p"><div class="al-i">📋</div><div>Se requieren <strong>≥5 síntomas durante ≥2 semanas</strong>, incluyendo al menos 1 de los 2 síntomas nucleares.</div></div>
+    <table class="vt">
+      <tr><th>Síntomas nucleares (≥1 obligatorio)</th><th>Síntomas adicionales</th></tr>
+      <tr>
+        <td class="r">① Estado de ánimo depresivo la mayor parte del día, casi todos los días<br><br>② Pérdida de interés o placer en casi todas las actividades (anhedonia)</td>
+        <td>Cambios en peso/apetito · Insomnio o hipersomnia · Agitación o enlentecimiento psicomotor · Fatiga · Sentimientos de inutilidad o culpa excesiva · Dificultad para concentrarse · Pensamientos de muerte / ideación suicida</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Tratamiento</div>
+    <table class="vt">
+      <tr><th>Situación</th><th>Tratamiento</th></tr>
+      <tr><td>Episodio leve-moderado</td><td class="k">TCC (psicoterapia cognitivo-conductual) ± ISRS</td></tr>
+      <tr><td>Episodio moderado-severo</td><td class="k">ISRS (fluoxetina, sertralina, escitalopram) + TCC</td></tr>
+      <tr><td>Con síntomas psicóticos</td><td class="k">Antidepresivo + antipsicótico atípico</td></tr>
+      <tr><td>Riesgo suicida alto</td><td class="r">Internación + medicación + supervisión</td></tr>
+      <tr><td>Resistente (≥2 ISRS fallidos)</td><td class="d">Cambio de clase (IRSN, tricíclico) · litio · ECT</td></tr>
+    </table>
+    <div style="font-size:11px;color:var(--text2);margin-top:6px">Respuesta al ISRS: se evalúa a las <strong>4–6 semanas</strong>. Si no hay respuesta parcial, cambiar de droga. Si hay respuesta parcial, ajustar dosis. Tratamiento mínimo: <strong>6–12 meses post-remisión</strong>.</div>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: hipotiroidismo puede presentarse como depresión</div><div class="trap-b">Siempre pedir TSH ante un cuadro depresivo, especialmente en mujeres mayores. El hipotiroidismo puede imitar o desencadenar depresión. No iniciar antidepresivo sin descartar causa orgánica.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: duelo normal vs depresión mayor</div><div class="trap-b">El duelo normal puede incluir tristeza intensa, llanto, anhedonia transitoria. No es depresión mayor a menos que: dure &gt;2 meses o incluya: pensamientos de muerte activos, culpa excesiva no relacionada con la pérdida, alucinaciones no relacionadas con el fallecido, deterioro funcional severo.</div></div>
+  <div class="fr"><span>Frase:</span> "Depresión = ≥5 síntomas × ≥2 semanas, incluyendo ánimo depresivo o anhedonia. 1ª línea: ISRS. Descartar siempre hipotiroidismo y pseudodemencia."</div>
+</div>
+
+<!-- ════════════════════════════════════
+     CONSUMO DE SUSTANCIAS
+════════════════════════════════════ -->
+<div id="page-sustancias" class="page">
+  <div class="nh">
+    <div class="nh-eye">CL12 · Psiquiatría + APS · Prioridad ★★</div>
+    <div class="nh-title">Consumo Problemático de Sustancias</div>
+    <div class="nh-tag">CAGE · Prochaska · síndrome de abstinencia · intervención breve</div>
+  </div>
+
+  <div class="im psiq"><strong>Idea madre:</strong> El examen pregunta el <strong>cuestionario CAGE</strong> para screening de alcohol, las <strong>etapas de Prochaska</strong> (ver CL4 también), el <strong>síndrome de abstinencia alcohólica</strong> y su tratamiento (diazepam), y los síndromes tóxicos de cada sustancia.</div>
+
+  <div class="sec"><div class="sec-t p">CAGE — screening de alcohol (≥2 positivos = riesgo)</div>
+    <table class="vt">
+      <tr><th>Letra</th><th>Pregunta</th></tr>
+      <tr><td class="k">C</td><td><strong>Cut:</strong> ¿Alguna vez sintió que debía <em>reducir</em> su consumo de alcohol?</td></tr>
+      <tr><td class="k">A</td><td><strong>Annoyed:</strong> ¿Le <em>molestó</em> alguna vez que la gente criticara su forma de beber?</td></tr>
+      <tr><td class="k">G</td><td><strong>Guilty:</strong> ¿Se sintió alguna vez <em>mal o culpable</em> por beber?</td></tr>
+      <tr><td class="k">E</td><td><strong>Eye-opener:</strong> ¿Alguna vez tomó un trago a la mañana temprano (<em>Eye-opener</em>) para calmar los nervios o el temblor?</td></tr>
+    </table>
+    <div style="font-size:11px;color:var(--text2);margin-top:6px">≥2 respuestas positivas = problema con el alcohol → intervención. Sensibilidad ~80%, especificidad ~85%.</div>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Síndrome de abstinencia alcohólica</div>
+    <table class="vt">
+      <tr><th>Tiempo post-última ingesta</th><th>Manifestaciones</th><th>Gravedad</th></tr>
+      <tr><td class="k">6–24h</td><td>Temblor, ansiedad, náuseas, taquicardia, HTA</td><td class="w">Leve</td></tr>
+      <tr><td class="k">12–48h</td><td>Convulsiones de abstinencia (tónico-clónicas generalizadas)</td><td class="r">Moderada</td></tr>
+      <tr><td class="k">48–72h</td><td><strong>Delirium tremens:</strong> alucinaciones (visuales → animales pequeños), agitación severa, fiebre, diaforesis, taquicardia extrema</td><td class="r">Severa — mortalidad 5–15%</td></tr>
+    </table>
+    <div class="al p" style="margin-top:8px"><div class="al-i">💊</div><div>Tratamiento del síndrome de abstinencia: <strong>benzodiacepinas (diazepam 10 mg IV)</strong> como primera línea. Tiamina (vitamina B1) SIEMPRE antes de glucosa para evitar encefalopatía de Wernicke.</div></div>
+  </div>
+
+  <div class="sec"><div class="sec-t p">Síndromes tóxicos — comparativo</div>
+    <table class="vt">
+      <tr><th>Síndrome</th><th>Miosis/Midriasis</th><th>FC</th><th>TA</th><th>Otras</th></tr>
+      <tr><td class="d"><strong>Opiáceo</strong></td><td class="r">Miosis puntiforme</td><td class="r">↓</td><td class="r">↓</td><td class="d">Depresión respiratoria, coma. Antídoto: naloxona</td></tr>
+      <tr><td class="d"><strong>Colinérgico</strong> (organofosf.)</td><td class="r">Miosis</td><td class="r">↓ (bradicardia)</td><td class="r">↓</td><td class="d">SLUDGE: salivación, lagrimeo, orina, defecación, GI, emesis. Antídoto: atropina</td></tr>
+      <tr><td class="d"><strong>Anticolinérgico</strong></td><td class="g">Midriasis</td><td class="w">↑</td><td class="w">↑</td><td class="d">"Seco como hueso, rojo como remolacha, ciego como murciélago, loco como sombrerero". Antídoto: fisostigmina</td></tr>
+      <tr><td class="d"><strong>Simpaticomimético</strong> (cocaína, anfet.)</td><td class="g">Midriasis</td><td class="r">↑↑</td><td class="r">↑↑</td><td class="d">Agitación, hipertermia, diaforesis, IAM, ACV</td></tr>
+      <tr><td class="d"><strong>CO</strong></td><td class="d">Normal</td><td class="w">↑</td><td class="d">Variable</td><td class="d">No cianosis (piel rosada). Cefalea, mareo, confusión. Dx: COHb. Tto: O₂ 100%</td></tr>
+      <tr><td class="d"><strong>Opiáceo (abstinencia)</strong></td><td class="g">Midriasis</td><td class="w">↑</td><td class="w">↑</td><td class="d">Opuesto a intoxicación: agitación, diarrea, piloerección</td></tr>
+    </table>
+  </div>
+
+  <div class="trap"><div class="trap-h">Trampa: tiamina ANTES de glucosa en alcohólicos</div><div class="trap-b">En un paciente alcohólico con alteración de conciencia, dar glucosa sin tiamina puede precipitar la encefalopatía de Wernicke (oftalmoparesia + ataxia + confusión). Siempre: tiamina 100 mg IV → luego glucosa.</div></div>
+  <div class="trap"><div class="trap-h">Trampa: CO → piel rosada (no cianótica)</div><div class="trap-b">La intoxicación por CO produce piel "cereza" o rosada porque la COHb tiene color rojo brillante. El pulsioxímetro normal no detecta la intoxicación por CO (lee COHb como si fuera HbO₂ saturada). Diagnóstico: COHb en sangre.</div></div>
+  <div class="fr"><span>Frase:</span> "CAGE ≥2 = problema con alcohol. Abstinencia severa = delirium tremens → diazepam. Alcohólico + glucosa: tiamina primero. CO = piel rosada, oximetría falsa normal."</div>
+</div>
+
+</main>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(i => {
+    if (i.getAttribute('onclick') === `show('${id}')`) i.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+
+function tab(btn, nodeId, tabId) {
+  const page = document.getElementById('page-' + nodeId);
+  page.querySelectorAll('.tb').forEach(b => b.classList.remove('active'));
+  page.querySelectorAll('.tp').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById(nodeId + '-' + tabId);
+  if (panel) panel.classList.add('active');
+}
+</script>
+</body>
+</html>
